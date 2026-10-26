@@ -61,6 +61,8 @@ Full rules: [docs/agent-interaction.md](docs/agent-interaction.md). No skill can
 
 Write each skill once, in `.agents/skills/<skill-id>/`, where Codex finds it. Claude Code reads `.claude/skills/`, which holds generated, committed copies: regenerate the copy after every change, check that both match, and never edit a copy directly. Choose the skill whose description fits the researcher's goal; researchers do not need to know skill names. Do not load every skill or impose a full workflow on a small edit.
 
+Only the skills in `.agents/skills/` exist. When a task needs a skill that is missing, such as importing and converting documents, say so plainly, and do not promise it or describe it as available. You can still help in conversation with what you can do directly.
+
 ## Finishing work
 
 Report what was done, link the results, and state failures, gaps, and unverified parts plainly. When work remains, update `state/current.md` with the next action. A successful command or an existing file is not proof that a task succeeded.

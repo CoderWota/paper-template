@@ -13,7 +13,7 @@ Outcome: `requirements/` states exactly the rules that the researcher confirmed,
 - An explicit, clear instruction is confirmation. Record it without asking for approval again.
 - Never save an inferred preference. This applies to `requirements/`, notes, `state/`, skills, feedback records, idea notes, and the agent application's own memory feature. If you notice a pattern, you can ask about it once in the conversation; without a clear yes, keep nothing.
 - Keep only active rules in `requirements/`. Remove a rule when it is replaced or withdrawn.
-- Write rules in the interaction language. Capture the intent, with useful examples and allowed exceptions. Avoid broad bans on words, which damage meaning and natural expression.
+- Write rules in the interaction language. Capture the intent in the researcher's words. Add an example or an exception only when the researcher gave it or confirms it; never add one that you inferred. Avoid broad bans on words, which damage meaning and natural expression.
 - A rule governs writing and behavior. It is not evidence for a scientific claim, and an idea or a hypothesis is not a rule.
 
 ## Step 1: Decide whether the statement is a lasting rule
@@ -56,10 +56,12 @@ Use this layout in `requirements/writing.md`, with the labels in the interaction
 
 - Rule: <what to do, in the researcher's words where possible>
 - Scope: <whole manuscript | section: <name> | output profile: <id>>
-- Examples: <optional>
-- Exceptions: <optional>
+- Examples: <only if the researcher gave them>
+- Exceptions: <only if the researcher gave or confirmed them>
 - Confirmed: <date>; <source: the researcher's instruction, an adopted feedback record, or a decision record>
 ```
+
+Leave out the `Examples` and `Exceptions` lines unless the researcher gave or confirmed them. If an exception seems necessary, ask one question; do not write it first.
 
 When there are several terms, keep terminology in a table with the preferred term, the terms to avoid, and the scope. Keep any text that the researcher wrote in the file.
 
@@ -67,16 +69,22 @@ When there are several terms, keep terminology in a table with the preferred ter
 
 - Remove the old rule from the file. `requirements/` never keeps replaced rules.
 - In the "Confirmed" line of the new rule, name the rule that it replaces.
-- If the change is a consequential research choice, for example a change of manuscript language, of central terminology, or of a rule that affects the argument, also write a research decision record in `research/decisions/`. Include the old rule, the new rule, and the reason, add it to `research/decisions/index.md`, and link it from the new rule.
+- If the change is a consequential research choice, for example a change of manuscript language, of central terminology, or of a rule that affects the argument, also write a research decision record in `research/decisions/`. Include the old rule, the new rule, and the reason, add it to `research/decisions/index.md`, and link it from the new rule. Write the record and its index entry in the interaction language. State the reason as the researcher gave it; if they gave none, say so, and do not invent one.
 - Do not write a decision record for a minor change. Version history keeps it.
 
-## Step 6: Report
+## Step 6: Check what the change affects
 
-Tell the researcher, in their language, what you recorded, changed, or removed, with its scope and a link to the file. When the researcher asks which rules apply, list the active rules by scope.
+A confirmed change authorizes the change and its records. It does not authorize edits to manuscript text. Search `manuscript/` for passages that the change affects, such as an introduction that states the old research goal. List them in your report and ask one question: update them now, later, or not at all. Recommend one choice. Edit manuscript text only after the answer.
+
+## Step 7: Report
+
+Tell the researcher, in their language, what you recorded, changed, or removed, with its scope and a link to the file, and list the manuscript passages that the change affects. When the researcher asks which rules apply, list the active rules by scope.
 
 ## Completion check
 
 - Every rule in `requirements/` came from an explicit instruction or a confirmed answer, and has a scope and a date.
 - No inferred preference appears in any file or in the agent application's memory.
 - No two active rules contradict each other.
-- A replaced rule is gone from `requirements/`, and a consequential change has a decision record.
+- A replaced rule is gone from `requirements/`, and a consequential change has a decision record in the interaction language.
+- Every example and exception in `requirements/` came from the researcher.
+- No manuscript text was edited without the researcher's answer.

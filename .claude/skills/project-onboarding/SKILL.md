@@ -78,8 +78,8 @@ Ask whether the researcher wants you to check if their AI application can use pr
 
 ## Step 8: Finish
 
-1. Update `state/current.md`: what is set up, what is deferred, and the next action.
-2. Report in the interaction language: the recorded settings with links to the files, the deferred items, and one recommended next action, such as importing documents, exploring research ideas, or adopting an existing draft.
+1. Update `state/current.md` in the interaction language, every line of it: what is set up, what is deferred, and the next action. The researcher reads this record.
+2. Report in the interaction language: the recorded settings with links to the files, the deferred items, and one recommended next action that you can carry out now with the available skills and your own tools.
 
 ## A workspace that already holds work
 
@@ -97,5 +97,5 @@ Do not delete, move, or overwrite anything in this case. This folder can be the 
 
 - The researcher stated or confirmed every recorded item.
 - No inferred preference appears in any file.
-- `state/current.md` names the next action.
+- `state/current.md` names the next action, in the interaction language.
 - No existing material was deleted, moved, or overwritten.
