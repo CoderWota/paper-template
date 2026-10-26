@@ -1,6 +1,6 @@
 # MVP Implementation Guideline
 
-Status: proposed implementation roadmap v0.3. No MVP is implemented or verified yet; MVP 1 has started with the workspace scaffold.
+Status: proposed implementation roadmap v0.4 (execution order revised 2026-10-26). No MVP is implemented or verified yet; MVP 1 has started with the workspace scaffold and the adopted AGENTS.md.
 Updated: 2026-10-26.
 
 This is the agent-facing implementation guide for the [design plan v0.9](design-plan.md) and [hands-on design](hands-on.md). Researchers are not expected to edit this technical document.
@@ -30,10 +30,10 @@ The MVP numbers describe implementation slices, not a mandatory course for resea
 | Workspace scope | MVP 1 | Resolved 2026-10-26: one main manuscript per workspace, including its submission rounds and revisions; each additional paper uses its own copy of the workspace. Specify how onboarding treats a workspace copied from another paper. Do not hard-code a discipline or article structure. |
 | AGENTS.md contract and skill adapters | MVP 1 | Text adopted 2026-10-26. Claude Code skill adapters are generated, committed copies of `.agents/skills`. Still verify actual loading in fresh sessions of both agents. Do not copy the full roadmap into AGENTS.md. |
 | Exact Windows baseline | MVP 1; validate again in MVPs 2 and 6 | Record OS, RAM/storage, x64/ARM64, installed tools, and available model access. Surface is a product-family reference, not a complete hardware specification. Do not invent a verified minimum or claim untested architectures. |
-| Source metadata and file tracking | MVP 2 | Choose the canonical metadata representation; BibTeX is the current proposal. Specify identifiers, citation keys, extraction provenance, tracking, and backup responsibilities without asking researchers to edit technical formats. |
+| Source metadata and file tracking | MVP 2, informed by the export trial | Choose the canonical metadata representation; BibTeX is the current proposal, to be tested in the export trial. Specify identifiers, citation keys, extraction provenance, tracking, and backup responsibilities without asking researchers to edit technical formats. |
 | Intake and research records | Intake in MVP 2; research records in MVP 4 | Intake capabilities are required; exact archive mappings remain proposed. The `research/decisions/` and `research/feedback/` locations were confirmed on 2026-10-26; refine their record formats in MVP 4. Keep current requirements distinct from rationale and unadopted advice; add no inferred-preference storage or compulsory decision ceremony. |
-| MinerU service and local/cloud routes | MVP 2 | MinerU is already selected. Verify the actual version, API, client dependencies, authentication, cost/limits, data-use/retention policy, supported local tiers, and package/model redistribution terms before coding against or bundling them. |
-| Remaining Markdown conventions, publishing engine, first journal/output | Before drafting conventions stabilize in MVP 5; prove in MVP 6 | GitHub-renderable math, Mermaid explanation diagrams, and native editable Word equations are confirmed. Evaluate remaining citation/numbering conventions with an actual template trial. Pandoc versus Quarto and the first output format remain open; validate formula fidelity as well as layout. |
+| MinerU service and local/cloud routes | Research during MVP 1; decide in MVP 2 | MinerU is already selected. Verify the actual version, API, client dependencies, authentication, cost/limits, data-use/retention policy, supported local tiers, and package/model redistribution terms before coding against or bundling them. |
+| Remaining Markdown conventions, publishing engine, first journal/output | Export trial right after MVP 1; prove in MVP 6 | GitHub-renderable math, Mermaid explanation diagrams, and native editable Word equations are confirmed. Evaluate remaining citation/numbering conventions in the export trial described in Section 3. Pandoc versus Quarto and the first output format remain open; validate formula fidelity as well as layout. |
 | Major-revision records and recovery | MVP 5; extend through MVPs 6 and 8 | The revision coordinator and exact layout are proposals. Specify recoverable baselines, active versus candidate drafts, input-versioned checks, interruption recovery, and a local snapshot route without Git. Do not impose this machinery on ordinary edits. |
 | External backup/collaboration | MVP 7; coauthor reconciliation in MVP 8 | Establish the researcher's intended destination, visibility, permissions, and what leaves the machine. Local version preservation does not authorize publication. |
 
@@ -43,17 +43,25 @@ Do not stop unrelated drafting because an optional provider, journal, architectu
 
 | MVP | Researcher-visible outcome | Development prerequisites | Status |
 | --- | --- | --- | --- |
-| 1 | Initialize an understandable project and retain confirmed requirements across sessions. | None beyond a usable agent host/model; provide a human-readable entry guide. | In progress (scaffold only) |
-| 2 | Route intake and convert literature or review documents into archived, readable, resumable results. | MVP 1 environment, privacy, and storage conventions. | Planned |
+| 1 | Initialize an understandable project and retain confirmed requirements across sessions. | None beyond a usable agent host/model; provide a human-readable entry guide. | In progress (scaffold and AGENTS.md) |
+| 2 | Route intake and convert literature or review documents into archived, readable, resumable results. | MVP 1 environment, privacy, and storage conventions; MinerU service research; the export trial's metadata findings. | Planned |
 | 3 | Find and batch acquire literature, import available full text, and retrieve checkable evidence. | MVP 1; MVP 2 for converted inputs, or existing readable sources. | Planned |
-| 4 | Develop ideas and research plans, work through feedback, and retain consequential confirmed rationale. | MVP 1; MVP 3 for source-backed investigation; existing material can also be used. | Planned |
-| 5 | Adopt, write, audit, or substantially revise a manuscript with recoverable prior work. | MVP 1, source/evidence contracts from MVP 3; MVP 2 for converted drafts; existing inputs can substitute for earlier research stages. MVP 7 is optional: local snapshots must support revision without Git. | Planned |
-| 6 | Choose a journal and produce a manuscript/package checked against its actual format requirements. | MVP 5 conventions or an existing manuscript; source/citation integrity from MVP 3. | Planned |
-| 7 | Preserve, compare, recover, and explicitly back up versions through the agent. | MVP 1 only; this branch can be implemented immediately after MVP 1. | Planned |
+| 4 | Develop ideas and research plans, compare target journals, work through feedback, and retain consequential confirmed rationale. | MVP 1; MVP 3 for source-backed investigation; existing material can also be used. | Planned |
+| 5 | Adopt, write, audit, or substantially revise a manuscript with recoverable prior work. | MVP 1, source/evidence contracts from MVP 3, and the export trial's citation and cross-reference syntax; MVP 2 for converted drafts; existing inputs can substitute for earlier research stages. MVP 7 comes earlier in the main sequence, but local snapshots must still support revision without Git. | Planned |
+| 6 | Produce a manuscript/package checked against the selected journal's actual format requirements, and assess readiness. | MVP 5 conventions or an existing manuscript; source/citation integrity from MVP 3; the engine chosen in the export trial; a target from `journal-selection` (MVP 4) or the researcher. | Planned |
+| 7 | Preserve, compare, recover, and explicitly back up versions through the agent. | MVP 1 only. Implemented immediately after MVP 1, before MVP 2. | Planned |
 | 8 | Process review rounds and reconcile coauthor edits without losing the canonical manuscript. | MVP 5; MVP 2 for converted correspondence, MVP 6 for re-export, MVP 7 when version history is used. | Planned |
 | 9 | Follow or resume the complete paper hands-on using the same independent skills. | MVPs 1–6; MVP 7 for demonstrated Git handoff and MVP 8 for the revision extension. | Planned |
 
-Recommended main sequence: 1 → 2 → 3 → 4 → 5 → 6 → 8 → 9. MVP 7 is a separate branch available after MVP 1 and is useful before substantial manuscript editing. These are development dependencies, not a requirement that every researcher complete all previous activities.
+Recommended main sequence (revised 2026-10-26): 1 → 7 → 2 → 3 → 4 → 5 → 6 → 8 → 9, with the export trial running alongside MVP 7. These are development dependencies, not a requirement that every researcher complete all previous activities.
+
+- The critical path by hard dependencies is 1 → 2 → 3 → 5 → 6 → 8 → 9. MVP 4 is not a hard prerequisite of MVP 5. It stays before MVP 5 so that venue requirements from `journal-selection` are known before outlining and drafting; the two can overlap.
+- MVP 7 comes right after MVP 1 so that onboarding can recognize Git history inherited by a copied workspace, including an `origin` that points to the template repository, and so that researchers can preserve versions before importing literature and writing.
+- The export trial comes right after MVP 1 because native Word equations, template-driven layout, and citation syntax are the largest technical unknowns. Its findings shape both the MVP 2 metadata representation and the MVP 5 writing conventions.
+
+### Export trial (before MVP 2)
+
+A design trial, not an MVP or a skill. Use a small rights-cleared test manuscript with inline and display math, a Mermaid diagram, BibTeX citations, cross-references, and one representative journal template. Build Word output, and PDF when the template needs it, with Pandoc and with Quarto in a separate tool environment. Check native OMML structure and editing in Word, citation and cross-reference rendering, and layout against the template. Record the environment and results in `docs/`, then decide the publishing engine and the citation and cross-reference syntax with the maintainer. Do not add the engine to the template before that decision. MVP 6 later proves the chosen engine on a real journal profile.
 
 ### Confirmed end-to-end test objective
 
@@ -64,6 +72,8 @@ Prepare a rights-cleared fixture and explicit expected outcomes when the relevan
 Record test pass/fail, real manuscript readiness, and author/submission approval separately. An expected blocked case can pass its test without being submission-ready. Report only the services, formats, environments, and workflows actually exercised; retain separate tests for other capabilities. No end-to-end test has been executed yet.
 
 At least one positive case must complete the full path and deliver the expected linked results and package. Correct blocker reporting in a negative case validates failure handling, not successful end-to-end production.
+
+No MVP yet owns producing the actual research results this test requires: MVP 4 verifies research-code setup only with a smoke task, and MVP 9 uses supplied evidence. Whether `research-investigation` and `research-code-setup` take on result production, as the [research workflow review](research-workflow-review.md) proposes, is an open decision. Settle it before MVP 9, preferably before MVP 4, where these skills are first implemented.
 
 ## MVP 1 — A usable project and confirmed memory
 
@@ -78,13 +88,15 @@ At least one positive case must complete the full path and deliver the expected 
 - The shared major-decision confirmation rule and question guidance in both agent entry paths and skill routing. Include grilling, scoped reuse of prior confirmation, and waiting for an answer before dependent work. Implement English STE checks against the adopted official rules/dictionary and corresponding clarity review for other languages, without changing the manuscript language/style by default or claiming unverified compliance.
 - Initial project/language/privacy requirements and concise current state. Keep inferred preferences out of persistent files, including notes and handoffs. Separate confirmed rules from retained exploratory ideas and research hypotheses.
 - Tool detection and reuse of compatible installed Python/CLI tools, on-demand project-local `.venv` management without overwriting working global environments, private local credential entry and ignored storage, plus documented privacy-setting assistance. A cloud route must not require installing a full local inference stack. A missing converter must not prevent ordinary reading/writing.
+- Read-only research on the MinerU service, started during MVP 1 because MVP 2 depends on it: version, API, client dependencies, authentication, cost and limits, data-use and retention policy, and licensing.
+- A specification of how onboarding treats a workspace copied from one that already holds another paper; see the open question in the [implementation status](implementation-status.md).
 
 **Acceptance evidence:**
 
 - In fresh Codex and Claude Code sessions, a researcher can initialize through ordinary language, inspect the resulting choices, and continue a task. A later session follows an explicit saved rule; an unconfirmed inferred preference is absent from persistent files.
 - Inspect all created project directories for useful READMEs, including generated skill mirrors and a newly created example instance. Repeat creation without losing existing explanations. Verify that directory documentation cannot enter manuscript assembly or be reported as scholarly evidence or review comments.
 - Present a consequential choice in each agent host: the agent prepares a concrete recommendation, asks one clear question, and makes no dependent change before an answer. Silence and default selections do not authorize it; an explicit instruction with clear scope does. Routine authorized work does not trigger repeated confirmation. Inspect English questions against the adopted STE issue and dictionary, including a grilling example; sentence length alone is insufficient. Verify natural non-English questions without a false STE claim.
-- Simulate missing Python/tools, unavailable account controls, and deferred service credentials. The researcher receives an actionable next step without editing Git, BibTeX, YAML/JSON, scripts, or environment syntax. A credential file actually reaches the intended process; writing an unused file is not success.
+- Simulate missing Python/tools, unavailable account controls, and deferred service credentials. The researcher receives an actionable next step without editing Git, BibTeX, YAML/JSON, scripts, or environment syntax. A credential reaches a test consumer process through the intended loading path, with masked entry, Git exclusion, and redaction; writing an unused file is not success. The live MinerU credential is verified in MVP 2.
 - Check that test credentials do not appear in chat output, commands, logs, or tracked files. Privacy reports distinguish observed controls, researcher confirmation, policy defaults, and unknown/admin-only states; no manuscript is uploaded to test privacy.
 
 **Not yet:** literature conversion, publication-ready output, or a claim that every account/provider setting has been changed. Preserve incomplete setup states honestly.
@@ -93,7 +105,7 @@ At least one positive case must complete the full path and deliver the expected 
 
 **Example request:** “Import all PDFs in this folder, including the images. Continue only the failed items if interrupted.”
 
-**First skills:** `source-ingestion`, `review-ingestion`. Extend MVP 1 setup only for the chosen MinerU integration.
+**First skills:** `source-ingestion`, `review-ingestion`. Extend MVP 1 setup only for the chosen MinerU integration, and verify the live MinerU credential and the selected service's data-use policy here.
 
 **Implement:**
 
@@ -112,7 +124,7 @@ At least one positive case must complete the full path and deliver the expected 
 - Route a mixed intake folder and a direct external path while preserving original files and existing manuscript work. Extract a Word review with inline comments and a supported annotated document; account for each supplied item or explicitly report the unsupported structure. Repeating the task must not duplicate comments or mix rounds.
 - Inspect READMEs at every newly created source, extraction, asset, venue, round, and import directory level. Existing source files stay unchanged, external input folders receive no unsolicited documentation, and a retry preserves useful prior descriptions.
 - Interrupt a batch and retry a failed file. Successful results and evidence notes survive, matching imports are not needlessly reprocessed, and re-conversion settings changes are detectable. Test corrupt input and unavailable authentication/quota without repeated failure loops.
-- Demonstrate the selected local and cloud capability envelopes on their declared environments. Check that a cloud-only setup does not install local model weights and that local failure cannot upload documents without the researcher's choice. Synthetic API fixtures alone do not prove live-service compatibility.
+- Demonstrate the selected local and cloud capability envelopes on their declared environments. Check that a cloud-only setup does not install local model weights and that local failure cannot upload documents without the researcher's choice. Synthetic API fixtures alone do not prove live-service compatibility. The live credential reaches the adapter process without appearing in chat, commands, logs, or tracked files, and the selected service's training-use and retention terms are checked against its official sources.
 
 **Not yet:** automatic confidence that OCR is correct, verified support for every language/layout, or replacement of original-document checks. Unsupported cases remain visible.
 
@@ -143,18 +155,20 @@ At least one positive case must complete the full path and deliver the expected 
 
 **Example request:** “Help me develop possible directions, examine this idea, and decide what research would establish its value.”
 
-**First skills:** `research-ideation`, `idea-deepening`, `impact-assessment`, `research-planning`, `research-feedback`, `research-code-setup`.
+**First skills:** `research-ideation`, `idea-deepening`, `impact-assessment`, `journal-selection`, `research-planning`, `research-feedback`, `research-code-setup`.
 
 **Implement:**
 
 - Independent idea generation and grilling-inspired deepening: one substantive question at a time, a reasoned recommendation, and investigation of what existing material can answer. Compare close prior work without confusing novelty, significance, feasibility, and evidential support.
 - Researcher-retained idea notes and an index, contribution/impact assessments, and a plan connecting methods, required evidence, current resources, limitations, and next actions. Use discipline-appropriate argument or interpretation as well as empirical methods.
+- Venue comparison and examination with `journal-selection`: current scope, article types, length and structure requirements, AI-use policy, and relevant inspected publications, assessed separately from impact. The result informs outlining and drafting in MVP 5 and the output profile in MVP 6.
 - Attributed research feedback from co-researchers, collaborators, coauthors, supervisors, and other contributors, using shared extraction mechanics, with proposed actions and researcher-confirmed adoption. Preserve individual attribution in multi-person documents or meetings. Preserve consequential confirmed choices and rationale under `research/decisions/` and feedback under `research/feedback/`; these locations were confirmed on 2026-10-26, and their record formats are defined here. Keep active requirements canonical, record supersession, and avoid a full decision record for every edit.
 - The optional code-setup skill: elicit actual needs before creating `code/`, its README, structure, environment, and reproducibility guidance. Keep research dependencies separate from ingestion utilities. No code workspace is required for non-code research.
 
 **Acceptance evidence:**
 
 - Demonstrate distinct proposed directions, direct deepening of an existing idea, and a value assessment grounded in sources/assumptions. The agent challenges a weak premise and qualifies unverified originality; it does not manufacture a literature gap.
+- Compare at least two venues for a test project and examine one specified venue from current official sources. Fit, impact, and readiness stay separate, and no acceptance probability is invented.
 - Exercise an empirical and a conceptual/interpretive scenario. Both yield a useful research plan without forcing the same article structure or an unnecessary experiment. Retained hypotheses are labeled; inferred writing preferences are not saved.
 - Work through conflicting suggestions from a co-researcher and a supervisor, including a collaborator-supplied outline and a multi-person feedback document. Preserve each source and do not prioritize by title or authorship status. No suggestion becomes a rule before researcher adoption. After an explicit choice, update only the relevant outline/requirements, link important rationale where appropriate, and distinguish accepted from implemented. A fresh session must not apply declined advice or a superseded decision as an active rule.
 - For a code-requiring example, set up the requested structure and run a small reproducible smoke task on clearly labeled test data. Changing a document-conversion dependency does not silently break it. The non-code example creates no compulsory code project.
@@ -169,7 +183,7 @@ At least one positive case must complete the full path and deliver the expected 
 
 **Implement:**
 
-- A documented Markdown dialect and manageable section conventions, an outline and explicit assembly manifest, stable figure/table/citation references, and the manuscript assets area. Keep one file per major section at most and allow a single-file manuscript.
+- A documented Markdown dialect that uses the citation and cross-reference syntax chosen in the export trial, manageable section conventions, an outline and explicit assembly manifest, stable figure/table/citation references, and the manuscript assets area. Keep one file per major section at most and allow a single-file manuscript.
 - GitHub-compatible inline/display LaTeX math and Mermaid explanation diagrams under the shared conventions, with syntax checks and target-renderer inspection. Preserve editable diagram source, selected-language labels, and scientific plots in suitable formats. Remaining scholarly markup must work with these confirmed requirements and the selected export engine.
 - Existing-manuscript adoption from verified supported editable formats and PDF: preserve originals, inventory sections/assets/citations/comments, map them to workspace conventions, and expose losses or unresolved references. Prefer available editable sources. Stage or compare against an existing working manuscript instead of silently overwriting it; conversion itself must not rewrite science or accept every revision.
 - Focused drafting/revision using confirmed constraints and actual evidence, with separate checks for argument, terminology, style, citation integrity, and claim support. Keep unresolved claims visible without presenting them as findings.
@@ -191,15 +205,15 @@ At least one positive case must complete the full path and deliver the expected 
 
 **Not yet:** a promise of journal layout compliance before MVP 6 or a substitute for unfinished research.
 
-## MVP 6 — Journal choice, template-driven layout, and readiness
+## MVP 6 — Template-driven layout and readiness
 
-**Example request:** “Assess which journal fits, then format this manuscript using its rules and template and tell me what remains.”
+**Example request:** “Format this manuscript using the selected journal's rules and template, and tell me what remains before submission.”
 
-**First skills:** `journal-selection`, `submission-assembly`, `submission-readiness`.
+**First skills:** `submission-assembly`, `submission-readiness`. They use the target chosen with `journal-selection` (MVP 4) or named by the researcher, and the engine chosen in the export trial.
 
 **Implement:**
 
-- Current target-venue research and evidence-based fit/readiness analysis, separately from impact. Archive supplied guidelines and Word/LaTeX/PDF resources under the selected profile; resolve material conflicts and retain only confirmed interpretations as rules.
+- Evidence-based readiness analysis against the selected target, separately from impact and venue fit. Archive supplied guidelines and Word/LaTeX/PDF resources under the selected profile; resolve material conflicts and retain only confirmed interpretations as rules.
 - A per-rule source/scope/implementation/check mapping, bibliography/CSL or equivalent style handling, profile templates and reusable scripts, explicit assembly inputs, and render–inspect–repair. Preserve the original resources; a PDF text extraction is not an executable layout template.
 - A faithful source-math-to-OMML route for DOCX. Each authored manuscript formula must become correctly structured native editable Word math, including inline/display placement, tables/captions as used, and numbering/references. No silent image, plain-text, unparsed-LaTeX, or legacy-object fallback. Unsupported constructs identify the source location and unmet requirement.
 - Mermaid-to-figure rendering for output formats that need image assets, preserving source, figure identities, captions, and suitable vector/raster quality. Keep conversion dependency setup on demand rather than a prerequisite for ordinary Markdown writing.
@@ -222,11 +236,12 @@ At least one positive case must complete the full path and deliver the expected 
 
 **Example request:** “Save this version, compare it with the earlier draft, and help me retrieve the old paragraph.”
 
-**First skills:** `git-inspection`, `git-setup`, `git-save`, `git-compare`, `git-recovery`, `git-backup`, `git-hands-on`.
+**First skills:** `git-inspection`, `git-setup`, `git-save`, `git-compare`, `git-recovery`, `git-backup`, `git-hands-on`. Implemented immediately after MVP 1, before MVP 2.
 
 **Implement:**
 
 - Direct agent-operated inspection/setup/saving/comparison/recovery and a guide that reuses these tasks. Inspect existing history first; never require a researcher to edit Git configuration or memorize commands.
+- Recognition of Git history inherited by a copied workspace, such as another paper's history or an `origin` that points to the template repository, with the choices explained in plain language. Never push research material to the template remote.
 - Scoped checkpoints and readable diffs, safe retrieval/practice copies, clear recovery scope and a way back, and correct exclusions. Do not blanket-ignore authoritative PDFs/templates, commit secrets, overwrite unrelated edits, or rewrite shared history as a lesson.
 - A distinction between local history and an external copy, with destination/visibility configuration only for an explicit backup/sharing request. Test mechanical backup using disposable destinations; verify an actual remote provider separately before claiming that integration works.
 
@@ -304,7 +319,7 @@ This table assigns every proposed skill in design-plan Section 9 to its first im
 | `research-ideation` | MVP 4 |
 | `idea-deepening` | MVP 4 |
 | `impact-assessment` | MVP 4 |
-| `journal-selection` | MVP 6 |
+| `journal-selection` | MVP 4 |
 | `research-planning` | MVP 4 |
 | `research-investigation` | MVP 3 |
 | `manuscript-outline` | MVP 5 |

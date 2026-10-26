@@ -18,6 +18,8 @@ Updated: 2026-10-26.
 | 8 | Review rounds and coauthor reconciliation | Planned |
 | 9 | Connected paper hands-on and release candidate | Planned |
 
+Execution order (revised 2026-10-26): 1 → 7 → 2 → 3 → 4 → 5 → 6 → 8 → 9, with the export trial running alongside MVP 7; see the [MVP implementation guideline](mvp-implementation-guideline.md#3-mvp-overview-and-dependencies). The export trial is planned.
+
 No skill is implemented. No end-to-end test has been run.
 
 ## MVP 1, partial increment: workspace scaffold
@@ -74,6 +76,20 @@ Documentation checked on 2026-10-26 (sources linked in [design plan Section 8](d
 
 Open question for `project-onboarding`: how to treat a workspace copied from one that already holds another paper, including what to keep (such as references) and what to reset or re-check (such as requirements, state, `.venv/`, and local credentials).
 
+## Execution order review (2026-10-26)
+
+The maintainer reviewed the MVP dependencies and confirmed four changes to the [MVP implementation guideline](mvp-implementation-guideline.md):
+
+- MVP 7 (Git) moves to immediately after MVP 1, before MVP 2.
+- An export trial, which is not an MVP, runs alongside MVP 7. It decides the publishing engine and the citation and cross-reference syntax before MVP 2 fixes the metadata representation and before MVP 5 fixes the writing conventions.
+- `journal-selection` moves from MVP 6 to MVP 4.
+- MVP 1 verifies the credential mechanism with a test consumer; MVP 2 verifies the live MinerU credential and the selected service's data-use policy. Read-only MinerU service research starts during MVP 1.
+
 ## Remaining for MVP 1
 
-Implement `project-onboarding`, `environment-management`, `privacy-configuration`, and `constraint-maintenance`, with the skill-copy generation and consistency check; guided local credential entry; observe `AGENTS.md` loading in fresh Codex and Claude Code sessions; and run the acceptance scenarios in both agent applications.
+Implement `project-onboarding`, `environment-management`, `privacy-configuration`, and `constraint-maintenance`, with the skill-copy generation and consistency check; guided local credential entry, verified with a test consumer; start the read-only MinerU service research; observe `AGENTS.md` loading in fresh Codex and Claude Code sessions; and run the acceptance scenarios in both agent applications.
+
+## Open items affecting the order
+
+- Result production for the complete-path test: no MVP yet owns producing actual research results. Decide before MVP 9, preferably before MVP 4.
+- Verification resources: a Windows test machine matching the baseline (x64 or ARM64), access to Codex, and rights-cleared test fixtures. Without them, MVP 1 and MVP 2 can be implemented but not marked verified.
