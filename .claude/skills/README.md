@@ -10,4 +10,4 @@ Generated copies of the canonical skill packages in [`.agents/skills/`](../../.a
 
 ## Current status
 
-The mirrors of `project-onboarding`, `environment-management`, and `privacy-configuration` are generated here. No skill is verified yet; see the [implementation status](../../docs/implementation-status.md).
+The mirrors of the four MVP 1 skills are generated here: `project-onboarding`, `environment-management`, `privacy-configuration`, and `constraint-maintenance`. No skill is verified yet; see the [implementation status](../../docs/implementation-status.md).

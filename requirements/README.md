@@ -16,7 +16,7 @@ The researcher's confirmed requirements: what currently governs work on this pro
 - Only verified rules that you have confirmed are recorded here. A clear instruction from you counts as confirmation; you will not be asked to approve it again.
 - Preferences the agent infers from your edits are discussed with you first. They are never saved here, or anywhere else, as candidates.
 - Each rule has a scope: the whole project, one section, or one output profile. One-time edit requests are not saved as lasting rules.
-- When a new rule conflicts with an existing one, the agent asks you to resolve the conflict instead of keeping contradictory rules.
+- When a new rule conflicts with an existing one, the agent asks you to resolve the conflict. Only active rules stay here: a replaced rule is removed, and an important change also gets a decision record in [`research/decisions/`](../research/decisions/README.md).
 - Anything undecided, such as the research direction or the target venue, stays open rather than guessed.
 
 The requirement files are written in your interaction language; this README stays in English.

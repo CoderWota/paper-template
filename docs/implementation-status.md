@@ -8,7 +8,7 @@ Updated: 2026-10-26.
 
 | MVP | Researcher-visible outcome | Status |
 | --- | --- | --- |
-| 1 | Usable project and confirmed memory | In progress: scaffold, adopted AGENTS.md, skill copy script, `project-onboarding`, `environment-management`, and `privacy-configuration` (not verified) |
+| 1 | Usable project and confirmed memory | In progress: scaffold, adopted AGENTS.md, skill copy script, and first implementations of all four MVP 1 skills (none verified) |
 | 2 | Flexible intake and MinerU batch ingestion | Planned |
 | 3 | Searchable literature and traceable evidence | Planned |
 | 4 | Ideas, impact, and feasible research plans | Planned |
@@ -149,9 +149,33 @@ Not verified:
 - The skill's behavior in a conversation, including reading an account setting in a signed-in browser. No researcher or maintainer account settings were read or changed.
 - The MinerU cloud service's data-use terms, which arrive with MVP 2.
 
+## MVP 1, partial increment: constraint-maintenance
+
+Status: implemented, not verified.
+
+Decision (2026-10-26): `requirements/` keeps only active rules. A replaced rule is removed; a consequential replacement also gets a research decision record, and minor changes rely on version history.
+
+Implemented (2026-10-26):
+
+- `.agents/skills/constraint-maintenance/` and its generated copy. The skill tells lasting rules apart from one-time edits, advice from other people, and inferences; places each rule in the right file with a scope; checks for duplicates and conflicts before it writes; records rules in a fixed layout in the interaction language; removes replaced rules and writes a decision record for a consequential change; and never saves an inferred preference, including in the agent application's own memory feature.
+- `requirements/README.md` now explains that only active rules stay in `requirements/`.
+
+Verification observed:
+
+- The skill copies match, and the README and link checks pass.
+
+Not verified:
+
+- Behavior in conversations, including the MVP 1 persistence tests: a fresh session follows an explicit saved rule, and an unconfirmed inference is absent from every memory location.
+
 ## Remaining for MVP 1
 
-Implement `constraint-maintenance`; start the read-only MinerU service research; observe `AGENTS.md` loading and skill discovery in fresh Codex and Claude Code sessions; and run the acceptance scenarios, including onboarding conversations, in both agent applications.
+All four MVP 1 skills have first implementations. Remaining:
+
+- Start the read-only MinerU service research.
+- Implement the English question checks against the official ASD-STE100 issue, and the clarity review for questions in other languages. The standard and its dictionary are not bundled with the template; they need access under the publisher's terms.
+- Observe `AGENTS.md` loading and skill discovery in fresh Codex and Claude Code sessions.
+- Run the acceptance scenarios in both agent applications: onboarding conversations, a consequential choice, missing tools, deferred credentials, persistence of confirmed rules, and the absence of inferred preferences.
 
 ## Open items affecting the order
 

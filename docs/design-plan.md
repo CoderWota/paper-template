@@ -364,7 +364,7 @@ Supporting recommendations, still open for discussion:
 
 - Record material decisions with a concise rationale and scope. Avoid preserving full chat transcripts as the default memory system.
 - Distinguish project-wide rules, section-specific rules, venue-profile rules, and one-time edit requests.
-- Track superseded or conflicting rules rather than accumulating contradictory commands. Resolve material conflicts with the researcher.
+- Track superseded or conflicting rules rather than accumulating contradictory commands. Resolve material conflicts with the researcher. Decided 2026-10-26: `requirements/` keeps only active rules; a consequential replacement also gets a research decision record, and minor changes rely on version history.
 - Keep stylistic learning separate from new scientific claims. Novel interpretations remain proposals until supported and accepted in context.
 
 This boundary applies to behavioral and writing rules, not to all project content. Researcher-expressed ideas can be recorded as ideas; literature notes can record supported findings, uncertainties, and research hypotheses with clear status. None of these automatically becomes an instruction or a verified scientific conclusion.
