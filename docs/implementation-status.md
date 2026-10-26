@@ -8,7 +8,7 @@ Updated: 2026-10-26.
 
 | MVP | Researcher-visible outcome | Status |
 | --- | --- | --- |
-| 1 | Usable project and confirmed memory | In progress: scaffold, adopted AGENTS.md, skill copy script, `project-onboarding`, and `environment-management` (not verified) |
+| 1 | Usable project and confirmed memory | In progress: scaffold, adopted AGENTS.md, skill copy script, `project-onboarding`, `environment-management`, and `privacy-configuration` (not verified) |
 | 2 | Flexible intake and MinerU batch ingestion | Planned |
 | 3 | Searchable literature and traceable evidence | Planned |
 | 4 | Ideas, impact, and feasible research plans | Planned |
@@ -129,9 +129,29 @@ Not verified:
 - A live service credential, which arrives with the MinerU integration in MVP 2.
 - The skill's behavior in a conversation, in fresh Claude Code and Codex sessions.
 
+## MVP 1, partial increment: privacy-configuration
+
+Status: implemented, not verified.
+
+Implemented (2026-10-26):
+
+- `.agents/skills/privacy-configuration/` and its generated copy. The skill identifies the application, sign-in, account type, and document-processing route; reads the current official sources; explains each training control separately from retention, telemetry, and feedback; changes a setting only with explicit consent and records how to reverse it; classifies each control as observed, confirmed by the researcher, provider default only, unknown, or needing an administrator; and writes a redacted local report.
+- `sources.md`: a dated register of official sources for Claude (consumer and commercial routes, Claude Code telemetry and feedback) and OpenAI (ChatGPT and Codex on personal and managed plans, and the API), checked on 2026-10-26.
+- `report-template.md`: the layout of the local report in `.local/privacy-report.md`, which holds no account identifiers, credentials, screenshots, or research content.
+
+Verification observed:
+
+- The official pages listed in `sources.md` were read on 2026-10-26. The OpenAI Help Center refuses automated fetching and was read in the desktop app's built-in browser. It showed that on personal ChatGPT plans the training setting also covers Codex tasks, and that Codex has a separate "Include environments" setting.
+- The skill copies match, and the README and link checks pass.
+
+Not verified:
+
+- The skill's behavior in a conversation, including reading an account setting in a signed-in browser. No researcher or maintainer account settings were read or changed.
+- The MinerU cloud service's data-use terms, which arrive with MVP 2.
+
 ## Remaining for MVP 1
 
-Implement `privacy-configuration` and `constraint-maintenance`; start the read-only MinerU service research; observe `AGENTS.md` loading and skill discovery in fresh Codex and Claude Code sessions; and run the acceptance scenarios, including onboarding conversations, in both agent applications.
+Implement `constraint-maintenance`; start the read-only MinerU service research; observe `AGENTS.md` loading and skill discovery in fresh Codex and Claude Code sessions; and run the acceptance scenarios, including onboarding conversations, in both agent applications.
 
 ## Open items affecting the order
 
