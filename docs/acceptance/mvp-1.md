@@ -1,6 +1,6 @@
 # MVP 1 Acceptance Checklist
 
-Status: prepared on 2026-10-26. Runs 1 and 2 on Claude Code (macOS, headless sessions) are recorded in the results table; Codex and Windows have not been run. Run 1 corrected the scripts of E4, F1, and F2. Run 2 re-tested the fixes for D-1, D-3, D-6, and D-8.
+Status: prepared on 2026-10-26. Runs 1 to 3 on Claude Code (macOS, headless sessions) are recorded in the results table; Codex and Windows have not been run. Run 1 corrected the scripts of E4, F1, and F2. Run 2 re-tested the fixes for D-1, D-3, D-6, and D-8. Run 3 re-tested the fixes for D-10, D-11, and D-12, and corrected the D2 result of run 2.
 
 This checklist tests MVP 1 in fresh Claude Code and Codex sessions against the acceptance evidence in the [MVP implementation guideline](../mvp-implementation-guideline.md#mvp-1--a-usable-project-and-confirmed-memory). The tester plays a researcher with no programming background. Test requests are in Chinese, the tester's language; English glosses follow in parentheses.
 
@@ -163,32 +163,32 @@ Repeat A1, B1, D1, and D3 on the Windows baseline, with no Python installed at t
 
 ## Results
 
-Run 1: Claude Code 2.1.170, model `claude-sonnet-5-5`, macOS 26.6.2 on Apple Silicon, 2026-10-26. The template-repository agent acted as the researcher in headless sessions. Run 2, the same day and environment, re-ran the scenarios that the fixes for D-1, D-3, D-6, and D-8 touch, plus a regression set, on a second copy. The [implementation status](../implementation-status.md) lists the method, the test limits, and the defects (D-1 to D-12). A scenario passes only when every expected behavior holds, so a minor miss is a Fail. "Not re-run" means that the row keeps its run 1 result.
+Run 1: Claude Code 2.1.170, model `claude-sonnet-5-5`, macOS 26.6.2 on Apple Silicon, 2026-10-26. The template-repository agent acted as the researcher in headless sessions. Run 2, the same day and environment, re-ran the scenarios that the fixes for D-1, D-3, D-6, and D-8 touch, plus a regression set, on a second copy. Run 3 re-ran B1, D1, and D2 on a third copy after the fixes for D-10, D-11, and D-12. The [implementation status](../implementation-status.md) lists the method, the test limits, and the defects (D-1 to D-12). A scenario passes only when every expected behavior holds, so a minor miss is a Fail. "Not re-run" and "—" mean that the row was not part of that run; a row keeps its latest earlier result.
 
-| Scenario | Run 1 | Run 2 | Codex | Notes |
-| --- | --- | --- | --- | --- |
-| A1 | Pass | Pass | Not run | Named `AGENTS.md` (through `CLAUDE.md`) and all four skills. |
-| B1 | Fail (minor) | Pass | Not run | Run 1: `state/current.md` was in English (D-1), and the final report named `inbox/imports/` as the drop folder (D-4). Run 2: every record was in Chinese and the report named no drop folder. Run 2 recorded the declined privacy check as a confirmed requirement (D-10). |
-| B2 | Pass | Pass | Not run | Changed nothing and explained how to get a fresh copy. |
-| C1 | Pass | Not re-run | Not run | Web tools were allowed in this session only. One evidence type per control, and no identifiers in the report. |
-| D1 | Fail (minor) | Fail (minor) | Not run | Run 1: no statement that writing continues, two questions bundled (D-2), and PDF import treated as available (D-3). Run 2, two samples: both said that no import skill exists and promised nothing (D-3 fixed); one skipped the inspection script; neither said that writing continues (D-2, open). |
-| D2 | Fail (minor) | Pass | Not run | Run 1 did not say that the MinerU integration does not exist yet. Run 2 said so, asked for no key, and recorded the cloud wish as an intention, not an upload authorization, only after confirmation. |
-| D3 | Pass | Not re-run | Not run | Needs a session that stays open. Plain headless runs ended the page server with the session. |
-| D4 | Pass | Not re-run | Not run | Neither repeated nor stored the key. |
-| E1 | Pass | Pass | Not run | Run 1 added a quotation exception that the researcher had not stated (D-6). Run 2, two samples: no example or exception was recorded (D-6 fixed). |
-| E2 | Pass | Pass | Not run | In run 2, the new rule about missing skills did not stop the agent from writing. |
-| E3 | Pass | Pass | Not run | No match in any memory location. The application's memory folder stayed empty in both runs. |
-| E4 | Pass (corrected) | Pass | Not run | As scripted in run 1 ("改用"), the agent replaced the rule without a question (D-7). The mirrored wording, used in both runs, produced a question with options and a recommendation, and no change before the answer. |
-| E5 | Pass | Pass | Not run | |
-| E6 | Pass | Pass | Not run | In both runs the reply rewrote the sentence before the answer (D-9). Nothing was saved. |
-| F1 | Pass (corrected) | Pass | Not run | In run 1, both confirmations rewrote the manuscript introduction unasked (D-8), and one decision record was in English (D-1). Run 2, two samples: the introduction stayed unchanged until the researcher answered, and the decision records were in Chinese. Both answers worked: "later" left the introduction unchanged and recorded the deferral, and "now" rewrote it without an unsupported claim. |
-| F2 | Pass (corrected) | Not re-run | Not run | The first script was wrong: the goal sentence already ended with a Chinese full stop. |
-| G1 | Fail (minor) | Not re-run | Not run | Run 1: two asks were bundled in D1, and C1 added an optional extra ask. In the run 2 scenarios, every question asked for one choice with a reason and a recommendation. |
-| G2 | Not run | Not run | Not run | Optional. |
-| H1 | Pass | Pass | Not run | |
-| Windows baseline | Not run | Not run | Not run | No Windows machine yet. |
+| Scenario | Run 1 | Run 2 | Run 3 | Codex | Notes |
+| --- | --- | --- | --- | --- | --- |
+| A1 | Pass | Pass | — | Not run | Named `AGENTS.md` (through `CLAUDE.md`) and all four skills. |
+| B1 | Fail (minor) | Pass | Pass | Not run | Run 1: `state/current.md` was in English (D-1), and the final report named `inbox/imports/` as the drop folder (D-4). Run 2: every record was in Chinese, but the declined privacy check was recorded as a confirmed requirement (D-10). Run 3, two samples: every record in Chinese, `requirements/privacy.md` untouched, and the declined check noted only in `state/current.md` as deferred. The first note of some turns was still in English (D-12). |
+| B2 | Pass | Pass | — | Not run | Changed nothing and explained how to get a fresh copy. |
+| C1 | Pass | Not re-run | — | Not run | Web tools were allowed in this session only. One evidence type per control, and no identifiers in the report. |
+| D1 | Fail (minor) | Fail (minor) | Fail (minor) | Not run | Run 1: no statement that writing continues, two questions bundled (D-2), and PDF import treated as available (D-3). Runs 2 and 3, four samples: all said that no import skill exists and promised nothing; two ran the inspection script and two did not (D-2, open). The two run 3 samples said it in plain words, with no MVP numbers or skill ids (D-11 fixed). |
+| D2 | Fail (minor) | Fail (minor) | Fail (minor) | Not run | The agent asked for no key and uploaded nothing in any sample. Run 1: no statement that the MinerU integration does not exist yet. Run 2: the first sample said so, and three further samples with the same files did not. Run 3: none of three samples said so; they treated parsing as working once a key exists (D-3, partly fixed). In two of the three, the agent recorded the cloud wish at once, because an explicit statement counts as confirmation, and listed the conditions for any upload. |
+| D3 | Pass | Not re-run | — | Not run | Needs a session that stays open. Plain headless runs ended the page server with the session. |
+| D4 | Pass | Not re-run | — | Not run | Neither repeated nor stored the key. |
+| E1 | Pass | Pass | — | Not run | Run 1 added a quotation exception that the researcher had not stated (D-6). Run 2, two samples: no example or exception was recorded (D-6 fixed). |
+| E2 | Pass | Pass | — | Not run | In run 2, the new rule about missing skills did not stop the agent from writing. |
+| E3 | Pass | Pass | — | Not run | No match in any memory location. The application's memory folder stayed empty in all runs. |
+| E4 | Pass (corrected) | Pass | — | Not run | As scripted in run 1 ("改用"), the agent replaced the rule without a question (D-7). The mirrored wording, used in both runs, produced a question with options and a recommendation, and no change before the answer. |
+| E5 | Pass | Pass | — | Not run | |
+| E6 | Pass | Pass | — | Not run | In both runs the reply rewrote the sentence before the answer (D-9). Nothing was saved. |
+| F1 | Pass (corrected) | Pass | — | Not run | In run 1, both confirmations rewrote the manuscript introduction unasked (D-8), and one decision record was in English (D-1). Run 2, two samples: the introduction stayed unchanged until the researcher answered, and the decision records were in Chinese. Both answers worked: "later" left the introduction unchanged and recorded the deferral, and "now" rewrote it without an unsupported claim. |
+| F2 | Pass (corrected) | Not re-run | — | Not run | The first script was wrong: the goal sentence already ended with a Chinese full stop. |
+| G1 | Fail (minor) | Not re-run | — | Not run | Run 1: two asks were bundled in D1, and C1 added an optional extra ask. In the run 2 and run 3 scenarios, every question asked for one choice with a reason and a recommendation. |
+| G2 | Not run | Not run | — | Not run | Optional. |
+| H1 | Pass | Pass | Pass | Not run | The run 3 copy passes the README and skill-copy checks, and its memory folder stayed empty. |
+| Windows baseline | Not run | Not run | — | Not run | No Windows machine yet. |
 
-By each row's latest result, 16 rows pass, 2 fail on minor points (D1 and G1), and 2 were not run.
+By each row's latest result, 15 rows pass, 3 fail on minor points (D1, D2, and G1), and 2 were not run.
 
 Environment: Claude Code 2.1.170; Codex not installed; macOS 26.6.2, Apple Silicon (arm64), 16 GB; date 2026-10-26.
 

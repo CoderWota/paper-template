@@ -8,7 +8,7 @@ Updated: 2026-10-26.
 
 | MVP | Researcher-visible outcome | Status |
 | --- | --- | --- |
-| 1 | Usable project and confirmed memory | In progress: scaffold, adopted AGENTS.md, skill copy script, and all four skills implemented. Claude Code runs 1 and 2 are done: by each row's latest result, 16 of 20 checklist rows pass, 2 fail on minor points (D1, G1), and 2 were not run. Rows that run 2 did not repeat keep their run 1 result. Codex and Windows have not been run, so nothing is verified |
+| 1 | Usable project and confirmed memory | In progress: scaffold, adopted AGENTS.md, skill copy script, and all four skills implemented. Claude Code runs 1 to 3 are done: by each row's latest result, 15 of 20 checklist rows pass, 3 fail on minor points (D1, D2, G1), and 2 were not run. Rows that a later run did not repeat keep their earlier result. Codex and Windows have not been run, so nothing is verified |
 | 2 | Flexible intake and MinerU batch ingestion | Planned |
 | 3 | Searchable literature and traceable evidence | Planned |
 | 4 | Ideas, impact, journal choice, and feasible research plans | Planned |
@@ -20,7 +20,7 @@ Updated: 2026-10-26.
 
 Execution order (revised 2026-10-26): 1 → 7 → 2 → 3 → 4 → 5 → 6 → 8 → 9, with the export trial running alongside MVP 7; see the [MVP implementation guideline](mvp-implementation-guideline.md#3-mvp-overview-and-dependencies). The export trial is planned.
 
-The four MVP 1 skills are implemented and have had two acceptance passes on Claude Code; none is verified. No end-to-end test has been run.
+The four MVP 1 skills are implemented and have had three acceptance passes on Claude Code; none is verified. No end-to-end test has been run.
 
 ## MVP 1, partial increment: workspace scaffold
 
@@ -193,26 +193,28 @@ Test limits:
 - A plain headless run ends the session when the agent ends its turn, which also ends its background tasks. The first two D3 attempts therefore lost the page server. D3 passed in a session that stays open, where the completion of the page task woke the agent, as in an interactive session.
 - Not exercised: Codex, Windows, the interactive question tool, the simulation of missing Python or tools, an account control that the researcher can read, the ASD-STE100 checks, onboarding in English (G2), and a live service credential.
 
-Defects. Changing a skill or `AGENTS.md` needs the maintainer's decision; the fixes for D-1, D-3, D-6, and D-8 were made on the maintainer's instruction of 2026-10-26, and run 2 tested them.
+Defects. Changing a skill or `AGENTS.md` needs the maintainer's decision; the fixes for D-1, D-3, D-6, D-8, D-10, D-11, and D-12 were made on the maintainer's instruction of 2026-10-26, and runs 2 and 3 tested them.
 
 | ID | Severity | Status | Observed | Fix or proposed fix |
 | --- | --- | --- | --- | --- |
-| D-1 | Medium | Fixed in run 2 | Records that the researcher reads were written in English: `state/current.md` after onboarding, and the first decision record. The adopted decision says these records use the interaction language. | Applied: the last step of `project-onboarding` and the decision-record step of `constraint-maintenance` say "in the interaction language". Run 2: every record and both decision records were in Chinese. The interim narration is a separate defect (D-12). |
-| D-2 | Low | Open | The readiness report did not say that reading and writing work without the converter, and its closing message bundled two questions. In run 2, neither of two samples said that writing continues, and one skipped the inspection script. | In `environment-management`, state what still works, run the inspection first, and ask one question. |
-| D-3 | Medium | Fixed in run 2 | The agent treated PDF import as available once MinerU is installed, and implied that a key would soon be entered for parsing. No ingestion skill exists yet. | Applied: `AGENTS.md`, "Skills", says that only the skills in `.agents/skills/` exist and that the agent must say so plainly when a task needs a missing skill, while it can still help in conversation. Run 2: D1 (two samples) and D2 said that no import or parsing skill exists; E2 still wrote in conversation. |
-| D-4 | Low | Open (not seen in run 2) | The final onboarding report named `inbox/imports/` as the place for documents. That folder holds import records; documents go in `inbox/`. | Name `inbox/` in the last step of `project-onboarding`. The report no longer lists import as an example next action. |
-| D-5 | Low | Open | `project-onboarding` detects an interrupted onboarding from `state/current.md`, which it updates only at the end. Detection worked through the status line in `requirements/project.md`, in both runs. | Detect through `requirements/project.md`, or update `state/current.md` after the first answer. |
+| D-1 | Medium | Fixed in runs 2 and 3 | Records that the researcher reads were written in English: `state/current.md` after onboarding, and the first decision record. The adopted decision says these records use the interaction language. | Applied: the last step of `project-onboarding` and the decision-record step of `constraint-maintenance` say "in the interaction language". Runs 2 and 3: every record and both decision records were in Chinese. The interim narration is a separate defect (D-12). |
+| D-2 | Low | Open | The readiness report did not say that reading and writing work without the converter, and its closing message bundled two questions. In runs 2 and 3, two of four samples skipped the inspection script. | In `environment-management`, state what still works, run the inspection first, and ask one question. |
+| D-3 | Medium | Partly fixed (runs 2 and 3) | The agent treated PDF import as available once MinerU is installed, and implied that a key would soon be entered for parsing. No ingestion skill exists yet. | Applied: `AGENTS.md`, "Skills", says that only the skills in `.agents/skills/` exist and that the agent must say so plainly when a task needs a missing skill, while it can still help in conversation. Result: asked directly about importing PDFs (D1), the agent said that no import skill exists in 4 of 4 samples; talking about cloud parsing and keys (D2), in 1 of 7. Proposed addition: in `environment-management`, step 5, research or collect a credential only when a skill or script in this workspace uses it; when none does, say so plainly and defer the credential. |
+| D-4 | Low | Open (not seen in runs 2 and 3) | The final onboarding report named `inbox/imports/` as the place for documents. That folder holds import records; documents go in `inbox/`. | Name `inbox/` in the last step of `project-onboarding`. The report no longer lists import as an example next action. |
+| D-5 | Low | Open | `project-onboarding` detects an interrupted onboarding from `state/current.md`, which it updates only at the end. Detection worked through the status line in `requirements/project.md`, in every run. | Detect through `requirements/project.md`, or update `state/current.md` after the first answer. |
 | D-6 | Medium | Fixed in run 2 | When recording the British-spelling rule, the agent added an exception (quotations, proper names, and bibliography titles keep their spelling) that the researcher had not stated. | Applied: `constraint-maintenance` adds an example or an exception only when the researcher gave or confirmed it. Run 2, two samples: none recorded; one run asked whether the researcher wanted an exception. |
 | D-7 | Low | Open | "改用美式拼写" (switch to American spelling) replaced the old rule without a question. That follows `AGENTS.md` (a clear instruction is confirmation) but not step 3 of the skill. | Align the skill: replace without asking when the instruction itself says to replace or switch; ask when the relation is unclear. |
 | D-8 | Medium | Fixed in run 2 | After a confirmed change of the research goal, the agent rewrote the manuscript introduction, both times unasked. | Applied: a new step in `constraint-maintenance` lists the manuscript passages that the change affects and asks before editing them. Run 2, two samples: the introduction stayed unchanged until the answer, and both answers worked. |
 | D-9 | Low | Open | In E6 the reply rewrote the sentence before it asked whether the request was a one-time exception. Nothing was saved. It happened again in run 2. | Ask first, as step 3 says, or accept the combined reply. |
-| D-10 | Low | New in run 2; open | Onboarding recorded the declined privacy check in `requirements/privacy.md` as a confirmed item, with the added sentence "do not check or change any account setting without the researcher's consent". The researcher had said only "not now" to the offer. | In `project-onboarding`, note a declined or postponed offer only in `state/current.md`; write `requirements/privacy.md` only for choices that the researcher confirmed as requirements. |
-| D-11 | Low | New in run 2; open | Replies to the researcher named internal terms: "MVP 2", the skill id `source-ingestion`, and "想法发展技能" (the idea-development skill). | In `AGENTS.md`, ask the agent to describe a missing capability in plain words, for example "importing documents is not available yet", without MVP numbers or skill ids. |
-| D-12 | Low | New in run 2; open | The sentence before the first tool call of several turns was in English, although the researcher wrote Chinese. Only the records are covered by the language decision. | In `AGENTS.md`, "Language and formats", say that the narration between tool calls also uses the interaction language. |
+| D-10 | Low | Fixed in run 3 | Onboarding recorded the declined privacy check in `requirements/privacy.md` as a confirmed item, with the added sentence "do not check or change any account setting without the researcher's consent". The researcher had said only "not now" to the offer. | Applied: `project-onboarding` notes a declined or postponed offer only in `state/current.md`, and does not write it to `requirements/privacy.md`. Run 3, two samples: `privacy.md` stayed unchanged and the deferral is only in `state/current.md`; one sample gave the reason. |
+| D-11 | Low | Fixed in run 3 (few samples) | Replies to the researcher named internal terms: "MVP 2", the skill id `source-ingestion`, and "想法发展技能" (the idea-development skill). | Applied: `AGENTS.md`, "Skills", asks the agent to describe a missing capability in the researcher's own terms and not to use MVP numbers or skill ids unless asked. Run 3: none of 36 messages used them (3 of 49 before). |
+| D-12 | Low | Applied; not shown to work | The sentence before the first tool call of several turns was in English, although the researcher wrote Chinese. Only the records are covered by the language decision. | Applied: `AGENTS.md`, "Language and formats", says that the rule covers the short notes between tool calls. Run 3: English-only notes 2 of 16 (12%), against 4 of 25 (16%) before. Both are the first note of a session, written right after the agent loaded an English skill. Proposed addition: put the same rule in the rules of each skill. |
 
 ## MVP 1 acceptance run 2: Claude Code (2026-10-26)
 
-Status: the fixes for D-1, D-3, D-6, and D-8 worked in every sample that run 2 took. B1 and D2 moved from Fail to Pass, and the regression rows still pass. MVP 1 is not verified: D1 and G1 still fail on minor points, eight defects are open (D-2, D-4, D-5, D-7, D-9, D-10, D-11, and D-12), and Codex and Windows have not been run.
+Status: the fixes for D-1, D-3, D-6, and D-8 worked in every sample that run 2 took. B1 and D2 moved from Fail to Pass, and the regression rows still pass. MVP 1 is not verified: D1 and G1 still failed on minor points, eight defects were open (D-2, D-4, D-5, D-7, D-9, D-10, D-11, and D-12), and Codex and Windows have not been run.
+
+Correction from run 3: the D2 pass and the verdict "fixed" for D-3 did not hold up under more samples. D2 does not pass, and D-3 is fixed only for direct questions about importing. See the run 3 section.
 
 Fixes applied on the maintainer's instruction of 2026-10-26:
 
@@ -225,7 +227,7 @@ Method. The same as run 1, on a new disposable copy, `/Users/wota/Projects/paper
 | Defect | Evidence in run 2 | Verdict |
 | --- | --- | --- |
 | D-1 | B1: `state/current.md` and the other records were in Chinese. F1: both decision records and their index entries were in Chinese (in run 1, one of two was in English). | Fixed for records. |
-| D-3 | D1 (two samples), D2, and the B1 report said that no import or parsing skill exists and promised nothing, while they still offered to discuss in conversation. E2 still wrote the introduction without a writing skill. | Fixed. |
+| D-3 | D1 (two samples), D2, and the B1 report said that no import or parsing skill exists and promised nothing, while they still offered to discuss in conversation. E2 still wrote the introduction without a writing skill. | Fixed for direct questions; the D2 pass did not repeat (run 3). |
 | D-6 | E1 (two samples): no example or exception was recorded. One run asked whether the researcher wanted a quotation exception. | Fixed. |
 | D-8 | F1 confirmation (two samples): the introduction stayed unchanged until the researcher answered, and the agent listed the affected passage and recommended an edit. "Later" left it unchanged and recorded the deferral. "Now" rewrote it in British spelling, with no unsupported claim. | Fixed. |
 
@@ -235,18 +237,43 @@ Not re-run: C1, D3, D4, F2, G1 as a whole, G2, Codex, and Windows. Their instruc
 
 Test limits are those of run 1. In addition, the samples are few, and the model varies between samples, as D1 showed.
 
+## MVP 1 acceptance run 3: Claude Code (2026-10-26)
+
+Status: D-10 and D-11 are fixed in the samples taken. D-12 is applied but not shown to work. Run 3 also showed that the earlier fix for D-3 is not reliable, and it corrected the D2 result of run 2. MVP 1 is not verified: by each row's latest result, 15 rows pass, 3 fail on minor points (D1, D2, G1), and 2 were not run. Codex and Windows have not been run.
+
+Fixes applied on the maintainer's instruction of 2026-10-26:
+
+- `project-onboarding` (D-10): a declined or postponed offer is not a requirement. The agent notes it as deferred, in the researcher's words, only in `state/current.md`, and does not write it to `requirements/privacy.md` or add a rule that the researcher did not state. The completion check says so too.
+- `AGENTS.md`, "Skills" (D-11): the agent describes a missing capability in the researcher's own terms, for example "importing documents is not available yet", and does not use MVP numbers or skill ids unless the researcher asks for them.
+- `AGENTS.md`, "Language and formats" (D-12): the language rule covers every message that the researcher sees, including the short notes between tool calls.
+
+Method. The same as run 2, on a third disposable copy, `/Users/wota/Projects/paper-template-mvp1-test-claude-r3`, which holds the run 1 environment plus all fixes so far. Run 3 re-ran B1 (two samples), D1 (two), and D2 (three): 20 session logs, 118 agent turns, about five minutes of agent time, and about $2.44 in API-equivalent cost. To tell whether the new D-11 wording had weakened D-3, D2 was also sampled three more times on the run 2 copy, which has the older `AGENTS.md` (3 logs, about $0.64).
+
+| Defect | Evidence | Verdict |
+| --- | --- | --- |
+| D-10 | B1, two samples: `requirements/privacy.md` stayed unchanged, and the declined check appears only in `state/current.md`, under "deferred". One sample said why: a postponement is not a requirement. In run 2, the same step wrote it to `privacy.md` as a confirmed item. | Fixed in the samples taken. |
+| D-11 | In B1, D1, and D2, none of 36 messages to the researcher used MVP numbers or skill ids (3 of 49 before the fix). Both D1 samples said in plain words that importing is not available yet. | Fixed in the samples taken; the samples are few. |
+| D-12 | English-only notes between tool calls: 2 of 16 (12%), against 4 of 25 (16%) before. Both remaining ones are the first note of a session, written right after the agent loaded an English skill. | Applied, not shown to work. |
+| D-3 | Asked directly about importing PDFs (D1), the agent said that no import skill exists in 4 of 4 samples (runs 2 and 3). Talking about cloud parsing and keys (D2), it said so in 1 of 7 samples (run 2: 1 of 4; run 3: 0 of 3). The older `AGENTS.md` did no better on D2 (1 of 4), so the new wording did not cause the misses. The other samples treated parsing as working once a key exists. | Partly fixed. |
+
+Corrections to run 2: the D2 pass was the first sample of four, so D2 does not pass, and "D-3 fixed" held only for direct questions about importing.
+
+Other observations: in two of three D2 samples the agent recorded the wish for cloud parsing at once, because an explicit statement counts as confirmation under `AGENTS.md`; the record lists the conditions before any upload (terms, document scope, key). One D2 sample took the scripted answer "可以，就这样记录" as consent to browse the web, which the test setup did not allow.
+
+Test limits are those of run 2. The samples are few, and the counts for D-11 and D-12 are counts of messages, not measures of the researcher's experience.
+
 ## Remaining for MVP 1
 
-All four MVP 1 skills have first implementations, and runs 1 and 2 on Claude Code are complete. Remaining:
+All four MVP 1 skills have first implementations, and runs 1 to 3 on Claude Code are complete. Remaining:
 
-- Decide on the eight open defects (D-2, D-4, D-5, D-7, D-9, D-10, D-11, and D-12), fix those that are accepted, and repeat the affected scenarios.
+- Decide on the open defects (D-2, D-4, D-5, D-7, and D-9) and on the two additions that run 3 proposes: for D-3, a credential step that requires an existing integration, and for D-12, the language rule inside each skill. Fix those that are accepted, and repeat the affected scenarios.
 - Repeat the whole checklist on Claude Code after those fixes, because `AGENTS.md` and two skills changed after run 1.
 - Run the checklist in Codex, which is not installed on the maintainer's computer yet, and on the Windows baseline. Recreate the Codex test copy first: it still holds the state before the fixes.
 - Run the scenarios that the runs could not exercise: the interactive question tool, missing Python or tools, onboarding in English, and an account control that the researcher can read.
 - Start the read-only MinerU service research.
 - Implement the English question checks against the official ASD-STE100 issue, and the clarity review for questions in other languages. The standard and its dictionary are not bundled with the template; they need access under the publisher's terms.
 
-The [MVP 1 acceptance checklist](acceptance/mvp-1.md) holds the scenarios and the results table. The disposable test copies have no Git remote: `/Users/wota/Projects/paper-template-mvp1-test-claude` (run 1, which holds that run's changes), `/Users/wota/Projects/paper-template-mvp1-test-claude-r2` (run 2, which holds that run's changes), and `/Users/wota/Projects/paper-template-mvp1-test-codex` (untouched, cloned from `51f93e7`, so it predates the fixes).
+The [MVP 1 acceptance checklist](acceptance/mvp-1.md) holds the scenarios and the results table. The disposable test copies have no Git remote: `/Users/wota/Projects/paper-template-mvp1-test-claude` (run 1), `/Users/wota/Projects/paper-template-mvp1-test-claude-r2` (run 2), and `/Users/wota/Projects/paper-template-mvp1-test-claude-r3` (run 3) each hold the changes of their run, and `/Users/wota/Projects/paper-template-mvp1-test-codex` is untouched, cloned from `51f93e7`, so it predates the fixes.
 
 ## Open items affecting the order
 
