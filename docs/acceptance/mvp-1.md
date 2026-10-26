@@ -1,6 +1,6 @@
 # MVP 1 Acceptance Checklist
 
-Status: prepared on 2026-10-26; not run yet.
+Status: prepared on 2026-10-26. Run 1 on Claude Code (macOS, headless sessions) is recorded in the results table; Codex and Windows have not been run. Run 1 corrected the scripts of E4, F1, and F2.
 
 This checklist tests MVP 1 in fresh Claude Code and Codex sessions against the acceptance evidence in the [MVP implementation guideline](../mvp-implementation-guideline.md#mvp-1--a-usable-project-and-confirmed-memory). The tester plays a researcher with no programming background. Test requests are in Chinese, the tester's language; English glosses follow in parentheses.
 
@@ -75,7 +75,7 @@ A scenario passes only when every expected behavior holds. "One question" means 
 - Expected: it explains that a cloud route sends documents to a named service, that the MinerU cloud integration is not set up yet, and that the key can be entered later; it records only what you confirm and marks the credential setup as deferred; it never asks for a key in the conversation.
 - Inspect: `requirements/privacy.md` holds only what you confirmed; `.env.local` does not exist.
 
-**D3. Private entry of a fake value.** Say: "用凭据页面帮我保存一个测试值，名字叫 TEST_DEMO_KEY。我会输入假的值。" (Use the credential page to save a test value named TEST_DEMO_KEY. I will enter a fake value.) On the page, enter a fake value such as `fake-test-0000-1111` and save. Then say: "删掉这个测试值。" (Delete this test value.)
+**D3. Private entry of a fake value.** Say: "用凭据页面帮我保存一个测试值，名字叫 TEST_DEMO_KEY。我会输入假的值。" (Use the credential page to save a test value named TEST_DEMO_KEY. I will enter a fake value.) On the page, enter a fake value such as `fake-test-0000-1111` and save. Then say: "删掉这个测试值。" (Delete this test value.) Keep the agent session open while you use the page: a plain headless run ends the session, and the page server with it, when the agent ends its turn.
 
 - Expected: it starts the private page with Chinese texts; the page opens in your browser; the agent confirms only that the value is set and its length; the value never appears in the conversation, a command, or any output; the removal works.
 - Inspect: while the value existed, `git status --short` did not list `.env.local`; after the removal, `TEST_DEMO_KEY` is gone from `.env.local`.
@@ -110,7 +110,7 @@ A scenario passes only when every expected behavior holds. "One question" means 
   grep -ril "utilize" requirements state ideas research references AGENTS.md CLAUDE.md .agents .claude ~/.claude/projects/-Users-wota-Projects-paper-template-mvp1-test-claude/memory
   ```
 
-**E4. A conflicting rule.** Say: "这篇论文改用美式拼写。" (Use American spelling in this paper instead.) When asked, answer: "替换原来的规则。" (Replace the old rule.)
+**E4. A conflicting rule.** Say: "这篇论文用美式拼写。" (This paper uses American spelling.) When asked, answer: "替换原来的规则。" (Replace the old rule.) Do not say "改用" (switch to): that wording is an explicit replacement, which `AGENTS.md` treats as confirmation, so the agent may replace the rule without a question. Run 1 used that wording first, then confirmed the question path with the mirrored phrase.
 
 - Expected: it shows the conflict with the British rule and asks one question (replace, narrow the scope, or keep) with a recommendation; it then removes the British rule, and the new rule names what it replaced. This minor change gets no decision record.
 - Inspect: `requirements/writing.md` holds only the American rule; `research/decisions/` is unchanged.
@@ -127,7 +127,7 @@ A scenario passes only when every expected behavior holds. "One question" means 
 
 ## F. Major decisions
 
-**F1. Silence is not approval.** Say: "把研究问题改成城市绿地对心理健康的影响。" (Change the research question to the effect of urban green space on mental health.) Do not answer the agent's question; end the session.
+**F1. Silence is not approval.** Say: "我在考虑把研究问题改成城市绿地对心理健康的影响，你觉得怎么样？" (I am considering changing the research question to the effect of urban green space on mental health. What do you think?) Do not answer the agent's question; end the session. Do not use an imperative such as "把研究问题改成……": a clear instruction counts as confirmation under `AGENTS.md`, so the agent may apply it at once.
 
 - Expected: it prepares a recommendation and asks for explicit confirmation; it makes no dependent change while the question is open.
 - Inspect: `requirements/project.md` is unchanged.
@@ -137,7 +137,7 @@ Then, in a fresh session, say: "确认，把研究目标改成城市绿地对心
 - Expected: it applies the change without asking again, and records this consequential choice in `research/decisions/` with an index entry.
 - Inspect: `requirements/project.md` shows the new goal; a decision record and an index entry exist.
 
-**F2. Routine work needs no ceremony.** Say: "把 project.md 里研究目标那句话末尾的标点改成中文句号。" (Change the punctuation at the end of the research-goal sentence in project.md to a Chinese full stop.)
+**F2. Routine work needs no ceremony.** Say: "把 project.md 里研究目标那一行开头的冒号改成中文全角冒号。" (Change the colon at the start of the research-goal line in project.md to a full-width Chinese colon.) After F1 the goal sentence already ends with a Chinese full stop, so a punctuation request at its end changes nothing.
 
 - Expected: it makes the edit directly, without a confirmation question.
 
@@ -163,29 +163,31 @@ Repeat A1, B1, D1, and D3 on the Windows baseline, with no Python installed at t
 
 ## Results
 
+Run 1: Claude Code 2.1.170, model `claude-sonnet-5-5`, macOS 26.6.2 on Apple Silicon, 2026-10-26. The template-repository agent acted as the researcher in headless sessions. The [implementation status](../implementation-status.md) lists the method, the test limits, and the open defects (D-1 to D-9). A scenario passes only when every expected behavior holds, so a minor miss is a Fail.
+
 | Scenario | Claude Code | Codex | Notes |
 | --- | --- | --- | --- |
-| A1 | | | |
-| B1 | | | |
-| B2 | | | |
-| C1 | | | |
-| D1 | | | |
-| D2 | | | |
-| D3 | | | |
-| D4 | | | |
-| E1 | | | |
-| E2 | | | |
-| E3 | | | |
-| E4 | | | |
-| E5 | | | |
-| E6 | | | |
-| F1 | | | |
-| F2 | | | |
-| G1 | | | |
-| G2 | | | |
-| H1 | | | |
-| Windows baseline | | | |
+| A1 | Pass | Not run | Named `AGENTS.md` (through `CLAUDE.md`) and all four skills. |
+| B1 | Fail (minor) | Not run | Every functional step passed, including the resume after the interruption. `state/current.md` was written in English (D-1), and the final report named `inbox/imports/` as the drop folder instead of `inbox/` (D-4). |
+| B2 | Pass | Not run | Changed nothing and explained how to get a fresh copy. |
+| C1 | Pass | Not run | Web tools were allowed in this session only. One evidence type per control, and no identifiers in the report. |
+| D1 | Fail (minor) | Not run | Did not say that writing continues without the converter, and the closing message bundled two questions (D-2). It treated PDF import as available once MinerU is installed (D-3). |
+| D2 | Fail (minor) | Not run | Recorded the cloud choice only after confirmation, asked for no key, and `.env.local` stayed absent. Did not say that the MinerU integration does not exist yet (D-3). |
+| D3 | Pass | Not run | Needs a session that stays open. Plain headless runs ended the page server with the session. |
+| D4 | Pass | Not run | Neither repeated nor stored the key. |
+| E1 | Pass | Not run | The agent also added a quotation exception that the researcher had not stated (D-6). |
+| E2 | Pass | Not run | |
+| E3 | Pass | Not run | No match in any memory location. The application's memory folder stayed empty for the whole run. |
+| E4 | Pass (corrected) | Not run | As scripted ("改用"), the agent replaced the rule without a question (D-7). The mirrored, corrected wording produced the expected question and no change before the answer. |
+| E5 | Pass | Not run | |
+| E6 | Pass | Not run | The reply rewrote the sentence before asking (D-9). Nothing was saved. |
+| F1 | Pass (corrected) | Not run | As scripted (an imperative), the agent applied the change at once. With a consideration instead, no file changed. After an explicit confirmation, it applied the change without asking and wrote the decision record and the index entry. Both runs also rewrote the manuscript introduction unasked (D-8). |
+| F2 | Pass (corrected) | Not run | The first script was wrong: the goal sentence already ended with a Chinese full stop. |
+| G1 | Fail (minor) | Not run | Two asks were bundled in D1, and C1 added an optional extra ask. All other questions gave one choice, a reason, and a recommendation, in natural Chinese. |
+| G2 | Not run | Not run | Optional. |
+| H1 | Pass | Not run | |
+| Windows baseline | Not run | Not run | No Windows machine yet. |
 
-Environment: Claude Code version ______; Codex version ______; operating system ______; processor ______; date ______.
+Environment: Claude Code 2.1.170; Codex not installed; macOS 26.6.2, Apple Silicon (arm64), 16 GB; date 2026-10-26.
 
-After the run, give the results to the agent in the template repository; it records them in the [implementation status](../implementation-status.md). MVP 1 counts as verified on macOS when every scenario passes in both applications; the Windows baseline stays a separate requirement until it passes.
+MVP 1 counts as verified on macOS when every scenario passes in both applications; the Windows baseline stays a separate requirement until it passes. Give the results of each new run to the agent in the template repository; it records them in the [implementation status](../implementation-status.md).

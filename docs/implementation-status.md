@@ -8,19 +8,19 @@ Updated: 2026-10-26.
 
 | MVP | Researcher-visible outcome | Status |
 | --- | --- | --- |
-| 1 | Usable project and confirmed memory | In progress: scaffold, adopted AGENTS.md, skill copy script, and first implementations of all four MVP 1 skills (none verified) |
+| 1 | Usable project and confirmed memory | In progress: scaffold, adopted AGENTS.md, skill copy script, and all four skills implemented. Claude Code run 1 is done (14 of 20 checklist rows pass, 4 fail on minor points, 2 not run); Codex and Windows have not been run, so nothing is verified |
 | 2 | Flexible intake and MinerU batch ingestion | Planned |
 | 3 | Searchable literature and traceable evidence | Planned |
-| 4 | Ideas, impact, and feasible research plans | Planned |
+| 4 | Ideas, impact, journal choice, and feasible research plans | Planned |
 | 5 | Evidence-based writing, audit, and major revision | Planned |
-| 6 | Journal choice, template-driven layout, and readiness | Planned |
+| 6 | Template-driven layout and readiness | Planned |
 | 7 | Practical Git control and explicit backup | Planned |
 | 8 | Review rounds and coauthor reconciliation | Planned |
 | 9 | Connected paper hands-on and release candidate | Planned |
 
 Execution order (revised 2026-10-26): 1 → 7 → 2 → 3 → 4 → 5 → 6 → 8 → 9, with the export trial running alongside MVP 7; see the [MVP implementation guideline](mvp-implementation-guideline.md#3-mvp-overview-and-dependencies). The export trial is planned.
 
-No skill is implemented. No end-to-end test has been run.
+The four MVP 1 skills are implemented and have had one acceptance pass on Claude Code; none is verified. No end-to-end test has been run.
 
 ## MVP 1, partial increment: workspace scaffold
 
@@ -168,16 +168,56 @@ Not verified:
 
 - Behavior in conversations, including the MVP 1 persistence tests: a fresh session follows an explicit saved rule, and an unconfirmed inference is absent from every memory location.
 
+## MVP 1 acceptance run 1: Claude Code (2026-10-26)
+
+Status: run 1 is complete for Claude Code on macOS. MVP 1 is not verified: four checklist rows fail on minor points, nine defects are open, and Codex and Windows have not been run.
+
+Method. The template-repository agent acted as the researcher in headless Claude Code sessions on a disposable clone of commit `51f93e7` (no Git remote), with the scripted answers of the [MVP 1 checklist](acceptance/mvp-1.md). Environment: Claude Code 2.1.170, model `claude-sonnet-5-5`, macOS 26.6.2 on Apple Silicon (16 GB), Python 3.12.9. The run used 37 session logs and 189 agent turns, about nine minutes of agent time, and about $4.23 in API-equivalent cost. The logs stay in the maintainer's scratchpad, not in the repository.
+
+Results: 14 rows pass (A1, B2, C1, D3, D4, E1, E2, E3, E4, E5, E6, F1, F2, H1), 4 fail on minor points (B1, D1, D2, G1), and 2 were not run (G2 and the Windows baseline). E4, F1, and F2 passed after their scripts were corrected; the checklist holds the corrected scripts.
+
+What the run showed:
+
+- The agent found `AGENTS.md` through the `CLAUDE.md` import and discovered all four skills.
+- Onboarding resumed from the files after an interruption and never asked again for a recorded answer. It recorded the goal in the researcher's words and invented no research question. A workspace that already held work stayed unchanged.
+- The privacy check separated training use from retention, telemetry, and feedback, labeled the controls that nobody read as unknown, and wrote a report without identifiers.
+- The private credential page saved a fake value that appeared in no log, command, session transcript, or workspace file, and the removal worked. A key pasted into the conversation was neither repeated nor stored.
+- An explicit rule was recorded with its scope and date. A one-time edit and an inferred habit were not recorded, and the application's memory folder stayed empty for the whole run. The rule persisted into a fresh session.
+- A conflicting statement produced a question, and a conflicting one-time request left the rule unchanged.
+- A consideration changed no file. An explicit confirmation produced a decision record and an index entry.
+
+Test limits:
+
+- The sessions loaded only project and local settings, so the maintainer's user-level settings and skills were absent. The maintainer's `~/.claude/CLAUDE.md` still loaded.
+- Permission mode `acceptEdits` with an allow-list. Some compound shell commands were refused, and the agent adapted. The interactive question tool was disabled, so every question was plain text. Web tools were allowed in C1 only. A no-op browser kept pages from opening on screen.
+- A plain headless run ends the session when the agent ends its turn, which also ends its background tasks. The first two D3 attempts therefore lost the page server. D3 passed in a session that stays open, where the completion of the page task woke the agent, as in an interactive session.
+- Not exercised: Codex, Windows, the interactive question tool, the simulation of missing Python or tools, an account control that the researcher can read, the ASD-STE100 checks, onboarding in English (G2), and a live service credential.
+
+Open defects, with a proposed fix for each. None is fixed. Changing a skill or `AGENTS.md` needs the maintainer's decision.
+
+| ID | Severity | Observed | Proposed fix |
+| --- | --- | --- | --- |
+| D-1 | Medium | Records that the researcher reads were written in English: `state/current.md` after onboarding, and the first decision record. The interim narration of several turns was in English too. The adopted decision says these records use the interaction language. | Say "in the interaction language" in the last step of `project-onboarding` and in the decision-record step of `constraint-maintenance`. |
+| D-2 | Low | The readiness report did not say that reading and writing work without the converter, and its closing message bundled two questions. | In `environment-management`, state what still works and ask one question. |
+| D-3 | Medium | The agent treated PDF import as available once MinerU is installed, and implied that a key would soon be entered for parsing. No ingestion skill exists yet. | In `AGENTS.md`, say that only the skills in `.agents/skills/` exist, and that the agent must say so when a task needs a skill that is missing. |
+| D-4 | Low | The final onboarding report named `inbox/imports/` as the place for documents. That folder holds import records; documents go in `inbox/`. | Name `inbox/` in the last step of `project-onboarding`. |
+| D-5 | Low | `project-onboarding` detects an interrupted onboarding from `state/current.md`, which it updates only at the end. Detection worked through the status line in `requirements/project.md`. | Detect through `requirements/project.md`, or update `state/current.md` after the first answer. |
+| D-6 | Medium | When recording the British-spelling rule, the agent added an exception (quotations, proper names, and bibliography titles keep their spelling) that the researcher had not stated. | In `constraint-maintenance`, add examples and exceptions only when the researcher stated or confirmed them. |
+| D-7 | Low | "改用美式拼写" (switch to American spelling) replaced the old rule without a question. That follows `AGENTS.md` (a clear instruction is confirmation) but not step 3 of the skill. | Align the skill: replace without asking when the instruction itself says to replace or switch; ask when the relation is unclear. |
+| D-8 | Medium | After a confirmed change of the research goal, the agent rewrote the manuscript introduction, both times unasked. | In `constraint-maintenance`, list the affected manuscript passages and ask before editing manuscript text. |
+| D-9 | Low | In E6 the reply rewrote the sentence before it asked whether the request was a one-time exception. Nothing was saved. | Ask first, as step 3 says, or accept the combined reply. |
+
 ## Remaining for MVP 1
 
-All four MVP 1 skills have first implementations. Remaining:
+All four MVP 1 skills have first implementations, and run 1 on Claude Code is complete. Remaining:
 
+- Decide on the open defects above, fix those that are accepted, and repeat the affected scenarios.
+- Run the checklist in Codex, which is not installed on the maintainer's computer yet, and on the Windows baseline.
+- Run the scenarios that run 1 could not exercise: the interactive question tool, missing Python or tools, onboarding in English, and an account control that the researcher can read.
 - Start the read-only MinerU service research.
 - Implement the English question checks against the official ASD-STE100 issue, and the clarity review for questions in other languages. The standard and its dictionary are not bundled with the template; they need access under the publisher's terms.
-- Observe `AGENTS.md` loading and skill discovery in fresh Codex and Claude Code sessions.
-- Run the acceptance scenarios in both agent applications: onboarding conversations, a consequential choice, missing tools, deferred credentials, persistence of confirmed rules, and the absence of inferred preferences.
 
-The [MVP 1 acceptance checklist](acceptance/mvp-1.md) (prepared 2026-10-26) covers the last two items. Its disposable test copies, cloned from commit `51f93e7` without a Git remote, are `/Users/wota/Projects/paper-template-mvp1-test-claude` and `/Users/wota/Projects/paper-template-mvp1-test-codex`. The Codex application is not installed on the maintainer's computer yet.
+The [MVP 1 acceptance checklist](acceptance/mvp-1.md) holds the scenarios and the results table. Its disposable test copies, cloned from commit `51f93e7` without a Git remote, are `/Users/wota/Projects/paper-template-mvp1-test-claude` (used in run 1; it now holds the run's changes) and `/Users/wota/Projects/paper-template-mvp1-test-codex` (untouched).
 
 ## Open items affecting the order
 
