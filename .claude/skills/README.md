@@ -10,4 +10,4 @@ Generated copies of the canonical skill packages in [`.agents/skills/`](../../.a
 
 ## Current status
 
-The mirror of `project-onboarding` is generated here. No skill is verified yet; see the [implementation status](../../docs/implementation-status.md).
+The mirrors of `project-onboarding` and `environment-management` are generated here. No skill is verified yet; see the [implementation status](../../docs/implementation-status.md).

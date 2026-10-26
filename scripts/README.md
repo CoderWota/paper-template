@@ -9,7 +9,11 @@ Research analysis code is kept separately in `code/`, which is created only when
 | Script | Purpose |
 | --- | --- |
 | [`check_readmes.py`](check_readmes.py) | Checks that every project directory has a meaningful, directory-specific README, following the contract in [design plan Section 4](../docs/design-plan.md#directory-readme-contract). Run `python scripts/check_readmes.py`; it exits with status 1 and lists the problems when a check fails. |
+| [`inspect_environment.py`](inspect_environment.py) | Reports the operating system, processor architecture (including emulation), memory, free storage, Python interpreters, optional tools, workspace path risks, and project-local setup, without changing anything. Add `--json` for a machine-readable report. |
+| [`credentials.py`](credentials.py) | Stores credentials in the ignored `.env.local` without showing them: `set` opens a one-time page on this computer for private entry, `status` shows only whether a name is set, `remove` deletes one value, and `run` passes values to another program. It refuses to store anything when Git could track `.env.local`. |
 | [`sync_skills.py`](sync_skills.py) | Validates each canonical skill package in `.agents/skills/` and regenerates its Claude Code copy in `.claude/skills/`. Run `python scripts/sync_skills.py` after a skill changes; add `--check` to report differences without writing. It removes only copies that it generated itself. |
+
+Automated tests for these scripts are in [`tests/`](tests/README.md). Run them after changing a script.
 
 ## Conventions
 

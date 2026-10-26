@@ -8,7 +8,7 @@ Updated: 2026-10-26.
 
 | MVP | Researcher-visible outcome | Status |
 | --- | --- | --- |
-| 1 | Usable project and confirmed memory | In progress: scaffold, adopted AGENTS.md, skill copy script, and `project-onboarding` (not verified) |
+| 1 | Usable project and confirmed memory | In progress: scaffold, adopted AGENTS.md, skill copy script, `project-onboarding`, and `environment-management` (not verified) |
 | 2 | Flexible intake and MinerU batch ingestion | Planned |
 | 3 | Searchable literature and traceable evidence | Planned |
 | 4 | Ideas, impact, and feasible research plans | Planned |
@@ -103,9 +103,35 @@ Not verified:
 
 - The skill's behavior in a conversation. A fresh headless Claude Code session could not run because the local Claude Code CLI (2.1.170) is not logged in, and the Codex CLI is not installed. That CLI version predates direct `AGENTS.md` reading (2.1.277), so on this machine `AGENTS.md` reaches Claude Code only through the `CLAUDE.md` import.
 
+## MVP 1, partial increment: environment-management
+
+Status: implemented, not verified.
+
+Decision (2026-10-26): researchers enter credentials on a one-time local browser page, which the maintainer chose over native system dialogs and a terminal prompt.
+
+Implemented (2026-10-26):
+
+- `scripts/inspect_environment.py`: a read-only report of the operating system, native and Python process architecture (including x64 emulation on ARM64 Windows and Rosetta on macOS), memory, free storage, Python interpreters (including the Windows launcher and the Microsoft Store alias), optional tools, workspace path risks (spaces, non-ASCII characters, long Windows paths, cloud-synced folders), and project-local setup.
+- `scripts/credentials.py`: `set` serves a one-time page on 127.0.0.1 at a secret path, checks the Host and Origin headers, and writes the value to `.env.local` (mode 600 on macOS and Linux) through an atomic replacement. It refuses before asking when Git does not ignore `.env.local` or already tracks it, and it never prints a value. `status`, `remove`, `run` (passes values to another process), and `load_env_local()` complete the loading path. Researcher-facing page texts are arguments, so they can be in the researcher's language.
+- `.agents/skills/environment-management/` and its generated copy: inspection, comparison with the task, consented installation or repair, `.venv/` and `.tools/` rules, private credential entry, verification, and common problems.
+- `scripts/tests/`: 13 standard-library tests for the credential script, the README check, the skill copy script, and the environment report.
+
+Verification observed (macOS, Apple Silicon):
+
+- All 13 tests pass on Python 3.12.9 and 3.9.6. The tests found that the skill copy script removed an empty directory it had not generated; the cleanup is now limited to its own copies.
+- The environment report ran correctly on this computer.
+- In the desktop app's built-in browser, with page texts in Chinese and a synthetic test value: the page rendered and the value was saved in `.env.local` (mode 600) without appearing in any output, `status` showed only its length, and `run` passed the exact value to a child process. This test found that a real browser sends `Origin: null` under `Referrer-Policy: no-referrer`, so the first submission was rejected and nothing was saved. The page now uses `same-origin`, and a regression test covers it.
+- This desktop session listed `project-onboarding` among its available skills after the copy was committed, which shows that Claude Code discovers skills from `.claude/skills/` and reads their frontmatter. It was not a fresh session.
+
+Not verified:
+
+- The Windows code paths (architecture detection through `IsWow64Process2`, memory, the Python launcher), which have not run on Windows.
+- A live service credential, which arrives with the MinerU integration in MVP 2.
+- The skill's behavior in a conversation, in fresh Claude Code and Codex sessions.
+
 ## Remaining for MVP 1
 
-Implement `environment-management`, `privacy-configuration`, and `constraint-maintenance`; guided local credential entry, verified with a test consumer; start the read-only MinerU service research; observe `AGENTS.md` loading and skill discovery in fresh Codex and Claude Code sessions; and run the acceptance scenarios, including onboarding conversations, in both agent applications.
+Implement `privacy-configuration` and `constraint-maintenance`; start the read-only MinerU service research; observe `AGENTS.md` loading and skill discovery in fresh Codex and Claude Code sessions; and run the acceptance scenarios, including onboarding conversations, in both agent applications.
 
 ## Open items affecting the order
 

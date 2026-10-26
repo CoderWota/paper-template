@@ -128,22 +128,22 @@ def same(rel: str, current: bytes | None, wanted: bytes) -> bool:
 
 
 def compare(root: Path):
-    """Return (problems, files to write, paths to remove, number of valid packages)."""
+    """Return (problems, files to write, paths to remove, copy directories of valid packages)."""
     problems: list[str] = []
     writes: list[tuple[Path, bytes]] = []
     removals: list[Path] = []
+    managed: list[Path] = []
     canonical_root, copies_root = root / CANONICAL, root / COPIES
     packages = sorted(p for p in canonical_root.iterdir() if p.is_dir() and p.name not in JUNK) if canonical_root.is_dir() else []
-    valid = 0
     for package in packages:
         found = package_problems(package)
         if found:
             problems.extend(f"{CANONICAL.as_posix()}/{package.name} {problem}" for problem in found)
             continue
-        valid += 1
         wanted = files_in(package, include_readme=False)
         wanted["README.md"] = copy_readme(package.name)
         copy = copies_root / package.name
+        managed.append(copy)
         current = files_in(copy, include_readme=True) if copy.is_dir() else {}
         writes.extend((copy / rel, data) for rel, data in wanted.items() if not same(rel, current.get(rel), data))
         removals.extend(copy / rel for rel in sorted(current.keys() - wanted.keys()))
@@ -156,10 +156,10 @@ def compare(root: Path):
                 removals.append(copy)  # A generated copy whose canonical package was removed.
             else:
                 problems.append(f"{COPIES.as_posix()}/{copy.name} was not generated from {CANONICAL.as_posix()}; move or remove it by hand")
-    return problems, writes, removals, valid
+    return problems, writes, removals, managed
 
 
-def apply(writes: list[tuple[Path, bytes]], removals: list[Path], copies_root: Path) -> None:
+def apply(writes: list[tuple[Path, bytes]], removals: list[Path], managed: list[Path]) -> None:
     for path, data in writes:
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_bytes(data)
@@ -168,10 +168,11 @@ def apply(writes: list[tuple[Path, bytes]], removals: list[Path], copies_root: P
             shutil.rmtree(path)
         else:
             path.unlink()
-    # Remove directories left empty inside the generated copies, deepest first.
-    for directory in sorted((p for p in copies_root.rglob("*") if p.is_dir()), key=lambda p: len(p.parts), reverse=True):
-        if not any(directory.iterdir()):
-            directory.rmdir()
+    # Remove directories left empty inside the generated copies only, deepest first.
+    for copy in managed:
+        for directory in sorted((p for p in copy.rglob("*") if p.is_dir()), key=lambda p: len(p.parts), reverse=True):
+            if not any(directory.iterdir()):
+                directory.rmdir()
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -193,14 +194,14 @@ def main(argv: list[str] | None = None) -> int:
     if not (root / CANONICAL).is_dir():
         parser.error(f"no {CANONICAL.as_posix()} directory in {root}")
 
-    problems, writes, removals, valid = compare(root)
+    problems, writes, removals, managed = compare(root)
     if args.check:
         for path, _ in writes:
             print(f"Out of date: {path.relative_to(root).as_posix()}")
         for path in removals:
             print(f"Not in the canonical package: {path.relative_to(root).as_posix()}")
     else:
-        apply(writes, removals, root / COPIES)
+        apply(writes, removals, managed)
         if writes or removals:
             print(f"Updated {len(writes)} file(s) and removed {len(removals)} path(s) in {COPIES.as_posix()}.")
     for problem in problems:
@@ -209,7 +210,7 @@ def main(argv: list[str] | None = None) -> int:
     if problems or (args.check and (writes or removals)):
         print("Skill copy check failed." if args.check else "Skill copies were updated, but problems remain.")
         return 1
-    print(f"Skill copies match: {valid} package(s).")
+    print(f"Skill copies match: {len(managed)} package(s).")
     return 0
 
 
