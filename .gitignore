@@ -1,0 +1,43 @@
+# Ignore paths by role, not by document type (design plan Section 13).
+# PDFs, Word files, LaTeX sources, and images are NOT ignored globally:
+# originals, format templates, and manuscript assets can be authoritative.
+
+# Local credentials and machine-specific files. Never commit secrets.
+.env
+.env.*
+!.env.example
+.local/
+
+# Python environments and caches
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Separate tool environments, installed dependencies, model files, and caches
+.tools/
+node_modules/
+.cache/
+
+# Temporary conversion and build staging
+.tmp/
+
+# Rebuildable previews (releases are preserved)
+outputs/preview/*
+!outputs/preview/README.md
+
+# Claude Code personal settings
+.claude/settings.local.json
+
+# Editor, office, and operating-system artifacts
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+*.swo
+*~
+~$*
+.~lock.*#

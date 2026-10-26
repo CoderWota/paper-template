@@ -1,0 +1,59 @@
+# Markdown, Diagrams, and Native Word Equations
+
+Status: confirmed requirements with a proposed implementation contract. GitHub-renderable mathematics, Mermaid explanation diagrams, and native Word equations are required. Conversion and rendering checks are not implemented yet.
+
+Apply this contract to maintained Markdown, adopted manuscripts, and derived document extractions. Preserve received originals and parser-native results. Normalize derived syntax only when its meaning is preserved; flag uncertain formulas instead of guessing them. Publishing-engine selection remains open.
+
+## Mathematics in Markdown
+
+Use `$...$` for inline mathematics and `$$` on separate lines for display mathematics. Keep blank lines outside display blocks and no blank lines inside them. For example, write inline syntax as `$y = \alpha x + \beta$`.
+
+A display example:
+
+$$
+\hat{\mu} = \frac{1}{n}\sum_{i=1}^{n} x_i
+$$
+
+GitHub documents these delimiters and its MathJax renderer in [Writing mathematical expressions](https://docs.github.com/en/get-started/writing-on-github/working-with-advanced-formatting/writing-mathematical-expressions). Use commands that the target renderer supports. Full LaTeX packages and arbitrary custom macros are not the workspace's default math interface. Do not replace editable formula source with a screenshot. Keep literal currency symbols distinct from math delimiters using the documented context-specific syntax.
+
+GitHub also documents alternative inline delimiters and `math` fences. The workspace defaults above keep one common form for export. An importer must preserve or safely normalize supported alternatives, not nest math delimiters inside a math fence. Citation, equation numbering, and cross-reference conventions still need an export-engine trial; do not assume that a LaTeX-only label or command works on GitHub.
+
+## Mermaid explanation diagrams
+
+Use fenced `mermaid` blocks for agent-created explanation diagrams, such as workflows, concept relationships, and system structures. Keep labels in the document's chosen language. For example:
+
+```mermaid
+flowchart LR
+    N1["Read sources"] --> N2["Examine evidence"]
+    N2 --> N3["Draft the section"]
+```
+
+Use a conservative syntax supported by the target GitHub Mermaid version. The GitHub [diagram guide](https://docs.github.com/en/get-started/writing-on-github/working-with-advanced-formatting/creating-diagrams) documents the fence and an `info` diagnostic for the active version. Do not assume the latest upstream feature is available on GitHub.
+
+Prefer simple node identifiers and quoted labels. Follow the official [flowchart syntax](https://mermaid.js.org/syntax/flowchart.html) for Unicode, punctuation, reserved words, and diagram-specific rules. Complex HTML labels, external fonts/icons, and experimental configuration require target-renderer verification. Keep complex formulas outside diagram labels when necessary for reliable rendering and native Word math.
+
+Scientific result plots, measurements, photographs, and source-document images retain their appropriate plotting or original formats. Mermaid does not replace them. A diagram's arrows must represent the intended relationships without inventing scientific causality.
+
+## Publication output
+
+Keep an identifiable, editable Mermaid source for each diagram: its designated Markdown block or an identified asset source. Generated image copies are derived artifacts, not a second independently maintained diagram. For Word, LaTeX, or PDF, render Mermaid into suitable figure assets and inspect labels, arrows, clipping, fonts, and readability at the actual output size. Preserve captions and cross-reference identities. A raw code block or an empty placeholder is not a completed figure.
+
+### Word mathematics must be native and editable
+
+Authored manuscript formulas in DOCX must become native Office Math objects, stored as OMML. Microsoft describes this format in its [math documentation](https://learn.microsoft.com/en-us/office/math/). Preserve inline versus display placement and the actual mathematical structure. The XML structure uses `m:oMath` and, for display math, an appropriate `m:oMathPara` container; validate the generated structure against the applicable Word format.
+
+Images, plain text, unconverted LaTeX strings, and legacy embedded equation objects do not satisfy this native-equation requirement. Putting an unparsed LaTeX string inside an OMML text node also does not pass. Preserve fractions, scripts, operators, limits, accents, matrices, alignment, and symbols. Handle numbering, captions, and cross-references through the adopted profile without changing mathematical meaning.
+
+The [Pandoc math documentation](https://pandoc.org/MANUAL.html#math) describes OMML output for DOCX, which makes it a candidate route to evaluate. This does not settle the publishing-engine decision or prove every formula converts correctly. Check the actual source-to-output mapping and the rendered result.
+
+If a formula cannot be converted faithfully, identify its source location and the failed construct. Preserve the original and mark the affected output requirement unmet. Do not silently fall back to an image, plain text, or a changed formula and report success. An equation available only as an imported image needs checked transcription before it can satisfy native-equation export.
+
+## Verification contract
+
+1. Inspect Markdown structure, delimiters, math commands, Mermaid fences, and diagram syntax with appropriate parsers. Do not treat regular expressions or balanced delimiters as proof of correct rendering.
+2. Render representative inline/display formulas and diagrams with the actual target or a documented compatible renderer. Inspect Unicode, special characters, multiline structures, long labels, and layout. Record renderer/version and limitations. Local success alone does not establish GitHub success; validate actual GitHub behavior with permitted material when claiming that integration. User data must not be published or sent to a new external preview service merely to test rendering.
+3. For DOCX, inspect the relevant XML parts with namespace-aware checks. Reconcile each expected source formula with native math content; counting one math element is insufficient, including when a template already contains equations. Check mathematical structure and conversion diagnostics, not just the presence of OMML tags.
+4. Inspect the actual Word layout and representative editing of native formulas where Word verification is available. Cover inline/display math, fractions, scripts, matrices, multiline alignment, tables/captions as used, numbering, and cross-references. Report the actual inspection application and scope; another viewer alone does not establish tested Word behavior.
+5. Rebuild after a formula or diagram changes and invalidate affected prior checks. Keep unsupported cases visible and preserve earlier releases. A generic successful export is not evidence that all equations and diagrams meet this contract.
+
+Implementation tests belong to ingestion/adoption, writing/audit, and submission assembly. Researchers request the outcome in natural language; agents maintain syntax, conversion tools, assets, and checks. Add no compulsory graphics runtime merely to initialize or read the workspace.
