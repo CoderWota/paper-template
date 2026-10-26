@@ -15,10 +15,11 @@ A package can add reference files or scripts that its SKILL.md uses. Determinist
 ## Writing a skill
 
 - Name the directory with the skill id from the catalog, in lowercase words joined by hyphens (for example `source-ingestion`).
-- Keep the SKILL.md frontmatter to the fields both agent applications support: `name` and `description`.
+- Keep the SKILL.md frontmatter to the fields both agent applications support: `name` (equal to the directory name) and `description`. Keep each field on one line, and quote a value that contains `: `.
 - Write in English. Follow [`AGENTS.md`](../../AGENTS.md); do not copy shared rules, such as decision confirmation, the question format, or the README contract, into each skill.
 - A skill that creates a project directory also writes that directory's README.
+- After every change, run `python scripts/sync_skills.py` to regenerate the Claude Code copy, then `python scripts/sync_skills.py --check`.
 
 ## Current status
 
-No skill package is implemented yet. The planned catalog, with each skill's responsibility and boundaries, is in [design plan Section 9](../../docs/design-plan.md#9-skill-architecture-and-standalone-task-catalog). The implementation order is in the [MVP implementation guideline](../../docs/mvp-implementation-guideline.md#4-complete-skill-to-mvp-assignment). A package counts as implemented only after its acceptance checks pass, not when its SKILL.md exists.
+`project-onboarding` has a first implementation; no package is verified yet. See the [implementation status](../../docs/implementation-status.md). The planned catalog, with each skill's responsibility and boundaries, is in [design plan Section 9](../../docs/design-plan.md#9-skill-architecture-and-standalone-task-catalog). The implementation order is in the [MVP implementation guideline](../../docs/mvp-implementation-guideline.md#4-complete-skill-to-mvp-assignment). A package counts as implemented only after its acceptance checks pass, not when its SKILL.md exists.

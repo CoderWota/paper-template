@@ -8,7 +8,7 @@ Updated: 2026-10-26.
 
 | MVP | Researcher-visible outcome | Status |
 | --- | --- | --- |
-| 1 | Usable project and confirmed memory | In progress: scaffold and adopted AGENTS.md |
+| 1 | Usable project and confirmed memory | In progress: scaffold, adopted AGENTS.md, skill copy script, and `project-onboarding` (not verified) |
 | 2 | Flexible intake and MinerU batch ingestion | Planned |
 | 3 | Searchable literature and traceable evidence | Planned |
 | 4 | Ideas, impact, and feasible research plans | Planned |
@@ -74,7 +74,7 @@ Documentation checked on 2026-10-26 (sources linked in [design plan Section 8](d
 - Codex reads repository skills only from `.agents/skills/` and requires `name` and `description`. It reads `AGENTS.md` from the repository root down to the working directory, up to 32 KiB by default, and ignores `CLAUDE.md`.
 - Both follow symlinked skill folders, but symlinks fail in Windows clones without symlink support.
 
-Open question for `project-onboarding`: how to treat a workspace copied from one that already holds another paper, including what to keep (such as references) and what to reset or re-check (such as requirements, state, `.venv/`, and local credentials).
+Copied workspaces (decided 2026-10-26): onboarding never deletes, moves, or overwrites a workspace that already holds work. It asks whether to continue that paper; a new paper starts from a fresh copy of the template, and the reference library can be imported into it later.
 
 ## Execution order review (2026-10-26)
 
@@ -85,9 +85,27 @@ The maintainer reviewed the MVP dependencies and confirmed four changes to the [
 - `journal-selection` moves from MVP 6 to MVP 4.
 - MVP 1 verifies the credential mechanism with a test consumer; MVP 2 verifies the live MinerU credential and the selected service's data-use policy. Read-only MinerU service research starts during MVP 1.
 
+## MVP 1, partial increment: skill copies and project-onboarding
+
+Status: implemented, not verified.
+
+Implemented (2026-10-26):
+
+- `scripts/sync_skills.py` validates each canonical package (directory name, README, and one-line `name` and `description` frontmatter that YAML can read) and regenerates its Claude Code copy with a generated README. `--check` reports differences without writing. It removes only copies that it generated itself. `scripts/check_readmes.py` now leaves the contents of generated copies to this script.
+- `.agents/skills/project-onboarding/` and its generated copy in `.claude/skills/`. The skill inspects the workspace before it asks anything; confirms the interaction language, research goal, manuscript language, and processing choice one question at a time; records each confirmed answer in the interaction language; offers the AI application privacy check; and ends with one next action. It hands off to `environment-management`, `privacy-configuration`, and `constraint-maintenance`, which do not exist yet.
+
+Verification observed (macOS, Python 3.12.9):
+
+- On a disposable copy, `sync_skills.py` created, updated, and removed generated copies correctly. It reported a hand-edited copy, an extra file, invalid frontmatter (an unquoted `: `, a wrong name, a missing description, a missing README, and an invalid directory name), and a directory that it did not generate, which it kept. It accepted a generated README with CRLF line endings.
+- On the repository, the copies match and the README check passes (29 project directories).
+
+Not verified:
+
+- The skill's behavior in a conversation. A fresh headless Claude Code session could not run because the local Claude Code CLI (2.1.170) is not logged in, and the Codex CLI is not installed. That CLI version predates direct `AGENTS.md` reading (2.1.277), so on this machine `AGENTS.md` reaches Claude Code only through the `CLAUDE.md` import.
+
 ## Remaining for MVP 1
 
-Implement `project-onboarding`, `environment-management`, `privacy-configuration`, and `constraint-maintenance`, with the skill-copy generation and consistency check; guided local credential entry, verified with a test consumer; start the read-only MinerU service research; observe `AGENTS.md` loading in fresh Codex and Claude Code sessions; and run the acceptance scenarios in both agent applications.
+Implement `environment-management`, `privacy-configuration`, and `constraint-maintenance`; guided local credential entry, verified with a test consumer; start the read-only MinerU service research; observe `AGENTS.md` loading and skill discovery in fresh Codex and Claude Code sessions; and run the acceptance scenarios, including onboarding conversations, in both agent applications.
 
 ## Open items affecting the order
 

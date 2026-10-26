@@ -1,0 +1,17 @@
+# Project Onboarding
+
+The first task in a new workspace. The agent asks a few questions, one at a time, and records only the answers you confirm: the language you want to work in, what you want to achieve, the manuscript language, and how your documents may be processed. Anything you do not know yet can wait.
+
+Ask, for example: "Help me initialize this research writing project. I do not have a programming background."
+
+## What it produces
+
+- `requirements/project.md` and `requirements/privacy.md` with your confirmed answers, written in your language.
+- An updated `state/current.md` with one clear next step.
+
+## What it never does
+
+- It never deletes, moves, or overwrites existing material. A workspace that already holds another paper stays unchanged; a new paper starts from a fresh copy of the template instead.
+- It never asks for a password or an API key in the conversation.
+
+The agent instructions are in [SKILL.md](SKILL.md). Related skills: `environment-management`, `privacy-configuration`, and `constraint-maintenance`.

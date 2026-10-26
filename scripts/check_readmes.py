@@ -30,6 +30,7 @@ SKIPPED_NAMES = frozenset({
 # material (originals, parser outputs, staged or frozen packages). Nothing is
 # added inside them, so their subdirectories are not checked.
 OPAQUE_PATTERNS = (
+    ".claude/skills/*",  # generated copies; scripts/sync_skills.py --check covers their contents
     "inbox/imports/*",
     "references/originals/*",
     "references/extracted/*/native",

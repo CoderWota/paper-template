@@ -4,10 +4,10 @@ Generated copies of the canonical skill packages in [`.agents/skills/`](../../.a
 
 ## Rules
 
-- Change a skill only in `.agents/skills/<skill-id>/`, then regenerate its mirror here and check that the copies match.
+- Change a skill only in `.agents/skills/<skill-id>/`, then run `python scripts/sync_skills.py` to regenerate its mirror here. `python scripts/sync_skills.py --check` reports any difference between the copies.
 - Do not edit a mirror directly; the next regeneration replaces it.
-- Each mirror directory has its own README that identifies its canonical source.
+- Each mirror directory has its own generated README that identifies its canonical source.
 
 ## Current status
 
-No skill is implemented yet, so there are no mirrors. The generation and validation step will be added with the first skills (MVP 1 in the [implementation guideline](../../docs/mvp-implementation-guideline.md)).
+The mirror of `project-onboarding` is generated here. No skill is verified yet; see the [implementation status](../../docs/implementation-status.md).

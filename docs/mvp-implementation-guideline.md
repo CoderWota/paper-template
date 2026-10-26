@@ -27,7 +27,7 @@ The MVP numbers describe implementation slices, not a mandatory course for resea
 
 | Decision | Resolve by | Guideline |
 | --- | --- | --- |
-| Workspace scope | MVP 1 | Resolved 2026-10-26: one main manuscript per workspace, including its submission rounds and revisions; each additional paper uses its own copy of the workspace. Specify how onboarding treats a workspace copied from another paper. Do not hard-code a discipline or article structure. |
+| Workspace scope | MVP 1 | Resolved 2026-10-26: one main manuscript per workspace, including its submission rounds and revisions; each additional paper uses its own copy of the workspace. Onboarding never clears a workspace that already holds work; a new paper starts from a fresh copy of the template. Do not hard-code a discipline or article structure. |
 | AGENTS.md contract and skill adapters | MVP 1 | Text adopted 2026-10-26. Claude Code skill adapters are generated, committed copies of `.agents/skills`. Still verify actual loading in fresh sessions of both agents. Do not copy the full roadmap into AGENTS.md. |
 | Exact Windows baseline | MVP 1; validate again in MVPs 2 and 6 | Record OS, RAM/storage, x64/ARM64, installed tools, and available model access. Surface is a product-family reference, not a complete hardware specification. Do not invent a verified minimum or claim untested architectures. |
 | Source metadata and file tracking | MVP 2, informed by the export trial | Choose the canonical metadata representation; BibTeX is the current proposal, to be tested in the export trial. Specify identifiers, citation keys, extraction provenance, tracking, and backup responsibilities without asking researchers to edit technical formats. |
@@ -89,7 +89,7 @@ No MVP yet owns producing the actual research results this test requires: MVP 4 
 - Initial project/language/privacy requirements and concise current state. Keep inferred preferences out of persistent files, including notes and handoffs. Separate confirmed rules from retained exploratory ideas and research hypotheses.
 - Tool detection and reuse of compatible installed Python/CLI tools, on-demand project-local `.venv` management without overwriting working global environments, private local credential entry and ignored storage, plus documented privacy-setting assistance. A cloud route must not require installing a full local inference stack. A missing converter must not prevent ordinary reading/writing.
 - Read-only research on the MinerU service, started during MVP 1 because MVP 2 depends on it: version, API, client dependencies, authentication, cost and limits, data-use and retention policy, and licensing.
-- A specification of how onboarding treats a workspace copied from one that already holds another paper; see the open question in the [implementation status](implementation-status.md).
+- Onboarding that never deletes, moves, or overwrites a workspace that already holds work. It asks whether to continue that paper; a new paper starts from a fresh copy of the template (decided 2026-10-26).
 
 **Acceptance evidence:**
 
