@@ -177,6 +177,8 @@ All four MVP 1 skills have first implementations. Remaining:
 - Observe `AGENTS.md` loading and skill discovery in fresh Codex and Claude Code sessions.
 - Run the acceptance scenarios in both agent applications: onboarding conversations, a consequential choice, missing tools, deferred credentials, persistence of confirmed rules, and the absence of inferred preferences.
 
+The [MVP 1 acceptance checklist](acceptance/mvp-1.md) (prepared 2026-10-26) covers the last two items. Its disposable test copies, cloned from commit `51f93e7` without a Git remote, are `/Users/wota/Projects/paper-template-mvp1-test-claude` and `/Users/wota/Projects/paper-template-mvp1-test-codex`. The Codex application is not installed on the maintainer's computer yet.
+
 ## Open items affecting the order
 
 - Result production for the complete-path test: no MVP yet owns producing actual research results. Decide before MVP 9, preferably before MVP 4.
