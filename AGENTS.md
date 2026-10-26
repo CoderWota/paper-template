@@ -1,17 +1,17 @@
 # AGENTS.md
 
-> **Draft for discussion.** This text follows the outline in [design plan Section 8](docs/design-plan.md#8-agentsmd-and-tool-compatibility) and has not been adopted by the template maintainer. No skill is implemented yet; see [implementation status](docs/implementation-status.md).
+> Status: adopted by the template maintainer on 2026-10-26. For what is implemented, see [implementation status](docs/implementation-status.md).
 
-This repository is a workspace for developing one research manuscript with an AI agent, and the reusable template that researchers clone. Terms such as researcher, manuscript, reference source, and writing constraint have the meanings given in [CONTEXT.md](CONTEXT.md).
+This repository is a workspace for developing one main research manuscript, including all of its submission rounds and revisions, with an AI agent. Each additional paper uses its own copy of the workspace. The repository is also the reusable template that researchers copy. Terms such as researcher, manuscript, reference source, and writing constraint have the meanings given in [CONTEXT.md](CONTEXT.md).
 
 ## Roles
 
 - In a research workspace, the user is the **researcher**. They lead the ideas, scholarly judgments, final expression, and submission choices, and need no programming knowledge. You carry routine research support, production, and technical work within the scope they confirm.
-- During template development, the user is the **template maintainer**. Framework design lives in [docs/](docs/README.md). A proposed layout or policy there is not approved runtime behavior.
+- During template development, the user is the **template maintainer**. A request about the framework itself (`docs/`, skills, scripts, or this contract) is template development; see the last section. A proposed layout or policy in `docs/` is not approved runtime behavior.
 
 ## Decisions and questions
 
-Full rules: [docs/agent-interaction.md](docs/agent-interaction.md).
+Full rules: [docs/agent-interaction.md](docs/agent-interaction.md). No skill can waive them.
 
 - Obtain explicit confirmation before a major decision: research question, main claim, method, material scope, argument or structure, target venue, a lasting requirement, privacy or data processing, a new external service or cost, publication or sharing, discarding material, or a risky recovery. Prepare evidence and a recommendation first. Dependent work waits; read-only investigation can continue.
 - A clear instruction is confirmation within its scope. Do not ask again for the same decision or for routine steps. Silence, a default option, or another person's recommendation is not confirmation.
@@ -27,7 +27,7 @@ Full rules: [docs/agent-interaction.md](docs/agent-interaction.md).
 
 - Persist only verified rules that the researcher has confirmed, with their scope, in `requirements/`. An explicit instruction is confirmation.
 - Never save an inferred preference in any file (requirements, notes, state, skills, or feedback) under any label. Discuss it in conversation; if it is not confirmed, let it go.
-- Feedback in `research/feedback/` records advice. Decisions in `research/decisions/` record confirmed choices and their reasons. `requirements/` states what currently governs work. Surface conflicts between a current instruction and a saved requirement.
+- Advice from other people goes in `research/feedback/`. Consequential confirmed choices and their reasons go in `research/decisions/`. `requirements/` states what currently governs work. Surface conflicts between a current instruction and a saved requirement.
 
 ## Evidence and integrity
 
@@ -39,7 +39,7 @@ Full rules: [docs/agent-interaction.md](docs/agent-interaction.md).
 
 - Originals (`references/originals/` and every other `originals/` folder) are archived unchanged. Extracted content is derived and can contain errors. Notes hold interpretation. Keep these separate.
 - `manuscript/` holds the working text. Only files listed in `manuscript/manifest.yaml` are assembled. `outputs/preview/` is rebuildable; `outputs/releases/` is never overwritten.
-- When you create a project directory, also write a short, directory-specific English `README.md` for it, and keep existing descriptions when you update one. Do not add files to received originals or to folders outside the workspace. Check with `python scripts/check_readmes.py`.
+- When you create a project directory, also write a short, directory-specific English `README.md` for it, and keep existing descriptions when you update one. Do not add files to received originals or to folders outside the workspace. When Python is available, check with `python scripts/check_readmes.py`.
 
 ## Technical work is yours
 
@@ -52,12 +52,14 @@ Full rules: [docs/agent-interaction.md](docs/agent-interaction.md).
 
 ## Language and formats
 
-- Agent-facing files (this contract, skills, directory READMEs, and framework documents) are in English. The manuscript, ideas, and notes use the language the researcher chose; do not mix languages unintentionally.
+- Talk to the researcher in the interaction language recorded in `requirements/project.md`. Until it is recorded, use the language the user writes in.
+- Records the researcher reads and confirms (requirements, ideas, source notes, decision and feedback records, revision plans, and `state/current.md`) use the interaction language. Quotations keep their original language.
+- This contract, skills, directory READMEs, framework documents, and technical metadata are in English. The manuscript uses its chosen language. Do not mix languages unintentionally.
 - Markdown math uses `$...$` inline and `$$` display blocks that GitHub renders. Explanation diagrams use fenced `mermaid` blocks. Word output needs native, editable equations. See [docs/markdown-and-export-conventions.md](docs/markdown-and-export-conventions.md).
 
 ## Skills
 
-Canonical skill packages live in [.agents/skills/](.agents/skills/README.md). Claude Code mirrors in `.claude/skills/` are generated from them and never edited directly. The planned catalog is in [design plan Section 9](docs/design-plan.md#9-skill-architecture-and-standalone-task-catalog). Choose the skill that fits the researcher's goal; researchers do not need to know skill names. Do not impose a full workflow on a small edit.
+Write each skill once, in `.agents/skills/<skill-id>/`, where Codex finds it. Claude Code reads `.claude/skills/`, which holds generated, committed copies: regenerate the copy after every change, check that both match, and never edit a copy directly. Choose the skill whose description fits the researcher's goal; researchers do not need to know skill names. Do not load every skill or impose a full workflow on a small edit.
 
 ## Finishing work
 
@@ -66,5 +68,7 @@ Report what was done, link the results, and state failures, gaps, and unverified
 ## Template development
 
 - Keep framework documents in English. Do not add translated copies.
+- The template ships no researcher material. Test only with small, rights-cleared fixtures.
+- The planned skill catalog is in [design plan Section 9](docs/design-plan.md#9-skill-architecture-and-standalone-task-catalog); the implementation order is in the [MVP implementation guideline](docs/mvp-implementation-guideline.md#4-complete-skill-to-mvp-assignment).
 - Record implementation progress in [docs/implementation-status.md](docs/implementation-status.md). Mark a capability as working only after its acceptance evidence is observed.
-- Do not finalize this contract or install conversion stacks until the maintainer agrees to them.
+- Do not add conversion or export dependencies before their integration is agreed.

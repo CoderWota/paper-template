@@ -1,6 +1,6 @@
 # Agent Interaction and Decision Confirmation
 
-Status: design specification. Prior user confirmation for major decisions and ASD-STE100 for agent questions are confirmed requirements. The workflow and verification described here are planned, not implemented. AGENTS.md still needs the agreed final text.
+Status: design specification. Prior user confirmation for major decisions and ASD-STE100 for agent questions are confirmed requirements. The workflow and verification described here are planned, not implemented. The adopted AGENTS.md (2026-10-26) carries the concise rule and links here.
 
 This document defines the shared interaction rules for all proposed skills, including hands-on guides, idea deepening, and grilling. In a manuscript workspace, the user is the researcher who directs the work. During template development, the user is the template maintainer.
 

@@ -58,7 +58,7 @@ Use the planned `inbox/` area or point to the material where it already lives. T
 | Editor/reviewer documents | `review-ingestion`, optionally `review-response` | Round-specific originals and checked extraction; responses only when requested. |
 | Research feedback or meeting notes from co-researchers, collaborators, coauthors, supervisors, or other contributors | `research-feedback` | Attributed advice and follow-up, with only researcher-confirmed changes promoted to requirements. |
 
-These are alternative entry points, not extra compulsory lessons. A download-and-import request connects the two tasks and retries only the affected stage. If the proposed research-record design is adopted, record consequential confirmed choices with concise rationale through the planning/constraint workflows; ordinary edits do not need a decision record. Advice is not automatically accepted, and accepted advice is not marked implemented before the change exists.
+These are alternative entry points, not extra compulsory lessons. A download-and-import request connects the two tasks and retries only the affected stage. Consequential confirmed choices are recorded with concise rationale in `research/decisions/` through the planning/constraint workflows; ordinary edits do not need a decision record. Advice is not automatically accepted, and accepted advice is not marked implemented before the change exists.
 
 Revisit earlier stages when findings change the idea or target. Researchers who already have a draft can begin with assessment or revision. Pause and resume through a concise project checkpoint instead of repeating the entire interview.
 

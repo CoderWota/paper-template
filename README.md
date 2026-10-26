@@ -2,7 +2,7 @@
 
 An organized workspace for developing research ideas, reading literature, writing a manuscript, and preparing submission files with an AI agent.
 
-**Project status: early implementation.** The workspace folders, their descriptions, and a draft agent contract exist. The workflows below describe the intended experience; initialization, conversion, and the other project skills have not been implemented yet. Follow the [design plan](docs/design-plan.md) to review the current proposal, and see the [implementation status](docs/implementation-status.md) for what actually works.
+**Project status: early implementation.** The workspace folders, their descriptions, and the agent operating contract (`AGENTS.md`) exist. The workflows below describe the intended experience; initialization, conversion, and the other project skills have not been implemented yet. Follow the [design plan](docs/design-plan.md) to review the current proposal, and see the [implementation status](docs/implementation-status.md) for what actually works.
 
 For framework development, the [MVP implementation guideline](docs/mvp-implementation-guideline.md) organizes the work into nine planned increments with concrete deliverables and acceptance criteria.
 
@@ -24,7 +24,7 @@ Markdown formulas use GitHub-renderable LaTeX, and agent-created explanation dia
 
 ## Getting started: intended workflow
 
-1. Obtain a copy of this repository and open its folder with Codex or Claude Code.
+1. Obtain a copy of this repository for your paper and open its folder with Codex or Claude Code. Each paper uses its own copy.
 2. Ask the agent: “Help me initialize this research writing project. I do not have a programming background.”
 3. The agent guides the few choices needed to begin, including writing language, research goals, privacy settings, and local or cloud document parsing. Unknown details can wait.
 4. If the selected service requires an API key, the agent explains where to obtain it and guides private entry on your computer. You do not paste it into the conversation or write setup code.
@@ -73,7 +73,7 @@ See the [hands-on guide](docs/hands-on.md). These are design previews, not imple
 | Requirements | [`requirements/`](requirements/README.md) | Your confirmed project, writing, privacy, and submission requirements. |
 | Manuscript | [`manuscript/`](manuscript/README.md) | The working text and its figures and other assets. |
 | Ideas | [`ideas/`](ideas/README.md) | Research directions and thoughts you choose to keep, including unfinished ones. |
-| Research records, proposed | [`research/`](research/README.md) | Important confirmed choices and their rationale, plus attributed feedback from co-researchers, collaborators, coauthors, supervisors, or other contributors and its follow-up. |
+| Research records | [`research/`](research/README.md) | Important confirmed choices and their rationale, plus attributed feedback from co-researchers, collaborators, coauthors, supervisors, or other contributors and its follow-up. |
 | Reviews | [`reviews/`](reviews/README.md) | Editorial and reviewer correspondence, responses, and changes by submission round. |
 | Major revisions, proposed | [`revisions/`](revisions/README.md) | Recoverable starting versions or references, revision plans, changes, and current checks for substantial rewrites. |
 | Outputs | [`outputs/`](outputs/README.md) | Previews and preserved submission packages. |

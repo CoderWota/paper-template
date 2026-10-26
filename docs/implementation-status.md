@@ -8,7 +8,7 @@ Updated: 2026-10-26.
 
 | MVP | Researcher-visible outcome | Status |
 | --- | --- | --- |
-| 1 | Usable project and confirmed memory | In progress: workspace scaffold only |
+| 1 | Usable project and confirmed memory | In progress: scaffold and adopted AGENTS.md |
 | 2 | Flexible intake and MinerU batch ingestion | Planned |
 | 3 | Searchable literature and traceable evidence | Planned |
 | 4 | Ideas, impact, and feasible research plans | Planned |
@@ -32,7 +32,7 @@ Implemented:
 - `.gitignore` by role, following [design plan Section 13](design-plan.md#13-version-control-and-ignore-policy): credentials (`.env*` except `.env.example`), `.local/`, environments, caches, `.tmp/`, rebuildable previews, Claude Code personal settings, and editor, office, and operating-system artifacts. Documents, templates, and images are not ignored by type. `.gitattributes` normalizes text line endings.
 - Every static directory of the [design plan Section 4](design-plan.md#4-proposed-directory-structure) tree, each with a directory-specific English README. Instance directories (`<source-id>/`, `<profile-id>/`, `<venue-id>/`, and so on) are left for the skills that create them.
 - Empty-state records that agents can read in a fresh session: `requirements/project.md`, `requirements/writing.md`, `requirements/privacy.md`, `state/current.md`, `references/index.md`, `ideas/index.md`, `research/decisions/index.md`, `manuscript/outline.md`, and `manuscript/manifest.yaml` (no sections).
-- A draft `AGENTS.md` following design plan Section 8, marked as not adopted, and a `CLAUDE.md` that imports it.
+- A draft `AGENTS.md` following design plan Section 8, and a `CLAUDE.md` that imports it. The draft was adopted later the same day; see the next section.
 - `scripts/check_readmes.py`, a standard-library check of the README contract.
 - The Chinese translations of the README, design plan, hands-on design, MVP guideline, and workflow review were removed; the maintainer confirmed that they matched the English documents one to one. Links to them were removed or updated.
 
@@ -54,4 +54,26 @@ Not verified:
 - Loading of `AGENTS.md` and `CLAUDE.md` in fresh Codex and Claude Code sessions.
 - Any behavior on Windows, including the README check.
 
-Remaining for MVP 1: agree on the `AGENTS.md` text; implement `project-onboarding`, `environment-management`, `privacy-configuration`, and `constraint-maintenance` with Codex and Claude Code adapters; guided local credential entry; and the acceptance scenarios in both agent applications.
+## MVP 1, partial increment: AGENTS.md adoption
+
+Status: the contract text is adopted; its loading in fresh agent sessions has not been observed yet.
+
+The template maintainer reviewed the draft one decision at a time and adopted `AGENTS.md` on 2026-10-26. Decisions:
+
+- Workspace scope: one main manuscript per workspace, including its submission rounds and revisions. Each additional paper uses its own copy of the workspace.
+- Research records: `research/feedback/` holds advice and `research/decisions/` holds confirmed choices with their reasons, from the first session. Record formats are refined in MVP 4.
+- Record language: records the researcher reads and confirms use the interaction language; agent-facing files and technical metadata stay in English. Agent guidance moved from the requirement files into `requirements/README.md`, so the records themselves can be written entirely in the researcher's language.
+- Skill adapters: skills are written once in `.agents/skills/`; `.claude/skills/` holds generated, committed copies with a consistency check. Both arrive with the first skill.
+- Adopted with the text: the one-line `CLAUDE.md` import, the rule that no skill can waive the confirmation rules, role identification by the subject of the request, and the ignored local paths `.tools/`, `.cache/`, `.tmp/`, and `.local/`.
+
+Documentation checked on 2026-10-26 (sources linked in [design plan Section 8](design-plan.md#8-agentsmd-and-tool-compatibility)):
+
+- Claude Code reads project skills only from `.claude/skills/`. Version 2.1.277 or later reads `AGENTS.md` directly only when no `CLAUDE.md` exists, and an `@AGENTS.md` import never loads it twice.
+- Codex reads repository skills only from `.agents/skills/` and requires `name` and `description`. It reads `AGENTS.md` from the repository root down to the working directory, up to 32 KiB by default, and ignores `CLAUDE.md`.
+- Both follow symlinked skill folders, but symlinks fail in Windows clones without symlink support.
+
+Open question for `project-onboarding`: how to treat a workspace copied from one that already holds another paper, including what to keep (such as references) and what to reset or re-check (such as requirements, state, `.venv/`, and local credentials).
+
+## Remaining for MVP 1
+
+Implement `project-onboarding`, `environment-management`, `privacy-configuration`, and `constraint-maintenance`, with the skill-copy generation and consistency check; guided local credential entry; observe `AGENTS.md` loading in fresh Codex and Claude Code sessions; and run the acceptance scenarios in both agent applications.

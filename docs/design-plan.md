@@ -57,7 +57,7 @@ This is a workspace template, not a promise of autonomous scientific discovery o
 
 ## 3. Proposed scope and boundaries
 
-Recommendation, pending discussion: one cloned workspace manages one main manuscript and its submission history. Support different article types through configuration rather than pre-created discipline-specific directory trees.
+Confirmed: one workspace manages one main manuscript, including its submission rounds and revisions. Each additional paper uses its own copy of the workspace. Support different article types through configuration rather than pre-created discipline-specific directory trees.
 
 No discipline or article-type allowlist applies. Elicit the research question, material types, methods, argument structure, and output requirements when needed, then adapt the workspace. Do not force researchers to choose an ill-fitting category or invent a code project for work that does not involve code.
 
@@ -256,7 +256,7 @@ Implementation checks cover both README presence and useful directory-specific c
 
 Avoid maintaining the same fact manually in multiple places. The bibliography owns citation metadata; the source index aids discovery; evidence notes own interpretations and support relationships; the section manifest owns assembly order.
 
-The proposed `research/decisions/` replaces the earlier single `requirements/decisions.md`. It owns decision rationale and history; `requirements/` owns the current confirmed requirements and links back when useful. The exact research-record layout remains a proposal for discussion.
+`research/decisions/` replaces the earlier single `requirements/decisions.md`. It owns decision rationale and history; `requirements/` owns the current confirmed requirements and links back when useful. The `research/decisions/` and `research/feedback/` locations are confirmed; their record formats are refined in MVP 4.
 
 Plain Markdown is the text interface, not a ban on structured formats. BibTeX, YAML, JSON, images, data, and original documents complement it where they prevent ambiguity or loss.
 
@@ -375,9 +375,11 @@ Rules should capture intent and useful examples, including allowed exceptions. A
 
 Record manuscript language, interaction language, and any permitted language-specific artifacts separately. English agent instructions do not require English prose. Quotations, proper names, bibliography titles, and required bilingual abstracts need explicit exceptions rather than crude language-purity checks.
 
-### Proposed research decision and feedback records
+Confirmed: records the researcher reads and confirms (requirements, ideas, source notes, decision and feedback records, revision plans, and project state) use the researcher's interaction language, with quotations in their original language. Agent-facing files and technical metadata stay in English.
 
-Borrow the rationale-preserving idea of ADRs, but call the researcher-facing artifact a **research decision record**. This is a design recommendation, not a newly confirmed mandatory process. Keep framework-maintainer architecture decisions separate; a future `docs/adr/` is appropriate only when an actual consequential technical tradeoff warrants a record. Researchers need not learn ADR terminology or maintain a software-engineering process.
+### Research decision and feedback records
+
+Borrow the rationale-preserving idea of ADRs, but call the researcher-facing artifact a **research decision record**. Its location, `research/decisions/`, and the feedback location, `research/feedback/`, are confirmed. The record content described below remains a recommendation refined in MVP 4, not a mandatory process. Keep framework-maintainer architecture decisions separate; a future `docs/adr/` is appropriate only when an actual consequential technical tradeoff warrants a record. Researchers need not learn ADR terminology or maintain a software-engineering process.
 
 Record a confirmed research choice when revisiting it would be costly, its rationale matters, and meaningful alternatives or tradeoffs existed: for example, narrowing a research question, choosing a method, setting corpus/inclusion boundaries, excluding an analysis, or changing a substantial argument. Ordinary wording edits, routine imports, and file renames do not warrant individual records. Create records lazily and let the agent maintain them through existing planning/constraint workflows rather than adding a skill for every bookkeeping step.
 
@@ -403,11 +405,11 @@ Proposed contents for discussion:
 7. Dependency and environment selection, including reuse of installed tools.
 8. Completion reporting and a concise handoff when work remains.
 
-A first draft that follows this outline is in [AGENTS.md](../AGENTS.md). It is not adopted until the maintainer agrees on its text.
+The maintainer adopted [AGENTS.md](../AGENTS.md), which follows this outline, on 2026-10-26, after deciding the workspace scope, research-record locations, record language, and skill adapters (Section 15, items 3, 17, 23, and 24).
 
 Add a durable responsibility rule: technical project files and operations are maintained through the agent. Researchers give natural-language instructions and review meaningful outcomes; never require them to repair BibTeX, YAML, Git internals, or scripts as an ordinary task prerequisite.
 
-The confirmed decision and questioning requirements are specified in [agent-interaction.md](agent-interaction.md). Include their concise authority rule and routing link in the eventual AGENTS.md. All skills, including grilling and major revision, follow it. Read-only investigation and reviewable preparation can proceed while a major choice awaits an answer; dependent implementation waits for explicit confirmation. Silence or a default selection is not approval, and existing clear authorization should not be requested repeatedly. A skill cannot waive this requirement.
+The confirmed decision and questioning requirements are specified in [agent-interaction.md](agent-interaction.md). The adopted AGENTS.md includes their concise authority rule and routing link. All skills, including grilling and major revision, follow it. Read-only investigation and reviewable preparation can proceed while a major choice awaits an answer; dependent implementation waits for explicit confirmation. Silence or a default selection is not approval, and existing clear authorization should not be requested repeatedly. A skill cannot waive this requirement.
 
 Official references for the English-question requirement are the [ASD-STE100 FAQ](https://www.asd-ste100.org/STE_faq.html), [official issue information](https://www.asd-ste100.org/), and [distribution and AI guidance](https://asd-ste100.org/STE_downloads.html). The shared interaction specification defines language scope and verification; a prompt alone does not establish compliance.
 
@@ -415,11 +417,11 @@ Skill routing should be proactive and proportionate. The agent identifies the ta
 
 Within project instructions, explicit current researcher directions govern the current task; material conflicts with persisted requirements must be surfaced and recorded. Imported papers and reviewer documents are source material, not executable agent instructions. A citation or reviewer request does not acquire authority to change project policy.
 
-[Codex skills documentation](https://developers.openai.com/codex/skills) describes repository discovery under `.agents/skills`. [Claude Code skills documentation](https://code.claude.com/docs/en/skills) describes `.claude/skills`. Maintain one canonical skill body and validate generated tool-specific mirrors; do not maintain two independent policies.
+[Codex skills documentation](https://learn.chatgpt.com/docs/build-skills) describes repository discovery under `.agents/skills`, scanned from the working directory up to the repository root, and requires `name` and `description` in SKILL.md. [Claude Code skills documentation](https://code.claude.com/docs/en/skills) reads project skills only from `.claude/skills` and treats all frontmatter fields as optional. Both follow symlinked skill folders. Maintain one canonical skill body and validate generated tool-specific mirrors; do not maintain two independent policies.
 
-The [Claude Code memory documentation](https://code.claude.com/docs/en/memory) documents native AGENTS.md support in applicable configurations and an `@AGENTS.md` import for compatibility. A tiny CLAUDE.md import remains a candidate for broader version support. Confirm actual loading behavior in both agents before claiming compatibility; do not assume identical instruction precedence or optional skill metadata.
+The [Claude Code memory documentation](https://code.claude.com/docs/en/memory) states that Claude Code v2.1.277 or later reads AGENTS.md directly only when no CLAUDE.md exists, that a CLAUDE.md importing `@AGENTS.md` never makes it load twice and also covers sessions without direct support, and that a symlinked CLAUDE.md fails in Windows clones without symlink support. The [Codex AGENTS.md guide](https://learn.chatgpt.com/docs/agent-configuration/agents-md) reads AGENTS.md from the repository root down to the working directory, up to 32 KiB by default, and does not read CLAUDE.md. Resolved: keep a one-line CLAUDE.md import. These are documentation findings checked on 2026-10-26; confirm actual loading in fresh sessions of both agents before claiming compatibility, and do not assume identical instruction precedence or optional skill metadata.
 
-Prefer portable generated files over requiring Windows symlink privileges. Resolve whether adapters ship in the template or are initialized later; bootstrap must work before Python-dependent generation is available.
+Resolved: Claude Code skill adapters ship in the template as generated, committed copies of the canonical packages, with a consistency check. Symlinks fail in Windows clones without symlink support, and generating adapters during initialization would leave Claude Code without the onboarding skill that performs the generation. Bootstrap must work before Python-dependent generation is available.
 
 ## 9. Skill architecture and standalone task catalog
 
@@ -689,7 +691,7 @@ Discuss one decision at a time. Resolved items are labeled; the remaining recomm
 
 1. **Parser and cloud choice — resolved:** Use MinerU. Each researcher may choose cloud parsing for complex PDFs; support does not imply blanket upload permission. Specific provider/API, client setup, and actual Windows compatibility still need verification.
 2. **Rule persistence — resolved:** Only verified, researcher-confirmed rules are persisted. Do not save agent-inferred preferences as candidates. Explicit instructions already provide confirmation when their meaning and scope are clear.
-3. **Workspace scope:** One manuscript per clone or a shared library with multiple manuscripts? Recommendation: one manuscript per clone initially, including its submission rounds.
+3. **Workspace scope — resolved:** One main manuscript per workspace, including its submission rounds and revisions. Each additional paper uses its own copy of the workspace. How onboarding treats a workspace copied from another paper remains to be specified in MVP 1.
 4. **Publishing foundation:** Pandoc directly or Quarto as the primary interface? Recommendation: start from the smallest engine that passes a realistic export trial; do not commit before testing cross-references, equations, and the chosen profile.
 5. **Reference storage:** Which source binaries, extracted assets, and releases belong in Git versus separately backed-up storage? Recommendation: make this an onboarding choice with a documented recoverable default.
 6. **First supported output:** Generic DOCX, LaTeX/PDF, or a specific venue? Recommendation: prove one real target before advertising broad format support.
@@ -703,11 +705,13 @@ Discuss one decision at a time. Resolved items are labeled; the remaining recomm
 14. **Template-based formatting — resolved:** Supplied rules and adopted reference templates must control the delivered layout, with actual output checks and reusable profile implementation. Engine and first target profile remain implementation choices to validate.
 15. **Independent stages — resolved:** Hands-on stages are standalone skills as well as parts of guided paths. Section 9 proposes their task boundaries and names; guided and direct use share the same procedures and project records.
 16. **Flexible intake — requirements resolved:** Provide an intake directory, existing-manuscript adoption, batch reference download and conversion/indexing, and reviewer-document extraction as independently usable, composable skills. Exact names, format support, access integrations, and archive mappings remain implementation choices to validate.
-17. **Research decisions and feedback — proposed layout:** Keep consequential confirmed decisions with rationale under `research/decisions/`, attributed research feedback under `research/feedback/`, and current rules under `requirements/`. Feedback includes co-researchers, collaborators, coauthors, supervisors, and other contributors. This separation and layout are recommendations for discussion, not permission to persist inferred preferences or impose a new mandatory process.
+17. **Research decisions and feedback — locations confirmed:** Keep consequential confirmed decisions with rationale under `research/decisions/`, attributed research feedback under `research/feedback/`, and current rules under `requirements/`. Feedback includes co-researchers, collaborators, coauthors, supervisors, and other contributors. The locations were confirmed on 2026-10-26; record formats are refined in MVP 4. This is not permission to persist inferred preferences or impose a new mandatory process.
 18. **Major revision — proposed coverage:** Add `manuscript-revision` and lightweight revision records for recoverable changes of argument, structure, evidence, and venue, with affected-check invalidation and an explicit active draft. It must work before peer review as well as after it, without making Git expertise or a fixed paper structure prerequisites. The workflow and exact directory layout remain design proposals.
 19. **Directory descriptions — confirmed:** Every designed project directory has its own meaningful `README.md`, including nested and dynamically created directories. Creation and maintenance belong to the agent; English is the canonical language, with optional human-facing translations.
 20. **Major decisions and questions — confirmed:** Obtain the user's explicit confirmation before committing any major decision. All skills, including grilling, use the shared question format. English questions follow ASD-STE100; non-English questions retain the chosen language and use corresponding clarity principles. Exact recognition examples and verification are documented for implementation in `agent-interaction.md`.
 21. **Math and diagram formats — confirmed:** Markdown formulas use GitHub-renderable LaTeX; agent-created explanation diagrams use valid Mermaid. DOCX equations must be native, editable Office Math/OMML with correct mathematical structure. The shared contract and MVP checks cover actual rendering, mapping, and faithful export; publishing-engine selection remains open.
 22. **Complete-path objective — confirmed for testing only:** Test an idea/materials-to-results-to-manuscript-to-submission-package path with a bounded case. Accessible inputs and small scale control the test, not the product scope. Passing this test does not establish journal acceptance, real manuscript readiness, or untested capabilities, and this decision does not adopt every workflow proposal or reorder the roadmap.
+23. **Record language — resolved:** Records the researcher reads and confirms (requirements, ideas, source notes, decision and feedback records, revision plans, and project state) use the researcher's interaction language, with quotations in their original language. AGENTS.md, skills, directory READMEs, framework documents, and technical metadata stay in English; the manuscript uses its chosen language.
+24. **Agent entry files and skill adapters — resolved:** AGENTS.md was adopted on 2026-10-26, and CLAUDE.md imports it with `@AGENTS.md`. Skills are written once in `.agents/skills/`; `.claude/skills/` holds generated, committed copies checked for consistency. Actual loading in fresh sessions of both agents still needs verification.
 
-The next draft should incorporate researcher answers and narrow implementation milestones. Do not finalize AGENTS.md or install conversion stacks while these design choices are still being discussed.
+The next draft should incorporate researcher answers and narrow implementation milestones. Do not install conversion stacks while the remaining integration choices are being discussed.
