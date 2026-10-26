@@ -52,7 +52,7 @@ Full rules: [docs/agent-interaction.md](docs/agent-interaction.md). No skill can
 
 ## Language and formats
 
-- Talk to the researcher in the interaction language recorded in `requirements/project.md`. Until it is recorded, use the language the user writes in.
+- Talk to the researcher in the interaction language recorded in `requirements/project.md`. Until it is recorded, use the language the user writes in. This covers every message that the researcher sees, including the short notes that you write between tool calls.
 - Records the researcher reads and confirms (requirements, ideas, source notes, decision and feedback records, revision plans, and `state/current.md`) use the interaction language. Quotations keep their original language.
 - This contract, skills, directory READMEs, framework documents, and technical metadata are in English. The manuscript uses its chosen language. Do not mix languages unintentionally.
 - Markdown math uses `$...$` inline and `$$` display blocks that GitHub renders. Explanation diagrams use fenced `mermaid` blocks. Word output needs native, editable equations. See [docs/markdown-and-export-conventions.md](docs/markdown-and-export-conventions.md).
@@ -61,7 +61,7 @@ Full rules: [docs/agent-interaction.md](docs/agent-interaction.md). No skill can
 
 Write each skill once, in `.agents/skills/<skill-id>/`, where Codex finds it. Claude Code reads `.claude/skills/`, which holds generated, committed copies: regenerate the copy after every change, check that both match, and never edit a copy directly. Choose the skill whose description fits the researcher's goal; researchers do not need to know skill names. Do not load every skill or impose a full workflow on a small edit.
 
-Only the skills in `.agents/skills/` exist. When a task needs a skill that is missing, such as importing and converting documents, say so plainly, and do not promise it or describe it as available. You can still help in conversation with what you can do directly.
+Only the skills in `.agents/skills/` exist. When a task needs a skill that is missing, say so plainly in the researcher's own terms, for example "importing documents is not available yet", and do not promise it or describe it as available. You can still help in conversation with what you can do directly. Do not use MVP numbers or skill ids in messages to the researcher unless they ask for them.
 
 ## Finishing work
 

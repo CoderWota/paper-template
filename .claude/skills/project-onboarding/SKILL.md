@@ -68,13 +68,13 @@ If the choice needs a credential or an installation, use `environment-management
 Write each answer as soon as it is confirmed, so an interruption loses nothing. Write in the interaction language.
 
 - `requirements/project.md`: the status (initialized, with the date), the research goal in the researcher's words, the interaction language, the manuscript language, and any confirmed audience, article type, or target venue. List the items that are still open.
-- `requirements/privacy.md`: the processing choice (local, a named cloud service, or decide later), the documents it covers, and any data-use requirement that the researcher confirmed.
+- `requirements/privacy.md`: the processing choice (local, a named cloud service, or decide later), the documents it covers, and any data-use requirement that the researcher confirmed. A declined or postponed offer is not a requirement; do not write it here.
 
 If the researcher states a writing rule, record it in `requirements/writing.md` through `constraint-maintenance`.
 
 ## Step 7: Offer the AI application privacy check
 
-Ask whether the researcher wants you to check if their AI application can use project content for model training. Recommend the check. If they agree, use `privacy-configuration`. Do not change an account setting without their explicit consent.
+Ask whether the researcher wants you to check if their AI application can use project content for model training. Recommend the check. If they agree, use `privacy-configuration`. Do not change an account setting without their explicit consent. If they decline or postpone, note it as deferred, in their words, only in `state/current.md`. Do not write it to `requirements/privacy.md`, and do not add a rule that they did not state.
 
 ## Step 8: Finish
 
@@ -98,4 +98,5 @@ Do not delete, move, or overwrite anything in this case. This folder can be the 
 - The researcher stated or confirmed every recorded item.
 - No inferred preference appears in any file.
 - `state/current.md` names the next action, in the interaction language.
+- A declined or postponed offer appears only in `state/current.md`, not in `requirements/`.
 - No existing material was deleted, moved, or overwritten.
