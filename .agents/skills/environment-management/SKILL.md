@@ -9,6 +9,7 @@ Outcome: a working setup for the task at hand, or one exact, plain next step. Se
 
 ## Rules for this skill
 
+- Write everything that the researcher sees in the interaction language, from your first note on, including the short notes between tool calls. Until the interaction language is recorded, use the language that the researcher writes in. This file is in English; your notes are not.
 - Follow `AGENTS.md`. Installing, upgrading, or removing software and changing a system setting are decisions: explain the effect, recommend one option, and wait for explicit consent.
 - Inspect before you change anything. Reuse a compatible installed tool. Never upgrade or replace a working global installation to suit this workspace.
 - Prefer per-user installations that need no administrator rights. Basic work never needs Docker, WSL, a GPU, or a local model.
@@ -50,6 +51,8 @@ Use the path notes from the report: spaces or non-ASCII characters, a long Windo
 
 Do this only for a service that the researcher chose and that needs a credential. An AI application subscription does not mean that a separate API key is necessary.
 
+Before you look for a key page or start the entry, check that a skill in `.agents/skills/` or a script in `scripts/` uses the credential. If none does yet, the credential is not needed now. Say so plainly in the researcher's own terms, for example "importing documents is not available yet, so you do not need a key now". Note the credential as deferred in `state/current.md`. Do not look up the key page or the variable name, and do not collect a value. The exception is a test value that the researcher asks for in order to try the private entry page: it needs no integration.
+
 1. Find the exact variable name and the official page where the researcher gets the value, from the integration's documentation.
 2. Explain what the credential allows and where it is stored: `.env.local`, which Git ignores but which is not encrypted.
 3. Start the private entry page in the background, so that it can wait for the researcher (up to 10 minutes by default). Write the page texts in the researcher's language:
@@ -83,4 +86,5 @@ If the command refuses because Git does not ignore `.env.local`, or already trac
 | An installation needs administrator rights | Look for a per-user alternative. If there is none, explain the exact requirement and let the researcher decide. |
 | A credential is rejected or expired | Ask the researcher to get a new value from the official page, then enter it again (step 5). |
 | The workspace is in a cloud-synced folder | Explain the sync conflicts and suggest a local folder. Moving the workspace is the researcher's choice. |
+| The researcher wants a service for which no skill or script exists yet | Say that it is not available yet, note the credential as deferred in `state/current.md`, and collect no value (step 5). |
 | A tool has the wrong architecture or version | Explain the supported options. Do not replace a working global tool without consent. |

@@ -9,12 +9,13 @@ Outcome: the few confirmed settings needed to begin, an accurate `state/current.
 
 ## Rules for this skill
 
+- Write everything that the researcher sees in the interaction language, from your first note on, including the short notes between tool calls. Until the interaction language is recorded, use the language that the researcher writes in. This file is in English; your notes are not.
 - Follow `AGENTS.md`, especially "Decisions and questions" and "Confirmed requirements only".
 - Ask one question at a time. Give the reason in one sentence and your recommendation. Wait for the answer.
 - Record an answer only when the researcher states or confirms it. Do not record a guess.
 - Never delete, move, or overwrite existing material. Keep any text the researcher wrote in the files you update.
 - Never ask for a password or an API key in the conversation.
-- Talk in the researcher's language. After the interaction language is confirmed, write records in that language.
+- After the interaction language is confirmed, write records in that language.
 - Skip a question when the request or the workspace already answers it. An explicit statement is an answer.
 
 ## Step 1: Inspect the workspace before you ask

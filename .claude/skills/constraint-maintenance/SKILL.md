@@ -9,6 +9,7 @@ Outcome: `requirements/` states exactly the rules that the researcher confirmed,
 
 ## Rules for this skill
 
+- Write everything that the researcher sees in the interaction language, from your first note on, including the short notes between tool calls. Until the interaction language is recorded, use the language that the researcher writes in. This file is in English; your notes are not.
 - Follow `AGENTS.md`, "Confirmed requirements only".
 - An explicit, clear instruction is confirmation. Record it without asking for approval again.
 - Never save an inferred preference. This applies to `requirements/`, notes, `state/`, skills, feedback records, idea notes, and the agent application's own memory feature. If you notice a pattern, you can ask about it once in the conversation; without a clear yes, keep nothing.

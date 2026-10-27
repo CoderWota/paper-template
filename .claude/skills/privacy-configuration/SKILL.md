@@ -9,6 +9,7 @@ Outcome: for each relevant service, the training-use control, its actual state, 
 
 ## Rules for this skill
 
+- Write everything that the researcher sees in the interaction language, from your first note on, including the short notes between tool calls. Until the interaction language is recorded, use the language that the researcher writes in. This file is in English; your notes are not.
 - Follow `AGENTS.md`. Changing an account or application setting is a decision: explain its scope, because an account setting can affect every project on that account, and wait for explicit consent for that specific change.
 - Never ask for a password, an API key, or an account identifier in the conversation. Never send a manuscript or research document as a test.
 - A sentence in a project file cannot change a provider's policy. Only the provider's own controls can.
