@@ -2,13 +2,13 @@
 
 Agent-maintained record of what has actually been implemented and verified, one entry per MVP from the [MVP implementation guideline](mvp-implementation-guideline.md). A capability counts as working only after its acceptance evidence has been observed. The presence of a directory, a README, or a SKILL.md is not evidence.
 
-Updated: 2026-10-26.
+Updated: 2026-10-27.
 
 ## Summary
 
 | MVP | Researcher-visible outcome | Status |
 | --- | --- | --- |
-| 1 | Usable project and confirmed memory | In progress: scaffold, adopted AGENTS.md, skill copy script, and all four skills implemented. Claude Code runs 1 to 3 are done: by each row's latest result, 15 of 20 checklist rows pass, 3 fail on minor points (D1, D2, G1), and 2 were not run. Rows that a later run did not repeat keep their earlier result. Codex and Windows have not been run, so nothing is verified |
+| 1 | Usable project and confirmed memory | In progress: scaffold, adopted AGENTS.md, skill copy script, and all four skills implemented. Claude Code runs 1 to 4 are done: by each row's latest result, 15 of 20 checklist rows pass, 3 fail on minor points (D1, D2, G1), and 2 were not run. Rows that a later run did not repeat keep their earlier result. Codex and Windows have not been run, so nothing is verified |
 | 2 | Flexible intake and MinerU batch ingestion | Planned |
 | 3 | Searchable literature and traceable evidence | Planned |
 | 4 | Ideas, impact, journal choice, and feasible research plans | Planned |
@@ -20,7 +20,7 @@ Updated: 2026-10-26.
 
 Execution order (revised 2026-10-26): 1 → 7 → 2 → 3 → 4 → 5 → 6 → 8 → 9, with the export trial running alongside MVP 7; see the [MVP implementation guideline](mvp-implementation-guideline.md#3-mvp-overview-and-dependencies). The export trial is planned.
 
-The four MVP 1 skills are implemented and have had three acceptance passes on Claude Code; none is verified. No end-to-end test has been run.
+The four MVP 1 skills are implemented and have had four acceptance passes on Claude Code; none is verified. No end-to-end test has been run.
 
 ## MVP 1, partial increment: workspace scaffold
 
@@ -172,7 +172,7 @@ Not verified:
 
 Status: run 1 is complete for Claude Code on macOS. MVP 1 is not verified: four checklist rows failed on minor points, nine defects were open, and Codex and Windows have not been run. Run 2, below, fixed four of the nine defects.
 
-Method. The template-repository agent acted as the researcher in headless Claude Code sessions on a disposable clone of commit `51f93e7` (no Git remote), with the scripted answers of the [MVP 1 checklist](acceptance/mvp-1.md). Environment: Claude Code 2.1.170, model `claude-sonnet-5-5`, macOS 26.6.2 on Apple Silicon (16 GB), Python 3.12.9. The run used 37 session logs and 189 agent turns, about nine minutes of agent time, and about $4.23 in API-equivalent cost. The logs stay in the maintainer's scratchpad, not in the repository.
+Method. The template-repository agent acted as the researcher in headless Claude Code sessions on a disposable clone of commit `51f93e7` (no Git remote), with the scripted answers of the [MVP 1 checklist](acceptance/mvp-1.md). Environment: Claude Code 2.1.170, model `claude-sonnet-5-5`, macOS 26.6.2 on Apple Silicon (16 GB), Python 3.12.9. The run used 37 session logs and 189 agent turns, about nine minutes of agent time, and about $4.23 in API-equivalent cost. The logs were kept in the maintainer's scratchpad, not in the repository. The scratchpad was cleared on 2026-10-27; see run 4 for the evidence that remains.
 
 Results: 14 rows pass (A1, B2, C1, D3, D4, E1, E2, E3, E4, E5, E6, F1, F2, H1), 4 fail on minor points (B1, D1, D2, G1), and 2 were not run (G2 and the Windows baseline). E4, F1, and F2 passed after their scripts were corrected; the checklist holds the corrected scripts.
 
@@ -199,7 +199,7 @@ Defects. Changing a skill or `AGENTS.md` needs the maintainer's decision; the fi
 | --- | --- | --- | --- | --- |
 | D-1 | Medium | Fixed in runs 2 and 3 | Records that the researcher reads were written in English: `state/current.md` after onboarding, and the first decision record. The adopted decision says these records use the interaction language. | Applied: the last step of `project-onboarding` and the decision-record step of `constraint-maintenance` say "in the interaction language". Runs 2 and 3: every record and both decision records were in Chinese. The interim narration is a separate defect (D-12). |
 | D-2 | Low | Open | The readiness report did not say that reading and writing work without the converter, and its closing message bundled two questions. In runs 2 and 3, two of four samples skipped the inspection script. | In `environment-management`, state what still works, run the inspection first, and ask one question. |
-| D-3 | Medium | Partly fixed (runs 2 and 3) | The agent treated PDF import as available once MinerU is installed, and implied that a key would soon be entered for parsing. No ingestion skill exists yet. | Applied: `AGENTS.md`, "Skills", says that only the skills in `.agents/skills/` exist and that the agent must say so plainly when a task needs a missing skill, while it can still help in conversation. Result: asked directly about importing PDFs (D1), the agent said that no import skill exists in 4 of 4 samples; talking about cloud parsing and keys (D2), in 1 of 7. Proposed addition: in `environment-management`, step 5, research or collect a credential only when a skill or script in this workspace uses it; when none does, say so plainly and defer the credential. |
+| D-3 | Medium | Partly fixed (runs 2 to 4); routing gap found | The agent treated PDF import as available once MinerU is installed, and implied that a key would soon be entered for parsing. No ingestion skill exists yet. | Applied in `AGENTS.md`, "Skills", and in `environment-management`, step 5: check first whether a skill or script uses the credential; if none does, say so plainly and defer it. Run 4, three D2 samples: A and B searched the skills and scripts for MinerU, looked up no key page, said that no import skill exists and that no key is needed now, and deferred the credential in `state/current.md`. C loaded `privacy-configuration` but not `environment-management`, so the rule never applied; it said the key is needed at the first upload. Run 3: 1 of 7 said so. Proposed fix (decision needed): add the same check to `privacy-configuration`, where a cloud choice is handled. |
 | D-4 | Low | Open (not seen in runs 2 and 3) | The final onboarding report named `inbox/imports/` as the place for documents. That folder holds import records; documents go in `inbox/`. | Name `inbox/` in the last step of `project-onboarding`. The report no longer lists import as an example next action. |
 | D-5 | Low | Open | `project-onboarding` detects an interrupted onboarding from `state/current.md`, which it updates only at the end. Detection worked through the status line in `requirements/project.md`, in every run. | Detect through `requirements/project.md`, or update `state/current.md` after the first answer. |
 | D-6 | Medium | Fixed in run 2 | When recording the British-spelling rule, the agent added an exception (quotations, proper names, and bibliography titles keep their spelling) that the researcher had not stated. | Applied: `constraint-maintenance` adds an example or an exception only when the researcher gave or confirmed it. Run 2, two samples: none recorded; one run asked whether the researcher wanted an exception. |
@@ -207,8 +207,9 @@ Defects. Changing a skill or `AGENTS.md` needs the maintainer's decision; the fi
 | D-8 | Medium | Fixed in run 2 | After a confirmed change of the research goal, the agent rewrote the manuscript introduction, both times unasked. | Applied: a new step in `constraint-maintenance` lists the manuscript passages that the change affects and asks before editing them. Run 2, two samples: the introduction stayed unchanged until the answer, and both answers worked. |
 | D-9 | Low | Open | In E6 the reply rewrote the sentence before it asked whether the request was a one-time exception. Nothing was saved. It happened again in run 2. | Ask first, as step 3 says, or accept the combined reply. |
 | D-10 | Low | Fixed in run 3 | Onboarding recorded the declined privacy check in `requirements/privacy.md` as a confirmed item, with the added sentence "do not check or change any account setting without the researcher's consent". The researcher had said only "not now" to the offer. | Applied: `project-onboarding` notes a declined or postponed offer only in `state/current.md`, and does not write it to `requirements/privacy.md`. Run 3, two samples: `privacy.md` stayed unchanged and the deferral is only in `state/current.md`; one sample gave the reason. |
-| D-11 | Low | Fixed in run 3 (few samples) | Replies to the researcher named internal terms: "MVP 2", the skill id `source-ingestion`, and "想法发展技能" (the idea-development skill). | Applied: `AGENTS.md`, "Skills", asks the agent to describe a missing capability in the researcher's own terms and not to use MVP numbers or skill ids unless asked. Run 3: none of 36 messages used them (3 of 49 before). |
-| D-12 | Low | Applied; not shown to work | The sentence before the first tool call of several turns was in English, although the researcher wrote Chinese. Only the records are covered by the language decision. | Applied: `AGENTS.md`, "Language and formats", says that the rule covers the short notes between tool calls. Run 3: English-only notes 2 of 16 (12%), against 4 of 25 (16%) before. Both are the first note of a session, written right after the agent loaded an English skill. Proposed addition: put the same rule in the rules of each skill. |
+| D-11 | Low | Fixed in runs 3 and 4 (few samples) | Replies to the researcher named internal terms: "MVP 2", the skill id `source-ingestion`, and "想法发展技能" (the idea-development skill). | Applied: `AGENTS.md`, "Skills", asks the agent to describe a missing capability in the researcher's own terms and not to use MVP numbers or skill ids unless asked. Run 3: none of 36 messages used them (3 of 49 before the fix). Run 4: none of 24 text blocks in the run 4 sessions. |
+| D-12 | Low | Fixed in run 4 (few samples) | The sentence before the first tool call of several turns was in English, although the researcher wrote Chinese. Only the records were covered by the language decision. | Applied to `AGENTS.md`, "Language and formats", and to the rules of all four skills. Run 3: English-only notes 2 of 16 (12%). Run 4: 0 of 17 notes in all run 4 sessions, including the first three B1 turns, whose transcript is kept under `~/.claude/projects/`. |
+| D-13 | Low | New in run 4; decision needed | When the researcher states a wish to use cloud parsing, the agent records the choice in `requirements/privacy.md` before the scope of documents is known: in 2 of 3 samples in run 4 and 2 of 3 in run 3. The third sample asked the scope first. Each record says that no upload is authorized, and lists the conditions. | Decide: (a) keep the current practice, recording the wish with its scope marked as not yet confirmed; or (b) ask the scope first and record only then. |
 
 ## MVP 1 acceptance run 2: Claude Code (2026-10-26)
 
@@ -262,18 +263,39 @@ Other observations: in two of three D2 samples the agent recorded the wish for c
 
 Test limits are those of run 2. The samples are few, and the counts for D-11 and D-12 are counts of messages, not measures of the researcher's experience.
 
+## MVP 1 acceptance run 4: Claude Code (2026-10-27)
+
+Status: the two additions for D-3 and D-12 are committed as bed8899. D-11 and D-12 show no failure in the samples taken. D-3 is partly fixed: two of three D2 samples behaved as the rule says, and the third never reached the rule, because the skill that handles a cloud choice does not carry it. MVP 1 is not verified. By each row's latest result, 15 rows pass, 3 fail on minor points (D1, D2, and G1), and 2 were not run. Codex and Windows have not been run.
+
+Method. The fourth disposable copy, `/Users/wota/Projects/paper-template-mvp1-test-claude-r4`, was cloned from the template with `docs/` restored to its state at `51f93e7` and the current skills and `AGENTS.md` laid over it, as in run 3. The test subject stayed `claude-sonnet-5-5`, as in runs 1 to 3; the `/model` change to Haiku 5.5 applies only to the orchestrating session. The first B1 session reached the account's session limit during its fresh-session step; that step was repeated on 2026-10-27 in a new session. Samples: B1 once (its first three turns ran in the first session, the rest in the new one); D2 three times from the same state after B1, restored from a snapshot before each sample (A with the scripted confirmation, B and C with the first message only); E1 once. The harness was rebuilt on 2026-10-27 with the same tool allow-list and settings.
+
+Results.
+
+- B1 (Pass). After the interruption the continuation asked only the open question (manuscript language), recorded each answer in Chinese, and then asked the processing choice and the AI privacy check. The declined check is only in `state/current.md`. `requirements/privacy.md` holds "以后再定" as a deferred processing choice, which the skill lists as a choice to record.
+- D2 (Fail, minor). A and B searched the skills and scripts for MinerU, looked up no key page, collected no value, said that no import skill exists and that no key is needed now, and recorded the credential as deferred in `state/current.md`. C loaded `privacy-configuration` but not `environment-management`, ran no check, and said that the key is needed at the first upload, which implies that parsing exists. No sample tried a web search or a key lookup. On the cloud scope: A asked which documents the route covers before its record was complete; B and C recorded the wish first (D-13).
+- E1 (Pass). The rule was recorded with its scope, no example or exception was added, and the notes were in Chinese.
+- H1 (Pass). The README and skill-copy checks pass on the run 4 copy; its memory folder is empty; no MVP number or skill id appears in its text.
+
+Defect verdicts.
+
+- D-12: 0 English-only notes of 17 across all run 4 sessions. Run 3 had 2 of 16. The sample is small.
+- D-11: no MVP number or skill id in any of the 24 text blocks of the run 4 sessions.
+- D-3: partly fixed. The rule lives in `environment-management`, but a cloud choice is routed through `privacy-configuration` (sample C). The same check there would close the gap; that is a decision for the maintainer.
+
+Evidence. The scratchpad was cleared on 2026-10-27. The stream logs of runs 1 to 3, and of the first three B1 turns of run 4, are gone from it. The numbers recorded for those runs were taken from the logs at the time and stay as recorded. Claude Code keeps a session transcript for each test copy under `~/.claude/projects/` (run 4 has 7 files, including the first B1 session), and the run 4 counts for D-11 and D-12 were checked against them. The surviving run 4 logs cost about $1.2 in API-equivalent terms, not counting the first three B1 turns.
+
 ## Remaining for MVP 1
 
-All four MVP 1 skills have first implementations, and runs 1 to 3 on Claude Code are complete. Remaining:
+All four MVP 1 skills have first implementations, and runs 1 to 4 on Claude Code are complete. Remaining:
 
-- Decide on the open defects (D-2, D-4, D-5, D-7, and D-9) and on the two additions that run 3 proposes: for D-3, a credential step that requires an existing integration, and for D-12, the language rule inside each skill. Fix those that are accepted, and repeat the affected scenarios.
-- Repeat the whole checklist on Claude Code after those fixes, because `AGENTS.md` and two skills changed after run 1.
+- Decide three things, then apply the accepted ones and repeat the affected scenarios: the routing gap for D-3 (whether `privacy-configuration` gets the same check); D-13 (whether a wish to use cloud parsing is recorded before its scope is known); and the open defects D-2, D-4, D-5, D-7, and D-9.
+- Repeat the whole checklist on Claude Code after those changes, because `AGENTS.md` and four skills changed after run 1.
 - Run the checklist in Codex, which is not installed on the maintainer's computer yet, and on the Windows baseline. Recreate the Codex test copy first: it still holds the state before the fixes.
 - Run the scenarios that the runs could not exercise: the interactive question tool, missing Python or tools, onboarding in English, and an account control that the researcher can read.
 - Start the read-only MinerU service research.
 - Implement the English question checks against the official ASD-STE100 issue, and the clarity review for questions in other languages. The standard and its dictionary are not bundled with the template; they need access under the publisher's terms.
 
-The [MVP 1 acceptance checklist](acceptance/mvp-1.md) holds the scenarios and the results table. The disposable test copies have no Git remote: `/Users/wota/Projects/paper-template-mvp1-test-claude` (run 1), `/Users/wota/Projects/paper-template-mvp1-test-claude-r2` (run 2), and `/Users/wota/Projects/paper-template-mvp1-test-claude-r3` (run 3) each hold the changes of their run, and `/Users/wota/Projects/paper-template-mvp1-test-codex` is untouched, cloned from `51f93e7`, so it predates the fixes.
+The [MVP 1 acceptance checklist](acceptance/mvp-1.md) holds the scenarios and the results table. The disposable test copies have no Git remote: `/Users/wota/Projects/paper-template-mvp1-test-claude` (run 1), `/Users/wota/Projects/paper-template-mvp1-test-claude-r2` (run 2), `/Users/wota/Projects/paper-template-mvp1-test-claude-r3` (run 3), and `/Users/wota/Projects/paper-template-mvp1-test-claude-r4` (run 4) each hold the changes of their run. `/Users/wota/Projects/paper-template-mvp1-test-codex` is untouched, cloned from `51f93e7`, so it predates the fixes.
 
 ## Open items affecting the order
 
