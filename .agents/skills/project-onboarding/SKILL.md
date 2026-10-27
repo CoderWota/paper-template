@@ -31,7 +31,7 @@ Research material means sources in the library, manuscript sections in the manif
 | Case | Signs | Action |
 | --- | --- | --- |
 | New workspace | `requirements/project.md` says the project is not initialized, and there is no research material | Go to step 2. Use any `inbox/` files as context. |
-| Interrupted onboarding | Some answers are recorded, and `state/current.md` names the open items | Continue with the first open item. Do not ask confirmed items again. |
+| Interrupted onboarding | Some answers are recorded in `requirements/project.md` or `state/current.md` | Continue with the first open item. Do not ask confirmed items again. |
 | Workspace already holds work | Confirmed project requirements or research material exist | Go to "A workspace that already holds work". |
 
 Start the conversation with two sentences: what onboarding does, and that it asks a few questions whose answers can wait when unknown.
@@ -69,7 +69,7 @@ If the choice needs a credential or an installation, use `environment-management
 Write each answer as soon as it is confirmed, so an interruption loses nothing. Write in the interaction language.
 
 - `requirements/project.md`: the status (initialized, with the date), the research goal in the researcher's words, the interaction language, the manuscript language, and any confirmed audience, article type, or target venue. List the items that are still open.
-- `requirements/privacy.md`: the processing choice (local, a named cloud service, or decide later), the documents it covers, and any data-use requirement that the researcher confirmed. A declined or postponed offer is not a requirement; do not write it here.
+- `requirements/privacy.md`: the processing choice (local, a named cloud service, or decide later), the documents it covers, and any data-use requirement that the researcher confirmed. A declined or postponed offer is not a requirement; do not write it here. A cloud service is recorded only after its scope is confirmed (see `privacy-configuration`).
 
 If the researcher states a writing rule, record it in `requirements/writing.md` through `constraint-maintenance`.
 
@@ -80,7 +80,7 @@ Ask whether the researcher wants you to check if their AI application can use pr
 ## Step 8: Finish
 
 1. Update `state/current.md` in the interaction language, every line of it: what is set up, what is deferred, and the next action. The researcher reads this record.
-2. Report in the interaction language: the recorded settings with links to the files, the deferred items, and one recommended next action that you can carry out now with the available skills and your own tools.
+2. Report in the interaction language: the recorded settings with links to the files, the deferred items, and one recommended next action that you can carry out now with the available skills and your own tools. Name `inbox/` as the place for documents; `inbox/imports/` holds the agent's import records, not documents.
 
 ## A workspace that already holds work
 

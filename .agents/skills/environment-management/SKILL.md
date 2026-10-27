@@ -16,6 +16,7 @@ Outcome: a working setup for the task at hand, or one exact, plain next step. Se
 - A missing tool must not block unrelated work. Reading and writing Markdown never needs a tool.
 - Never ask for a password or an API key in the conversation. Never read `.env.local` yourself or print a value from it.
 - Keep what you observed separate from what you assume. Do not say that a setup works until you have run it.
+- Before you say whether this computer is ready for a task, run the inspection in step 1. Say what still works without the missing tool; reading and writing Markdown never needs one. Ask at most one question in that report.
 
 ## Step 1: Inspect the computer
 

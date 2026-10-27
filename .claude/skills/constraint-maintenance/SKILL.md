@@ -45,8 +45,8 @@ Language rules belong in `requirements/project.md`: the manuscript language, the
 Read the active rules in the target file before you write.
 
 - The same rule is already recorded: do not add it again. Update its scope or examples if the researcher changed them.
-- The new rule conflicts with an active rule: show both rules and ask one question. The choices are to replace the old rule, to limit one rule to a narrower scope, or to keep the old rule. Recommend one choice.
-- A current request conflicts with an active rule: say so before you act, and ask whether this is a one-time exception or a change of the rule. A one-time exception changes no file.
+- The new rule conflicts with an active rule: show both rules and ask one question. The choices are to replace the old rule, to limit one rule to a narrower scope, or to keep the old rule. Recommend one choice. If the researcher's words already say to replace or switch to the new rule (for example "改用…" or "switch to …"), that is the replacement: record it and name the rule that it replaces, without a question. Ask only when the words leave the relation open.
+- A current request conflicts with an active rule. If it names one passage or sentence ("这一句", "this sentence"), it is a one-time edit: make the edit, say that no rule changed, and offer to change the rule if the researcher wants. Otherwise, say so before you act, and ask whether this is a one-time exception or a change of the rule. A one-time exception changes no file.
 
 ## Step 4: Write the rule
 

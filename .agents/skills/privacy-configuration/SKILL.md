@@ -16,6 +16,7 @@ Outcome: for each relevant service, the training-use control, its actual state, 
 - Keep these topics apart: training use, retention, upload for processing, telemetry and error reports, and feedback that the user submits. A telemetry opt-out, a deleted session, or a short retention period is not a training opt-out.
 - Read the current official sources for the exact route every time. [sources.md](sources.md) lists starting points that were checked on a stated date; check them again before you rely on them.
 - During template development, do not change the template maintainer's own settings.
+- A cloud document-processing service is available only through a skill or script in this workspace that calls it. Before you discuss a key, an upload, or a processing setup, check whether one exists (see `environment-management`, step 5). If none does, say plainly that cloud parsing is not available yet, note the setup as deferred in `state/current.md`, and do not look up a key page or say that a key will be needed at the first upload.
 
 ## Step 1: Identify the routes
 
@@ -67,6 +68,7 @@ Never classify a control as observed because you showed instructions or wrote a 
 
 - Write a short report in `.local/privacy-report.md` from [report-template.md](report-template.md), in the researcher's language. `.local/` stays on this computer and outside version history. Do not include account identifiers, email addresses, credentials, screenshots, or research content.
 - Write to `requirements/privacy.md` only the choices that the researcher confirms as project requirements, for example "Use only services that do not train on my documents." Use the interaction language.
+- A wish to use a cloud service is not yet a confirmed choice. Before you record one, ask one question that gives your recommendation for its scope (which documents may leave this computer) and notes that the service's own terms are checked before the first upload. Record the choice, with that scope, only after the researcher answers. Until then, note the wish as open in `state/current.md`.
 - Report each route with its control, state, and evidence type, the exceptions that remain, and one next step.
 
 ## When to run again
