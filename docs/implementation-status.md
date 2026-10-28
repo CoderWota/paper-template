@@ -2,13 +2,13 @@
 
 Agent-maintained record of what has actually been implemented and verified, one entry per MVP from the [MVP implementation guideline](mvp-implementation-guideline.md). A capability counts as working only after its acceptance evidence has been observed. The presence of a directory, a README, or a SKILL.md is not evidence.
 
-Updated: 2026-10-27.
+Updated: 2026-10-28.
 
 ## Summary
 
 | MVP | Researcher-visible outcome | Status |
 | --- | --- | --- |
-| 1 | Usable project and confirmed memory | In progress: scaffold, adopted AGENTS.md, skill copy script, and all four skills implemented. Claude Code runs 1 to 5 are done: by each row's latest result, 16 of 20 checklist rows pass, 2 fail on minor points (D1, G1), and 2 were not run. Rows that a later run did not repeat keep their earlier result. Codex and Windows have not been run, so nothing is verified |
+| 1 | Usable project and confirmed memory | In progress: scaffold, adopted AGENTS.md, skill copy script, and all four skills implemented. Claude Code runs 1 to 10 are done. Runs 1 to 8 used Sonnet 5.5 as the subject model; runs 9 and 10 use Haiku 5.5, which the maintainer now requires. Run 10 moved the case-specific sentences out of the contract and fixed their causes in skills, table data, and a script; Haiku passes most samples of B1, F1, E1, and D1, with residual misses. Codex and Windows have not been run, so nothing is verified |
 | 2 | Flexible intake and MinerU batch ingestion | Planned |
 | 3 | Searchable literature and traceable evidence | Planned |
 | 4 | Ideas, impact, journal choice, and feasible research plans | Planned |
@@ -20,7 +20,7 @@ Updated: 2026-10-27.
 
 Execution order (revised 2026-10-26): 1 → 7 → 2 → 3 → 4 → 5 → 6 → 8 → 9, with the export trial running alongside MVP 7; see the [MVP implementation guideline](mvp-implementation-guideline.md#3-mvp-overview-and-dependencies). The export trial is planned.
 
-The four MVP 1 skills are implemented and have had five acceptance passes on Claude Code; none is verified. No end-to-end test has been run.
+The four MVP 1 skills are implemented and have had ten acceptance runs on Claude Code; none is verified. No end-to-end test has been run.
 
 ## MVP 1, partial increment: workspace scaffold
 
@@ -319,19 +319,160 @@ Defect verdicts.
 
 Evidence and cost. The run 5 copy was built from the working tree on 2026-10-27, before commit 83f1839, which holds the same skill content. The harness was the one rebuilt for run 4, and the subject model stayed `claude-sonnet-5-5`. The 22 sessions cost about $2.1 in API-equivalent terms.
 
+## MVP 1 acceptance runs 6 and 7: Claude Code (2026-10-27)
+
+Status: run 7 fixed the missing decision record for a confirmed research-goal change (D-15) and a decision-record trigger that was too broad (D-18). Its samples also show two open defects: an availability rule that blocks required questions and offers (D-16), and an offer to rewrite the introduction in every confirmation sample (D-17). MVP 1 is not verified.
+
+Method. Disposable copies without a Git remote, each cloned from commit `3e1e08e`, the run 6 baseline. That commit includes the prototype per-turn reminder (`scripts/turn_reminder.py`, a `UserPromptSubmit` hook), so the copies ran with it. The fixes were laid over the baseline in each copy and were not committed. Subject model `claude-sonnet-5-5`, with the scripted answers of the checklist. Copies: r7 (run 6: E1, E4, E6, D2), r8 (run 6: B1 and F1 on a clean baseline), r9 (run 7: first decision fix), r10 (run 7: scope fix), and r11 (run 7: final wording, with B1 and F1 again, D1 twice, E1, and E4).
+
+Incident. While restoring the F1 baseline of r7, I reset its `requirements/project.md` and `state/current.md` to the template state with `git checkout`. I could not rebuild the pre-F1 state from the saved patch, because the RTK filter rewrote the `git diff` output. Also, r7's `writing.md` showed no rule, although its run logs wrote one, and I could not establish when that happened. The F1 scenario was therefore repeated on r8, built afresh. The r7 results are recorded from the run logs and the notes of the earlier session.
+
+Results.
+
+- B1 (r8, run 6): Fail (minor). Records and `privacy.md` were correct, and no decision record was written, but the final report gave two next actions, inbox and conversation (D-19).
+- B1 (r9, run 7): Fail. The language answer was recorded as a decision (D-18); the rest matched r8.
+- B1 (r10, run 7): Fail (minor). No decision record. `privacy.md` got a deferral line, and the final report gave two next actions (D-19).
+- B1 (r11, run 7): Fail. The document-processing question was skipped, because no document was at hand, which step 5 of `project-onboarding` allows. The scripted answer "以后再定" was then applied to the privacy-check question; the script, not the skill, was wrong (corrected in run 10).
+- F1 (r8, run 6): the question turn changed no file and gave a recommendation. The confirmation updated the goal and the state file, left the manuscript unchanged, and wrote no decision record or index entry (D-15).
+- F1 (r9, r10, and r11, run 7): decision record and index entry in 3 of 3; manuscript unchanged in 3 of 3; the question turn changed no file in 3 of 3. All three offered to rewrite the introduction as a choice (D-17).
+- E1 and E4, explicit forms: r9 Fail, with a decision record for spelling and the rule in `project.md` (D-18). r10 and r11 Pass: the rule is in `writing.md`, a replacement names the rule it replaces, and no decision record is written.
+- D1: r10 (one sample) Fail. The skill was not loaded, and no check was run, because the agent treated the check as part of an unavailable capability (D-16). r11 (two samples): both loaded the skill and ran the inspection, which reported the system, processor, and Python. One listed several next steps (minor); the other gave one question.
+- H1 (r10 and r11): pass. The README and skill-copy checks pass, the availability table and writing-rule form pass, and the memory folder is empty.
+
+Defects.
+
+- D-15 (Medium; fixed in run 7 in 3 of 3 samples): A confirmed research-goal change got no decision record (0 of 1 samples in run 6). The record duty sat only in a step of `constraint-maintenance` for replacing a rule, and the agent did not load that skill for a goal change. Applied: a standing rule "Decisions" in `AGENTS.md`; the skill's description names the research question or goal; the skill's step now only links the record.
+- D-16 (Medium; open): The availability rule removed required questions and checks. In r10, D1 loaded no skill and ran no check, saying that no checks exist for an unavailable capability, although the environment check is available. In r11, the document-processing question was skipped; run 10 showed that step 5 of `project-onboarding` allows this, so it is not a defect. Applied so far: the description of `environment-management` names the readiness question (D1 loaded it in 2 of 2 samples in r11), and the "Capabilities" rule says to answer the part that an available capability covers and to say which part is not available. Still open: "offer it as a choice" is broad enough to suppress decisions the researcher must make, such as the processing mode, which `AGENTS.md` requires to be confirmed.
+- D-17 (Low; open): The introduction-rewrite option ("现在按新目标重写") appeared in all four confirmation samples (one in run 6, three in run 7), although the availability table lists manuscript revision as not available yet. The wording "do not offer it as a choice" did not change this. Proposed: the manuscript-text standing rule names the choices that may be offered (keep the passage as an open item, or the researcher edits it) and says that revising manuscript text is not available yet.
+- D-18 (Medium; fixed in r10 and r11, 2 of 2 samples): The decision-record rule listed the manuscript language and central terminology as consequential. Spelling therefore got a decision record (r9, E1 and E4), the language answer got one (r9, B1), and the spelling rule went to `project.md`. Applied: consequential choices are research choices only (the research question or goal, a method, corpus or inclusion boundaries, an excluded analysis, the central argument); writing rules, language settings, and wording get no record. `constraint-maintenance`, Step 2, places spelling in `requirements/writing.md` and language settings in `requirements/project.md`.
+- D-19 (Low; open): The final onboarding report gave two next actions (r8 and r10). r10 also wrote the postponed processing choice into `requirements/privacy.md` as a status line, although a postponed choice is not a requirement. Proposed: one next action, and postponed choices only in `state/current.md`, as D-10 says.
+
+Changes made in the working tree (committed on 2026-10-28 in `68b92f4`, after run 10 had changed them again): `AGENTS.md` (the "Decisions" standing rule, the "Capabilities" rule, the availability row "Record standing rules and research decisions", and the decision sentence removed from "Confirmed requirements only"); `constraint-maintenance` (description, the decision-record rule, Step 2 on spelling and language settings, Step 5 links the record, and the README wording); and `environment-management` (description). The Claude Code copies are regenerated, and `scripts/sync_skills.py --check` passes.
+
+Decisions for the maintainer.
+
+1. Availability wording (D-16, D-17; approved and applied on 2026-10-27, see runs 8 and 9). Recommended: separate required decisions from offers to perform an unavailable action. A required decision, such as the processing mode, is still asked. The agent offers nothing that it cannot do, and the manuscript-text rule names the permitted choices. Then re-test B1, F1, and D1 on a new copy.
+2. Commit the working-tree changes of runs 6 and 7. Done on 2026-10-28 in `68b92f4`, together with the run 10 changes, and the records in a second commit.
+3. Adoption of the per-turn reminder hook. It remains a prototype; the test copies include it.
+
+Limits. One or two samples per scenario. The run 6 results of E1, E4, E6, and D2 come from the run logs and the earlier notes. The harness refused some compound Bash commands during D1, and the agent worked around that. The samples are too few to measure a rate.
+
+## MVP 1 acceptance runs 8 and 9: Claude Code (2026-10-27)
+
+Status: the availability wording that the maintainer approved was applied and tested (run 8 with Sonnet, run 9 with Haiku). It made the F1 reply behave as intended. The maintainer then ruled that `AGENTS.md` and `CLAUDE.md` must not be patched to pass a test. Run 9, the first with Haiku, shows record-format errors and a routing miss that Sonnet did not show. MVP 1 is not verified.
+
+Maintainer decisions (2026-10-27).
+
+- The subject model of the acceptance tests is Haiku (`claude-haiku-5-5`). For GPT, the maintainer named "luna"; its exact model ID is not known yet. Runs 1 to 8 used `claude-sonnet-5-5` and stay recorded as Sonnet results.
+- `AGENTS.md` and `CLAUDE.md` are not patched with constraints that exist only to resolve failing tests. A failure is traced to the layer that causes it and fixed there.
+
+Method. Copies r12 and r13 (run 8, Sonnet) and r14 and r15 (run 9, Haiku), each cloned from commit `3e1e08e` with the 23 rule files laid over it from the working tree and compared byte by byte. Samples: B1 twice per model, F1 twice per model, D1 twice (Sonnet) and three times (Haiku), E1 once (Sonnet) and twice (Haiku), and H1 on r14. The harness `cc.py` now sets the subject model to `claude-haiku-5-5`.
+
+Results.
+
+- B1: all four samples asked the document-processing question after the manuscript language (the r11 skip did not return), wrote no decision record, and left `requirements/privacy.md` unchanged. Sonnet (r12, r13): Pass with minor findings; the final report gave two next actions (D-19). Haiku: r14 Pass with one minor finding (the pending list kept the goal after it was recorded); r15 Fail (minor), because the goal was recorded as a paraphrase labeled as the researcher's words (D-21), and the report gave two next actions.
+- F1: the question turn changed no file in 4 of 4. In the confirmation turn all four wrote the decision record and the index entry, left the manuscript unchanged, listed the affected passage, and asked one question, without offering to rewrite it. Sonnet and Haiku r14 also said that revising manuscript text is not available yet; Haiku r15 did not, and it recorded the new goal as a paraphrase labeled as the researcher's words (D-21).
+- E1: Sonnet (r12) wrote a rule that passes the form check. Haiku wrote none that does: r14 has no Scope line, and r15 used the label "范围" (not accepted) and no quotation on the Confirmed line (D-20). No sample wrote a decision record for spelling.
+- D1: Sonnet (r12, two samples): the skill was loaded and the inspection ran in both. Haiku (r14, three samples): the skill was loaded and the inspection ran in 1; in 2, the agent said that PDF import is not available, offered to run the check, and ran nothing (D-16).
+- H1 (r14): the README, skill-copy, and availability checks pass and the memory folder is empty; the rule-form check fails (D-20).
+
+Skill use and compliance. The question was whether `AGENTS.md` should require the agent to follow skills. The logs from r10 to r15 show:
+
+- The matching skill was loaded in every B1 session start (Sonnet 8 of 8, Haiku 4 of 4) and in every goal change or rule (Sonnet 9 of 9, Haiku 4 of 4). The exception is the readiness question in D1: Sonnet 4 of 5, Haiku 1 of 3.
+- After a skill was loaded, the saved rule followed the layout in 3 of 3 Sonnet copies (r10, r11, r12) and in 0 of 2 Haiku copies (r14, r15).
+- The agent follows a loaded skill closely, even where the skill is stale. Step 6 of `constraint-maintenance` still asks "update them now, later, or not at all". It was written before the availability table existed, and it is the source of the repeated "rewrite the introduction now" option (D-17). The sentences added to `AGENTS.md` for D-17 overrode that step and hid the defect. A general rule to follow skills would have made the stale step stronger.
+
+The gaps are therefore routing (D1 on Haiku), layouts that only prose enforces (D-20, D-21), and skill text that disagrees with the contract (D-17). None of them is solved by another sentence in `AGENTS.md`.
+
+Defects.
+
+- D-16 (Medium; open): D1 on Haiku loaded the skill and ran the inspection in 1 of 3 samples. Routing depends on the skill description and the table row, and the question names an unavailable capability (importing PDFs). The description of `environment-management` names the readiness question, and Sonnet loaded the skill in 4 of 5 samples since, but Haiku in 1 of 3.
+- D-17 (Low; the symptom is suppressed, the cause is open): the cause is Step 6 of `constraint-maintenance`, plus a table row that does not say that rewriting a passage belongs to "revise the manuscript". The `AGENTS.md` sentences that suppress the symptom are patches.
+- D-19 (Low; open): the final onboarding report gave two next actions (Sonnet r12 and r13, Haiku r15); Haiku r14 gave one.
+- D-20 (Medium; open): Haiku wrote the spelling rule without the Scope line (r14), or with another label and no quotation (r15). `check_requirements.py` catches both, but no procedure runs it, and its message does not list the accepted labels.
+- D-21 (Low; open): Haiku recorded a paraphrase as the researcher's words (r15, in B1 and in F1). The rule to quote the words is in `AGENTS.md`; the layout that carries the quotation is prose.
+
+Patch-like sentences that `AGENTS.md` held after run 8, and the layer each one belongs to (applied in run 10):
+
+- "Capabilities": "Answer the part of a request that an available capability covers, using it" (added for D1) belongs to the text of the table rows and the skill descriptions, which route the request.
+- "Capabilities": "offer to perform it" and "A decision that the researcher must make is still asked ..." (added for D-16 and D-17) are removed. The original sentence stays, without the word "checks", which the agent read as the computer check.
+- "Decisions": the examples and the list of exclusions (added for D-18) move to `research/decisions/README.md`, which already says what counts. `AGENTS.md` keeps one sentence for the duty and its place, because D-15 showed that a duty held only in a skill is not reached.
+- "Manuscript text": the named choices and "Do not offer to revise or delete a passage yourself" (added for D-17) are removed. Step 6 of `constraint-maintenance` offers only what the availability table lists, and the table row names rewriting a passage.
+
+Other fixes in the layers that cause the failures (applied in run 10, except the routing test): a rule writer script, or a procedure that runs `check_requirements.py` and a message that lists the accepted labels (D-20, D-21); a routing test that sends the scripted researcher messages and checks which skill loads, so that routing is measured on Haiku and not guessed.
+
+Limits. Two to three samples per scenario and model. The Haiku harness refused several compound Bash commands in D1, which the agent worked around.
+
+## MVP 1 acceptance run 10: Claude Code with Haiku (2026-10-28)
+
+Status: the maintainer approved the restructure on 2026-10-28. The case-specific sentences are out of `AGENTS.md`, and their causes are fixed in the skills, the table data, the decisions README, and the form check. Haiku, now the subject model, passes most samples of B1, F1, E1, and D1, with residual misses for which no sentence should be added to the contract. MVP 1 is not verified.
+
+Maintainer decisions (2026-10-28).
+
+- Move the patch-like sentences out of `AGENTS.md`, fix the causes in skills, table data, and scripts, and re-test with Haiku.
+- The GPT-side model for the later Codex run is `gpt-6-luna`. Codex is not installed on this computer, so that run still needs an installation and a sign-in.
+
+Changes (committed on 2026-10-28 in `68b92f4`).
+
+- `AGENTS.md`: "Capabilities" is back to its general sentence, without the word "checks" (in D1 the agent echoed "records, checks, or outputs" when it declined to run the computer check). "Decisions" keeps one sentence for the duty and points to the README of the folder. "Manuscript text" is back to its general sentence. Two table rows are data: the computer check names "whether it is ready for a task", and the manuscript row names "rewriting a passage".
+- `research/decisions/README.md` says that a writing rule or a language setting is a requirement, not a decision.
+- `constraint-maintenance`: the Confirmed line carries the researcher's exact words in quotation marks; the skill runs `check_requirements.py` after it writes a rule; Step 6 offers only what the availability table lists (today: keep the passage as an open item, or let the researcher revise it); the completion check names the script.
+- `project-onboarding`: the goal is quoted exactly; a postponed choice is listed as open in `project.md` and `state/current.md` and is not written to `privacy.md`; the report gives exactly one next action; the finish step sets the status and rewrites `state/current.md` as a whole, with its heading.
+- `environment-management`: the description leads with its triggers and names the readiness question.
+- `scripts/check_requirements.py`: its message lists the accepted labels. Two tests were added; 27 tests pass.
+
+Corrections to earlier records.
+
+- B1 in r11 (run 7) was recorded as a skipped required question (D-16). It was not a defect. Step 5 of `project-onboarding` says to ask about document processing only when documents are at hand or the researcher wants to settle it, and otherwise to list the choice as open. The scripted answer "以后再定" then fit the wrong question, because the tester gave it without checking which question the agent had asked. The checklist now says to answer the question actually asked.
+- The sentence "A decision that the researcher must make is still asked ..." (added to `AGENTS.md` for that case) was therefore unjustified, and it is removed.
+
+Method. Copies r16 and r17 (the first version of the new text), r18a to r18c (the final text, with the state of a finished B1 taken from the r17 output; used for F1 and D1), and r19 and r20 (B1 with the final text), all cloned from `3e1e08e`. The subject model is `claude-haiku-5-5` in every run, which the 70 session logs from run 9 on confirm. The rule files were compared byte by byte with the working tree.
+
+Results (Haiku).
+
+- B1 (r16, r17, r19, r20): Pass in all four. The goal is quoted word for word, the report gives one next action, no decision record is written, `privacy.md` is unchanged, and the postponed processing choice is listed as open. Minor: r19 wrote `project.md` in English (D-22); r16 left the status as in progress, because its scripted answers did not fit the questions asked; the heading of `state/current.md` stayed in English in r16 and r17 and was in Chinese in r19 and r20, after the finish-step change.
+- F1: decision record and index entry in 5 of 5, manuscript unchanged in 5 of 5. With the final wording (r18a to c), r18b and r18c loaded the skill, ran the check, said that revising is not available, and offered only to keep the passage as an open item or to let the researcher revise it. r18a loaded no skill and offered to rewrite the introduction. In r17 (first wording), choice 2 was an edit by the agent after the researcher's direction. The confirming words were quoted, with small changes in punctuation in r18b and r18c and a changed word in r18c; r15 (run 9) labeled a paraphrase as the researcher's words.
+- E1 and E4: in r16, the agent wrote the label "范围", the check named the accepted labels, and the agent corrected the file; in r17 it read the script first. Both pass the form check, and no decision record was written. E4 (explicit form, r16): replaced without a question, no decision record.
+- D1: the skill was used and the inspection ran in 8 of 10 samples with the readiness wording (r16: 2 of 3, r17: 2 of 2, r18: 4 of 5), against 1 of 3 before it (r14). In 2 samples the agent said that PDF import is not available and offered to run the check.
+- H1 (r16, r17): pass.
+
+Skill use in all 70 Haiku sessions (run 9 and run 10): the matching skill was loaded in 12 of 12 B1 session starts, in 6 of 7 goal changes (F1), and in 5 of 5 rule records (E1, E4); for the readiness question (D1), the Skill tool was used in 8 of 13 samples. English-only notes between tool calls: 5 of 136 (r17, 4 in one D1 sample, where the per-turn reminder could not read the language label "交互语言"; r18a, 1).
+
+Defects after run 10.
+
+- D-15: fixed (decision record in 7 of 7 Haiku F1 samples).
+- D-16: residual. The readiness question reached the inspection in 8 of 10 samples; text changes did not remove the other 2.
+- D-17: fixed at its cause for the skill path (Step 6). On the path without the skill (1 of 7 goal changes), the contract's general sentence leaves the choices open and the agent offered a rewrite. No sentence is added to the contract for this.
+- D-18: fixed (no decision record for spelling or language in any Haiku sample).
+- D-19: fixed in the samples taken (one next action in 4 of 4 B1 samples).
+- D-20: fixed in the samples taken (2 of 2 E1 samples end with a record that passes the check, after the agent used the check or the script).
+- D-21: mostly fixed (exact words in quotation marks in B1 4 of 4; in F1 small changes in 2 of 5).
+- D-22 (new, Low): the record `project.md` was written in English once (r19, 1 of 5 Haiku B1 writes of that file).
+- D-14: not re-tested.
+
+Findings about the checklist.
+
+- E2 asks the agent to write manuscript text, which the availability table lists as not available. An agent that follows `AGENTS.md` now declines the first request, so the scenario needs a revised script. The checklist notes this.
+- The passes of A1, B2, C1, D3, D4, E2, E3, E5, F2, and G1 date from runs 1 and 2 with Sonnet. The checklist asks for a full repeat after changes to the rules.
+
+Other levers that remain (proposed; not applied): a hook that runs the form check after a write to `requirements/`; scripts that write the records; a routing test that sends the scripted messages and checks which skill loads; a machine-readable place for the interaction language, so that the per-turn reminder does not depend on a prose label.
+
+Limits. Two to ten samples per scenario. The fixture copies r18a to r18c reproduce the B1 output of r17, not a fresh B1. The Haiku harness refused several compound shell commands, which the agent worked around.
+
 ## Remaining for MVP 1
 
-All four MVP 1 skills have first implementations, and runs 1 to 5 on Claude Code are complete. Remaining:
-
-- Decide on D-14 (the proposed `AGENTS.md` sentence), apply it if accepted, and re-run the first note of one E1 session to test it.
-- D-2 is partly fixed. Re-run D1 with more samples if the "writing continues" statement needs more evidence.
-- Repeat the whole checklist on Claude Code after these changes, because `AGENTS.md` and four skills changed after run 1.
+All four MVP 1 skills have first implementations, and runs 1 to 10 on Claude Code are complete. Remaining:
+- Decide how to treat the residual Haiku misses of run 10 (D1 in 2 of 10, the goal change without the skill, a record in English, a few English notes) without adding sentences to `AGENTS.md`. Deterministic enforcement by a hook or scripts is the remaining lever.
+- Repeat the whole checklist with Haiku. The passes of A1, B2, C1, D3, D4, E2, E3, E5, F2, and G1 date from runs 1 and 2. E2 needs a revised script, because it asks the agent to write manuscript text.
+- For GPT use `gpt-6-luna`. Install Codex and sign in before a Codex run.
+- D-14 (an English first note before a skill call): in run 10, 5 of 136 Haiku notes were English-only. The per-turn reminder prototype is the layer designed for this, and it cannot read a language label that varies ("交互语言" against "交流语言"). Decide whether to adopt it with a machine-readable language setting. Add no sentence to `AGENTS.md`.
+- D1 (D-2, D-16): the inspection ran in 8 of 10 Haiku samples. Repeat it with more samples, and check the "writing continues" statement.
 - Run the checklist in Codex, which is not installed on the maintainer's computer yet, and on the Windows baseline. Recreate the Codex test copy first: it still holds the state before the fixes.
 - Run the scenarios that the runs could not exercise: the interactive question tool, missing Python or tools, onboarding in English, and an account control that the researcher can read.
 - Start the read-only MinerU service research.
 - Implement the English question checks against the official ASD-STE100 issue, and the clarity review for questions in other languages. The standard and its dictionary are not bundled with the template; they need access under the publisher's terms.
 
-The [MVP 1 acceptance checklist](acceptance/mvp-1.md) holds the scenarios and the results table. The disposable test copies have no Git remote: `/Users/wota/Projects/paper-template-mvp1-test-claude` (run 1), `...-claude-r2` (run 2), `...-claude-r3` (run 3), `...-claude-r4` (run 4), and `...-claude-r5` (run 5) each hold the changes of their run. `/Users/wota/Projects/paper-template-mvp1-test-codex` is untouched, cloned from `51f93e7`, so it predates the fixes.
+The [MVP 1 acceptance checklist](acceptance/mvp-1.md) holds the scenarios and the results table. The disposable test copies have no Git remote: `/Users/wota/Projects/paper-template-mvp1-test-claude` (run 1), `...-claude-r2` (run 2), `...-claude-r3` (run 3), `...-claude-r4` (run 4), and `...-claude-r5` (run 5) each hold the changes of their run. `...-claude-r7` to `...-claude-r11` hold runs 6 and 7; the state files of r7 were lost (see the runs 6 and 7 section). `...-claude-r12` and `...-r13` hold run 8, and `...-claude-r14` and `...-r15` hold run 9. `...-claude-r16` to `...-r20` hold run 10 (`...-r18fix` is the prepared fixture). `/Users/wota/Projects/paper-template-mvp1-test-codex` is untouched, cloned from `51f93e7`, so it predates the fixes.
 
 ## Open items affecting the order
 

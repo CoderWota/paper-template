@@ -4,7 +4,7 @@ Start with [design-plan.md](design-plan.md). It distinguishes confirmed research
 
 Framework documents are maintained in English only; translated copies are not kept.
 
-[Implementation status](implementation-status.md) records what has actually been built and verified, one entry per MVP. Check it before assuming that a described capability works. The scenario checklists for verifying each MVP in fresh agent sessions are in [acceptance/](acceptance/README.md).
+[Implementation status](implementation-status.md) records what has actually been built and verified, one entry per MVP. Check it before assuming that a described capability works. The scenario checklists for verifying each MVP in fresh agent sessions are in [acceptance/](acceptance/README.md). The [rule placement](rule-placement.md) note explains where each standing rule must live and what caused each family of acceptance defects.
 
 These documents describe development of the reusable framework. They are not writing instructions for a future manuscript. Do not treat a proposed directory layout or policy as approved runtime behavior.
 
