@@ -327,10 +327,10 @@ def parser_info(layout: dict) -> dict:
     if layout.get("schema") == "docvortex.middle":
         producer = (layout.get("metadata") or {}).get("producer") or {}
         mineru = (layout.get("extensions") or {}).get("mineru") or {}
-        found = {"name": producer.get("name"), "version": producer.get("version"), "tier": mineru.get("tier")}
+        parser_details = {"name": producer.get("name"), "version": producer.get("version"), "tier": mineru.get("tier")}
     else:
-        found = {"name": "mineru", "version": layout.get("_version_name"), "backend": layout.get("_backend")}
-    return {key: value for key, value in found.items() if value}
+        parser_details = {"name": "mineru", "version": layout.get("_version_name"), "backend": layout.get("_backend")}
+    return {key: value for key, value in parser_details.items() if value}
 
 
 def coverage_note(coverage: dict, details: str) -> str:
