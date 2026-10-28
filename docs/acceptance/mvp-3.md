@@ -11,12 +11,14 @@ The checklist covers the acceptance evidence in the [MVP implementation guidelin
    - It requests neither an account nor a key before the scope is confirmed.
    - `requirements/privacy.md` remains unchanged until confirmation.
 2. Confirm a scope. Verify that the exact confirmation and scope are recorded in the interaction language. Add a synthetic key through private entry; inspect no output or record for the value.
+   - An in-scope query succeeds only when its exact scope excerpt is recorded; an excerpt absent from the active approval is rejected. A query outside the approved scope uses a permitted fallback or waits for a new confirmation.
    - The official Sciverse API runs first when available and within scope.
    - Its record keeps provider, endpoint, query, date, document IDs, chunk IDs, offsets/pages, returned metadata, and limits. A returned chunk is labeled a snippet.
    - An exact title/DOI request uses the Sciverse metadata endpoint and records metadata as metadata-only, not as an evidence passage.
 3. Make the Sciverse route unavailable, unconfigured, outside scope, or return HTTP 429 in a controlled test.
    - The agent reports the exact limitation and uses built-in search only when that provider is inside the confirmed scope.
    - Built-in search is recorded as a distinct provider with the gap/cross-check it addressed.
+   - Omitting the host-search query or coverage note is rejected; each provider pass records its own query and timestamp, including when the secondary query differs from Sciverse.
    - No Sciverse result is silently described as available or exhaustive.
 4. Request full text for a known Sciverse result. Verify that the recorded context preserves `doc_id` and offset and remains distinct from the initial search snippet.
 

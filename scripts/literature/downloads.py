@@ -13,7 +13,7 @@ import urllib.parse
 import urllib.request
 from pathlib import Path
 
-from ingestion.common import read_json, slug, write_json_atomic, write_text_atomic
+from ingestion.common import read_json, safe_http_url, slug, write_json_atomic, write_text_atomic
 from ingestion import library
 
 MAX_DOWNLOAD_BYTES = 500 * 1024 * 1024
@@ -23,22 +23,6 @@ URL_RE = re.compile(r"https?://[^\s<>\"{}]+", re.IGNORECASE)
 
 class DownloadError(RuntimeError):
     """A safe-to-report reference-download error."""
-
-
-def safe_url(value: str | None) -> str | None:
-    """Keep a retrievable locator but never store query parameters or fragments."""
-    if not value:
-        return value
-    try:
-        parts = urllib.parse.urlsplit(value)
-        if parts.scheme not in ("http", "https"):
-            return None
-        host = parts.hostname or ""
-        if parts.port:
-            host += f":{parts.port}"
-        return urllib.parse.urlunsplit((parts.scheme, host, parts.path, "", ""))
-    except ValueError:
-        return None
 
 
 def normalize_doi(value: str | None) -> str | None:
@@ -64,8 +48,8 @@ def _from_text(line: str) -> dict | None:
     if not doi and not url:
         return {"reference": line, "title": None, "doi": None, "url": None, "status": "metadata-only",
                 "notes": ["No DOI or direct URL was found; no full-text request was made."]}
-    safe_reference = doi or safe_url(url) or line
-    item = {"reference": safe_reference, "title": None, "doi": doi, "url": safe_url(url), "status": "pending", "notes": []}
+    safe_reference = doi or safe_http_url(url) or line
+    item = {"reference": safe_reference, "title": None, "doi": doi, "url": safe_http_url(url), "status": "pending", "notes": []}
     is_doi_resolver = url and (urllib.parse.urlsplit(url).hostname or "").casefold() in ("doi.org", "dx.doi.org")
     if url and urllib.parse.urlsplit(url).query and not (doi and is_doi_resolver):
         item.update(status="login/manual-access-needed", notes=["The URL contains query parameters that may be signed or secret. It was not stored or requested; provide a public URL without query parameters."])
@@ -85,7 +69,7 @@ def read_references(inputs: list[str], root: Path) -> list[dict]:
                 fields = library.fields_of(body)
                 raw_url = fields.get("url")
                 reference = {"reference": f"{key} ({entry_type})", "title": fields.get("title"),
-                             "doi": normalize_doi(fields.get("doi")), "url": safe_url(raw_url), "status": "pending", "notes": []}
+                             "doi": normalize_doi(fields.get("doi")), "url": safe_http_url(raw_url), "status": "pending", "notes": []}
                 is_doi_resolver = raw_url and (urllib.parse.urlsplit(raw_url).hostname or "").casefold() in ("doi.org", "dx.doi.org")
                 if raw_url and not reference["doi"] and not is_doi_resolver and urllib.parse.urlsplit(raw_url).query:
                     reference.update(status="login/manual-access-needed", notes=["The BibTeX URL has query parameters that may be signed or secret. It was not stored or requested; provide a public URL without query parameters."])
@@ -117,7 +101,7 @@ def new_batch(root: Path, inputs: list[str]) -> tuple[str, Path, dict]:
     batch_id, number = base, 2
     while (parent / batch_id).exists():
         batch_id, number = f"{base}-{number}", number + 1
-    safe_inputs = [safe_url(value) or value for value in inputs]
+    safe_inputs = [safe_http_url(value) or value for value in inputs]
     data = {"schema": "paper-template.reference-download/1", "batch_id": batch_id,
             "created_at": dt.datetime.now().astimezone().isoformat(timespec="seconds"), "updated_at": None,
             "inputs": safe_inputs, "items": references}
@@ -208,11 +192,11 @@ def _fetch(url: str, temporary: Path) -> tuple[str, str, int, str]:
         response = urllib.request.urlopen(request, timeout=45)
     except urllib.error.HTTPError as error:
         status = "login/manual-access-needed" if error.code in (401, 402, 403) else "unavailable" if error.code in (404, 410) else "rate-limited" if error.code == 429 else "failed"
-        return status, safe_url(error.geturl()) or safe_url(url) or "", 0, f"HTTP {error.code}"
+        return status, safe_http_url(error.geturl()) or safe_http_url(url) or "", 0, f"HTTP {error.code}"
     except (urllib.error.URLError, TimeoutError, OSError) as error:
-        return "failed", safe_url(url) or "", 0, type(error).__name__
+        return "failed", safe_http_url(url) or "", 0, type(error).__name__
     with response:
-        final_url = safe_url(response.geturl()) or safe_url(url) or ""
+        final_url = safe_http_url(response.geturl()) or safe_http_url(url) or ""
         status_code = getattr(response, "status", 200)
         if status_code in (401, 402, 403):
             return "login/manual-access-needed", final_url, 0, f"HTTP {status_code}"
@@ -305,7 +289,7 @@ def run_batch(root: Path, folder: Path, data: dict, *, retry_rate_limited: bool 
         last_host, last_request_at = host, time.monotonic()
         item["attempts"] = item.get("attempts", 0) + 1
         item["retrieval_started_at"] = dt.datetime.now().astimezone().isoformat(timespec="seconds")
-        item["retrieval_url"] = safe_url(url)
+        item["retrieval_url"] = safe_http_url(url)
         item["status"] = "downloading"
         _save(root, folder, data)
         staging = root / ".tmp" / "literature-download" / data["batch_id"] / f"{index:04d}.pdf"
@@ -323,7 +307,7 @@ def run_batch(root: Path, folder: Path, data: dict, *, retry_rate_limited: bool 
             continue
         sha = detail
         try:
-            source_id, archived, created = library.archive(root, staging, sha, safe_url(item.get("url")) or item.get("doi") or "reference list",
+            source_id, archived, created = library.archive(root, staging, sha, safe_http_url(item.get("url")) or item.get("doi") or "reference list",
                                                            dt.date.today().isoformat())
             item.update(status="downloaded" if created else "existing", source_id=source_id,
                         archive_path=archived.relative_to(root).as_posix(), sha256=sha, bytes=size,

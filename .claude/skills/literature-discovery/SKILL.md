@@ -29,21 +29,21 @@ The command records that choice in `requirements/privacy.md`. Do not run it for 
 python scripts/credentials.py set SCIVERSE_API_KEY --label "Sciverse API key" --help-url "https://sciverse.opendatalab.org.cn/docs"
 ```
 
-Never ask for, repeat, print, or store the key in a project record, shell argument, or conversation. The API integration is attempted only when the confirmed scope covers the actual query and the credential is available. To search:
+Never ask for, repeat, print, or store the key in a project record, shell argument, or conversation. Before each request, compare its actual query with the confirmed scope. If the scope does not cover the query, use the authorized fallback or obtain a newly confirmed scope. Quote the exact scope sentence that covers the query as `--scope-basis`; the script checks that the excerpt occurs in the active scope and records it with the query. This excerpt check supports review but does not replace the agent's scope judgment. To search:
 
 ```text
-python scripts/literature.py search-sciverse --query "..." --top-k 10
+python scripts/literature.py search-sciverse --query "..." --scope-basis "exact confirmed scope sentence" --top-k 10
 ```
 
 For a title or DOI lookup, use Sciverse metadata search. It returns bibliographic metadata, not evidence passages or proof of full-text access:
 
 ```text
-python scripts/literature.py search-sciverse-metadata --query "10.1234/example"
+python scripts/literature.py search-sciverse-metadata --query "10.1234/example" --scope-basis "exact confirmed scope sentence"
 ```
 
 If the researcher changes or withdraws the scope, use `constraint-maintenance` to record only the newly confirmed active requirement and any required decision record. Then use `authorize-sciverse --replace` with the new confirmed record, or `revoke-sciverse` after removing the requirement. Do not delete the API key unless the researcher asks for that separate action.
 
-The script stores provider, query, date, returned identifiers and locators, account-limited fields, and service errors in `references/searches/<search-id>/`. It labels chunks as search snippets. When a result has a `doc_id`, fetch a bounded text range only when needed to check a claim:
+The script stores provider, exact query, date, confirmed scope excerpt, returned identifiers and locators, account-limited fields, and service errors in `references/searches/<search-id>/`. It labels chunks as search snippets. Context retrieval checks that the requested `doc_id` belongs to the recorded Sciverse results and that its scope excerpt is still active. When a result has a `doc_id`, fetch a bounded text range only when needed to check a claim:
 
 ```text
 python scripts/literature.py read-sciverse-context --search-id ID --doc-id DOC_ID --offset OFFSET --limit 2000
@@ -79,7 +79,7 @@ python scripts/literature.py search-local --query "..." [--source-id src-...]
 - Deduplicate exact source files by source ID/checksum. Keep preprints, accepted manuscripts, and published versions separate, with a relationship only when checked.
 - For each lead, distinguish search snippet, abstract, metadata, extracted full text, and the original inspected. Report unknown, conflicting, or missing metadata without filling it from memory.
 - State the search dates, providers, main query concepts, known limits, screening scope, duplicates/versions, and which full texts could not be obtained. Do not claim coverage is complete, that no prior work exists, or that an idea is unprecedented.
-- Use `references/searches/<search-id>/README.md` as the durable search record. Keep interpretation in per-source notes under `references/notes/`; do not paste whole private chats into persistent notes.
+- Use `references/searches/<search-id>/README.md` as the durable search record. The host-search input must include its exact query and a non-empty `coverage_note` naming the gap or cross-check; the script rejects either omission and timestamps the provider route. Keep interpretation in per-source notes under `references/notes/`; do not paste whole private chats into persistent notes.
 - Ask a consequential question only when the choice changes a major research scope, privacy boundary, or source-collection decision. Follow the shared confirmation rule in `AGENTS.md`.
 
 ## Completion check

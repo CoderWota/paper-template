@@ -14,6 +14,7 @@ import re
 import sys
 import tempfile
 import unicodedata
+import urllib.parse
 from pathlib import Path
 
 MANAGED_BEGIN = "<!-- maintained by scripts/ingest.py: begin -->"
@@ -53,6 +54,24 @@ def slug(text: str, limit: int = 40, fallback: str = "item") -> str:
     folded = unicodedata.normalize("NFKD", text).encode("ascii", "ignore").decode("ascii")
     value = re.sub(r"[^a-z0-9]+", "-", folded.lower()).strip("-")[:limit].strip("-")
     return value or fallback
+
+
+def safe_http_url(value: str | None) -> str | None:
+    """Return an HTTP(S) locator without credentials, query parameters, or fragments."""
+    if not value:
+        return value
+    try:
+        parts = urllib.parse.urlsplit(value)
+        if parts.scheme not in ("http", "https"):
+            return None
+        host = parts.hostname or ""
+        if ":" in host and not host.startswith("["):
+            host = f"[{host}]"
+        if parts.port:
+            host += f":{parts.port}"
+        return urllib.parse.urlunsplit((parts.scheme, host, parts.path, "", ""))
+    except ValueError:
+        return None
 
 
 def safe_filename(name: str) -> str:

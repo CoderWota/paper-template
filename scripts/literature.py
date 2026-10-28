@@ -45,9 +45,9 @@ def command_revoke(args, root: Path) -> int:
 
 
 def command_sciverse(args, root: Path) -> int:
-    if not search.privacy_confirmed(root):
-        raise search.LiteratureError("No confirmed Sciverse query-sharing scope is recorded. Explain what query data is sent and ask the researcher before requesting a credential or making a search.")
-    search_id, folder, data = search.sciverse_search(root, token_for(root), args.query, top_k=args.top_k, sub_queries=args.sub_queries)
+    search.validate_scope_basis(root, args.scope_basis)
+    search_id, folder, data = search.sciverse_search(root, token_for(root), args.query, scope_basis=args.scope_basis,
+                                                      top_k=args.top_k, sub_queries=args.sub_queries)
     route = data["routes"][0]
     if route["status"] != "complete":
         print(f"Sciverse is unavailable for this search. Record: references/searches/{search_id}/README.md")
@@ -58,9 +58,9 @@ def command_sciverse(args, root: Path) -> int:
 
 
 def command_metadata_search(args, root: Path) -> int:
-    if not search.privacy_confirmed(root):
-        raise search.LiteratureError("No confirmed Sciverse query-sharing scope is recorded. Explain what query data is sent and ask the researcher before requesting a credential or making a search.")
-    search_id, folder, data = search.metadata_search(root, token_for(root), args.query, page=args.page, page_size=args.page_size)
+    search.validate_scope_basis(root, args.scope_basis)
+    search_id, folder, data = search.metadata_search(root, token_for(root), args.query, scope_basis=args.scope_basis,
+                                                       page=args.page, page_size=args.page_size)
     route = data["routes"][0]
     if route["status"] != "complete":
         print(f"Sciverse metadata search is unavailable. Record: references/searches/{search_id}/README.md")
@@ -91,6 +91,7 @@ def command_local_search(args, root: Path) -> int:
 
 
 def command_context(args, root: Path) -> int:
+    search.context_request(root, args.search_id, args.doc_id, args.offset, args.limit)
     folder, context = search.add_context(root, token_for(root), args.search_id, args.doc_id, args.offset, args.limit)
     if context.get("text"):
         print(context["text"])
@@ -172,11 +173,13 @@ def main(argv: list[str] | None = None) -> int:
 
     sciverse = commands.add_parser("search-sciverse", help="search Sciverse after privacy confirmation")
     sciverse.add_argument("--query", required=True)
+    sciverse.add_argument("--scope-basis", required=True, help="exact excerpt from the active Sciverse scope that covers this query")
     sciverse.add_argument("--top-k", type=int, default=10)
     sciverse.add_argument("--sub-queries", type=int, default=0)
 
     metadata = commands.add_parser("search-sciverse-metadata", help="search structured Sciverse metadata, for example by title or DOI")
     metadata.add_argument("--query", required=True)
+    metadata.add_argument("--scope-basis", required=True, help="exact excerpt from the active Sciverse scope that covers this query")
     metadata.add_argument("--page", type=int, default=1)
     metadata.add_argument("--page-size", type=int, default=25)
 

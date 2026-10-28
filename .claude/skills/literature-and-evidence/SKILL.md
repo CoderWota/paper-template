@@ -12,7 +12,7 @@ Outcome: a compact, source-linked comparison that distinguishes direct support, 
 1. Read `state/current.md`, `references/index.md`, the specific matching source notes, and the relevant extraction READMEs. Open only the sources needed for the question.
 2. If the sources are unclear, run `python scripts/literature.py search-local --query "..."` and narrow with `--source-id`. The search is lexical over extracted Markdown; line numbers identify the extraction revision, not the PDF page.
 3. Inspect matching sections in `references/extracted/<source-id>/document.md`. Then verify important passages against the original PDF or another trustworthy source locator when available. MinerU output and Sciverse text are derived/service text; note when the original could not be checked.
-4. For a Sciverse hit, preserve `doc_id`, `chunk_id`, `offset`, and `page_no` when present. A returned `chunk` is a search snippet. If the full text is available through Sciverse `content`, record the character offset and the retrieved range; do not call a snippet a full article.
+4. For a Sciverse hit, preserve `doc_id`, `chunk_id`, `offset`, and `page_no` when present. A returned `chunk` is a search snippet. If the full text is available through Sciverse `content`, retrieve it only through the recorded search result while its confirmed query scope remains active; record the character offset and retrieved range. Do not call a snippet a full article.
 
 ## Record evidence without altering the source
 
