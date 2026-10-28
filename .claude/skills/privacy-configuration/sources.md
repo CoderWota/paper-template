@@ -24,4 +24,12 @@ The OpenAI Help Center refuses automated page fetching. On 2026-10-26 it was rea
 
 ## Document processing
 
-A MinerU cloud service is a separate data processor. Its training use and retention have not been checked. Check its terms before the first upload (MVP 2).
+A MinerU cloud service is a separate data processor; an AI application's training setting does not cover it. The official MinerU service, mineru.net, was checked on 2026-10-28.
+
+| Topic | Source | What the page said on 2026-10-28 |
+| --- | --- | --- |
+| Legal terms that mineru.net links | [Privacy policy](https://webpub.shlab.tech/dps/opendatalab-web/odl_v5.1690/privacy.html) and [user service agreement](https://webpub.shlab.tech/dps/opendatalab-web/odl_v5.1690/service.html), linked from the footer of [mineru.net](https://mineru.net/) | Both are the general OpenDataLab texts of 2022, operated by the Shanghai Artificial Intelligence Innovation Center. Neither names MinerU or says whether uploaded documents are used to train models or how long they are kept. The agreement (section 5.6) gives the operator a free, perpetual, irrevocable, non-exclusive license to material that the user fills in or uploads, for the purposes of the agreement; section 4.7 says that the user keeps ownership. Personal information collected in mainland China is stored there. Deletion requests go to OpenDataLab@pjlab.org.cn. |
+| API and upload | [MinerU API documentation](https://mineru.net/apiManage/docs) | The precision API (v4) needs a token from the [API management page](https://mineru.net/apiManage/token); tokens can expire. Files are uploaded to signed addresses; the documentation's example address is on Alibaba Cloud storage in Shanghai. Limits: 200 MB and 200 pages a file, 1000 pages a day at full priority. |
+| Rate limits and cost | [Rate limits](https://mineru.net/apiManage/limit) | 50 submitted files a minute and 5000 files a day per user; no paid plan at present. |
+
+Classify the training use and the retention of mineru.net as **unknown**: the terms do not state them. Nothing was uploaded to check them.

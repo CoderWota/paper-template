@@ -30,10 +30,11 @@ The only list of what works. `python scripts/check_capabilities.py` checks it ag
 | --- | --- | --- |
 | Set up the project and record the answers | `project-onboarding` | Available now |
 | Check this computer, including whether it is ready for a task; install or repair with consent | `environment-management` | Available now |
-| Enter a credential privately (no service uses it yet) | `scripts/credentials.py` | Available now |
+| Enter a credential privately (the mineru.net route uses it) | `scripts/credentials.py` | Available now |
 | Check an AI application's training settings, with consent | `privacy-configuration` | Available now |
 | Record standing rules and research decisions | `constraint-maintenance` | Available now |
-| Import documents and convert PDFs (MinerU) | — | Not available yet |
+| Import documents into the reference library with MinerU, on this computer or with mineru.net as confirmed; organize the inbox | `source-ingestion` | Available now |
+| File and convert editor and reviewer documents by venue and round | `review-ingestion` | Available now |
 | Search and download literature | — | Not available yet |
 | Develop ideas; assess impact; choose a journal | — | Not available yet |
 | Outline, write, audit, and revise the manuscript, including rewriting a passage | — | Not available yet |

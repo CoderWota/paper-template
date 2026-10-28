@@ -4,9 +4,9 @@ One subdirectory per intake batch, named `<import-id>/` (for example `2026-10-26
 
 ## Each import directory contains
 
-- `README.md`: what this batch was, when it was received, and its current state.
-- A concise import record that links each input to its checksum, identified role, destination, conversion status, and unresolved items.
-- The received originals of an adopted manuscript. Reference documents and formal reviews keep their originals in their own archives instead, so nothing is stored twice.
+- `README.md`: what this batch was, when it was received, and its current state, with one row per input.
+- `import.json`: the machine-readable import record that links each input to its checksum, identified role, destination, conversion status, and unresolved items. It is saved after every step, so an interrupted import continues from it. Inputs outside the workspace are recorded with the home folder written as `~`.
+- The received originals of an adopted manuscript, once adopting a manuscript is available. Reference documents and formal reviews keep their originals in their own archives instead, so nothing is stored twice.
 
 ## Who edits what
 

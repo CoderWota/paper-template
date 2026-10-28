@@ -6,14 +6,14 @@ Readable, searchable versions of the original documents, produced with MinerU, o
 
 ```text
 <source-id>/
-├── README.md         # What this extraction is, its coverage, and known problems
+├── README.md         # What this extraction is, its coverage, and the problems the checks found
 ├── document.md       # Readable Markdown with working image links
-├── assets/           # Images and other files referenced by document.md
-├── provenance.json   # Source ID, checksum, converter and version, settings, mode, time, page coverage, warnings
+├── assets/           # Images referenced by document.md, and pictures of transcribed tables and formulas
+├── provenance.json   # Source ID, checksum, converter and version, settings, route, time, page coverage, checks, warnings
 └── native/           # Parser outputs, kept unchanged for provenance and structured retrieval
 ```
 
-The agent creates each of these folders with its own README.
+The agent creates each of these folders with its own README, using `scripts/ingest.py`. A new conversion replaces the folder in one step and records the revision; text added to a README outside its maintained block is kept.
 
 ## Rules
 
@@ -23,6 +23,6 @@ The agent creates each of these folders with its own README.
 
 ## Who edits what
 
-The agent creates and maintains everything here. Read `document.md` freely, but report problems to the agent instead of editing the extraction, so the correction is kept separately and survives re-conversion.
+The agent creates and maintains everything here. Read `document.md` freely, but report problems to the agent instead of editing the extraction: the correction is kept in the source note, `../notes/<source-id>.md`, and survives re-conversion. A hand-edited `document.md` is never overwritten without being noticed.
 
 Related skill: `source-ingestion`.
