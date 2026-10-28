@@ -406,9 +406,12 @@ def check_layout(result: Extraction, layout: dict | None, kind: str, original: P
             result.warn("coverage-unknown", "the total page count is unknown, so completeness cannot be checked")
     else:
         full = layout.get("is_full_document")
-        result.coverage = {"unit": "document", "is_full_document": full, "status": "complete" if full is not False else "partial"}
+        status = "complete" if full is True else "partial" if full is False else "unknown"
+        result.coverage = {"unit": "document", "is_full_document": full, "status": status}
         if full is False:
             result.warn("missing-pages", "the parser reports that it converted only part of the document", PARTIAL)
+        elif full is not True:
+            result.warn("coverage-unknown", "the parser did not report whether it converted the full document, so coverage is unknown")
     empty = [index + 1 for index, blocks in pages if isinstance(index, int) and not any(
         (matchable(text) and not running(kind, discarded)) or any(word in kind.lower() for word in NOT_PROSE)
         for kind, text, discarded in blocks)]

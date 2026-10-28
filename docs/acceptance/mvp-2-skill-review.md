@@ -139,10 +139,10 @@ These skills have had no live run, so no miss was observed. The MVP 1 runs with 
 
 ## 8. Remaining verification limits
 
-The live run in section 10 verified PDF and Word conversion with the `vlm` model on macOS, using synthetic files. The following items remain unverified and must not be advertised as working:
+The live run in section 10 verified PDF conversion with the `vlm` model on macOS, using synthetic files. It also converted Word files, but the service output did not state whether it covered the full document; those results remain unverified and are flagged for review. The following items remain unverified and must not be advertised as working:
 
 - mineru.net's terms and data handling: the terms read on 2026-10-28 do not state whether uploaded documents are used for training or how long they are retained. The live run used synthetic files; re-check the terms before uploading researcher materials.
-- Cloud image inputs, the `pipeline` model, and service behavior at its limits (daily quota, rate limit, and expired tokens). These paths have only been exercised against the fake service.
+- Cloud Word completeness, image inputs, the `pipeline` model, and service behavior at its limits (daily quota, rate limit, and expired tokens). Word output has no full-document marker; the other paths have only been exercised against the fake service.
 - Windows and ARM64: `.tools/mineru/Scripts/`, the Python launcher, long and non-ASCII paths, and MinerU's own support on those platforms.
 - Codex: discovery of `.agents/skills` and loading of `AGENTS.md`.
 - The standard and advanced tiers, and local formats other than PDF, Word, Markdown, and plain text.
@@ -166,6 +166,6 @@ The maintainer asked for the live test and entered a token on the private page. 
 - Observed: the token reached the import through `credentials.py run` and appeared in no record, log, or output; the service saw only source IDs as file names; coverage, running heads, columns, the scanned page, and tables came out as described in [MinerU integration](../mineru-integration.md#minerunet); the service ran MinerU 3.4.4.
 - Three script gaps found and fixed, each with a test: the service's copy of a Word original kept in `native/`; the parser version that the service states not recorded in provenance; and a correct image link of a review document reported as broken, because links were checked in a stage laid out differently from `extracted/`.
 - Two conversion defects that no automatic check detects: a mistranscribed formula, and annotation icons that cut the text under them in a review PDF. The skills already require the comparisons that catch them (source-ingestion L93, review-ingestion L40).
-- PDF and Word with the `vlm` model are now verified combinations (`routes.VERIFIED`). Still not covered: the terms, images, the `pipeline` model, and the service's behaviour at its limits.
+- PDF with the `vlm` model is now a verified combination (`routes.VERIFIED`). Word conversion was observed, but its completeness is unknown because the service output has no `is_full_document` marker, so it remains flagged for review. Still not covered: the terms, image inputs, the `pipeline` model, and the service's behaviour at its limits.
 
 The verdicts of section 9 are unchanged.

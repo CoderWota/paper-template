@@ -64,7 +64,7 @@ Observed with the live service on 2026-10-28, with the maintainer's token entere
 - The printed formula was transcribed wrongly, as with the local basic tier, and the formula image was merged into it. In the annotated report, the model took the annotation icons and the text under them for images, so "Comment 1" became "mment 1". No automatic check detects either; the reviewer-item comparison of `review-ingestion` and the formula note exist for this.
 - No record, log, or output held the token or a signed address, and the service saw only source IDs as file names.
 
-The run found three gaps, now fixed: the copy of a Word original (`_origin.docx`) was kept in `native/`; the parser version that the service states was not recorded; and the links of a review document were checked in a stage laid out differently from `extracted/`, which reported a correct image link as broken. PDF and Word with the `vlm` model are now verified combinations; images and the `pipeline` model are not.
+The run found three gaps, now fixed: the copy of a Word original (`_origin.docx`) was kept in `native/`; the parser version that the service states was not recorded; and the links of a review document were checked in a stage laid out differently from `extracted/`, which reported a correct image link as broken. PDF with the `vlm` model is a verified cloud combination. Word conversion was observed, but the service output has no `is_full_document` marker, so completeness is unknown and the result stays flagged for review. Image inputs and the `pipeline` model are not verified.
 
 ## Integration contract as implemented
 

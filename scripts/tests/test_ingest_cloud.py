@@ -153,7 +153,7 @@ class CloudImportTests(WorkspaceTestCase):
         result = self.cloud("run", "--route", "cloud", str(self.inputs))
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         record = self.record()
-        self.assertEqual({i["name"]: i["status"] for i in record["items"]}, {"a paper.pdf": "converted", "letter.docx": "converted"})
+        self.assertEqual({i["name"]: i["status"] for i in record["items"]}, {"a paper.pdf": "converted", "letter.docx": "needs-review"})
         self.assertEqual({i["remote"]["state"] for i in record["items"]}, {"done"})
         api = [r for r in self.service.requests if r["path"].startswith("/api/")]
         transfers = [r for r in self.service.requests if not r["path"].startswith("/api/")]
@@ -167,13 +167,20 @@ class CloudImportTests(WorkspaceTestCase):
         provenance = json.loads((folder / "provenance.json").read_text(encoding="utf-8"))
         self.assertEqual(provenance["conversion"]["route"], "cloud")
         self.assertEqual(provenance["conversion"]["model_version"], "vlm")
-        # PDF and Word with the vlm model were verified against the live service, so nothing needs review here.
+        # PDF with the vlm model was verified against the live service, so nothing needs review here.
         self.assertEqual({w["code"] for w in provenance["warnings"] if w["level"] != "info"}, set())
         self.assertEqual(provenance["conversion"]["parser"], {"name": "mineru", "version": "3.4.4", "backend": "hybrid"})
         self.assertEqual((provenance["coverage"]["expected"], provenance["coverage"]["expected_from"], provenance["coverage"]["processed"]), (2, "file structure", 2))
         self.assertNotIn("x_origin.pdf", provenance["outputs"]["native"])
         self.assertNotIn("y_origin.docx", provenance["outputs"]["native"])
         self.assertIn("![](assets/a.jpg)", (folder / "document.md").read_text(encoding="utf-8"))
+        word = next(i for i in record["items"] if i["name"] == "letter.docx")
+        word_folder = self.root / "references" / "extracted" / word["target"]
+        word_provenance = json.loads((word_folder / "provenance.json").read_text(encoding="utf-8"))
+        self.assertEqual(word_provenance["coverage"]["status"], "unknown")
+        self.assertIsNone(word_provenance["coverage"]["is_full_document"])
+        self.assertEqual({w["code"] for w in word_provenance["warnings"] if w["level"] != "info"},
+                         {"coverage-unknown", "unverified-format"})
         for path in self.root.rglob("*"):
             if path.is_file():
                 data = path.read_bytes()

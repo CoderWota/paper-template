@@ -51,7 +51,7 @@ DIRECT_KINDS = frozenset({"markdown", "text"})
 # their results are flagged for review.
 VERIFIED = frozenset({
     ("local", "pdf", "flash"), ("local", "pdf", "basic"), ("local", "word", "flash"),
-    ("cloud", "pdf", "vlm"), ("cloud", "word", "vlm"),
+    ("cloud", "pdf", "vlm"),
     ("direct", "markdown", ""), ("direct", "text", ""),
 })
 MODELS_MISSING = re.compile(r"Model repo \S+ is not ready|quality_tier_unavailable", re.I)

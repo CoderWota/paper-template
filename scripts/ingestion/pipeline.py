@@ -255,8 +255,8 @@ class Pipeline:
             result.warnings = [w for w in result.warnings if w["code"] not in ("formulas-unverified", "coverage-unknown")]
         for note in notes:
             result.warn("not-utf8", note)
-        variant = settings.get("tier") or settings.get("model_version") or ""
-        if (settings["route"], kind, variant) not in VERIFIED:
+        tier_or_model = settings.get("tier") or settings.get("model_version") or ""
+        if (settings["route"], kind, tier_or_model) not in VERIFIED:
             result.warn("unverified-format", f"converting {kind} files this way is documented by MinerU but not yet verified in this workspace; compare the result with the original")
         conversion = dict(settings, settings_key=settings_key(settings), started_at=started, finished_at=now(), import_id=self.record.id)
         if result.parser:
