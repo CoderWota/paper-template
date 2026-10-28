@@ -10,7 +10,7 @@ Outcome: the few confirmed settings needed to begin, an accurate `state/current.
 ## Rules for this skill
 
 - Follow `AGENTS.md`, especially "Decisions and questions" and "Confirmed requirements only".
-- Ask one question at a time. Give the reason in one sentence and your recommendation. Wait for the answer.
+- Ask one question at a time, in the form that `AGENTS.md` sets, and keep the reason to one sentence. Wait for the answer.
 - Record an answer only when the researcher states or confirms it. Do not record a guess.
 - Never delete, move, or overwrite existing material. Keep any text the researcher wrote in the files you update.
 - After the interaction language is confirmed, write records in that language.
@@ -30,7 +30,7 @@ Research material means sources in the library, manuscript sections in the manif
 | --- | --- | --- |
 | New workspace | `requirements/project.md` says the project is not initialized, and there is no research material | Go to step 2. Use any `inbox/` files as context. |
 | Interrupted onboarding | Some answers are recorded in `requirements/project.md` or `state/current.md` | Continue with the first open item. Do not ask confirmed items again. |
-| Workspace already holds work | Confirmed project requirements or research material exist | Go to "A workspace that already holds work". |
+| Workspace already holds work | `requirements/project.md` says the project is initialized, or confirmed project requirements or research material exist | Go to "A workspace that already holds work". A project whose onboarding is finished counts, even when it has no research material yet. |
 
 Start the conversation with two sentences: what onboarding does, and that it asks a few questions whose answers can wait when unknown.
 
@@ -42,7 +42,7 @@ Recommend the language the researcher writes in. Say that you will use it in the
 
 Ask what the researcher wants to achieve: a topic, an interest, a question, or an existing draft. "Not sure yet" is a valid answer. If you found material in `inbox/` or a draft, say what you found and use it to suggest an answer.
 
-Record the goal with the researcher's exact words in quotation marks, and never call a paraphrase their words. Do not turn an unclear interest into a research question by yourself; developing ideas is a separate task (`research-ideation`, `idea-deepening`).
+Record the goal with the researcher's exact words in quotation marks, and never call a paraphrase their words. Do not turn an unclear interest into a research question by yourself; developing ideas is a separate task that is not available yet.
 
 ## Step 4: Ask for the manuscript language
 
@@ -86,7 +86,7 @@ Do not delete, move, or overwrite anything in this case. This folder can be the 
 
 1. Unless the request already makes it clear, ask: "This workspace already contains work on <topic>. Do you want to continue that paper, or start a new paper?"
 2. Continue: keep everything. Ask only the onboarding questions whose answers are not recorded yet, then summarize the recorded settings and ask what the researcher wants to do next. Changes to recorded requirements go through `constraint-maintenance`.
-3. New paper: explain that each paper uses its own fresh copy of the template, and change nothing here.
+3. New paper: explain that each paper uses its own fresh copy of the template, and change no file here, `state/current.md` included. The state of the new paper belongs to its own copy.
    - If you can identify where the template came from, for example a Git URL, and the researcher confirms it, offer to create the fresh copy in a new folder that the researcher names. Copy no research material into it.
    - Otherwise, tell the researcher how to get a fresh copy the same way they got this one.
    - Tell the researcher to open the new folder with their AI application and ask to initialize it there.

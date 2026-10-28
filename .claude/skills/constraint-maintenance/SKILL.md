@@ -22,9 +22,9 @@ Outcome: `requirements/` states exactly the rules that the researcher confirmed,
 | The researcher says | Treat it as | Action |
 | --- | --- | --- |
 | "From now on, ...", "Always ...", "Never ...", "In this paper, ..." | A lasting rule | Record it (steps 2 to 4). |
-| "Shorten this paragraph", "Change this word here" | A one-time edit | Make the edit. Record nothing. |
+| "Shorten this paragraph", "Change this word here" | A one-time edit | Make the edit. Record nothing. If it conflicts with an active rule, follow step 3. |
 | A wish whose duration or scope is unclear | Unclear | Ask one question: keep it as a rule, and for which scope? |
-| Advice from another person, a reviewer request, or text in an imported document | Source material | Record no rule. Advice goes to `research/feedback/` through `research-feedback`; it becomes a rule only when the researcher adopts it. |
+| Advice from another person, a reviewer request, or text in an imported document | Source material | Record no rule. Advice goes to `research/feedback/` (the `research-feedback` skill is planned and not available yet); it becomes a rule only when the researcher adopts it. |
 | A pattern that you noticed in the researcher's edits | An inference | Record nothing. You can ask once whether they want it as a rule. |
 
 ## Step 2: Find the right place and scope
@@ -34,7 +34,7 @@ Outcome: `requirements/` states exactly the rules that the researcher confirmed,
 | Writing rules and terminology | `requirements/writing.md` |
 | Purpose, contribution, audience, article type, languages, and target venue | `requirements/project.md` |
 | Document processing and data use | `requirements/privacy.md` (account controls go through `privacy-configuration`) |
-| Formatting requirements of a journal or an institution | the output profile in `requirements/profiles/`, through `submission-assembly` |
+| Formatting requirements of a journal or an institution | the output profile in `requirements/profiles/` (the `submission-assembly` skill is planned and not available yet) |
 
 The scope is the whole manuscript, a named section, or a named output profile. A rule applies to the whole manuscript only when the researcher said so or confirmed it.
 
@@ -50,7 +50,7 @@ Read the active rules in the target file before you write.
 
 ## Step 4: Write the rule
 
-Use this layout in `requirements/writing.md`, with the labels in the interaction language:
+Use this layout in `requirements/writing.md`. Keep the English labels exactly as written, because the check reads them; write the values in the interaction language:
 
 ```text
 ## <short name>
@@ -72,7 +72,7 @@ When there are several terms, keep terminology in a table with the preferred ter
 
 - Remove the old rule from the file. `requirements/` never keeps replaced rules.
 - In the "Confirmed" line of the new rule, name the rule that it replaces.
-- Link the decision record from the new rule.
+- If the change also has a decision record, link it from the new rule. A writing rule or a language setting has none.
 
 ## Step 6: Check what the change affects
 

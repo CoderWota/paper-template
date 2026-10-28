@@ -51,7 +51,9 @@ Use the path notes from the report: spaces or non-ASCII characters, a long Windo
 
 Do this only for a service that the researcher chose and that needs a credential. An AI application subscription does not mean that a separate API key is necessary.
 
-Before you look for a key page or start the entry, check that a skill in `.agents/skills/` or a script in `scripts/` uses the credential. If none does yet, the credential is not needed now. Say so plainly in the researcher's own terms, for example "importing documents is not available yet, so you do not need a key now". Note the credential as deferred in `state/current.md`. Do not look up the key page or the variable name, and do not collect a value. The exception is a test value that the researcher asks for in order to try the private entry page: it needs no integration.
+Before you look for a key page or start the entry, check the "Available now" table in `AGENTS.md`. If no listed capability uses the credential yet, the credential is not needed now. Say so plainly in the researcher's own terms, for example "that service is not available here yet, so you do not need a key now". Note the credential as deferred in `state/current.md`. Do not look up the key page or the variable name, and do not collect a value. The exception is a test value that the researcher asks for in order to try the private entry page: it needs no integration.
+
+The commands below use `python`. When it is not found, use `python3` (macOS and Linux) or `py -3` (Windows), as in step 1.
 
 1. Find the exact variable name and the official page where the researcher gets the value, from the integration's documentation.
 2. Explain what the credential allows and where it is stored: `.env.local`, which Git ignores but which is not encrypted.

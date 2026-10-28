@@ -32,7 +32,7 @@ An organization's agreement and administrator settings govern a managed account.
 For each route, open the provider's current official pages, starting from [sources.md](sources.md). Write down, with the page and the date:
 
 - the training-use control: its exact name, where it is, its default for this account type, and what it covers;
-- the exceptions that apply even when training is off, such as safety review or submitted feedback;
+- the exceptions that apply even when training is off, such as safety review, submitted feedback, or an explicit opt-in program;
 - retention, telemetry, and feedback controls, labeled as separate topics.
 
 If a page cannot be read, say so. Do not fill the gap from memory.
