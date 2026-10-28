@@ -19,7 +19,7 @@ Outcome: a working setup for the task at hand, or one exact, plain next step. Se
 
 ## Step 1: Inspect the computer
 
-If Python works, run `python scripts/inspect_environment.py` from the workspace root. On Windows, try `py -3 scripts\inspect_environment.py` when `python` is not found. The report changes nothing.
+If Python works, run `python scripts/inspect_environment.py` from the workspace root. When `python` is not found, try `python3 scripts/inspect_environment.py` (macOS and Linux) or `py -3 scripts\inspect_environment.py` (Windows). The report changes nothing.
 
 If no Python works, use the shell's own commands to find the operating system, the processor architecture, and which Python commands exist. On Windows, a `python` command inside `WindowsApps` is usually only a Microsoft Store alias.
 

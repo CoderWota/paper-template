@@ -8,7 +8,7 @@ Updated: 2026-10-28.
 
 | MVP | Researcher-visible outcome | Status |
 | --- | --- | --- |
-| 1 | Usable project and confirmed memory | In progress: scaffold, adopted AGENTS.md, skill copy script, and all four skills implemented. Claude Code runs 1 to 10 are done. Runs 1 to 8 used Sonnet 5.5 as the subject model; runs 9 and 10 use Haiku 5.5, which the maintainer now requires. Run 10 moved the case-specific sentences out of the contract and fixed their causes in skills, table data, and a script; Haiku passes most samples of B1, F1, E1, and D1, with residual misses. Codex and Windows have not been run, so nothing is verified |
+| 1 | Usable project and confirmed memory | In progress: scaffold, adopted AGENTS.md, skill copy script, and all four skills implemented. Claude Code runs 1 to 12 are done. Runs 1 to 8 used Sonnet 5.5 as the subject model; runs 9 to 12 use Haiku 5.5, which the maintainer now requires. Run 11 is the first full pass with Haiku on a clean copy: 9 of 18 scenarios pass, 8 fail on minor points, and E2 cannot pass as written. Codex and Windows have not been run, so nothing is verified |
 | 2 | Flexible intake and MinerU batch ingestion | In progress: implemented on 2026-10-28 (import script, both MinerU routes, both skills). The local route was observed working on macOS with synthetic fixtures; the mineru.net route is tested only against a fake service; no agent-session acceptance run yet, so nothing is verified |
 | 3 | Searchable literature and traceable evidence | Planned |
 | 4 | Ideas, impact, journal choice, and feasible research plans | Planned |
@@ -20,7 +20,7 @@ Updated: 2026-10-28.
 
 Execution order (revised 2026-10-26): 1 → 7 → 2 → 3 → 4 → 5 → 6 → 8 → 9, with the export trial running alongside MVP 7; see the [MVP implementation guideline](mvp-implementation-guideline.md#3-mvp-overview-and-dependencies). The export trial is planned.
 
-The four MVP 1 skills are implemented and have had ten acceptance runs on Claude Code; none is verified. The two MVP 2 skills are implemented and have had no acceptance run. No end-to-end test has been run.
+The four MVP 1 skills are implemented and have had twelve acceptance runs on Claude Code; none is verified. The two MVP 2 skills are implemented and have had no acceptance run. No end-to-end test has been run.
 
 ## MVP 1, partial increment: workspace scaffold
 
@@ -459,20 +459,54 @@ Other levers that remain (proposed; not applied): a hook that runs the form chec
 
 Limits. Two to ten samples per scenario. The fixture copies r18a to r18c reproduce the B1 output of r17, not a fresh B1. The Haiku harness refused several compound shell commands, which the agent worked around.
 
+## MVP 1 acceptance runs 11 and 12: Claude Code with Haiku, full checklist (2026-10-28)
+
+Status: run 11 is the first full pass of the checklist with Haiku as the subject model. It ran on a clean copy of the committed repository (commit `68b92f4` and the records after it), without the per-turn reminder or any other test overlay. Of the 18 scenarios that were run, 9 pass, 8 fail on minor points, and E2 cannot pass as written. Run 12 retested D1 and C1 after two skill fixes. MVP 1 is not verified.
+
+Method. Copy r21 is a clone of the repository without `docs/acceptance`. A1, B1, and B2 ran in r21. Copies r22 to r30 are copies of r21 after B2, one per group of scenarios, so that each scenario starts from the state that the checklist assumes (r22: D1, D2, D4; r23: C1; r24: D3; r25 to r27: E1 to E6; r28: F1 and F2; r29 and r30: two more D2 samples). Every session used `claude-haiku-5-5`. Three harness changes were needed. C1 ran with web tools allowed, and the account type came from the CLI (a personal Pro plan; no identifier was printed). D3 ran in a session that stays open: a controller fed messages through a queue, and the credential script's browser call wrote the page address to a file, so that the page could be opened in the desktop app's browser and the fake value from the checklist entered there. Scripted answers followed the question that the agent actually asked.
+
+Results.
+
+- A1 Pass. B1 Pass. D4 Pass. E1 Pass. E3 Pass. E4 Pass (explicit form: replaced without a question; ambiguous form: one question and no change before the answer; no decision record in either). E5 Pass. F2 Pass. H1 Pass in 10 copies.
+- B2 Fail (minor): the first reply did not ask whether to continue or start a new paper; it asked two questions, one offering a Git commit, which the availability table lists as not available. The second reply passed.
+- C1 Fail (minor): everything held except that the report in `.local/` was in English, although Step 6 asks for the researcher's language. Run 12: after a language reminder in the report template, the report was in Chinese (1 sample).
+- D1: the skill ran the inspection in 2 of 3. In the third sample, `python` was not found, and the agent stopped and asked for permission, because Step 1 named `py -3` for Windows but not `python3` for macOS and Linux (D-23, fixed in run 12 in the skill). Run 12: the inspection ran in only 2 of 5 samples; in the other 3, the agent said that importing is not available and offered the check. Over all 18 Haiku samples with the readiness wording, it ran in 12.
+- D2 Fail (minor), 3 samples: no key was asked, `privacy.md` stayed unchanged, and `.env.local` did not exist. No sample noted the cloud wish in `state/current.md`, and no sample loaded a skill.
+- D3 Fail (minor): the page ran in the background with Chinese texts; the value appeared nowhere in the session; `.env.local` had mode 600 and Git ignored it; the removal worked. The confirmations were in English and did not give the length. An earlier, aborted attempt passed English page texts.
+- E2 cannot pass as written: the agent declined to write manuscript text, as the availability table requires; no file changed and no rule was recorded.
+- E6 Fail (minor): the first sentence had no word that differs between British and American spelling, so the rewrite changed nothing; the reply did not say that the saved rule was unchanged or offer to change it. The script needs a variant word (a note was added to the checklist).
+- F1: the confirmation passed (the skill, the decision record and index entry, the manuscript unchanged, two choices, and revising named as not available). The question turn failed on minor points: two questions, no request to confirm, and `project.md` not read.
+- G1 Fail (minor): B2 and the F1 question turn bundled two questions, and D1 asked again about a choice that was deferred.
+
+Skill use in the 42 sessions of run 11: the matching skill was loaded in every B1 session start (4 of 4), in the goal change (1 of 1), and in the rule scenarios (3 of 4, with the first turn of each loading it). For the readiness question, the Skill tool was used in 3 of 3 samples in r22. For the cloud wish (D2) no skill was loaded in 3 of 3. English-only notes between tool calls: 3 of 46, all in D1; the D3 session had 2 English notes and 2 English replies.
+
+Defects after runs 11 and 12.
+
+- D-23 (Low; fixed in the skill): Step 1 of `environment-management` named `py -3` for Windows only. It now names `python3` for macOS and Linux. In run 12, no sample stopped for this reason.
+- D-16 (extended; residual): the readiness question reaches the inspection in 12 of 18 Haiku samples. A cloud wish loads no skill (0 of 3) and is not noted in `state/current.md`. Text changes in the skill description, the table row, and the skill did not remove these misses.
+- D-22 (extended; residual): records and replies in English on Haiku: `project.md` once (run 10), the privacy report (C1, fixed by a language reminder in the template), and the replies in the credential flow (D3, 2 of 3). Replies that follow a background event are the likeliest to be English.
+- D-24 (new, Low): replies that bundle two questions (B2, the F1 question turn), and one offer of a capability that is not available (a Git commit in B2).
+- D-25 (new, Low; test scripts): E2 asks for manuscript text, and E6 needs a variant word. The checklist notes both.
+- D-15, D-18, D-19, D-20, and D-21 held: the decision record in F1 (1 of 1), no decision record for spelling (E1, E4: 3 of 3), one next action (B1), the form check run and passing (E1, E4: 3 of 3), and exact quotation of the researcher's words (B1 and F1).
+
+Changes in run 12 (skills only; committed in `67607d8`): `environment-management` Step 1 names `python3`; `report-template.md` of `privacy-configuration` tells the agent to write the report in the researcher's language. No sentence was added to `AGENTS.md`.
+
+Limits. One sample per scenario, except D1 (18 samples), D2 (3), and C1 (2 with different answers). D3 needed a harness that does not exist in the repository; it lives in the maintainer's scratchpad, with the other test tools.
+
 ## Remaining for MVP 1
 
-All four MVP 1 skills have first implementations, and runs 1 to 10 on Claude Code are complete. Remaining:
-- Decide how to treat the residual Haiku misses of run 10 (D1 in 2 of 10, the goal change without the skill, a record in English, a few English notes) without adding sentences to `AGENTS.md`. Deterministic enforcement by a hook or scripts is the remaining lever.
-- Repeat the whole checklist with Haiku. The passes of A1, B2, C1, D3, D4, E2, E3, E5, F2, and G1 date from runs 1 and 2. E2 needs a revised script, because it asks the agent to write manuscript text.
+All four MVP 1 skills have first implementations, and runs 1 to 12 on Claude Code are complete. Remaining:
+- Decide how to treat the Haiku misses that text did not remove, without adding sentences to `AGENTS.md`: the readiness question reaches the inspection in 12 of 18 samples, a cloud wish is not noted in `state/current.md`, and some replies and records are in English (the credential flow, 2 of 3 replies). Deterministic enforcement (a hook, scripts, and a machine-readable language setting) is the remaining lever.
+- Revise the scripts of E2 (it asks for manuscript text) and E6 (the sentence needs a variant word), and decide whether B2 may skip its question when the workspace was just initialized.
+- Repeat the full checklist with Haiku after those decisions. G2 and the Windows baseline were not run.
 - For GPT use `gpt-6-luna`. Install Codex and sign in before a Codex run.
 - D-14 (an English first note before a skill call): in run 10, 5 of 136 Haiku notes were English-only. The per-turn reminder prototype is the layer designed for this, and it cannot read a language label that varies ("交互语言" against "交流语言"). Decide whether to adopt it with a machine-readable language setting. Add no sentence to `AGENTS.md`.
-- D1 (D-2, D-16): the inspection ran in 8 of 10 Haiku samples. Repeat it with more samples, and check the "writing continues" statement.
 - Run the checklist in Codex, which is not installed on the maintainer's computer yet, and on the Windows baseline. Recreate the Codex test copy first: it still holds the state before the fixes.
 - Run the scenarios that the runs could not exercise: the interactive question tool, missing Python or tools, onboarding in English, and an account control that the researcher can read.
-- Start the read-only MinerU service research.
+- The read-only MinerU service research was done on 2026-10-28 with MVP 2; see [MinerU integration](mineru-integration.md).
 - Implement the English question checks against the official ASD-STE100 issue, and the clarity review for questions in other languages. The standard and its dictionary are not bundled with the template; they need access under the publisher's terms.
 
-The [MVP 1 acceptance checklist](acceptance/mvp-1.md) holds the scenarios and the results table. The disposable test copies have no Git remote: `/Users/wota/Projects/paper-template-mvp1-test-claude` (run 1), `...-claude-r2` (run 2), `...-claude-r3` (run 3), `...-claude-r4` (run 4), and `...-claude-r5` (run 5) each hold the changes of their run. `...-claude-r7` to `...-claude-r11` hold runs 6 and 7; the state files of r7 were lost (see the runs 6 and 7 section). `...-claude-r12` and `...-r13` hold run 8, and `...-claude-r14` and `...-r15` hold run 9. `...-claude-r16` to `...-r20` hold run 10 (`...-r18fix` is the prepared fixture). `/Users/wota/Projects/paper-template-mvp1-test-codex` is untouched, cloned from `51f93e7`, so it predates the fixes.
+The [MVP 1 acceptance checklist](acceptance/mvp-1.md) holds the scenarios and the results table. The disposable test copies have no Git remote: `/Users/wota/Projects/paper-template-mvp1-test-claude` (run 1), `...-claude-r2` (run 2), `...-claude-r3` (run 3), `...-claude-r4` (run 4), and `...-claude-r5` (run 5) each hold the changes of their run. `...-claude-r7` to `...-claude-r11` hold runs 6 and 7; the state files of r7 were lost (see the runs 6 and 7 section). `...-claude-r12` and `...-r13` hold run 8, and `...-claude-r14` and `...-r15` hold run 9. `...-claude-r16` to `...-r20` hold run 10 (`...-r18fix` is the prepared fixture). `...-claude-r21` to `...-r33` hold runs 11 and 12 (`r21` is the clean copy; `r22` to `r30` are copies of its state after B2, one per group of scenarios; `r31` to `r33` carry the two skill fixes). `/Users/wota/Projects/paper-template-mvp1-test-codex` is untouched, cloned from `51f93e7`, so it predates the fixes.
 
 ## MVP 2: flexible intake and MinerU batch ingestion
 
