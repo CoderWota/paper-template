@@ -9,12 +9,10 @@ Outcome: the few confirmed settings needed to begin, an accurate `state/current.
 
 ## Rules for this skill
 
-- Write everything that the researcher sees in the interaction language, from your first note on, including the short notes between tool calls. Until the interaction language is recorded, use the language that the researcher writes in. This file is in English; your notes are not.
 - Follow `AGENTS.md`, especially "Decisions and questions" and "Confirmed requirements only".
 - Ask one question at a time. Give the reason in one sentence and your recommendation. Wait for the answer.
 - Record an answer only when the researcher states or confirms it. Do not record a guess.
 - Never delete, move, or overwrite existing material. Keep any text the researcher wrote in the files you update.
-- Never ask for a password or an API key in the conversation.
 - After the interaction language is confirmed, write records in that language.
 - Skip a question when the request or the workspace already answers it. An explicit statement is an answer.
 
@@ -44,7 +42,7 @@ Recommend the language the researcher writes in. Say that you will use it in the
 
 Ask what the researcher wants to achieve: a topic, an interest, a question, or an existing draft. "Not sure yet" is a valid answer. If you found material in `inbox/` or a draft, say what you found and use it to suggest an answer.
 
-Record the goal in the researcher's words. Do not turn an unclear interest into a research question by yourself; developing ideas is a separate task (`research-ideation`, `idea-deepening`).
+Record the goal with the researcher's exact words in quotation marks, and never call a paraphrase their words. Do not turn an unclear interest into a research question by yourself; developing ideas is a separate task (`research-ideation`, `idea-deepening`).
 
 ## Step 4: Ask for the manuscript language
 
@@ -69,7 +67,7 @@ If the choice needs a credential or an installation, use `environment-management
 Write each answer as soon as it is confirmed, so an interruption loses nothing. Write in the interaction language.
 
 - `requirements/project.md`: the status (initialized, with the date), the research goal in the researcher's words, the interaction language, the manuscript language, and any confirmed audience, article type, or target venue. List the items that are still open.
-- `requirements/privacy.md`: the processing choice (local, a named cloud service, or decide later), the documents it covers, and any data-use requirement that the researcher confirmed. A declined or postponed offer is not a requirement; do not write it here. A cloud service is recorded only after its scope is confirmed (see `privacy-configuration`).
+- `requirements/privacy.md`: the confirmed processing choice (local or a named cloud service), the documents it covers, and any data-use requirement that the researcher confirmed. A declined or postponed offer or choice is not a requirement; do not write it here. If the researcher decides later, list the choice as open in `requirements/project.md` and `state/current.md`. A cloud service is recorded only after its scope is confirmed (see `privacy-configuration`).
 
 If the researcher states a writing rule, record it in `requirements/writing.md` through `constraint-maintenance`.
 
@@ -79,8 +77,8 @@ Ask whether the researcher wants you to check if their AI application can use pr
 
 ## Step 8: Finish
 
-1. Update `state/current.md` in the interaction language, every line of it: what is set up, what is deferred, and the next action. The researcher reads this record.
-2. Report in the interaction language: the recorded settings with links to the files, the deferred items, and one recommended next action that you can carry out now with the available skills and your own tools. Name `inbox/` as the place for documents; `inbox/imports/` holds the agent's import records, not documents.
+1. Set the status in `requirements/project.md` to initialized, with the date. Rewrite `state/current.md` as a whole in the interaction language, including its heading: what is set up, what is deferred, and the next action. The researcher reads this record.
+2. Report in the interaction language: the recorded settings with links to the files, the deferred items, and exactly one recommended next action that you can carry out now with the available skills and your own tools. If that action involves documents, name `inbox/` as the place for them; `inbox/imports/` holds the agent's import records, not documents.
 
 ## A workspace that already holds work
 

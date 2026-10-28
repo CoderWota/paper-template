@@ -9,14 +9,13 @@ Outcome: for each relevant service, the training-use control, its actual state, 
 
 ## Rules for this skill
 
-- Write everything that the researcher sees in the interaction language, from your first note on, including the short notes between tool calls. Until the interaction language is recorded, use the language that the researcher writes in. This file is in English; your notes are not.
 - Follow `AGENTS.md`. Changing an account or application setting is a decision: explain its scope, because an account setting can affect every project on that account, and wait for explicit consent for that specific change.
-- Never ask for a password, an API key, or an account identifier in the conversation. Never send a manuscript or research document as a test.
+- Never ask for an account identifier in the conversation. Never send a manuscript or research document as a test.
 - A sentence in a project file cannot change a provider's policy. Only the provider's own controls can.
 - Keep these topics apart: training use, retention, upload for processing, telemetry and error reports, and feedback that the user submits. A telemetry opt-out, a deleted session, or a short retention period is not a training opt-out.
 - Read the current official sources for the exact route every time. [sources.md](sources.md) lists starting points that were checked on a stated date; check them again before you rely on them.
 - During template development, do not change the template maintainer's own settings.
-- A cloud document-processing service is available only through a skill or script in this workspace that calls it. Before you discuss a key, an upload, or a processing setup, check whether one exists (see `environment-management`, step 5). If none does, say plainly that cloud parsing is not available yet, note the setup as deferred in `state/current.md`, and do not look up a key page or say that a key will be needed at the first upload.
+- Before you discuss a key, an upload, or a processing setup for a cloud service, check the "Available now" table in `AGENTS.md`. If the service is not listed as available, say so plainly, note the setup as deferred in `state/current.md`, and do not look up a key page or say that a key will be needed at the first upload.
 
 ## Step 1: Identify the routes
 

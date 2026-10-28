@@ -1,6 +1,6 @@
 # Research Decision Records
 
-Short records of consequential research choices you have confirmed, for example narrowing the research question, choosing a method, setting corpus or inclusion boundaries, excluding an analysis, or changing the central argument. A record is written only when revisiting the choice would be costly and its reasons matter. Ordinary wording edits, imports, and renames do not get one.
+Short records of consequential research choices you have confirmed, for example narrowing the research question, choosing a method, setting corpus or inclusion boundaries, excluding an analysis, or changing the central argument. A record is written only when revisiting the choice would be costly and its reasons matter. Ordinary wording edits, imports, and renames do not get one. A writing rule or a language setting is a requirement, not a decision: it goes in `requirements/` and gets no record.
 
 ## Contents
 

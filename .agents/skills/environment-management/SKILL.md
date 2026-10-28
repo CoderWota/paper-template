@@ -1,6 +1,6 @@
 ---
 name: environment-management
-description: Check and prepare this computer for the workspace without requiring programming knowledge. Inspects the operating system, processor, memory, storage, and installed tools; reuses compatible tools; creates project environments only when a task needs them; guides private local entry of API keys; and repairs broken setups. Use when onboarding or another task needs a tool, a Python environment, or a credential, or when the researcher says that something is missing or does not work.
+description: Use when the researcher asks whether this computer is ready for a task, such as importing PDFs, says that something is missing or does not work, or when onboarding or another task needs a tool, a Python environment, or a credential. Checks and prepares this computer for the workspace without requiring programming knowledge. Inspects the operating system, processor, memory, storage, and installed tools; reuses compatible tools; creates project environments only when a task needs them; guides private local entry of API keys; and repairs broken setups.
 ---
 
 # Environment management
@@ -9,12 +9,11 @@ Outcome: a working setup for the task at hand, or one exact, plain next step. Se
 
 ## Rules for this skill
 
-- Write everything that the researcher sees in the interaction language, from your first note on, including the short notes between tool calls. Until the interaction language is recorded, use the language that the researcher writes in. This file is in English; your notes are not.
 - Follow `AGENTS.md`. Installing, upgrading, or removing software and changing a system setting are decisions: explain the effect, recommend one option, and wait for explicit consent.
 - Inspect before you change anything. Reuse a compatible installed tool. Never upgrade or replace a working global installation to suit this workspace.
 - Prefer per-user installations that need no administrator rights. Basic work never needs Docker, WSL, a GPU, or a local model.
 - A missing tool must not block unrelated work. Reading and writing Markdown never needs a tool.
-- Never ask for a password or an API key in the conversation. Never read `.env.local` yourself or print a value from it.
+- Never read `.env.local` yourself or print a value from it.
 - Keep what you observed separate from what you assume. Do not say that a setup works until you have run it.
 - Before you say whether this computer is ready for a task, run the inspection in step 1. Say what still works without the missing tool; reading and writing Markdown never needs one. Ask at most one question in that report.
 

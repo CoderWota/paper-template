@@ -1,6 +1,6 @@
 ---
 name: constraint-maintenance
-description: Record, update, and reconcile the researcher's confirmed requirements so that every later session follows the same rules. Turns an explicit instruction into a scoped rule in requirements/, tells lasting rules apart from one-time edit requests, resolves conflicts with the researcher, replaces outdated rules instead of keeping contradictions, and never saves an inferred preference anywhere. Use when the researcher states or changes a writing rule, terminology, language, or other lasting requirement, asks which rules apply, or makes a request that conflicts with a saved rule.
+description: Record, update, and reconcile the researcher's confirmed requirements so that every later session follows the same rules. Turns an explicit instruction into a scoped rule in requirements/, tells lasting rules apart from one-time edit requests, resolves conflicts with the researcher, replaces outdated rules instead of keeping contradictions, and never saves an inferred preference anywhere. Use when the researcher states or changes a writing rule, terminology, language, the research question or goal, or other lasting requirement, asks which rules apply, or makes a request that conflicts with a saved rule.
 ---
 
 # Constraint maintenance
@@ -9,12 +9,12 @@ Outcome: `requirements/` states exactly the rules that the researcher confirmed,
 
 ## Rules for this skill
 
-- Write everything that the researcher sees in the interaction language, from your first note on, including the short notes between tool calls. Until the interaction language is recorded, use the language that the researcher writes in. This file is in English; your notes are not.
 - Follow `AGENTS.md`, "Confirmed requirements only".
 - An explicit, clear instruction is confirmation. Record it without asking for approval again.
 - Never save an inferred preference. This applies to `requirements/`, notes, `state/`, skills, feedback records, idea notes, and the agent application's own memory feature. If you notice a pattern, you can ask about it once in the conversation; without a clear yes, keep nothing.
 - Keep only active rules in `requirements/`. Remove a rule when it is replaced or withdrawn.
-- Write rules in the interaction language. Capture the intent in the researcher's words. Add an example or an exception only when the researcher gave it or confirms it; never add one that you inferred. Avoid broad bans on words, which damage meaning and natural expression.
+- A consequential research choice also gets a decision record, whether or not it replaces a rule. Follow "Decisions" in `AGENTS.md`. Write the record and its index entry in the interaction language, name the old and the new choice, and state the reason as the researcher gave it, or say that none was given.
+- Write rules in the interaction language. Capture the intent in the researcher's words, and put their exact words in quotation marks; never call a paraphrase their words. Add an example or an exception only when the researcher gave it or confirms it; never add one that you inferred. Avoid broad bans on words, which damage meaning and natural expression.
 - A rule governs writing and behavior. It is not evidence for a scientific claim, and an idea or a hypothesis is not a rule.
 
 ## Step 1: Decide whether the statement is a lasting rule
@@ -38,7 +38,7 @@ Outcome: `requirements/` states exactly the rules that the researcher confirmed,
 
 The scope is the whole manuscript, a named section, or a named output profile. A rule applies to the whole manuscript only when the researcher said so or confirmed it.
 
-Language rules belong in `requirements/project.md`: the manuscript language, the interaction language, and explicit exceptions, such as quotations, proper names, bibliography titles, or a required abstract in a second language.
+Language settings belong in `requirements/project.md`: the manuscript language, the interaction language, and explicit exceptions, such as quotations, proper names, bibliography titles, or a required abstract in a second language. Spelling variety (for example British or American English) and style are writing rules, so they belong in `requirements/writing.md`.
 
 ## Step 3: Check for duplicates and conflicts
 
@@ -59,10 +59,12 @@ Use this layout in `requirements/writing.md`, with the labels in the interaction
 - Scope: <whole manuscript | section: <name> | output profile: <id>>
 - Examples: <only if the researcher gave them>
 - Exceptions: <only if the researcher gave or confirmed them>
-- Confirmed: <date>; <source: the researcher's instruction, an adopted feedback record, or a decision record>
+- Confirmed: <date>; <the researcher's exact words in quotation marks, or the adopted feedback record or decision record that confirmed it>
 ```
 
 Leave out the `Examples` and `Exceptions` lines unless the researcher gave or confirmed them. If an exception seems necessary, ask one question; do not write it first.
+
+After you write a rule, run `python scripts/check_requirements.py` from the workspace root (use `python3` or `py -3` when `python` is not found). It names each missing line and the labels it accepts. Fix every problem before you report.
 
 When there are several terms, keep terminology in a table with the preferred term, the terms to avoid, and the scope. Keep any text that the researcher wrote in the file.
 
@@ -70,12 +72,11 @@ When there are several terms, keep terminology in a table with the preferred ter
 
 - Remove the old rule from the file. `requirements/` never keeps replaced rules.
 - In the "Confirmed" line of the new rule, name the rule that it replaces.
-- If the change is a consequential research choice, for example a change of manuscript language, of central terminology, or of a rule that affects the argument, also write a research decision record in `research/decisions/`. Include the old rule, the new rule, and the reason, add it to `research/decisions/index.md`, and link it from the new rule. Write the record and its index entry in the interaction language. State the reason as the researcher gave it; if they gave none, say so, and do not invent one.
-- Do not write a decision record for a minor change. Version history keeps it.
+- Link the decision record from the new rule.
 
 ## Step 6: Check what the change affects
 
-A confirmed change authorizes the change and its records. It does not authorize edits to manuscript text. Search `manuscript/` for passages that the change affects, such as an introduction that states the old research goal. List them in your report and ask one question: update them now, later, or not at all. Recommend one choice. Edit manuscript text only after the answer.
+A confirmed change authorizes the change and its records. It does not authorize edits to manuscript text. Search `manuscript/` for passages that the change affects, such as an introduction that states the old research goal. List them in your report and ask one question about what to do with them. Offer only actions that the table under "Available now" in `AGENTS.md` lists. If revising manuscript text is not listed, say that it is not available yet, and offer exactly two choices: keep each passage as an open item, or the researcher revises it themselves. Recommend one choice. When revising is available, edit manuscript text only after the answer.
 
 ## Step 7: Report
 
@@ -88,4 +89,5 @@ Tell the researcher, in their language, what you recorded, changed, or removed, 
 - No two active rules contradict each other.
 - A replaced rule is gone from `requirements/`, and a consequential change has a decision record in the interaction language.
 - Every example and exception in `requirements/` came from the researcher.
+- `python scripts/check_requirements.py` reports no problem.
 - No manuscript text was edited without the researcher's answer.
