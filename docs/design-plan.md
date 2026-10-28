@@ -128,7 +128,7 @@ The tree shows representative files and explicitly includes a `README.md` at eve
 ├── references/
 │   ├── README.md
 │   ├── index.md                                   # Compact discovery index
-│   ├── bibliography.bib                           # Proposed canonical citation metadata
+│   ├── bibliography.bib                           # Canonical citation metadata (BibTeX, decided 2026-10-28)
 │   ├── originals/
 │   │   ├── README.md
 │   │   └── <source-id>/
@@ -277,7 +277,7 @@ Confirmed decision: use MinerU for supported document parsing. Read existing Mar
 
 Recommend a MinerU processing mode and quality tier based on the document and available capabilities. The framework supports cloud processing, but this does not authorize uploading any particular researcher's documents. Record each researcher's selected service, permitted document scope, and processing mode. Reuse that choice within its confirmed scope; revisit it when the service, scope, cost, or data-use conditions change materially. Do not silently switch a failed local parse to cloud or to another parser. Unsupported input or inadequate extraction must remain visible.
 
-The exact cloud provider/API, account requirements, pricing, retention policy, training-use policy, and client capabilities remain integration details to verify. Do not infer them from the local open-source parser. Use a dedicated publishing system for the authored manuscript; Pandoc versus Quarto remains open.
+The exact cloud provider/API, account requirements, pricing, retention policy, training-use policy, and client capabilities remain integration details to verify. Do not infer them from the local open-source parser. The research of 2026-10-28, the chosen routes, and the implemented integration contract are in [MinerU integration](mineru-integration.md). Use a dedicated publishing system for the authored manuscript; Pandoc versus Quarto remains open.
 
 ### MinerU-specific findings that affect the design
 

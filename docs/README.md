@@ -10,6 +10,8 @@ These documents describe development of the reusable framework. They are not wri
 
 The [agent interaction specification](agent-interaction.md) records the confirmed requirements for prior user confirmation of major decisions and ASD-STE100 in English questions, including grilling. It distinguishes non-English clarity guidance and verified compliance from a prompt-only claim. Its integration and tests remain planned.
 
+The [MinerU integration](mineru-integration.md) note records the MinerU research of 2026-10-28, the maintainer's integration decisions, the observed behaviour of the local route, the mineru.net API and terms, and the contract that the import scripts implement.
+
 The [Markdown and export conventions](markdown-and-export-conventions.md) record GitHub-renderable LaTeX math, Mermaid explanation diagrams, and native editable Office Math/OMML equations in DOCX. They define shared source conventions, faithful conversion, and rendering/editability checks. These requirements are confirmed; the converters and validation workflows are not yet implemented.
 
 The [research workflow review and knowledge transfer](research-workflow-review.md) assesses the gap between an organized writing workspace and a complete researcher-directed production process. Its bounded complete-path objective is confirmed for framework testing only; it does not narrow the product or prove real submission readiness. The detailed execution, result/evidence, verification, package, and user-effort implementation contracts remain proposals. The test has not been executed.

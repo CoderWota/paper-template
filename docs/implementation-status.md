@@ -9,7 +9,7 @@ Updated: 2026-10-28.
 | MVP | Researcher-visible outcome | Status |
 | --- | --- | --- |
 | 1 | Usable project and confirmed memory | In progress: scaffold, adopted AGENTS.md, skill copy script, and all four skills implemented. Claude Code runs 1 to 10 are done. Runs 1 to 8 used Sonnet 5.5 as the subject model; runs 9 and 10 use Haiku 5.5, which the maintainer now requires. Run 10 moved the case-specific sentences out of the contract and fixed their causes in skills, table data, and a script; Haiku passes most samples of B1, F1, E1, and D1, with residual misses. Codex and Windows have not been run, so nothing is verified |
-| 2 | Flexible intake and MinerU batch ingestion | Planned |
+| 2 | Flexible intake and MinerU batch ingestion | In progress: implemented on 2026-10-28 (import script, both MinerU routes, both skills). The local route was observed working on macOS with synthetic fixtures; the mineru.net route is tested only against a fake service; no agent-session acceptance run yet, so nothing is verified |
 | 3 | Searchable literature and traceable evidence | Planned |
 | 4 | Ideas, impact, journal choice, and feasible research plans | Planned |
 | 5 | Evidence-based writing, audit, and major revision | Planned |
@@ -20,7 +20,7 @@ Updated: 2026-10-28.
 
 Execution order (revised 2026-10-26): 1 → 7 → 2 → 3 → 4 → 5 → 6 → 8 → 9, with the export trial running alongside MVP 7; see the [MVP implementation guideline](mvp-implementation-guideline.md#3-mvp-overview-and-dependencies). The export trial is planned.
 
-The four MVP 1 skills are implemented and have had ten acceptance runs on Claude Code; none is verified. No end-to-end test has been run.
+The four MVP 1 skills are implemented and have had ten acceptance runs on Claude Code; none is verified. The two MVP 2 skills are implemented and have had no acceptance run. No end-to-end test has been run.
 
 ## MVP 1, partial increment: workspace scaffold
 
@@ -473,6 +473,53 @@ All four MVP 1 skills have first implementations, and runs 1 to 10 on Claude Cod
 - Implement the English question checks against the official ASD-STE100 issue, and the clarity review for questions in other languages. The standard and its dictionary are not bundled with the template; they need access under the publisher's terms.
 
 The [MVP 1 acceptance checklist](acceptance/mvp-1.md) holds the scenarios and the results table. The disposable test copies have no Git remote: `/Users/wota/Projects/paper-template-mvp1-test-claude` (run 1), `...-claude-r2` (run 2), `...-claude-r3` (run 3), `...-claude-r4` (run 4), and `...-claude-r5` (run 5) each hold the changes of their run. `...-claude-r7` to `...-claude-r11` hold runs 6 and 7; the state files of r7 were lost (see the runs 6 and 7 section). `...-claude-r12` and `...-r13` hold run 8, and `...-claude-r14` and `...-r15` hold run 9. `...-claude-r16` to `...-r20` hold run 10 (`...-r18fix` is the prepared fixture). `/Users/wota/Projects/paper-template-mvp1-test-codex` is untouched, cloned from `51f93e7`, so it predates the fixes.
+
+## MVP 2: flexible intake and MinerU batch ingestion
+
+Status: implemented, not verified. The local route was observed working on macOS with synthetic fixtures. No scenario of the [MVP 2 checklist](acceptance/mvp-2.md) has run in a fresh agent session, the mineru.net route has not met the live service, and Windows and Codex have not been run.
+
+Request: on 2026-10-28 the template maintainer asked to implement MVP 2 in a new worktree and to merge it into the main branch when done. The planned order put MVP 7 and the export trial first; the maintainer chose MVP 2.
+
+Decisions (2026-10-28), the maintainer's answers to three questions:
+
+- Routes: both MinerU on this computer and the official mineru.net service (precision API v4). The token-free Agent API is not used: at most 10 MB and 20 pages, and Markdown without images.
+- Test installation: MinerU 4.0.12 in the worktree's ignored `.tools/mineru/`, tested with the flash and basic tiers on synthetic files. The standard tier was not tested.
+- Citation metadata: BibTeX in `references/bibliography.bib` is canonical from now on, before the export trial.
+
+The research behind these choices, the observed MinerU behaviour, and the mineru.net terms are in [MinerU integration](mineru-integration.md).
+
+Implemented:
+
+- `scripts/ingest.py` with its modules in `scripts/ingestion/` (standard library, Python 3.9 or later): `plan`, `run`, `status`, `verify`, `metadata`, and `note`. It archives each original under a checksum-based source ID, converts it with the confirmed route only, checks page coverage, pages without text, text left out of the Markdown, image links, and math delimiters, publishes the extraction in one rename with `provenance.json` and READMEs, updates `references/index.md`, and keeps a resumable record in `inbox/imports/<import-id>/`. It reuses matching results, converts again only on request, refuses to overwrite a hand-edited `document.md`, and stops a whole run once for failures that would repeat (missing models, a rejected or expired token, the daily limit, the network). Review documents go to `reviews/<venue>/<round>/`, with Word comments, replies, insertions, and deletions read from the file's XML and PDF comment annotations from a best-effort scan.
+- The mineru.net route runs only when `requirements/privacy.md` names mineru.net and the `MINERU_API_TOKEN` credential exists. The token goes only to the API address; the service sees the source ID instead of the file name; signed addresses and the token are removed from records and logs; batches are paced below the service's rate limit.
+- `scripts/setup_mineru.py`: `check`, `install` (MinerU 4.0.12 into `.tools/mineru/`), and `models` (into `.cache/mineru/`).
+- Skills `source-ingestion` and `review-ingestion`, with generated Claude Code copies.
+- `.env.example` names `MINERU_API_TOKEN`. The fixture generator `docs/acceptance/fixtures/make_mvp2_fixtures.py` and the [MVP 2 checklist](acceptance/mvp-2.md).
+- Changes to MVP 1 files: the availability table in `AGENTS.md` (two new rows, and the credential row now names its user); `privacy-configuration` (a cloud choice is recorded with the service's address, and `sources.md` holds the mineru.net findings); one sentence in `environment-management` pointing to `setup_mineru.py check`; the status sentence of the root README; and the READMEs of `references/`, `references/extracted/`, `inbox/imports/`, `reviews/`, `scripts/`, `scripts/tests/`, `.agents/skills/`, `docs/`, and `docs/acceptance/`.
+
+Verification observed (macOS 26.6.2 on Apple Silicon, 16 GB; Python 3.9.6 and 3.12.9; MinerU 4.0.12):
+
+- 49 script tests pass on both Python versions: 16 for the local route with a fake parser, 6 for the cloud route with a fake service, and the 27 earlier tests.
+- Live local runs on a disposable copy of the workspace with the synthetic fixture folder: with the flash tier, the 12-page report converted 12 of 12 pages; the exact duplicate with a non-ASCII name was recognized; the unsupported file and the corrupt PDF were reported with their reasons; the scanned page was flagged as having no text; the Markdown file was read directly; and a different file with the same name in a subfolder got its own source ID. The first run stopped at a Python 3.9 incompatibility, which is fixed; continuing the same import finished the interrupted file and the open ones.
+- Importing the folder again with the basic tier reused the three earlier results and reported their other settings. Converting two files again with the basic tier read the scanned page's text, structured the table, and moved the report to revision 2 with its earlier revision listed. One printed formula was transcribed wrongly, and a formula image was merged into it; no automatic check can detect that, and the extraction README says that formulas are not verified.
+- A review round from the Word decision letter and the annotated PDF listed 2 comments with their anchored text, 1 insertion, 1 deletion, and the text of 2 PDF annotations; MinerU alone had shown the tracked changes as accepted and lost the comments. Importing the round again created no duplicate.
+- On the copy, the README check passed for every folder that the import created, `ingest.py verify` passed, and `metadata` wrote a BibTeX entry with special characters escaped.
+- `setup_mineru.py check` reported the installation, both tiers' models, and the disk use correctly. In a second disposable copy, `setup_mineru.py install`, started with Python 3.9.6, chose Python 3.12.9, installed MinerU 4.0.12 with pip (1.37 GB), and the check that followed reported both tiers' models as not installed.
+
+Not verified:
+
+- Any scenario of the checklist in fresh Claude Code (Haiku) or Codex sessions, including the questions about the processing choice and the scope.
+- The mineru.net route against the live service, which needs a token and the maintainer's consent to upload synthetic files. Its archive layout is assumed from the documentation, and its terms leave training use and retention unknown.
+- The standard tier; local formats other than PDF, Word, Markdown, and text (they are converted but flagged as unverified); Windows and Linux.
+- Page numbers of PDF annotations, Word footnotes and endnotes, and the accuracy of OCR, tables, and formulas.
+
+Effect on MVP 1 acceptance: scenarios D1 and D2 of the [MVP 1 checklist](acceptance/mvp-1.md) expect document import to be unavailable. With MVP 2 merged, their expected behaviour changes; revising them is a decision for the maintainer.
+
+Remaining for MVP 2:
+
+- Run the checklist with Haiku in fresh Claude Code sessions, then in Codex.
+- A live mineru.net run with a token and synthetic files, and a fresh check of its terms at that time.
+- Windows runs of both routes; a decision on testing the standard tier.
 
 ## Open items affecting the order
 
