@@ -35,8 +35,9 @@ The only list of what works. `python scripts/check_capabilities.py` checks it ag
 | Record standing rules and research decisions | `constraint-maintenance` | Available now |
 | Import documents into the reference library with MinerU, on this computer or with mineru.net as confirmed; organize the inbox | `source-ingestion` | Available now |
 | File and convert editor and reviewer documents by venue and round | `review-ingestion` | Available now |
-| Search and collect literature | `literature-discovery`, `reference-download` | Not available yet |
-| Retrieve and compare evidence | `literature-and-evidence`, `research-investigation` | Not available yet |
+| Search and screen literature within a confirmed query scope | `literature-discovery` | Available now; Sciverse agentic, query-only metadata, and bounded content endpoints were observed on 2026-10-28. The model-host fallback, catalog filters, cursor continuation, relations, resource retrieval, experimental Paper Schema operations, and account limits remain unverified |
+| Download public PDF references from supported DOI or direct URLs | `reference-download` | Available now for public PDF responses only; deterministic retrieval is tested locally, and publisher or institutional access is not verified |
+| Retrieve and compare evidence from imported sources | `literature-and-evidence`, `research-investigation` | Available now; local extraction search is tested, while evidence quality on a research corpus and Codex/Windows operation remain unverified |
 | Develop ideas; assess impact; choose a journal | — | Not available yet |
 | Outline, write, audit, and revise the manuscript, including rewriting a passage | — | Not available yet |
 | Format, export, and check readiness | — | Not available yet |

@@ -324,6 +324,16 @@ Preserve received originals and a concise import record linking input, checksum,
 
 Produce a section/asset/citation mapping and a reviewable migrated draft, respecting the maximum of one Markdown file per major section. Resolve references against actual source records; retain unresolved markers and bibliography entries without inventing matches or claiming a listed reference's full text is present. Flag conversion loss, missing images, ambiguous equations, Word citation fields, comments, and tracked changes. Verify against the source and rendered pages where needed. If a working manuscript exists, compare or stage the import separately; never silently replace it, accept every tracked change, or merge competing drafts. Clearly scoped adoption requests need no repeated approval.
 
+### Literature search provider priority
+
+For literature discovery, use [OpenDataLab Sciverse](https://sciverse.opendatalab.com/docs) as the primary external search service. Its agentic search returns literature passages with source locations, while its metadata search supports structured lookup; the service also documents full-text and resource retrieval. Use the model host's built-in search as the secondary source: after the Sciverse pass, use it when it can broaden discovery, cross-check coverage, or fill a specific gap. If Sciverse is unavailable, not configured, outside the researcher's confirmed privacy scope, or blocked by account permissions or quota, explain that limit and use the built-in search only within the researcher's existing authorization. Do not silently reverse the order.
+
+Sciverse is preferred when available and authorized, but an account or credential is not a prerequisite for using the workspace. Explain any account or cost requirement before setup; do not enroll the researcher or incur a charge without confirmation.
+
+Before the first Sciverse search in a workspace, explain that the query and any supplied identifiers are sent to that external service, and obtain the researcher's confirmation under the privacy rules. Store any Sciverse credential through the private credential flow; never ask for it in chat or expose it in commands or logs. Choose an integration method only after checking the current account permissions and compatibility; the service documents API, MCP Skills, CLI, and SDK access, but the template must not claim an integration works until it is implemented and verified.
+
+Keep Sciverse and built-in-search results distinguishable in search records, including query, date, route, returned source identifiers/locators, and access limits. A result snippet is a discovery lead, not proof that the full source was inspected. Verify consequential claims against the source text or a trustworthy locator, report coverage and access gaps, and never describe either service as exhaustive. Sciverse availability, returned fields, and quota depend on account permissions; see its [agentic-search documentation](https://sciverse.opendatalab.org.cn/docs/sciverse/api/agentic-search).
+
 ### Batch reference acquisition and library handoff
 
 `reference-download` accepts a selected reading list, DOI/URL list, BibTeX or other supported reference export, or references extracted from an existing manuscript. Resolve identities and obtain accessible full text through appropriate publisher, repository, preprint, or researcher-authorized institutional routes. Source discovery and metadata lookup alone do not count as downloading a document. Prefer authoritative, relevant versions and preserve links among preprints, accepted manuscripts, and published editions.
@@ -449,7 +459,7 @@ The names and precise boundaries below are proposed. Each skill describes decisi
 
 | Skill | Responsibility | Outcome |
 | --- | --- | --- |
-| `literature-discovery` | Turn an interest or question into a search strategy; locate and screen relevant sources and identify full-text access gaps. | A sourced reading set, search scope, and collection priorities. |
+| `literature-discovery` | Turn an interest or question into a search strategy; search OpenDataLab Sciverse first, then use the model host's built-in search as a secondary source to broaden or fill gaps; screen relevant sources and identify full-text access gaps. | A sourced reading set with per-source search route and scope, plus collection priorities. |
 | `reference-download` | Obtain selected references in batches from identifiers, lists, or manuscript references, with access checks, provenance, deduplication, and resumption. | Available full text plus honest per-item access status, optionally handed to ingestion. |
 | `source-ingestion` | Import a document or folder through MinerU, preserving originals, Markdown, images, metadata, and resumable batch progress. | Indexed, linked reading material and a concise conversion report. |
 | `manuscript-import` | Adopt an existing manuscript into the section, asset, and citation conventions while preserving originals and current work. | A mapped, reviewable migrated manuscript with losses and unresolved references visible. |

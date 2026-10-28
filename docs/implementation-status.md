@@ -10,7 +10,7 @@ Updated: 2026-10-28.
 | --- | --- | --- |
 | 1 | Usable project and confirmed memory | In progress: scaffold, adopted AGENTS.md, skill copy script, and all four skills implemented. The four skills were accepted by review on 2026-10-28 (maintainer ruling; see the [skill review](acceptance/mvp-1-skill-review.md)). Thirteen live runs on Claude Code (runs 1 to 8 with Sonnet 5.5, runs 9 to 13 with Haiku 5.5) are history; the last run passed 11 of 18 scenarios. Codex, Windows, and the English question checks are open, so MVP 1 as a whole is not verified; the MinerU service research was done with MVP 2 |
 | 2 | Flexible intake and MinerU batch ingestion | In progress: implemented on 2026-10-28 (import script, both MinerU routes, both skills), and both skills were accepted by review the same day (see the [skill review](acceptance/mvp-2-skill-review.md)). The scripts pass their tests, and both routes were observed working on macOS with synthetic files: the local route, and the mineru.net route with the maintainer's token. Windows, Codex, and the training-use and retention terms of mineru.net are open, so MVP 2 as a whole is not verified |
-| 3 | Searchable literature and traceable evidence | In progress: core scripts and four skills implemented; no acceptance evidence observed |
+| 3 | Searchable literature and traceable evidence | Accepted by the maintainer on 2026-10-28 under the MVP 2-style gate: all four skills passed written review, 79 tests and mechanical checks pass, and live Sciverse checks were recorded. Catalog filters/relations, resources, Paper Schema, live public-PDF access, model-host fallback, Windows, and Codex remain explicitly unverified |
 | 4 | Ideas, impact, journal choice, and feasible research plans | Planned |
 | 5 | Evidence-based writing, audit, and major revision | Planned |
 | 6 | Template-driven layout and readiness | Planned |
@@ -603,7 +603,9 @@ Remaining for MVP 2:
 
 ## MVP 3, implementation increment: literature search, retrieval, and evidence records
 
-Status: implementation in progress. The four MVP 3 skill drafts and their supporting scripts exist, but they are not yet listed as available to researchers. No written skill review or MVP 3 acceptance evidence has been completed. The [MVP 3 checklist](acceptance/mvp-3.md) is prepared and not run.
+Additional Sciverse development on 2026-10-28: metadata pagination now resumes one page at a time from the recorded query, scope, filters, sorting and cursor, reusing the saved catalog snapshot to reduce calls. Experimental DOI-based Paper Schema discovery and material packs and bounded service-resource retrieval have synthetic tests; individual endpoints have not been verified live. The [quality evaluation](acceptance/sciverse-quality-evaluation.md) now has a four-query retrieval smoke run, but the expected sources and evidence have not been checked against originals. No change in capability status is established by these additions.
+
+Status: accepted by the maintainer on 2026-10-28. Confirmation: “MVP3就算验收通过吧”. The maintainer's acceptance standard was: “我们验收标准和mvp2差不多的标准就行”. Under that gate, all four skills passed written review, 79 script tests and the mechanical checks pass, and required live-service evidence was recorded. The [MVP 3 skill review](acceptance/mvp-3-skill-review.md) records the evidence and remaining limits. The [MVP 3 checklist](acceptance/mvp-3.md) remains an optional manual aid.
 
 Implemented on 2026-10-28:
 
@@ -611,16 +613,22 @@ Implemented on 2026-10-28:
 - Search records under `references/searches/<search-id>/` retain each provider route's exact query and timestamp, Sciverse scope basis, source identifiers/locators, metadata, limitations, errors, and separately appended model-host results. Host-search records require a non-empty coverage note. Local retrieval streams selected extracted Markdown and reports line numbers with extraction revisions; it does not claim that a line number is a PDF page locator.
 - `download` reads BibTeX, Markdown, and text DOI/URL lists; it archives only publicly returned PDF files after checking the PDF signature and end marker. It retains per-item retrieval status, checksum, source ID, sanitized locator, duplicate information, and identity/version review in `references/downloads/<batch-id>/`. It does not store signed query-string URLs or use publisher credentials. Conversion is handed to `source-ingestion`; download records and archived originals are independent of conversion success.
 - `audit-bibliography` checks BibTeX key uniqueness and links to archived source IDs. It explicitly does not assess claim support. Evidence support, quotes, page numbering, extraction revision, and limitations are governed by `literature-and-evidence`.
-- The four canonical skill drafts are `literature-discovery`, `reference-download`, `literature-and-evidence`, and `research-investigation`. They remain marked "Not available yet" until accepted. `.env.example`, the references directory descriptions, and the acceptance checklist document their boundaries.
-- The Sciverse API facts checked from public documentation are recorded in [Sciverse integration](sciverse-integration.md). On 2026-10-28, one explicitly authorized live `agentic-search` request with a synthetic non-manuscript query returned three snippets with provider IDs and locator objects. The authorization and result were isolated in a temporary test workspace; no project privacy scope was recorded.
+- The four canonical skills are `literature-discovery`, `reference-download`, `literature-and-evidence`, and `research-investigation`. All passed written review and are listed in `AGENTS.md` with their current support boundaries. `.env.example`, the references directory descriptions, and the acceptance checklist document those boundaries.
+- The Sciverse API facts checked from public documentation are recorded in [Sciverse integration](sciverse-integration.md). On 2026-10-28, an authorized synthetic check observed `agentic-search` twice (three snippets per call), `meta-search` once (25 metadata records), and `content` once (71 returned characters with a limit of 200). The temporary scope, identifiers, metadata, and retrieved text were isolated under `.tmp/` and removed; no project privacy scope was recorded.
+
+Verification observed:
+
+- The full script suite (79 tests), CLI/help behavior, README, capability-table, skill-mirror, writing-rule, ingestion-record, and Python syntax checks pass. The optional manual scenarios were not run end to end.
+- The authorized live checks cover `agentic-search`, query-only `meta-search`, and bounded `content`. The downloader's validation, deduplication, status, and resumption behavior passes local synthetic HTTP tests.
+- A four-query Sciverse smoke run made one `agentic-search` request per public test question (`top_k=5`; four requests, no retries). Each returned five records; the expected climate-paper title appeared, while the expected Transformer paper and named clinical trials were not identified in the top five by title or listed identifiers. No content was fetched or checked against originals.
 
 Not verified:
 
-- Python syntax, CLI help, README, capability-table, skill-mirror, and writing-rule checks pass; the script test suite and acceptance scenarios were not run. One live search confirms that the configured account could call `agentic-search` once. Repeat availability, quota behavior, metadata search, full-text retrieval, fallback ordering, and the broader query-scope workflow remain unverified.
-- No public publisher/repository download, different-version identification, interrupted transfer/retry, conversion-failure retention, or actual download-to-ingestion handoff has been exercised. The downloader supports direct public PDFs only; authenticated integrations are not implemented.
-- The evidence retrieval/checking behavior has not been observed on a known corpus. Windows and Codex operation remain unverified.
+- Catalog filters, filtered metadata pagination, relations, resources, and Paper Schema have synthetic tests only. Repeat availability, quota behavior, returned-content correctness against originals, and model-host fallback ordering remain unverified.
+- No live public publisher/repository PDF retrieval or actual download-to-ingestion handoff has been observed. The implementation supports direct public PDFs only; authenticated integrations are not implemented.
+- The four-query run is not a source-verified quality evaluation; claim support, locator accuracy, semantic interpretation, and contrary-evidence retrieval remain unverified. Windows and Codex skill discovery/loading remain unverified.
 
-The status is deliberately in progress until the checks in the acceptance checklist are observed and the skill drafts pass written review.
+MVP 3 acceptance passed under the maintainer's MVP 2-style ruling. Live public-PDF access, the model-host fallback, original-checked evidence quality, catalog filters/relations, resource and Paper Schema operations, and Windows/Codex operation remain unverified; do not describe these integrations as working.
 
 ## Open items affecting the order
 

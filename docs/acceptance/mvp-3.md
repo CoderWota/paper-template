@@ -1,8 +1,15 @@
 # MVP 3 Acceptance Checklist
 
-Status: prepared on 2026-10-28. The checklist has not been run end to end; one isolated live search request is recorded below. Do not copy this checklist into a researcher workspace; it contains expected outcomes.
+Status: optional manual aid, prepared on 2026-10-28. Under the maintainer's acceptance standard, the gate is a written skill review, passing script tests or synthetic observations for script behavior, and live evidence only for claims that require a real service. The checklist below is not required end to end. Do not copy it into a researcher workspace; it contains expected outcomes.
 
-The checklist covers the acceptance evidence in the [MVP implementation guideline](../mvp-implementation-guideline.md#mvp-3--searchable-literature-and-traceable-evidence). Use a disposable test copy and rights-cleared fixtures. Record the host, version, model, operating system, processor, date, Sciverse account state, and whether each step used a simulated or live service. A simulated download does not prove publisher or institutional access.
+The scenarios cover the broader acceptance evidence in the [MVP implementation guideline](../mvp-implementation-guideline.md#mvp-3--searchable-literature-and-traceable-evidence). Use a disposable test copy and rights-cleared fixtures if you run them. Record the host, version, model, operating system, processor, date, Sciverse account state, and whether each step used a simulated or live service. A simulated download does not prove publisher or institutional access.
+
+## Acceptance gate
+
+- Complete a written review of all four skill packages, with requirement-by-requirement verdicts and evidence. Fix gaps before marking a skill accepted.
+- Add and pass automated tests for deterministic script behavior. Use synthetic fixtures or local service doubles; do not require a live agent scenario.
+- The authorized synthetic Sciverse checks recorded in the implementation status cover `agentic-search`, query-only `meta-search`, and bounded `content`. Keep catalog filters, cursor continuation, relations, resources, Paper Schema, publisher access, quota limits, Windows, and Codex marked unverified until separately observed.
+- Run the script test suite and the mechanical commands in section D. The A–C scenarios remain optional diagnostic examples, not additional acceptance gates.
 
 ## A. Query scope and provider order
 
@@ -56,13 +63,19 @@ On the test copy, run:
 ```text
 python scripts/literature.py audit-bibliography
 python scripts/ingest.py verify
+python -m unittest discover -s scripts/tests
 python scripts/check_readmes.py
 python scripts/sync_skills.py --check
 python scripts/check_capabilities.py
+python scripts/check_requirements.py
 ```
 
 Inspect that query records, download batch folders, and any new source folders have useful English READMEs. Do not report that real publisher/institution integrations work based on a local fixture. Do not claim complete literature coverage or novelty.
 
 ## Results
 
-One explicitly authorized live `agentic-search` request with a synthetic non-manuscript query was made in an isolated temporary workspace on 2026-10-28. It returned three snippets with provider IDs and locator objects. This confirms one successful call for the configured account. The acceptance scenarios have not been run end to end; repeat availability, metadata search, full-text access, public publisher/repository access, interruption/resumption, conversion handoff, Windows, and Codex remain unverified.
+MVP 3 accepted by the maintainer on 2026-10-28 under the MVP 2-style gate: the [written skill review](mvp-3-skill-review.md) passes all four skills, 79 script tests pass, and the mechanical checks in section D pass. The optional A–C scenarios were not run end to end. The acceptance does not verify the live-service and platform gaps listed below.
+
+Three Sciverse routes were observed in an isolated temporary workspace with the explicitly authorized synthetic query `paper-template connectivity check`: `agentic-search` returned 3 snippets, `meta-search` returned 25 metadata records, and `content` returned 71 characters for one returned document ID with a requested limit of 200. The records and text were removed after recording these outcomes. This confirms those calls responded for the configured account; it does not establish quota behavior, result correctness, or broad service availability. Catalog filters/sorting, cursor continuation, relations, resources, and Paper Schema have synthetic tests only. Live public-PDF retrieval, model-host fallback, Windows, and Codex remain unverified.
+
+A separate four-query retrieval smoke run used the public questions in the [quality evaluation](sciverse-quality-evaluation.md), one `agentic-search` request per question with `top_k=5` and no retries. Each returned five records. The expected climate-paper title appeared in the top five; the expected Transformer paper and the named clinical trials were not identified by title or listed identifiers. This does not complete the quality evaluation: no source text was fetched or checked against originals, and no general recall or evidence-support claim is made. All temporary records were removed; account-specific billing remains unknown.

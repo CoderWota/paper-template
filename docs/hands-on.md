@@ -31,7 +31,7 @@ The planned `paper-hands-on` skill coordinates the following independently usabl
 | Task | Independent skill | What the researcher and agent do | Visible outcome |
 | --- | --- | --- | --- |
 | 1. Get started | `project-onboarding` | Clarify the initial interest, writing language, immediate goal, and practical constraints; invoke environment/privacy support only as needed. | A usable starting point and one clear next action. |
-| 2. Find literature | `literature-discovery` | Plan searches, locate and screen relevant sources, and identify access gaps. | A sourced reading set and collection priorities. |
+| 2. Find literature | `literature-discovery` | Search OpenDataLab Sciverse first, then use the model's built-in search to broaden or cross-check results; screen relevant sources and identify access gaps. | A sourced reading set with search routes and collection priorities. |
 | 3. Import documents | `source-ingestion` | Import selected files or folders through MinerU, preserving originals, Markdown, and images. | An indexed library and concise batch status. |
 | 4. Read and compare evidence | `literature-and-evidence` | Inspect relevant passages, check support, and compare limitations and contradictions. | Evidence notes with source locators. |
 | 5. Generate directions | `research-ideation` | Organize starting thoughts and propose meaningfully different research ideas. | Directions the researcher chooses to keep. |

@@ -8,6 +8,7 @@ confirmation and the SCIVERSE_API_KEY credential. Document conversion remains in
 from __future__ import annotations
 
 import argparse
+import json
 import os
 import re
 import sys
@@ -60,7 +61,8 @@ def command_sciverse(args, root: Path) -> int:
 def command_metadata_search(args, root: Path) -> int:
     search.validate_scope_basis(root, args.scope_basis)
     search_id, folder, data = search.metadata_search(root, token_for(root), args.query, scope_basis=args.scope_basis,
-                                                       page=args.page, page_size=args.page_size)
+                                                       page=args.page, page_size=args.page_size,
+                                                       filters=json.loads(args.filters), sort=json.loads(args.sort), cursor=args.cursor)
     route = data["routes"][0]
     if route["status"] != "complete":
         print(f"Sciverse metadata search is unavailable. Record: references/searches/{search_id}/README.md")
@@ -70,6 +72,45 @@ def command_metadata_search(args, root: Path) -> int:
         print(f"  {item.get('title') or '(title not returned)'} — DOI: {item.get('doi') or 'not returned'}; full-text ID: {item.get('doc_id') or 'not returned'}")
     print("Metadata records are discovery results, not inspected full text or evidence passages.")
     return 0
+
+
+def command_relations(args, root: Path) -> int:
+    folder, entry = search.add_relations(root, token_for(root), args.search_id, args.unique_id, args.relation, args.page, args.page_size)
+    print(f"Relationship page status: {entry['status']}. Record: references/searches/{folder.name}/search.json")
+    print("Relationships are discovery leads, not evidence of support or contradiction.")
+    return 0 if entry["status"] == "complete" else 1
+
+
+def command_resume_metadata(args, root: Path) -> int:
+    search.metadata_resume_request(root, args.search_id)
+    search_id, _, data = search.resume_metadata_search(root, token_for(root), args.search_id)
+    route = data["routes"][-1]
+    print(f"Metadata page status: {route['status']}; {len(route.get('results', []))} records. Search: references/searches/{search_id}/README.md")
+    if route["status"] == "complete":
+        print("More pages are available." if route.get("pagination", {}).get("next_cursor") else "No next cursor was returned.")
+    return 0 if route["status"] == "complete" else 1
+
+
+def command_schema_discovery(args, root: Path) -> int:
+    folder, result = search.schema_discovery(root, token_for(root), args.search_id, args.unique_id)
+    print(f"Experimental Paper Schema discovery: {result['status']}; record: references/searches/{folder.name}/search.json")
+    return 0 if result["status"] == "complete" else 1
+
+
+def command_schema_materials(args, root: Path) -> int:
+    folder, result = search.schema_materials(root, token_for(root), args.search_id, args.schema_id, args.goal)
+    print(f"Experimental Paper Schema materials: {result['status']}; record: references/searches/{folder.name}/search.json")
+    print("Structured materials can be truncated and require verification against the source.")
+    return 0 if result["status"] == "complete" else 1
+
+
+def command_resource(args, root: Path) -> int:
+    search.context_request(root, args.search_id, args.doc_id, 0, 1)
+    folder, result = search.fetch_resource(root, token_for(root), args.search_id, args.doc_id, args.file_name)
+    print(f"Derived resource: {result['status']}; record: references/searches/{folder.name}/search.json")
+    if result.get("file"):
+        print(f"Stored as references/searches/{folder.name}/{result['file']}.")
+    return 0 if result["status"] == "complete" else 1
 
 
 def command_host_search(args, root: Path) -> int:
@@ -178,10 +219,39 @@ def main(argv: list[str] | None = None) -> int:
     sciverse.add_argument("--sub-queries", type=int, default=0)
 
     metadata = commands.add_parser("search-sciverse-metadata", help="search structured Sciverse metadata, for example by title or DOI")
-    metadata.add_argument("--query", required=True)
+    metadata.add_argument("--query", default="")
     metadata.add_argument("--scope-basis", required=True, help="exact excerpt from the active Sciverse scope that covers this query")
     metadata.add_argument("--page", type=int, default=1)
     metadata.add_argument("--page-size", type=int, default=25)
+    metadata.add_argument("--cursor", help="opaque next_cursor from a previous result")
+    metadata.add_argument("--filters", default="[]", help="JSON array of catalog-supported filters")
+    metadata.add_argument("--sort", default="[]", help="JSON array of catalog-supported sort fields")
+
+    resume = commands.add_parser("resume-sciverse-metadata", help="continue a recorded metadata search with the same query and filters")
+    resume.add_argument("--search-id", required=True)
+
+    relations = commands.add_parser("sciverse-relations", help="record a page of a metadata result's paper relationships")
+    relations.add_argument("--search-id", required=True)
+    relations.add_argument("--unique-id", required=True)
+    relations.add_argument("--relation", choices=("CITATIONS", "REFERENCES", "RELATED_WORKS"), required=True)
+    relations.add_argument("--page", type=int, default=1)
+    relations.add_argument("--page-size", type=int, default=25)
+
+    schema_discovery = commands.add_parser("experimental-sciverse-schema-search", help="opt in to Paper Schema lookup for a recorded metadata result")
+    schema_discovery.add_argument("--search-id", required=True)
+    schema_discovery.add_argument("--unique-id", required=True)
+    schema_discovery.add_argument("--enable-experimental", action="store_true", required=True)
+
+    schema_materials = commands.add_parser("experimental-sciverse-schema-materials", help="opt in to a bounded Paper Schema material pack")
+    schema_materials.add_argument("--search-id", required=True)
+    schema_materials.add_argument("--schema-id", required=True)
+    schema_materials.add_argument("--goal", choices=("overview", "survey", "benchmark", "method", "reproduction"), default="survey")
+    schema_materials.add_argument("--enable-experimental", action="store_true", required=True)
+
+    resource = commands.add_parser("read-sciverse-resource", help="retrieve a bounded resource named in recorded Sciverse context")
+    resource.add_argument("--search-id", required=True)
+    resource.add_argument("--doc-id", required=True)
+    resource.add_argument("--file-name", required=True)
 
     host = commands.add_parser("record-host-search", help="add built-in search results to an existing provider record")
     host.add_argument("--search-id", help="append to a Sciverse record; omit for a standalone fallback search")
@@ -218,6 +288,11 @@ def main(argv: list[str] | None = None) -> int:
     root = args.root.resolve()
     handlers = {"authorize-sciverse": command_authorize, "revoke-sciverse": command_revoke, "search-sciverse": command_sciverse,
                 "search-sciverse-metadata": command_metadata_search,
+                "sciverse-relations": command_relations,
+                "resume-sciverse-metadata": command_resume_metadata,
+                "experimental-sciverse-schema-search": command_schema_discovery,
+                "experimental-sciverse-schema-materials": command_schema_materials,
+                "read-sciverse-resource": command_resource,
                 "record-host-search": command_host_search, "search-local": command_local_search,
                 "read-sciverse-context": command_context, "download": command_download,
                 "download-status": command_download_status, "verify-download": command_download_verify,

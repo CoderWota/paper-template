@@ -12,11 +12,15 @@ Outcome: a compact, source-linked comparison that distinguishes direct support, 
 1. Read `state/current.md`, `references/index.md`, the specific matching source notes, and the relevant extraction READMEs. Open only the sources needed for the question.
 2. If the sources are unclear, run `python scripts/literature.py search-local --query "..."` and narrow with `--source-id`. The search is lexical over extracted Markdown; line numbers identify the extraction revision, not the PDF page.
 3. Inspect matching sections in `references/extracted/<source-id>/document.md`. Then verify important passages against the original PDF or another trustworthy source locator when available. MinerU output and Sciverse text are derived/service text; note when the original could not be checked.
-4. For a Sciverse hit, preserve `doc_id`, `chunk_id`, `offset`, and `page_no` when present. A returned `chunk` is a search snippet. If the full text is available through Sciverse `content`, retrieve it only through the recorded search result while its confirmed query scope remains active; record the character offset and retrieved range. Do not call a snippet a full article.
+4. For a Sciverse hit, preserve `doc_id`, `chunk_id`, `offset`, and `page_no` when present. A returned `chunk` is a search snippet. If the full text is available through Sciverse `content`, retrieve it only through the recorded search result while its confirmed query scope remains active; record the character offset and retrieved range. Do not call a snippet a full article. When the original is not archived, cite the search record and service locator; do not invent a library source ID or claim an original check.
+
+When an inspected context names a needed figure or attachment, `read-sciverse-resource` can retrieve that exact relative path as a derived resource in the search folder. The adapter limits content size and checks format signatures. This endpoint has not been verified live; identify the result as service-derived and compare it with the original when available.
 
 ## Record evidence without altering the source
 
 Create or update `references/notes/<source-id>.md` in the interaction language. Preserve existing researcher-authored content. Keep quotations verbatim and attributed, and do not edit the archived original or generated `document.md`.
+
+For a service-only source without an archived original, keep retrieved text and its locator in the existing search record and make the access limitation explicit in the answer. Create a source note only after there is a real archived source ID. Distinguish a paper's preprint, accepted manuscript and published version; link versions only when their relationship has been checked. Check correction, retraction or other status against a trustworthy source when available and permitted within the active external-query scope; otherwise label that status unchecked. A missing warning is not proof of a clean status.
 
 For each passage needed to answer the question, record:
 
