@@ -1,8 +1,9 @@
-# Acceptance Checklists
+# Acceptance Records
 
-Scenario checklists for verifying each MVP in fresh agent sessions, as the [MVP implementation guideline](../mvp-implementation-guideline.md) requires. Each checklist names its test copies, the exact requests to make, the expected behavior, what to inspect, and a results table.
+Acceptance records for each MVP. Since 2026-10-28, a skill passes acceptance when a written review against its requirements passes (maintainer ruling); live scenario runs are not required. The review lists every requirement with its source, a verdict, and the evidence, and it names what it does not cover. The scenario checklists remain as the history of the live runs and as an optional manual aid.
 
-- [MVP 1](mvp-1.md): instruction loading, onboarding, environment and credentials, privacy configuration, confirmed rules, and decision confirmation.
-- [MVP 2](mvp-2.md): local and cloud import, interruption and retry, the processing choice, Word and unsupported formats, mixed intake, review rounds, and citation metadata. [`fixtures/`](fixtures/README.md) generates its synthetic test material.
+- [MVP 1 skill review](mvp-1-skill-review.md): the review of `project-onboarding`, `environment-management`, `privacy-configuration`, and `constraint-maintenance`.
+- [MVP 1 checklist](mvp-1.md): the scenarios and the results of the 13 live runs (instruction loading, onboarding, environment and credentials, privacy configuration, confirmed rules, and decision confirmation).
+- [MVP 2 checklist](mvp-2.md): the scenarios for local and cloud import, interruption and retry, the processing choice, Word and unsupported formats, mixed intake, review rounds, and citation metadata, written before the review ruling and not run. [`fixtures/`](fixtures/README.md) generates its synthetic test material.
 
-Never copy this folder into a test workspace: an agent under test could read the expected results. After a run, the agent in the template repository records the results in the [implementation status](../implementation-status.md). Only the template maintainer uses these checklists; researchers never need them.
+Never copy this folder into a test workspace: an agent under test could read the expected results. After a review, the agent in the template repository records the result in the [implementation status](../implementation-status.md). Only the template maintainer uses these records; researchers never need them.

@@ -23,7 +23,7 @@ Principles:
 3. **Facts that change live in data.** What exists is a fact. It is checked against the file system by a script, not described in prose that the model must recall (D-3).
 4. **Records have a checkable form.** A requirement needs its scope and a quoted source. Examples and exceptions need a quotation, so that none can be invented (D-6, D-10).
 5. **Reinforce at generation time when the host allows it.** A rule that governs the first note of a turn cannot rely on a file loaded at session start. Where the host supports it, the reminder goes in before each prompt (D-14).
-6. **Freeze expectations before a run.** A behavior claim is accepted only with samples from fresh sessions. Expectations change only as recorded decisions, never to match a result (E4 and E6 were revised after run 5).
+6. **Freeze the criteria before a review.** Since 2026-10-28 a skill is accepted by a written review, not by live runs (maintainer ruling; see the [MVP 1 skill review](acceptance/mvp-1-skill-review.md)). The pass criteria are fixed before the review starts and change only as recorded decisions, never to match a finding. A behavior claim rests on what was observed; the samples from fresh sessions in runs 1 to 13 stay as history (E4 and E6 were revised after run 5).
 7. **Narrow each trigger to its purpose.** A rule that fires too broadly writes records that need none (D-18) and blocks questions that the researcher must answer (D-16). State the purpose and the exclusions in the rule, and re-run the neighbouring scenarios after each change.
 8. **Do not patch the contract to pass a test.** `AGENTS.md` and `CLAUDE.md` state general rules. A failing scenario is traced to the layer that causes it (a skill description, a skill procedure, a script, the data in the availability table, or the expectation itself) and fixed there. A new sentence in `AGENTS.md` needs a reason that holds without the failing case. This is the maintainer's ruling of 2026-10-27. In D-17, a sentence added to `AGENTS.md` hid a stale step in `constraint-maintenance`.
 
@@ -38,13 +38,13 @@ Principles:
 | Side effects | D-8 | No separation between requirement records and manuscript text | Standing rule: a requirement change never edits manuscript text | Applied |
 | Procedure order | D-2 (inspection skipped in some samples); D-7 and D-9 (question and edit order) | Procedures are prose that the model can reorder | Deterministic steps move into scripts; question order stays a tested behavior | Residual |
 | Structure and state | D-4, D-5 | Similar names (`inbox/` and `inbox/imports/`); onboarding state split across two files | One state file; rename of the import records folder proposed | Wording fixed; rename proposed |
-| Testing | Expectations of E4 and E6 changed after run 5; one to three samples per claim | Expectations were edited to match results | Freeze expectations before a run; record each change as a decision; take more samples for behavior claims | Adopted in this document |
+| Testing | Expectations of E4 and E6 changed after run 5; one to three samples per claim | Expectations were edited to match results | Freeze the pass criteria before a review; record each change as a decision; acceptance is by review since 2026-10-28, and runs 1 to 13 stay as history | Adopted in this document; acceptance method replaced on 2026-10-28 |
 
 ## Residual risks
 
-- A model can still ignore a standing rule. Each rule is accepted only with samples from fresh sessions.
+- A model can still ignore a standing rule. A review shows that the text asks for the behavior; it cannot show that a given model follows it. The misses seen in runs 1 to 13 are listed in the implementation status as residual risks.
 - The per-turn reminder depends on the host. It is a Claude Code mechanism; Codex has no verified equivalent yet, and the reminder cannot run on a machine without Python unless the command is written to fail quietly.
 - The availability table is maintained by the template maintainer. `scripts/check_capabilities.py` fails when the table and the skills folder disagree, so drift is visible.
 - A sentence in `AGENTS.md` can mask a defect in a skill (D-17): the contract wins over the skill, so the symptom disappears while the skill stays wrong. Skills need review against the contract and the table.
 - Even with each cause fixed, Haiku still misses a routing or a record rule in a few samples (the readiness question in 6 of 18 samples, the goal-change skill in 1 of 7, a cloud wish not noted in the state file in 3 of 3, and replies in English in the credential flow). No sentence is added to `AGENTS.md` for this. The remaining levers are deterministic: a hook that runs the form check, and scripts that write the records.
-- A change to a standing rule can move a neighbouring behaviour in either direction (D-16, D-18). Run 7 found this twice, and a single sample shows little, so each change needs the neighbouring scenarios re-run.
+- A change to a standing rule can move a neighbouring behaviour in either direction (D-16, D-18). Run 7 found this twice, so after a change the review re-reads the neighbouring skills and table rows.

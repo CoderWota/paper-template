@@ -8,8 +8,8 @@ Updated: 2026-10-28.
 
 | MVP | Researcher-visible outcome | Status |
 | --- | --- | --- |
-| 1 | Usable project and confirmed memory | In progress: scaffold, adopted AGENTS.md, skill copy script, and all four skills implemented. Claude Code runs 1 to 12 are done. Runs 1 to 8 used Sonnet 5.5 as the subject model; runs 9 to 12 use Haiku 5.5, which the maintainer now requires. Run 11 is the first full pass with Haiku on a clean copy: 9 of 18 scenarios pass, 8 fail on minor points, and E2 cannot pass as written. Codex and Windows have not been run, so nothing is verified |
-| 2 | Flexible intake and MinerU batch ingestion | In progress: implemented on 2026-10-28 (import script, both MinerU routes, both skills). The local route was observed working on macOS with synthetic fixtures; the mineru.net route is tested only against a fake service; no agent-session acceptance run yet, so nothing is verified |
+| 1 | Usable project and confirmed memory | In progress: scaffold, adopted AGENTS.md, skill copy script, and all four skills implemented. The four skills were accepted by review on 2026-10-28 (maintainer ruling; see the [skill review](acceptance/mvp-1-skill-review.md)). Thirteen live runs on Claude Code (runs 1 to 8 with Sonnet 5.5, runs 9 to 13 with Haiku 5.5) are history; the last run passed 11 of 18 scenarios. Codex, Windows, and the English question checks are open, so MVP 1 as a whole is not verified; the MinerU service research was done with MVP 2 |
+| 2 | Flexible intake and MinerU batch ingestion | In progress: implemented on 2026-10-28 (import script, both MinerU routes, both skills). The scripts pass their tests, and the local route was observed working on macOS with synthetic fixtures; the mineru.net route is tested only against a fake service. The skills are not reviewed yet, so nothing is accepted or verified |
 | 3 | Searchable literature and traceable evidence | Planned |
 | 4 | Ideas, impact, journal choice, and feasible research plans | Planned |
 | 5 | Evidence-based writing, audit, and major revision | Planned |
@@ -20,7 +20,7 @@ Updated: 2026-10-28.
 
 Execution order (revised 2026-10-26): 1 → 7 → 2 → 3 → 4 → 5 → 6 → 8 → 9, with the export trial running alongside MVP 7; see the [MVP implementation guideline](mvp-implementation-guideline.md#3-mvp-overview-and-dependencies). The export trial is planned.
 
-The four MVP 1 skills are implemented and have had twelve acceptance runs on Claude Code; none is verified. The two MVP 2 skills are implemented and have had no acceptance run. No end-to-end test has been run.
+The four MVP 1 skills are implemented and were accepted by review on 2026-10-28, after thirteen live runs on Claude Code. Acceptance by review shows that the skill text meets the documented requirements; no skill is verified on Windows or in Codex. The two MVP 2 skills are implemented and not reviewed yet. No end-to-end test has been run.
 
 ## MVP 1, partial increment: workspace scaffold
 
@@ -493,24 +493,67 @@ Changes in run 12 (skills only; committed in `67607d8`): `environment-management
 
 Limits. One sample per scenario, except D1 (18 samples), D2 (3), and C1 (2 with different answers). D3 needed a harness that does not exist in the repository; it lives in the maintainer's scratchpad, with the other test tools.
 
+## MVP 1 acceptance run 13: Claude Code with Haiku, second full checklist (2026-10-28)
+
+Status: run 13 is the second full pass of the checklist with Haiku and the last live run. It ran on a new clean copy of the committed repository (commit `3b491ec`, without `docs/acceptance`), with the revised scripts of E2 ("a declined request records no rule") and E6 ("the first sentence needs the word color"). Of the 18 scenarios, 11 pass (run 11: 9) and 7 fail on minor points. The maintainer then ruled that a skill passes acceptance by review, not by live runs (see [the skill review](acceptance/mvp-1-skill-review.md)), so no further live run is planned.
+
+Method. Copy r34 is a clone of the repository without `docs/acceptance`. A1, B1 (two sessions), and B2 ran in r34. B2 appended a note to `state/current.md`, so copies r35 to r54 were made from r34 with that note removed, which is the state after B1. r35: D1 (three samples) and D4; r36: C1 (web tools allowed; the account type came from the CLI, a personal Pro plan); r37 to r39: D2, one copy per sample; r40: D3 (an open session fed through a queue, with the fake value entered in the desktop app's browser on `127.0.0.1`); r41: E1; r47 and r48, copies of r41: E2 and E3; r49, a copy of r41: E4 (explicit form), then E5, then E6; r50 to r52, copies of r41: E4 (ambiguous form, three samples); r53 and r54, copies of r49: two more E6 samples; r46: F1 and F2; r55: G2 (onboarding in English). r42 to r45 were made but not used. Every session used `claude-haiku-5-5`.
+
+Results.
+
+- Pass (11): A1, B1, C1, D3, D4, E1, E2, E3, E5, F2, H1 (13 copies).
+- B2 Fail (minor): the first reply summarized the recorded settings and asked what to do next, not whether to continue or start a new paper. After "new paper" it explained the fresh copy and that no remote exists, but it appended a note to `state/current.md`.
+- D1 Fail (minor): the inspection ran in 2 of 3 samples, but neither report recommended a next step or said that writing continues; the third offered the check. Over runs 10 to 13 it ran in 14 of 21 samples.
+- D2 Fail (minor), 3 samples: no key asked, `privacy.md` unchanged, no `.env.local`; no sample loaded a skill or noted the cloud wish in `state/current.md`.
+- E4 Fail (minor): the explicit form passed. In the ambiguous form, 1 of 3 samples replaced the rule at once; the other 2 asked one question with a recommendation and changed no file before the answer.
+- E6 Fail (minor), 3 samples: the rewrite was right (`colour`), but no reply said that the saved rule was unchanged or offered to change it; no skill was loaded.
+- F1: the confirmation passed (skill, decision record 0001 with an index entry, manuscript unchanged). The question turn failed on minor points: no recommendation and no request to confirm the change.
+- G1 Fail (minor): D4 bundled two asks, and three questions gave no recommendation.
+- D3 passed with Chinese confirmations that gave the length (19 characters); the value is absent from the whole session log. C1 passed with a Chinese report and no identifier.
+- G2 (observations only): one question per message with a reason and a recommendation, in short sentences with a few of 23 to 24 words; the STE check is not implemented.
+
+Skill use. `project-onboarding` loaded in both B1 sessions and in B2. `constraint-maintenance` loaded in E1, in E4 (4 of 4 first turns), and in the F1 confirmation, but in none of the 3 E6 samples. `environment-management` loaded in 2 of 3 D1 samples, and no skill loaded in the 3 D2 samples. `privacy-configuration` loaded in C1. English-only notes between tool calls: 2 of 83 text blocks.
+
+New defects (all Low).
+
+- D-26 (skill): in B2, the case table did not make the agent ask whether to continue; the "new paper" reply changed `state/current.md`, where the skill says to change nothing and `AGENTS.md` "Finishing work" says to update the state when work remains.
+- D-27 (routing): the one-time-edit reply of E6 omits "no rule changed" and the offer in 3 of 3 samples (and in run 11). The clause is in `AGENTS.md` and in `constraint-maintenance` Step 3, but the skill did not load.
+- D-28 (variance): the ambiguous E4 form replaced the rule at once in 1 of 3 samples.
+- D-29: the D1 reports omit a recommended next step and the statement that writing continues.
+- D-30: capability remarks: one reply offered a paragraph-by-paragraph spelling check of the manuscript (an audit, which is not available), and one remarked that a change was not committed to Git.
+- D-31 (checklist): E1 expects Chinese labels, but the skill's layout has English labels, which the checker accepts.
+- D-16 and D-22 stay residual: the readiness question reaches the inspection in 14 of 21 samples, and a cloud wish loads no skill.
+
+Limits. One sample per scenario, except D1 (3), D2 (3), E4 ambiguous (3), and E6 (3). The harness (`cc.py`, `ctl.py`, and the helper scripts) lives in the maintainer's scratchpad, not in the repository.
+
+## Skill acceptance by review (2026-10-28)
+
+Ruling. The maintainer ruled twice on 2026-10-28: skills get no more hard (live scenario) tests, and a passed review counts as the skill passing acceptance. The [MVP implementation guideline](mvp-implementation-guideline.md#6-completion-record-for-each-mvp) records the rule. The pass criteria were fixed before the review started.
+
+Result. The [skill review](acceptance/mvp-1-skill-review.md) checks 12 cross-cutting requirements and 57 requirements of the four skills against the design plan, the guideline, `AGENTS.md`, the interaction specification, and the rule-placement principles. All four skills pass. The review found seven groups of text gaps (F-1 to F-7) and fixed them in the skills; the source note was rewritten in the MVP 2 work. No script, availability row, `AGENTS.md` sentence, or `CLAUDE.md` line changed. MVP 2 landed on `main` while the review was written, so it was checked again against the merged tree; that second look changed one example sentence in `environment-management` (F-7). The mechanical checks pass on the merged tree: 6 skill packages, the availability table, 43 directory READMEs, rule form, and 49 script tests.
+
+Mapping to the defects of run 13. D-26 is F-1 (the case table and the new-paper branch of `project-onboarding`). D-31 is F-4 (the label rule of `constraint-maintenance`, with its decision-record link and the planned skills). D-27, D-28, D-29, and D-30 are model behavior, so they stay residual risks (review section 6); the skill text already asks for the behavior.
+
+Not covered. Windows and ARM64, Codex, real provider settings, ASD-STE100 compliance, the live MinerU credential, and whether a given model follows the text (review section 7). These stay unverified.
+
+Documents changed to match: the guideline (status, section 1 step 4, sections 5 and 6), the design plan (section 14), rule placement (principle 6, the testing row, and the residual risks), the acceptance README and checklist, the documents README, the skills READMEs, and the root README.
+
 ## Remaining for MVP 1
 
-All four MVP 1 skills have first implementations, and runs 1 to 12 on Claude Code are complete. Remaining:
-- Decide how to treat the Haiku misses that text did not remove, without adding sentences to `AGENTS.md`: the readiness question reaches the inspection in 12 of 18 samples, a cloud wish is not noted in `state/current.md`, and some replies and records are in English (the credential flow, 2 of 3 replies). Deterministic enforcement (a hook, scripts, and a machine-readable language setting) is the remaining lever.
-- Revise the scripts of E2 (it asks for manuscript text) and E6 (the sentence needs a variant word), and decide whether B2 may skip its question when the workspace was just initialized.
-- Repeat the full checklist with Haiku after those decisions. G2 and the Windows baseline were not run.
-- For GPT use `gpt-6-luna`. Install Codex and sign in before a Codex run.
-- D-14 (an English first note before a skill call): in run 10, 5 of 136 Haiku notes were English-only. The per-turn reminder prototype is the layer designed for this, and it cannot read a language label that varies ("交互语言" against "交流语言"). Decide whether to adopt it with a machine-readable language setting. Add no sentence to `AGENTS.md`.
-- Run the checklist in Codex, which is not installed on the maintainer's computer yet, and on the Windows baseline. Recreate the Codex test copy first: it still holds the state before the fixes.
-- Run the scenarios that the runs could not exercise: the interactive question tool, missing Python or tools, onboarding in English, and an account control that the researcher can read.
-- The read-only MinerU service research was done on 2026-10-28 with MVP 2; see [MinerU integration](mineru-integration.md).
-- Implement the English question checks against the official ASD-STE100 issue, and the clarity review for questions in other languages. The standard and its dictionary are not bundled with the template; they need access under the publisher's terms.
+The four MVP 1 skills are implemented and were accepted by review on 2026-10-28. The live runs on Claude Code (1 to 13) are history. Remaining for MVP 1 as a whole:
+- Decide whether a deterministic lever is worth adding for the residual model risks (the readiness routing, a cloud wish that is not noted in the state, the one-time-edit reply, and English notes): a host hook for the language reminder and the form check, scripts that write the records, or a machine-readable interaction-language setting. The review accepts the skills without it. Add no sentence to `AGENTS.md`. D-14 (an English first note before a skill call) belongs here.
+- Codex: install it and sign in before claiming Codex support, then check skill discovery and `AGENTS.md` loading. The Codex test copy still holds the state before the fixes. For GPT use `gpt-6-luna`.
+- Windows baseline: no Windows machine yet, so Windows and ARM64 stay unverified.
+- English question checks against the official ASD-STE100 issue, and the clarity review for questions in other languages. The standard and its dictionary are not bundled with the template; they need access under the publisher's terms.
+- Optional: the scenarios that the live runs could not exercise (the interactive question tool, missing Python or tools, and an account control that the researcher can read).
 
-The [MVP 1 acceptance checklist](acceptance/mvp-1.md) holds the scenarios and the results table. The disposable test copies have no Git remote: `/Users/wota/Projects/paper-template-mvp1-test-claude` (run 1), `...-claude-r2` (run 2), `...-claude-r3` (run 3), `...-claude-r4` (run 4), and `...-claude-r5` (run 5) each hold the changes of their run. `...-claude-r7` to `...-claude-r11` hold runs 6 and 7; the state files of r7 were lost (see the runs 6 and 7 section). `...-claude-r12` and `...-r13` hold run 8, and `...-claude-r14` and `...-r15` hold run 9. `...-claude-r16` to `...-r20` hold run 10 (`...-r18fix` is the prepared fixture). `...-claude-r21` to `...-r33` hold runs 11 and 12 (`r21` is the clean copy; `r22` to `r30` are copies of its state after B2, one per group of scenarios; `r31` to `r33` carry the two skill fixes). `/Users/wota/Projects/paper-template-mvp1-test-codex` is untouched, cloned from `51f93e7`, so it predates the fixes.
+The read-only MinerU service research, which this list carried earlier, was done on 2026-10-28 with MVP 2; see [MinerU integration](mineru-integration.md).
+
+The [MVP 1 skill review](acceptance/mvp-1-skill-review.md) holds the requirements and the verdicts, and the [checklist](acceptance/mvp-1.md) holds the scenarios and the results of the live runs. The disposable test copies have no Git remote: `/Users/wota/Projects/paper-template-mvp1-test-claude` (run 1), `...-claude-r2` (run 2), `...-claude-r3` (run 3), `...-claude-r4` (run 4), and `...-claude-r5` (run 5) each hold the changes of their run. `...-claude-r7` to `...-claude-r11` hold runs 6 and 7; the state files of r7 were lost (see the runs 6 and 7 section). `...-claude-r12` and `...-r13` hold run 8, and `...-claude-r14` and `...-r15` hold run 9. `...-claude-r16` to `...-r20` hold run 10 (`...-r18fix` is the prepared fixture). `...-claude-r21` to `...-r33` hold runs 11 and 12 (`r21` is the clean copy; `r22` to `r30` are copies of its state after B2, one per group of scenarios; `r31` to `r33` carry the two skill fixes). `...-claude-r34` to `...-r55` hold run 13 (`r34` is the clean copy; `r35` to `r54` are copies of its state after B1, of the E1 state, and of the E4 state; `r55` is the English run; `r42` to `r45` were not used). `/Users/wota/Projects/paper-template-mvp1-test-codex` is untouched, cloned from `51f93e7`, so it predates the fixes.
 
 ## MVP 2: flexible intake and MinerU batch ingestion
 
-Status: implemented, not verified. The local route was observed working on macOS with synthetic fixtures. No scenario of the [MVP 2 checklist](acceptance/mvp-2.md) has run in a fresh agent session, the mineru.net route has not met the live service, and Windows and Codex have not been run.
+Status: implemented, not accepted. The scripts pass their tests, and the local route was observed working on macOS with synthetic fixtures. The two skills have no written review yet, which is how a skill passes acceptance since 2026-10-28 ([guideline section 6](mvp-implementation-guideline.md#6-completion-record-for-each-mvp)); the mineru.net route has not met the live service; Windows and Codex have not been run.
 
 Request: on 2026-10-28 the template maintainer asked to implement MVP 2 in a new worktree and to merge it into the main branch when done. The planned order put MVP 7 and the export trial first; the maintainer chose MVP 2.
 
@@ -542,17 +585,17 @@ Verification observed (macOS 26.6.2 on Apple Silicon, 16 GB; Python 3.9.6 and 3.
 
 Not verified:
 
-- Any scenario of the checklist in fresh Claude Code (Haiku) or Codex sessions, including the questions about the processing choice and the scope.
+- The two skills: no written review against their requirements yet. The [MVP 2 checklist](acceptance/mvp-2.md) was written before the review ruling and was not run.
 - The mineru.net route against the live service, which needs a token and the maintainer's consent to upload synthetic files. Its archive layout is assumed from the documentation, and its terms leave training use and retention unknown.
 - The standard tier; local formats other than PDF, Word, Markdown, and text (they are converted but flagged as unverified); Windows and Linux.
 - Page numbers of PDF annotations, Word footnotes and endnotes, and the accuracy of OCR, tables, and formulas.
 
-Effect on MVP 1 acceptance: scenarios D1 and D2 of the [MVP 1 checklist](acceptance/mvp-1.md) expect document import to be unavailable. With MVP 2 merged, their expected behaviour changes; revising them is a decision for the maintainer.
+Effect on MVP 1: the [MVP 1 skill review](acceptance/mvp-1-skill-review.md) and scenarios D1 and D2 of the [MVP 1 checklist](acceptance/mvp-1.md) were written while document import was not available. With MVP 2 merged it is, so the parts that depend on the availability table (the readiness question and a cloud wish) need a second look; that is a decision for the maintainer.
 
 Remaining for MVP 2:
 
-- Run the checklist with Haiku in fresh Claude Code sessions, then in Codex.
-- A live mineru.net run with a token and synthetic files, and a fresh check of its terms at that time.
+- A written review of `source-ingestion` and `review-ingestion` against their requirements, as guideline section 6 describes. The checklist lists scenarios that the review can use.
+- A live mineru.net run of the import script with a token and synthetic files, and a fresh check of its terms at that time. Until then the cloud route stays unverified.
 - Windows runs of both routes; a decision on testing the standard tier.
 
 ## Open items affecting the order

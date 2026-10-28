@@ -2,7 +2,7 @@
 
 An organized workspace for developing research ideas, reading literature, writing a manuscript, and preparing submission files with an AI agent.
 
-**Project status: early implementation.** The workspace folders, their descriptions, and the agent operating contract (`AGENTS.md`) exist. The first skills are implemented but not yet verified: project setup, computer and privacy checks, confirmed rules, and document import with MinerU (references and review documents). The other workflows below describe the intended experience. Follow the [design plan](docs/design-plan.md) to review the current proposal, and see the [implementation status](docs/implementation-status.md) for what actually works.
+**Project status: early implementation.** The workspace folders, their descriptions, and the agent operating contract (`AGENTS.md`) exist. The setup skills (project onboarding, environment checks, privacy checks, and confirmed rules) are implemented and passed a documented review; they are not yet tested on Windows or in Codex. Document import with MinerU, for references and review documents, is implemented but not reviewed yet. The other workflows below describe the intended experience. Follow the [design plan](docs/design-plan.md) to review the current proposal, and see the [implementation status](docs/implementation-status.md) for what actually works.
 
 For framework development, the [MVP implementation guideline](docs/mvp-implementation-guideline.md) organizes the work into nine planned increments with concrete deliverables and acceptance criteria.
 
