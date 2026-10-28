@@ -93,7 +93,7 @@ class Pipeline:
             return
         sha = sha256_file(path)
         item = {"input": shown, "name": path.name, "sha256": sha, "bytes": path.stat().st_size, "kind": kind_of(path),
-                "status": "pending", "notes": []}
+                "role": "review" if self.round else "reference", "status": "pending", "notes": []}
         twin = self.record.find(sha)
         if twin:
             item.update(status="duplicate", notes=[f"same content as {twin['input']}"])
@@ -235,7 +235,7 @@ class Pipeline:
             if reviews.edited(self.round, document_id) and not self.overwrite_edited:
                 raise library.EditedError(f"{relative(self.round.markdown / (document_id + '.md'), self.root)} was edited after conversion")
             result = extraction.build(raw, kind=kind, original=archived, document=stage / "document.md", asset_dir=stage / "assets",
-                                      asset_link="../assets/", asset_prefix=f"{document_id}--")
+                                      asset_link="../assets/", asset_prefix=f"{document_id}--", details="the README of this review round")
             summary, section, extra = reviews.inspect(archived, kind)
             if section:
                 with open(stage / "document.md", "a", encoding="utf-8", newline="\n") as stream:

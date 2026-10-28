@@ -9,7 +9,7 @@ Updated: 2026-10-28.
 | MVP | Researcher-visible outcome | Status |
 | --- | --- | --- |
 | 1 | Usable project and confirmed memory | In progress: scaffold, adopted AGENTS.md, skill copy script, and all four skills implemented. Claude Code runs 1 to 12 are done. Runs 1 to 8 used Sonnet 5.5 as the subject model; runs 9 to 12 use Haiku 5.5, which the maintainer now requires. Run 11 is the first full pass with Haiku on a clean copy: 9 of 18 scenarios pass, 8 fail on minor points, and E2 cannot pass as written. Codex and Windows have not been run, so nothing is verified |
-| 2 | Flexible intake and MinerU batch ingestion | In progress: implemented on 2026-10-28 (import script, both MinerU routes, both skills). The local route was observed working on macOS with synthetic fixtures; the mineru.net route is tested only against a fake service; no agent-session acceptance run yet, so nothing is verified |
+| 2 | Flexible intake and MinerU batch ingestion | In progress: implemented on 2026-10-28 (import script, both MinerU routes, both skills), and both skills were accepted by review the same day (see the [skill review](acceptance/mvp-2-skill-review.md)). The scripts pass their tests, and the local route was observed working on macOS with synthetic fixtures; the mineru.net route is tested only against a fake service. The live cloud route, Windows, and Codex are open, so MVP 2 as a whole is not verified |
 | 3 | Searchable literature and traceable evidence | Planned |
 | 4 | Ideas, impact, journal choice, and feasible research plans | Planned |
 | 5 | Evidence-based writing, audit, and major revision | Planned |
@@ -20,7 +20,7 @@ Updated: 2026-10-28.
 
 Execution order (revised 2026-10-26): 1 → 7 → 2 → 3 → 4 → 5 → 6 → 8 → 9, with the export trial running alongside MVP 7; see the [MVP implementation guideline](mvp-implementation-guideline.md#3-mvp-overview-and-dependencies). The export trial is planned.
 
-The four MVP 1 skills are implemented and have had twelve acceptance runs on Claude Code; none is verified. The two MVP 2 skills are implemented and have had no acceptance run. No end-to-end test has been run.
+The four MVP 1 skills are implemented and have had twelve acceptance runs on Claude Code; none is verified. The two MVP 2 skills are implemented and were accepted by review on 2026-10-28. No end-to-end test has been run.
 
 ## MVP 1, partial increment: workspace scaffold
 
@@ -510,7 +510,7 @@ The [MVP 1 acceptance checklist](acceptance/mvp-1.md) holds the scenarios and th
 
 ## MVP 2: flexible intake and MinerU batch ingestion
 
-Status: implemented, not verified. The local route was observed working on macOS with synthetic fixtures. No scenario of the [MVP 2 checklist](acceptance/mvp-2.md) has run in a fresh agent session, the mineru.net route has not met the live service, and Windows and Codex have not been run.
+Status: both skills accepted by review on 2026-10-28 ([skill review](acceptance/mvp-2-skill-review.md)); MVP 2 as a whole is not verified. The scripts pass their tests, and the local route was observed working on macOS with synthetic fixtures. The mineru.net route has not met the live service, and Windows and Codex have not been run. Under the maintainer's ruling of 2026-10-28 ([guideline section 6](mvp-implementation-guideline.md#6-completion-record-for-each-mvp)), skills pass acceptance by a written review instead of live scenario runs.
 
 Request: on 2026-10-28 the template maintainer asked to implement MVP 2 in a new worktree and to merge it into the main branch when done. The planned order put MVP 7 and the export trial first; the maintainer chose MVP 2.
 
@@ -540,20 +540,22 @@ Verification observed (macOS 26.6.2 on Apple Silicon, 16 GB; Python 3.9.6 and 3.
 - On the copy, the README check passed for every folder that the import created, `ingest.py verify` passed, and `metadata` wrote a BibTeX entry with special characters escaped.
 - `setup_mineru.py check` reported the installation, both tiers' models, and the disk use correctly. In a second disposable copy, `setup_mineru.py install`, started with Python 3.9.6, chose Python 3.12.9, installed MinerU 4.0.12 with pip (1.37 GB), and the check that followed reported both tiers' models as not installed.
 
+Review (2026-10-28). The [skill review](acceptance/mvp-2-skill-review.md) checked both skills, and the scripts they rely on, against the guideline, the design plan, and `AGENTS.md`, with pass criteria fixed before it started. It found nine gaps and fixed them: copied standing rules and a promise of an unavailable response in the skill text; no record of a local route confirmed at the first import; related versions not linked; no role in the import record; no note in the text of a partial extraction; collaborators' advice not kept out of review rounds; a correction step that could read as evidence work; and PowerPoint and Excel presented as verified. For the review, a Word source with a heading, a table, and a figure was imported live with the flash tier: a Markdown table, a linked image, coverage of the whole document, and no warning.
+
 Not verified:
 
-- Any scenario of the checklist in fresh Claude Code (Haiku) or Codex sessions, including the questions about the processing choice and the scope.
+- How a model follows these skills: no live run was made, and the review lists the risks that the MVP 1 runs make likely. The [MVP 2 checklist](acceptance/mvp-2.md) was written before the review ruling and was not run.
 - The mineru.net route against the live service, which needs a token and the maintainer's consent to upload synthetic files. Its archive layout is assumed from the documentation, and its terms leave training use and retention unknown.
 - The standard tier; local formats other than PDF, Word, Markdown, and text (they are converted but flagged as unverified); Windows and Linux.
 - Page numbers of PDF annotations, Word footnotes and endnotes, and the accuracy of OCR, tables, and formulas.
 
-Effect on MVP 1 acceptance: scenarios D1 and D2 of the [MVP 1 checklist](acceptance/mvp-1.md) expect document import to be unavailable. With MVP 2 merged, their expected behaviour changes; revising them is a decision for the maintainer.
+Effect on MVP 1: scenarios D1 and D2 of the [MVP 1 checklist](acceptance/mvp-1.md) assume that document import is not available. Under the review ruling the checklist is history, so they need no revision; the MVP 1 skill review was checked again against the tree with MVP 2.
 
 Remaining for MVP 2:
 
-- Run the checklist with Haiku in fresh Claude Code sessions, then in Codex.
-- A live mineru.net run with a token and synthetic files, and a fresh check of its terms at that time.
-- Windows runs of both routes; a decision on testing the standard tier.
+- A live mineru.net run of the import script with a token and synthetic files, and a fresh check of its terms at that time. Until then the cloud route stays unverified.
+- Windows runs of both routes, and Codex discovery of the two skills.
+- A decision on testing the standard tier.
 
 ## Open items affecting the order
 

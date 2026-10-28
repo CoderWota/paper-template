@@ -1,6 +1,6 @@
 # MVP Implementation Guideline
 
-Status: proposed implementation roadmap v0.4 (execution order revised 2026-10-26). No MVP is verified yet. MVP 1 is implemented and in acceptance testing; MVP 2 was implemented on 2026-10-28, ahead of MVP 7 at the maintainer's request, and has not been tested in agent sessions.
+Status: proposed implementation roadmap v0.4 (execution order revised 2026-10-26). No MVP is verified yet. MVP 1 is implemented and in acceptance testing; MVP 2 was implemented on 2026-10-28, ahead of MVP 7 at the maintainer's request, and its two skills were accepted by a written review the same day.
 Updated: 2026-10-28.
 
 This is the agent-facing implementation guide for the [design plan v0.9](design-plan.md) and [hands-on design](hands-on.md). Researchers are not expected to edit this technical document.
@@ -44,7 +44,7 @@ Do not stop unrelated drafting because an optional provider, journal, architectu
 | MVP | Researcher-visible outcome | Development prerequisites | Status |
 | --- | --- | --- | --- |
 | 1 | Initialize an understandable project and retain confirmed requirements across sessions. | None beyond a usable agent host/model; provide a human-readable entry guide. | In progress (scaffold and AGENTS.md) |
-| 2 | Route intake and convert literature or review documents into archived, readable, resumable results. | MVP 1 environment, privacy, and storage conventions; MinerU service research; the export trial's metadata findings. | Implemented 2026-10-28; not verified |
+| 2 | Route intake and convert literature or review documents into archived, readable, resumable results. | MVP 1 environment, privacy, and storage conventions; MinerU service research; the export trial's metadata findings. | Implemented 2026-10-28; skills accepted by review; not verified |
 | 3 | Find and batch acquire literature, import available full text, and retrieve checkable evidence. | MVP 1; MVP 2 for converted inputs, or existing readable sources. | Planned |
 | 4 | Develop ideas and research plans, compare target journals, work through feedback, and retain consequential confirmed rationale. | MVP 1; MVP 3 for source-backed investigation; existing material can also be used. | Planned |
 | 5 | Adopt, write, audit, or substantially revise a manuscript with recoverable prior work. | MVP 1, source/evidence contracts from MVP 3, and the export trial's citation and cross-reference syntax; MVP 2 for converted drafts; existing inputs can substitute for earlier research stages. MVP 7 comes earlier in the main sequence, but local snapshots must still support revision without Git. | Planned |

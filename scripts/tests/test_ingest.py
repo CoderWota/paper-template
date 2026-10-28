@@ -220,6 +220,11 @@ class LocalImportTests(WorkspaceTestCase):
         self.assertEqual(self.statuses(record), {"flagged.pdf": "needs-review", "partial.pdf": "partial"})
         partial = json.loads((self.root / "references" / "extracted" / record["items"][1]["target"] / "provenance.json").read_text(encoding="utf-8"))
         self.assertEqual(partial["coverage"]["missing_pages"], [4, 5])
+        # The text itself shows that it is incomplete, and the note is marked as the workspace's.
+        partial_text = (self.root / "references" / "extracted" / record["items"][1]["target"] / "document.md").read_text(encoding="utf-8")
+        self.assertTrue(partial_text.startswith("> [!WARNING]\n> Incomplete extraction, noted by the workspace: pages 4-5 of 5 were not converted."))
+        self.assertEqual(partial["outputs"]["document_sha256"], sha(self.root / "references" / "extracted" / record["items"][1]["target"] / "document.md"))
+        self.assertEqual({item["role"] for item in record["items"]}, {"reference"})
         flagged = json.loads((self.root / "references" / "extracted" / record["items"][0]["target"] / "provenance.json").read_text(encoding="utf-8"))
         codes = {warning["code"] for warning in flagged["warnings"]}
         self.assertTrue({"pages-without-text", "omitted-text", "unreferenced-images", "formulas-unverified"} <= codes, codes)
@@ -293,10 +298,11 @@ class MetadataTests(WorkspaceTestCase):
         self.assertIn(f"sourceid = {{{self.source_id}}}", text)
         self.assertIn("metadatasource = {document}", text)
         self.assertIn("| Müller, Anna; Lee, B. | 2024 |", (self.root / "references" / "index.md").read_text(encoding="utf-8"))
-        self.ingest("metadata", self.source_id, "--field", "volume=3")
+        self.ingest("metadata", self.source_id, "--field", "volume=3", "--field", "relatedsource=src-000000000000")
         text = self.bib.read_text(encoding="utf-8")
         self.assertEqual(text.count("@article{muller2024under,"), 1)
         self.assertIn("volume = {3}", text)
+        self.assertIn("relatedsource = {src-000000000000}", text)
 
     def test_a_cited_key_is_kept(self) -> None:
         self.ingest("metadata", self.source_id, "--title", "First Title", "--author", "Smith, J.", "--year", "2020")
@@ -328,6 +334,8 @@ class ReviewTests(WorkspaceTestCase):
                        "reviews/test-journal/round-1/extracted", "reviews/test-journal/round-1/extracted/markdown",
                        "reviews/test-journal/round-1/extracted/assets"):
             self.assertTrue((self.root / folder / "README.md").is_file(), folder)
+        self.assertEqual({item["role"] for item in self.record()["items"]}, {"review"})
+        self.assertNotIn("Incomplete extraction", letter)
         again = self.ingest("run", "--route", "local", "--tier", "flash", "--to", "reviews/test-journal/round-1", str(self.inputs))
         self.assertEqual(again.returncode, 0)
         self.assertEqual(set(self.statuses(self.record()).values()), {"already-imported"})

@@ -93,7 +93,8 @@ def command_check(args, root: Path) -> int:
         print(f"Free disk space: {report['disk_free_gb']} GB.")
         return 1
     print(f"MinerU {report['mineru']} at {report['location']} (tested version: {TESTED_MINERU}).")
-    print("Flash tier: ready; it reads the text layer of PDFs and Word, PowerPoint, Excel, and similar files without models.")
+    print("Flash tier: ready; it reads the text layer of PDFs and Word files without models. Other office formats are converted too,"
+          " but their results are flagged until they are verified in this workspace.")
     for tier, state in report["models"].items():
         print(f"{tier.capitalize()} tier models: {state}.")
     print(f"Disk use: {report['installed_size_gb']} GB for MinerU, {report['models_size_gb']} GB for models; {report['disk_free_gb']} GB free.")

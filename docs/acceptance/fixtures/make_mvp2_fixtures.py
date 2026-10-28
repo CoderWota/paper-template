@@ -4,12 +4,13 @@
 Every document is generated here and says that it is a synthetic test document. The folder
 covers the cases that the MVP 2 acceptance evidence names: duplicate names and content,
 non-ASCII and spaced paths, images, a scanned page, two columns, a table, equations, a
-document longer than ten pages, a Word review with comments and tracked changes, a PDF with
-reviewer annotations, a Markdown file, a corrupt PDF, and an unsupported format.
+document longer than ten pages, a Word source with a table and a figure, a Word review with
+comments and tracked changes, a PDF with reviewer annotations, a Markdown file, a corrupt
+PDF, and an unsupported format.
 
 Usage: python make_mvp2_fixtures.py OUTPUT_FOLDER
-Needs reportlab and Pillow, for example the interpreter of the local MinerU tool environment
-(.tools/mineru/bin/python). The Word file is written with the standard library only.
+Needs reportlab, Pillow, and python-docx, for example the interpreter of the local MinerU tool
+environment (.tools/mineru/bin/python). The Word review is written with the standard library only.
 """
 
 from __future__ import annotations
@@ -162,6 +163,27 @@ def annotated_review(path: Path) -> None:
     c.save()
 
 
+def word_source(path: Path, work: Path) -> None:
+    """A Word reference source with a heading, a table, and a figure."""
+    from docx import Document
+    from docx.shared import Inches
+
+    document = Document()
+    document.core_properties.title = "Synthetic Word Source for Import Tests"
+    document.add_heading("Synthetic Word Source for Import Tests", level=1)
+    document.add_paragraph("C. Sample and D. Placeholder")
+    document.add_paragraph(LABEL)
+    document.add_heading("1. Measurements", level=2)
+    table = document.add_table(rows=3, cols=3)
+    for row, values in enumerate((("Site", "Depth", "Unit"), ("North", "4.2", "m"), ("South", "3.9", "m"))):
+        for column, value in enumerate(values):
+            table.cell(row, column).text = value
+    document.add_heading("2. Figure", level=2)
+    document.add_picture(str(diagram(work / "word figure.png")), width=Inches(3))
+    document.add_paragraph("Figure 1. A synthetic diagram in a Word file.")
+    document.save(str(path))
+
+
 W = 'xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"'
 
 
@@ -235,6 +257,7 @@ def main(argv: list[str]) -> int:
     second.showPage()
     second.save()
     (out / "notes.md").write_text("# Synthetic notes\n\n" + LABEL + "\n\nInline math $a^2 + b^2 = c^2$ and a display block:\n\n$$\n\\int_0^1 x\\,dx = \\frac{1}{2}\n$$\n", encoding="utf-8")
+    word_source(out / "word source.docx", work)
     (out / "corrupt.pdf").write_bytes(b"%PDF-1.7\n1 0 obj\n<< /Type /Catalog")
     (out / "data.xyz").write_text("An unsupported synthetic format.\n", encoding="utf-8")
     word_review(out / "reviews in" / "decision letter.docx")

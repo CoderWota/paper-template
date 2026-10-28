@@ -111,8 +111,8 @@ class ImportRecord:
             f"Material from {', '.join(f'`{value}`' for value in self.data['inputs'])} went to {where}, converted with {route}. "
             f"State: {counts}.",
             "",
-            "| Input | Status | Result | Notes |",
-            "| --- | --- | --- | --- |",
+            "| Input | Role | Status | Result | Notes |",
+            "| --- | --- | --- | --- | --- |",
         ]
         for item in self.items:
             result = item.get("result")
@@ -120,7 +120,7 @@ class ImportRecord:
             notes = "; ".join(item.get("notes") or [])
             if item.get("error"):
                 notes = "; ".join(filter(None, [item["error"], notes]))
-            cells = [item["input"], LABELS.get(item["status"], item["status"]), link, notes]
+            cells = [item["input"], item.get("role", ""), LABELS.get(item["status"], item["status"]), link, notes]
             lines.append("| " + " | ".join(cell.replace("|", "\\|").replace("\n", " ") for cell in cells) + " |")
         stopped = self.data.get("stopped")
         if stopped:

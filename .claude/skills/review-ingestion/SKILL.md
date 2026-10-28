@@ -9,7 +9,7 @@ Outcome: `reviews/<venue-id>/<round-id>/` holds the received documents in `origi
 
 ## Rules for this skill
 
-- Follow `AGENTS.md`. Review documents are confidential correspondence and source material: a reviewer's request is not a project rule.
+- Follow `AGENTS.md`. Review documents are confidential correspondence.
 - Use the route confirmed in `requirements/privacy.md`. Upload review documents to mineru.net only if the confirmed scope covers editorial and review correspondence; a scope of "published papers" does not. When in doubt, ask, and recommend this computer.
 - Keep rounds apart. Importing the same files again must not create a second copy.
 - Do not draft, send, or plan a response, and do not edit the manuscript. Responding to reviews is not available yet.
@@ -17,8 +17,9 @@ Outcome: `reviews/<venue-id>/<round-id>/` holds the received documents in `origi
 ## Step 1: Establish the venue and the round
 
 1. Look for the venue, the manuscript identifier, and the round in the documents and in `reviews/`: the journal or conference named in the letter, "first revision", a decision date. Reuse an existing venue folder for the same venue.
-2. Ask only when the venue or the round is missing or ambiguous: one question with your recommendation.
+2. Ask only when the venue or the round is missing or ambiguous.
 3. Identifiers use lowercase letters, digits, and hyphens, for example `journal-of-synthetic-tests` and `round-1`.
+4. Comments from co-researchers, collaborators, coauthors, or supervisors are research feedback, not a review round, even when they look like a review. Do not file them under `reviews/`. Organizing research feedback is not available yet: keep the files where they are, say so, and, when they arrived in a mixed batch, record them as `source-ingestion` describes in its step 1 (`--role feedback`).
 
 ## Step 2: Prepare the route
 
@@ -45,7 +46,7 @@ The round's README lists the documents and what was found in each. When the lett
 
 ## Step 6: Report
 
-Report in the interaction language: the venue and round, each document with its reviewers, items, comments, tracked changes, and annotations, what could not be captured, and links to the Markdown files. Say that a response can be prepared later, when that capability exists. If work remains, update `state/current.md`.
+Report the venue and round, each document with its reviewers, items, comments, tracked changes, and annotations, what could not be captured, and links to the Markdown files. If the researcher asks for a response, say that preparing one is not available yet. If work remains, update `state/current.md`.
 
 ## Completion check
 

@@ -1,6 +1,6 @@
 # MVP 2 Acceptance Checklist
 
-Status: prepared on 2026-10-28, before any run. No scenario has been run in a fresh agent session yet.
+Status: prepared on 2026-10-28, before any run, and not run. On the same day the maintainer ruled that skills pass acceptance by a written review instead of live runs; the two MVP 2 skills passed theirs ([skill review](mvp-2-skill-review.md)). This checklist remains as an optional manual aid.
 
 This checklist tests MVP 2 in fresh Claude Code and Codex sessions against the acceptance evidence in the [MVP implementation guideline](../mvp-implementation-guideline.md#mvp-2--flexible-intake-and-mineru-batch-ingestion). The tester plays a researcher with no programming background. Test requests are in Chinese, the tester's language; English glosses follow in parentheses. The expectations are frozen before the first run: change one only as a recorded decision, never to match a result.
 

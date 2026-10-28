@@ -268,8 +268,11 @@ def display_blocks(chunk: str, stats: dict) -> str:
 
 
 def build(raw: Path, *, kind: str, original: Path, document: Path, asset_dir: Path, asset_link: str,
-          asset_prefix: str = "", native_dir: Path | None = None) -> Extraction:
-    """Write document.md, the assets, and optionally the native outputs, then check them."""
+          asset_prefix: str = "", native_dir: Path | None = None, details: str = "the README of this folder") -> Extraction:
+    """Write document.md, the assets, and optionally the native outputs, then check them.
+
+    details names the place that explains an incomplete extraction, for the note at the top of the text.
+    """
     raw = descend(raw)
     source = find_markdown(raw)
     text = source.read_text(encoding="utf-8", errors="replace")
@@ -285,9 +288,6 @@ def build(raw: Path, *, kind: str, original: Path, document: Path, asset_dir: Pa
             assets.append(name)
     text, math = normalize_math(rewrite_links(text, mapping))
     text = text.rstrip("\n") + "\n"
-    document.parent.mkdir(parents=True, exist_ok=True)
-    with open(document, "w", encoding="utf-8", newline="\n") as stream:
-        stream.write(text)
     native = []
     if native_dir is not None:
         for path in sorted(p for p in raw.rglob("*") if p.is_file()):
@@ -301,9 +301,36 @@ def build(raw: Path, *, kind: str, original: Path, document: Path, asset_dir: Pa
     result = Extraction(text=text, assets=assets, native=native)
     layout = load_layout(raw)
     check_layout(result, layout, kind, original)
+    note = coverage_note(result.coverage, details)
+    if note:
+        result.text = note + result.text
+        shift = note.count("\n")
+        math["unbalanced_lines"] = [number + shift for number in math["unbalanced_lines"]]
+        for entry in math["unsupported"]:
+            entry["line"] += shift
+    document.parent.mkdir(parents=True, exist_ok=True)
+    with open(document, "w", encoding="utf-8", newline="\n") as stream:
+        stream.write(result.text)
     check_links(result, document, image_roles(layout) if layout else {}, asset_prefix)
     check_math(result, math)
     return result
+
+
+def coverage_note(coverage: dict, details: str) -> str:
+    """A note at the top of an incomplete extraction, so that the text itself shows that it is incomplete.
+
+    The workspace adds it and says so; it holds no link, because the text is checked before the README exists.
+    """
+    if coverage.get("status") == "partial":
+        missing, expected = coverage.get("missing_pages") or [], coverage.get("expected")
+        what = (f"pages {span_list(missing)} of {expected} were not converted" if missing and expected
+                else "the parser converted only part of the document")
+    elif coverage.get("status") == "unknown" and coverage.get("unit") == "page":
+        what = "the page coverage is unknown, so text may be missing"
+    else:
+        return ""
+    return (f"> [!WARNING]\n> Incomplete extraction, noted by the workspace: {what}. "
+            f"This note is not part of the document; {details} has the details.\n\n")
 
 
 def image_roles(layout: dict) -> dict:
