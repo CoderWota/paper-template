@@ -46,6 +46,7 @@ class Extraction:
     checks: dict = field(default_factory=dict)
     warnings: list = field(default_factory=list)
     hints: dict = field(default_factory=dict)
+    parser: dict = field(default_factory=dict)
 
     def warn(self, code: str, message: str, level: str = REVIEW, details=None) -> None:
         entry = {"code": code, "level": level, "message": message}
@@ -292,7 +293,8 @@ def build(raw: Path, *, kind: str, original: Path, document: Path, asset_dir: Pa
     if native_dir is not None:
         for path in sorted(p for p in raw.rglob("*") if p.is_file()):
             relative = path.relative_to(raw)
-            if relative.parts[0] == "images" or path.name.endswith("_origin.pdf"):
+            # The service returns a copy of the original (for example "<id>_origin.docx"); the archive already holds it.
+            if relative.parts[0] == "images" or re.search(r"_origin\.[A-Za-z0-9]+$", path.name):
                 continue
             destination = native_dir.joinpath(*relative.parts)
             destination.parent.mkdir(parents=True, exist_ok=True)
@@ -300,6 +302,7 @@ def build(raw: Path, *, kind: str, original: Path, document: Path, asset_dir: Pa
             native.append(relative.as_posix())
     result = Extraction(text=text, assets=assets, native=native)
     layout = load_layout(raw)
+    result.parser = parser_info(layout) if layout else {}
     check_layout(result, layout, kind, original)
     note = coverage_note(result.coverage, details)
     if note:
@@ -314,6 +317,20 @@ def build(raw: Path, *, kind: str, original: Path, document: Path, asset_dir: Pa
     check_links(result, document, image_roles(layout) if layout else {}, asset_prefix)
     check_math(result, math)
     return result
+
+
+def parser_info(layout: dict) -> dict:
+    """The parser version that wrote the output, as the output itself states it.
+
+    A cloud service reports its own version only here, so provenance records it from the result.
+    """
+    if layout.get("schema") == "docvortex.middle":
+        producer = (layout.get("metadata") or {}).get("producer") or {}
+        mineru = (layout.get("extensions") or {}).get("mineru") or {}
+        found = {"name": producer.get("name"), "version": producer.get("version"), "tier": mineru.get("tier")}
+    else:
+        found = {"name": "mineru", "version": layout.get("_version_name"), "backend": layout.get("_backend")}
+    return {key: value for key, value in found.items() if value}
 
 
 def coverage_note(coverage: dict, details: str) -> str:

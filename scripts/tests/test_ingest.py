@@ -147,6 +147,7 @@ class LocalImportTests(WorkspaceTestCase):
         self.assertEqual(provenance["coverage"]["expected"], 12)
         self.assertEqual(provenance["coverage"]["missing_pages"], [])
         self.assertEqual(provenance["conversion"]["tier"], "flash")
+        self.assertEqual(provenance["conversion"]["parser"], {"name": "mineru", "version": "4.0.12", "tier": "flash"})
         document = (folder / "document.md").read_text(encoding="utf-8")
         self.assertIn("![](assets/page_0_image_3.jpg)", document)
         self.assertTrue((folder / "assets" / "page_0_image_3.jpg").is_file())
@@ -330,6 +331,9 @@ class ReviewTests(WorkspaceTestCase):
         self.assertIn("Text annotation by R2: \u201cPlease add a scale bar (see Fig. 1).\u201d", report)
         self.assertTrue((round_folder / "extracted" / "assets" / "report-2--page_0_image_3.jpg").is_file())
         self.assertIn("](../assets/report-2--page_0_image_3.jpg)", report)
+        # Links are checked in a stage laid out like extracted/, so a correct link is not reported as broken.
+        round_record = json.loads((round_folder / "extracted" / "provenance.json").read_text(encoding="utf-8"))
+        self.assertEqual(round_record["documents"]["report-2"]["checks"]["links"]["broken"], [])
         for folder in ("reviews/test-journal", "reviews/test-journal/round-1", "reviews/test-journal/round-1/originals",
                        "reviews/test-journal/round-1/extracted", "reviews/test-journal/round-1/extracted/markdown",
                        "reviews/test-journal/round-1/extracted/assets"):

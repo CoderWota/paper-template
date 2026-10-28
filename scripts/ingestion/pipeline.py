@@ -234,16 +234,19 @@ class Pipeline:
             document_id = item["target"]
             if reviews.edited(self.round, document_id) and not self.overwrite_edited:
                 raise library.EditedError(f"{relative(self.round.markdown / (document_id + '.md'), self.root)} was edited after conversion")
-            result = extraction.build(raw, kind=kind, original=archived, document=stage / "document.md", asset_dir=stage / "assets",
+            # The stage mirrors extracted/: markdown/ and assets/ side by side, so that links are checked as published.
+            document = stage / "markdown" / f"{document_id}.md"
+            result = extraction.build(raw, kind=kind, original=archived, document=document, asset_dir=stage / "assets",
                                       asset_link="../assets/", asset_prefix=f"{document_id}--", details="the README of this review round")
             summary, section, extra = reviews.inspect(archived, kind)
             if section:
-                with open(stage / "document.md", "a", encoding="utf-8", newline="\n") as stream:
+                with open(document, "a", encoding="utf-8", newline="\n") as stream:
                     stream.write(section)
             result.warnings += extra
         else:
+            document = stage / "document.md"
             library.carry_readmes(self.root, item["target"], stage)
-            result = extraction.build(raw, kind=kind, original=archived, document=stage / "document.md", asset_dir=stage / "assets",
+            result = extraction.build(raw, kind=kind, original=archived, document=document, asset_dir=stage / "assets",
                                       asset_link="assets/", native_dir=stage / "native")
             summary = None
         if settings["route"] == "direct":
@@ -252,10 +255,13 @@ class Pipeline:
             result.warnings = [w for w in result.warnings if w["code"] not in ("formulas-unverified", "coverage-unknown")]
         for note in notes:
             result.warn("not-utf8", note)
-        if (settings["route"], kind, settings.get("tier", "")) not in VERIFIED:
+        variant = settings.get("tier") or settings.get("model_version") or ""
+        if (settings["route"], kind, variant) not in VERIFIED:
             result.warn("unverified-format", f"converting {kind} files this way is documented by MinerU but not yet verified in this workspace; compare the result with the original")
         conversion = dict(settings, settings_key=settings_key(settings), started_at=started, finished_at=now(), import_id=self.record.id)
-        document_sha = sha256_file(stage / "document.md")
+        if result.parser:
+            conversion["parser"] = result.parser
+        document_sha = sha256_file(document)
         if self.round:
             reviews.publish(self.round, item["target"], stage)
             reviews.store(self.round, item["target"], {
@@ -355,6 +361,7 @@ class Pipeline:
                         continue
                     state = result.get("state")
                     if state == "done":
+                        item["remote"]["state"] = state
                         self.cloud_done(item, result)
                     elif state == "failed":
                         self.fail(item, ConversionError(f"mineru.net could not convert the file: {result.get('err_msg') or 'no reason given'}"))

@@ -9,7 +9,7 @@ Updated: 2026-10-28.
 | MVP | Researcher-visible outcome | Status |
 | --- | --- | --- |
 | 1 | Usable project and confirmed memory | In progress: scaffold, adopted AGENTS.md, skill copy script, and all four skills implemented. The four skills were accepted by review on 2026-10-28 (maintainer ruling; see the [skill review](acceptance/mvp-1-skill-review.md)). Thirteen live runs on Claude Code (runs 1 to 8 with Sonnet 5.5, runs 9 to 13 with Haiku 5.5) are history; the last run passed 11 of 18 scenarios. Codex, Windows, and the English question checks are open, so MVP 1 as a whole is not verified; the MinerU service research was done with MVP 2 |
-| 2 | Flexible intake and MinerU batch ingestion | In progress: implemented on 2026-10-28 (import script, both MinerU routes, both skills), and both skills were accepted by review the same day (see the [skill review](acceptance/mvp-2-skill-review.md)). The scripts pass their tests, and the local route was observed working on macOS with synthetic fixtures; the mineru.net route is tested only against a fake service. The live cloud route, Windows, and Codex are open, so MVP 2 as a whole is not verified |
+| 2 | Flexible intake and MinerU batch ingestion | In progress: implemented on 2026-10-28 (import script, both MinerU routes, both skills), and both skills were accepted by review the same day (see the [skill review](acceptance/mvp-2-skill-review.md)). The scripts pass their tests, and both routes were observed working on macOS with synthetic files: the local route, and the mineru.net route with the maintainer's token. Windows, Codex, and the training-use and retention terms of mineru.net are open, so MVP 2 as a whole is not verified |
 | 3 | Searchable literature and traceable evidence | Planned |
 | 4 | Ideas, impact, journal choice, and feasible research plans | Planned |
 | 5 | Evidence-based writing, audit, and major revision | Planned |
@@ -553,7 +553,7 @@ The [MVP 1 skill review](acceptance/mvp-1-skill-review.md) holds the requirement
 
 ## MVP 2: flexible intake and MinerU batch ingestion
 
-Status: both skills accepted by review on 2026-10-28 ([skill review](acceptance/mvp-2-skill-review.md)); MVP 2 as a whole is not verified. The scripts pass their tests, and the local route was observed working on macOS with synthetic fixtures. The mineru.net route has not met the live service, and Windows and Codex have not been run. Under the maintainer's ruling of 2026-10-28 ([guideline section 6](mvp-implementation-guideline.md#6-completion-record-for-each-mvp)), skills pass acceptance by a written review instead of live scenario runs.
+Status: both skills accepted by review on 2026-10-28 ([skill review](acceptance/mvp-2-skill-review.md)); MVP 2 as a whole is not verified. The scripts pass their tests, and both routes were observed working on macOS with synthetic files: the local route, and the mineru.net route with the maintainer's token. Windows and Codex have not been run. Under the maintainer's ruling of 2026-10-28 ([guideline section 6](mvp-implementation-guideline.md#6-completion-record-for-each-mvp)), skills pass acceptance by a written review instead of live scenario runs.
 
 Request: on 2026-10-28 the template maintainer asked to implement MVP 2 in a new worktree and to merge it into the main branch when done. The planned order put MVP 7 and the export trial first; the maintainer chose MVP 2.
 
@@ -582,13 +582,14 @@ Verification observed (macOS 26.6.2 on Apple Silicon, 16 GB; Python 3.9.6 and 3.
 - A review round from the Word decision letter and the annotated PDF listed 2 comments with their anchored text, 1 insertion, 1 deletion, and the text of 2 PDF annotations; MinerU alone had shown the tracked changes as accepted and lost the comments. Importing the round again created no duplicate.
 - On the copy, the README check passed for every folder that the import created, `ingest.py verify` passed, and `metadata` wrote a BibTeX entry with special characters escaped.
 - `setup_mineru.py check` reported the installation, both tiers' models, and the disk use correctly. In a second disposable copy, `setup_mineru.py install`, started with Python 3.9.6, chose Python 3.12.9, installed MinerU 4.0.12 with pip (1.37 GB), and the check that followed reported both tiers' models as not installed.
+- Live mineru.net runs, on 2026-10-28, in a disposable copy with the maintainer's token. The maintainer first pasted a token into the conversation; it was not used from there, and the value that the import used was entered on the private page. Only synthetic files went up: the 12-page report, the scanned PDF, the Word source, and the review round (Word letter and annotated PDF). The service ran MinerU 3.4.4 (hybrid backend, model `vlm`) and returned three results in about 12 seconds: 12 of 12 and 2 of 2 pages, the scanned page read, columns in order, running heads recognized, tables as HTML. It mistranscribed the printed formula like the local basic tier, and it took the annotation icons of the review PDF and the text under them for images ("Comment 1" became "mment 1"). No file or log held the token or a signed address, and the service saw only source IDs as file names. The runs found three gaps, now fixed and covered by tests: a Word original's copy kept in `native/`, the service's parser version not recorded, and a correct image link of a review document reported as broken because the stage was laid out differently from `extracted/`. PDF and Word with the `vlm` model became verified combinations. The token was removed from `.env.local` after the runs.
 
 Review (2026-10-28). The [skill review](acceptance/mvp-2-skill-review.md) checked both skills, and the scripts they rely on, against the guideline, the design plan, and `AGENTS.md`, with pass criteria fixed before it started. It found nine gaps and fixed them: copied standing rules and a promise of an unavailable response in the skill text; no record of a local route confirmed at the first import; related versions not linked; no role in the import record; no note in the text of a partial extraction; collaborators' advice not kept out of review rounds; a correction step that could read as evidence work; and PowerPoint and Excel presented as verified. For the review, a Word source with a heading, a table, and a figure was imported live with the flash tier: a Markdown table, a linked image, coverage of the whole document, and no warning.
 
 Not verified:
 
 - How a model follows these skills: no live run was made, and the review lists the risks that the MVP 1 runs make likely. The [MVP 2 checklist](acceptance/mvp-2.md) was written before the review ruling and was not run.
-- The mineru.net route against the live service, which needs a token and the maintainer's consent to upload synthetic files. Its archive layout is assumed from the documentation, and its terms leave training use and retention unknown.
+- At mineru.net: the training use and retention of uploaded documents, which its terms do not state; behaviour at its limits (daily quota, rate limit, an expired token), with images, and with the `pipeline` model, which only the fake service exercised.
 - The standard tier; local formats other than PDF, Word, Markdown, and text (they are converted but flagged as unverified); Windows and Linux.
 - Page numbers of PDF annotations, Word footnotes and endnotes, and the accuracy of OCR, tables, and formulas.
 
@@ -596,7 +597,7 @@ Effect on MVP 1: scenarios D1 and D2 of the [MVP 1 checklist](acceptance/mvp-1.m
 
 Remaining for MVP 2:
 
-- A live mineru.net run of the import script with a token and synthetic files, and a fresh check of its terms at that time. Until then the cloud route stays unverified.
+- A fresh read of the mineru.net terms before uploading researcher materials; the live run used synthetic files, and the terms do not state training use or retention.
 - Windows runs of both routes, and Codex discovery of the two skills.
 - A decision on testing the standard tier.
 

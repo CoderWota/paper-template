@@ -46,10 +46,12 @@ KINDS = {
 LOCAL_WHOLE_DOCUMENT = frozenset({"word", "slides", "spreadsheet", "opendocument", "rtf", "epub", "html", "table"})
 CLOUD_KINDS = frozenset({"pdf", "image", "word", "slides", "spreadsheet", "legacy-office"})
 DIRECT_KINDS = frozenset({"markdown", "text"})
-# Combinations observed to work in this template; see docs/implementation-status.md. Others are
-# documented by MinerU but unverified here, so their results are flagged for review.
+# (route, kind, tier or cloud model) combinations observed to work in this template with synthetic
+# files; see docs/implementation-status.md. Others are documented by MinerU but unverified here, so
+# their results are flagged for review.
 VERIFIED = frozenset({
     ("local", "pdf", "flash"), ("local", "pdf", "basic"), ("local", "word", "flash"),
+    ("cloud", "pdf", "vlm"), ("cloud", "word", "vlm"),
     ("direct", "markdown", ""), ("direct", "text", ""),
 })
 MODELS_MISSING = re.compile(r"Model repo \S+ is not ready|quality_tier_unavailable", re.I)

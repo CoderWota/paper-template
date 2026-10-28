@@ -272,4 +272,4 @@ def publish(round_: Round, document_id: str, stage: Path) -> None:
         old.unlink()
     for image in sorted((stage / "assets").glob("*")) if (stage / "assets").is_dir() else []:
         os.replace(image, round_.assets / image.name)
-    os.replace(stage / "document.md", round_.markdown / f"{document_id}.md")
+    os.replace(stage / "markdown" / f"{document_id}.md", round_.markdown / f"{document_id}.md")

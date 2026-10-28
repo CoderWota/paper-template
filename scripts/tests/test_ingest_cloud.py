@@ -97,11 +97,12 @@ class FakeService:
                     with zipfile.ZipFile(buffer, "w") as archive:
                         archive.writestr("full.md", "".join(f"Cloud text of page {p + 1}, written only for a test.\n\n" for p in range(pages)) + "![](images/a.jpg)\n")
                         archive.writestr("images/a.jpg", b"\xff\xd8 synthetic")
-                        archive.writestr("layout.json", json.dumps({"_backend": "pipeline", "pdf_info": [
+                        archive.writestr("layout.json", json.dumps({"_backend": "hybrid", "_version_name": "3.4.4", "pdf_info": [
                             {"page_idx": p, "para_blocks": [{"type": "text", "lines": [{"spans": [{"type": "text", "content": f"Cloud text of page {p + 1}, written only for a test."}]}]}],
                              "discarded_blocks": [{"type": "discarded", "lines": [{"spans": [{"type": "text", "content": "Running head"}]}]}]} for p in range(pages)]}))
                         archive.writestr("x_content_list.json", "[]")
                         archive.writestr("x_origin.pdf", uploaded)
+                        archive.writestr("y_origin.docx", b"another copy of the original")
                     return self.reply(200, buffer.getvalue(), "application/zip")
                 self.reply(404, b"{}")
 
@@ -152,8 +153,8 @@ class CloudImportTests(WorkspaceTestCase):
         result = self.cloud("run", "--route", "cloud", str(self.inputs))
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         record = self.record()
-        # The live service is not verified yet, so every cloud result is flagged for review, and nothing else is.
-        self.assertEqual({i["name"]: i["status"] for i in record["items"]}, {"a paper.pdf": "needs-review", "letter.docx": "needs-review"})
+        self.assertEqual({i["name"]: i["status"] for i in record["items"]}, {"a paper.pdf": "converted", "letter.docx": "converted"})
+        self.assertEqual({i["remote"]["state"] for i in record["items"]}, {"done"})
         api = [r for r in self.service.requests if r["path"].startswith("/api/")]
         transfers = [r for r in self.service.requests if not r["path"].startswith("/api/")]
         self.assertTrue(api and all(r["headers"].get("authorization") == f"Bearer {TOKEN}" for r in api))
@@ -166,9 +167,12 @@ class CloudImportTests(WorkspaceTestCase):
         provenance = json.loads((folder / "provenance.json").read_text(encoding="utf-8"))
         self.assertEqual(provenance["conversion"]["route"], "cloud")
         self.assertEqual(provenance["conversion"]["model_version"], "vlm")
-        self.assertEqual({w["code"] for w in provenance["warnings"] if w["level"] != "info"}, {"unverified-format"})
+        # PDF and Word with the vlm model were verified against the live service, so nothing needs review here.
+        self.assertEqual({w["code"] for w in provenance["warnings"] if w["level"] != "info"}, set())
+        self.assertEqual(provenance["conversion"]["parser"], {"name": "mineru", "version": "3.4.4", "backend": "hybrid"})
         self.assertEqual((provenance["coverage"]["expected"], provenance["coverage"]["expected_from"], provenance["coverage"]["processed"]), (2, "file structure", 2))
         self.assertNotIn("x_origin.pdf", provenance["outputs"]["native"])
+        self.assertNotIn("y_origin.docx", provenance["outputs"]["native"])
         self.assertIn("![](assets/a.jpg)", (folder / "document.md").read_text(encoding="utf-8"))
         for path in self.root.rglob("*"):
             if path.is_file():
@@ -204,7 +208,7 @@ class CloudImportTests(WorkspaceTestCase):
         self.assertEqual(result.returncode, 1)
         statuses = {i["name"]: i["status"] for i in self.record()["items"]}
         self.assertEqual(statuses["second.pdf"], "failed")
-        self.assertEqual(statuses["a paper.pdf"], "needs-review")
+        self.assertEqual(statuses["a paper.pdf"], "converted")
 
     def test_only_the_official_address_or_this_computer_is_accepted(self) -> None:
         with self.assertRaises(ValueError):

@@ -1,6 +1,6 @@
 # MVP 2 Skill Review
 
-Status: review completed on 2026-10-28 by the agent in the template repository. Result: `source-ingestion` and `review-ingestion` pass. The review found nine gaps, seven in skill text (one of them also in a script message) and two in the import script, and fixed them (section 6). A pass shows that the skill text and the scripts it relies on meet the documented requirements. It shows nothing about the live mineru.net service, Windows, ARM64, or Codex (section 8).
+Status: review completed on 2026-10-28 by the agent in the template repository. Result: `source-ingestion` and `review-ingestion` pass. The review found nine gaps, seven in skill text (one of them also in a script message) and two in the import script, and fixed them (section 6). A pass shows that the skill text and the scripts it relies on meet the documented requirements. It shows nothing about Windows, ARM64, or Codex (section 8). A live mineru.net run, made after the review, is recorded in section 10.
 
 ## 1. Rule and pass criteria
 
@@ -110,7 +110,7 @@ The guideline's acceptance evidence for MVP 2 (L122 to L127) is a list of observ
 | AE-3 | Mixed intake, a direct external path, a Word review with comments, an annotated document, no duplicate on repetition (L124) | Met for the scripts | External folders and review rounds: live runs and tests. Mixed intake is agent behavior (source-ingestion L28 to L34), judged by this review |
 | AE-4 | READMEs at every new level, unchanged sources, no README in external folders, descriptions kept on retry (L125) | Met | CC-9 |
 | AE-5 | Interruption, retry, survival of results and notes, reuse, detected settings changes, corrupt input, authentication and quota without loops (L126) | Met | SI-15, SI-16; a live interrupted batch was continued |
-| AE-6 | Local and cloud envelopes on their environments, no local weights for cloud, no upload after a local failure, the live credential, and the service's terms (L127) | Partly covered | The local envelope was observed on macOS; SI-4, SI-8, and SI-9 hold; the terms were read on 2026-10-28 and leave training use and retention unknown. The live credential and the live service are not covered (section 8) |
+| AE-6 | Local and cloud envelopes on their environments, no local weights for cloud, no upload after a local failure, the live credential, and the service's terms (L127) | Partly covered | The local envelope was observed on macOS; SI-4, SI-8, and SI-9 hold; the terms were read on 2026-10-28 and leave training use and retention unknown. After the review, the live credential and the live service were observed with synthetic files (section 10); the terms stay unknown |
 
 ## 6. Gaps found and fixed
 
@@ -137,11 +137,12 @@ These skills have had no live run, so no miss was observed. The MVP 1 runs with 
 - Citation metadata. A model may fill a field that the first page does not show. The entry is marked as read from the document, and checking it against a registry belongs to MVP 3.
 - Language. Notes between tool calls can be English.
 
-## 8. Not covered by this review
+## 8. Remaining verification limits
 
-These stay unverified and must not be advertised as working.
+The live run in section 10 verified PDF and Word conversion with the `vlm` model on macOS, using synthetic files. The following items remain unverified and must not be advertised as working:
 
-- The live mineru.net route: a real token on the private page, an upload, the archive layout and `layout.json` format of the live service, and its terms at the time of use. Training use and retention are unknown from the terms read on 2026-10-28 ([MinerU integration](../mineru-integration.md)).
+- mineru.net's terms and data handling: the terms read on 2026-10-28 do not state whether uploaded documents are used for training or how long they are retained. The live run used synthetic files; re-check the terms before uploading researcher materials.
+- Cloud image inputs, the `pipeline` model, and service behavior at its limits (daily quota, rate limit, and expired tokens). These paths have only been exercised against the fake service.
 - Windows and ARM64: `.tools/mineru/Scripts/`, the Python launcher, long and non-ASCII paths, and MinerU's own support on those platforms.
 - Codex: discovery of `.agents/skills` and loading of `AGENTS.md`.
 - The standard and advanced tiers, and local formats other than PDF, Word, Markdown, and plain text.
@@ -156,4 +157,15 @@ These stay unverified and must not be advertised as working.
 | `source-ingestion` | Accepted by review, 2026-10-28 |
 | `review-ingestion` | Accepted by review, 2026-10-28 |
 
-"Accepted by review" does not mean verified on a platform. MVP 2 as a whole stays open for the items of section 8, above all the live mineru.net route.
+"Accepted by review" does not mean verified on a platform. MVP 2 as a whole stays open for the items of section 8.
+
+## 10. Addendum: live mineru.net run (2026-10-28, after the review)
+
+The maintainer asked for the live test and entered a token on the private page. A token that was first pasted into the conversation was not used from there. In a disposable copy, the import script sent only synthetic files from the fixture generator to mineru.net, as references and as a review round.
+
+- Observed: the token reached the import through `credentials.py run` and appeared in no record, log, or output; the service saw only source IDs as file names; coverage, running heads, columns, the scanned page, and tables came out as described in [MinerU integration](../mineru-integration.md#minerunet); the service ran MinerU 3.4.4.
+- Three script gaps found and fixed, each with a test: the service's copy of a Word original kept in `native/`; the parser version that the service states not recorded in provenance; and a correct image link of a review document reported as broken, because links were checked in a stage laid out differently from `extracted/`.
+- Two conversion defects that no automatic check detects: a mistranscribed formula, and annotation icons that cut the text under them in a review PDF. The skills already require the comparisons that catch them (source-ingestion L93, review-ingestion L40).
+- PDF and Word with the `vlm` model are now verified combinations (`routes.VERIFIED`). Still not covered: the terms, images, the `pipeline` model, and the service's behaviour at its limits.
+
+The verdicts of section 9 are unchanged.

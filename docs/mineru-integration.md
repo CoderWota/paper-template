@@ -1,6 +1,6 @@
 # MinerU Integration
 
-Status: integration decided by the template maintainer on 2026-10-28 and implemented in MVP 2. The local route was observed working on macOS; the mineru.net route is implemented against its documentation and tested only with a fake service. For what is verified, see [implementation status](implementation-status.md#mvp-2-flexible-intake-and-mineru-batch-ingestion).
+Status: integration decided by the template maintainer on 2026-10-28 and implemented in MVP 2. Both routes were observed working on macOS with synthetic files on 2026-10-28: the local route, and the mineru.net route with the maintainer's token. For what is verified, see [implementation status](implementation-status.md#mvp-2-flexible-intake-and-mineru-batch-ingestion).
 
 This note records the read-only MinerU research that [design plan Section 5](design-plan.md#5-document-ingestion-mineru-decision-and-publishing-options) asked for, the integration decisions, and the behaviour observed in this workspace. Sources were read on 2026-10-28; versions and terms change, so check them again before relying on a detail.
 
@@ -57,12 +57,19 @@ How the adapter uses it:
 - Batches hold 20 files and start at most every 30 seconds. A rejected or expired token, the daily limit, or an unreachable service stops the run once, with the open items kept; uploaded items that are still processing are collected by a later run without a second upload.
 - Signed addresses and the token are removed from every record and log.
 
-Not verified: the live service. The tests use a fake service that follows the documentation; the archive layout and the `layout.json` format of the live service are assumptions until a live run with a real token and synthetic files.
+Observed with the live service on 2026-10-28, with the maintainer's token entered on the private page and synthetic files only (two PDFs of 12 and 2 pages, a Word source, a Word decision letter, and an annotated PDF report), model `vlm`:
+
+- Each archive held `full.md`, `layout.json`, `<task>_content_list.json`, `<task>_content_list_v2.json`, `<task>_model.json`, a copy of the original as `<task>_origin.<extension>`, and `images/` with files named by their SHA-256 hash. `layout.json` uses the older page layout (`pdf_info` with `para_blocks` and `discarded_blocks`) and states `_backend: hybrid` and `_version_name: 3.4.4`: the service ran MinerU 3.4.4, not 4.0.
+- Three files took about 12 seconds from upload to result. Coverage was 12 of 12 and 2 of 2 pages, the scanned page was read, the two columns came out in the right order, the running heads were recognized as such, and tables came out as HTML.
+- The printed formula was transcribed wrongly, as with the local basic tier, and the formula image was merged into it. In the annotated report, the model took the annotation icons and the text under them for images, so "Comment 1" became "mment 1". No automatic check detects either; the reviewer-item comparison of `review-ingestion` and the formula note exist for this.
+- No record, log, or output held the token or a signed address, and the service saw only source IDs as file names.
+
+The run found three gaps, now fixed: the copy of a Word original (`_origin.docx`) was kept in `native/`; the parser version that the service states was not recorded; and the links of a review document were checked in a stage laid out differently from `extracted/`, which reported a correct image link as broken. PDF and Word with the `vlm` model are now verified combinations; images and the `pipeline` model are not.
 
 ## Integration contract as implemented
 
 - **Archive.** The original is copied unchanged into `references/originals/<source-id>/`, and the copy's checksum is verified. The source ID is `src-` plus the first 12 hexadecimal digits of the file's SHA-256, so the same file always gets the same ID and a different version gets another one.
-- **Extraction.** `references/extracted/<source-id>/` holds `document.md` with image links into `assets/`, the parser output in `native/` (without its copy of the original PDF), `provenance.json`, and a README for each folder. The folder is built in `.tmp/` and published with one rename.
+- **Extraction.** `references/extracted/<source-id>/` holds `document.md` with image links into `assets/`, the parser output in `native/` (without its copy of the original), `provenance.json` with the parser version that the output states, and a README for each folder. The folder is built in `.tmp/` and published with one rename.
 - **Checks.** Page coverage against the parser's physical page count, cross-checked with a page count read from the PDF; pages without text; prose that the parser recorded but the Markdown lacks, apart from repeated or short running heads; broken links and unlinked images, apart from pictures of transcribed tables and formulas; math delimiters normalized to `$...$` and `$$` blocks without changing a formula, with unpaired `$` signs and commands that GitHub cannot render flagged; and a flag for format and route combinations not yet verified here. The result is complete, needs review, or partial.
 - **Records.** Each batch has `inbox/imports/<import-id>/import.json` and a README, saved after every change. Items are pending, converting, submitted, converted, needs review, partial, already imported, duplicate, unsupported, failed, or kept for later.
 - **Repeat and retry.** A file converted before with the same settings is reused. Other settings are reported and converted again only with `--reconvert`; a hand-edited `document.md` is never overwritten without `--overwrite-edited`. Continuing an import works on open, interrupted, and failed items only.
@@ -71,7 +78,8 @@ Not verified: the live service. The tests use a fake service that follows the do
 
 ## Open
 
-- A live mineru.net run with a real token and synthetic files, including the training-use and retention terms at that time.
+- The training use and retention of documents at mineru.net, which its terms do not state. A fresh read of the terms before each new scope of uploads.
+- The service's behaviour under its limits (the daily quota, the rate limit, an expired token) and with images and the `pipeline` model; these paths are tested only against the fake service.
 - Windows and Linux runs of both routes, and the standard tier.
 - Local formats other than PDF and Word (PowerPoint, Excel, OpenDocument, EPUB, HTML, images). They are converted but flagged as unverified.
 - Page numbers of PDF annotations, and Word footnotes, endnotes, and moved text.
