@@ -1,6 +1,6 @@
 ---
 name: research-investigation
-description: Use when the researcher asks for a source-grounded investigation of a research question, mechanism, comparison, or contested claim. Searches and reads relevant sources, tests alternative explanations, and reports supported conclusions, disagreements, and gaps without turning a literature search into a claim of novelty.
+description: Use when the researcher asks for a source-grounded investigation of a research question, mechanism, comparison, or contested claim, or for documentary, interpretive, or theoretical research work whose finding the paper will report. Searches and reads relevant sources, tests alternative explanations, reports supported conclusions, disagreements, and gaps without turning a literature search into a claim of novelty, and records a project result with its inputs and checks when the work produces one.
 ---
 
 # Research investigation
@@ -30,6 +30,18 @@ Outcome: a concise answer to the researcher's question, with the relevant search
 - State when evidence is indirect, abstract-only, provider-snippet-only, based on an unchecked extraction, or unavailable.
 - If a requested conclusion is unsupported, say what the inspected material establishes and what further source or analysis would be needed. Do not invent experiments, data, results, or a literature gap.
 
+## Record a project result
+
+When the researcher asked for the investigation as research work whose finding the paper will report, such as a documentary or archival comparison, a coded analysis of sources, a derivation, or a proof, write a result record with the layout in `research/results/README.md` and add it to `research/results/index.md`:
+
+- `Kind`: documentary, qualitative, theoretical, or other.
+- `Inputs`: source IDs with locators, search records, or files with checksums.
+- `Method`: the procedure or the argument, with enough detail to repeat it.
+- `Checks`: what was actually checked, such as passages verified against the originals, a search for counterevidence, a second reading, or a check of each step of a derivation, and what it found.
+- `Status`: the one that matches what was done; a result whose checks are still open is observed, not checked.
+
+A quick question that needs only an answer gets no result record. Computational work goes through `research-code-setup`. Run `python scripts/research.py check` after writing.
+
 ## Report
 
 Use the interaction language. Organize the response around the question, not a generic article outline. Include citations or links to the workspace sources and precise locators wherever available. Separate the supported answer, sources that qualify or disagree, and remaining uncertainty. Keep a durable interpretation in the relevant per-source evidence notes; do not save the whole conversation or a new unconfirmed research decision.
@@ -41,3 +53,4 @@ Use the interaction language. Organize the response around the question, not a g
 - Contradictory evidence and limitations are visible.
 - No source result is reported beyond what the source supports.
 - Research decisions remain with the researcher.
+- A project result, when the work produced one, has a result record whose status matches the checks actually made.

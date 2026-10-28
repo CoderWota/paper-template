@@ -5,7 +5,8 @@ Archives each original unchanged, converts it with the processing route that the
 confirmed, checks the result (page coverage, text left out of the Markdown, image links, and
 formulas), publishes it in one step, and keeps a resumable record of the batch in
 inbox/imports/<import-id>/. References go to references/; review documents go to
-reviews/<venue-id>/<round-id>/. Nothing ever switches to another route or parser.
+reviews/<venue-id>/<round-id>/; research feedback goes to research/feedback/<feedback-id>/.
+Nothing ever switches to another route or parser.
 
 Usage:
   python scripts/ingest.py plan [--to DEST] [--route local|cloud] [--recursive] PATH...
@@ -18,7 +19,8 @@ Usage:
   python scripts/ingest.py metadata SOURCE_ID [--type TYPE] [--title TEXT] [--author "Family, Given" ...] [--year YEAR]
       [--doi DOI] [--journal TEXT] [--field NAME=VALUE ...] [--key KEY] [--source document|researcher|registry]
   python scripts/ingest.py note --import-id ID --role ROLE --reason TEXT PATH...
-DEST is "references" (the default) or reviews/<venue-id>/<round-id>. Markdown and plain text need no route.
+DEST is "references" (the default), reviews/<venue-id>/<round-id>, or research/feedback/<feedback-id>.
+Markdown and plain text need no route.
 The cloud route needs a confirmed choice that names mineru.net in requirements/privacy.md and the
 MINERU_API_TOKEN credential, entered with scripts/credentials.py.
 Exit status: 0 done, 1 some items failed, 2 stopped or still processing (continue later), 3 refused.
@@ -56,7 +58,7 @@ class Refused(Exception):
 def destination(value: str) -> str:
     value = value.strip().strip("/")
     if value != "references":
-        reviews.parse_destination(value)
+        reviews.open_destination(Path("."), value)
     return value
 
 

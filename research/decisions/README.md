@@ -1,15 +1,34 @@
 # Research Decision Records
 
-Short records of consequential research choices you have confirmed, for example narrowing the research question, choosing a method, setting corpus or inclusion boundaries, excluding an analysis, or changing the central argument. A record is written only when revisiting the choice would be costly and its reasons matter. Ordinary wording edits, imports, and renames do not get one. A writing rule or a language setting is a requirement, not a decision: it goes in `requirements/` and gets no record.
+Short records of consequential research choices you have confirmed, for example narrowing the research question, choosing a method, setting corpus or inclusion boundaries, excluding an analysis, changing the central argument, or choosing the target venue. A record is written only when revisiting the choice would be costly and its reasons matter. Ordinary wording edits, imports, and renames do not get one. A writing rule or a language setting is a requirement, not a decision: it goes in `requirements/` and gets no record.
 
 ## Contents
 
 - [`index.md`](index.md): the list of decisions, their scope, and any later decision that replaces them.
-- One record per decision, numbered in order, for example `0001-limit-corpus-to-2010-2024.md`.
+- One record per decision, numbered in order, for example `0001-limit-corpus-to-2010-2024.md` (lowercase ASCII letters, digits, and hyphens).
 
-## A record contains
+## Record layout
 
-The date, the confirmed choice and its scope, the context, the reasons and main alternatives, links to supporting evidence or feedback, and the consequences for the research and the manuscript. When a later decision replaces it, the two records link to each other and the earlier rationale is kept.
+The values are written in your interaction language; the labels stay as shown, because `python scripts/research.py check` reads them (Chinese labels such as `日期`, `状态`, `选择`, `适用范围`, `确认`, `取代`, and `被取代` are accepted too).
+
+```text
+# 0002 <short title>
+
+- Date: <YYYY-MM-DD>
+- Status: active | replaced | withdrawn
+- Choice: <the confirmed choice>
+- Scope: <what it covers>
+- Confirmed: <date>; "<your exact words>"
+- Replaces: [0001](0001-....md)        only when it replaces an earlier decision
+- Replaced by: [0003](0003-....md)     only when a later decision replaced it
+
+## Context
+## Reasons and alternatives      your reasons as given, or a statement that none was given
+## Evidence and feedback         links to evidence notes, results, or feedback items
+## Consequences                  what changes in the research and the manuscript
+```
+
+When a later decision replaces an earlier one, both records link to each other, the earlier one keeps its rationale with `Status: replaced`, and its line in `index.md` links to the replacement. Records are never deleted.
 
 A decision records your choice; it is not evidence that the choice is scientifically valid. Current rules stay in [`requirements/`](../../requirements/README.md).
 

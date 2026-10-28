@@ -3,7 +3,7 @@
 Status: design review. The core end-to-end objective is confirmed for framework testing only; detailed operating-model changes remain proposals.
 Reviewed: 2026-10-26 against design plan v0.9 and the actual repository.
 
-The researcher's clarified role is confirmed: direct the ideas and scholarly expression, make consequential judgments, and review final work. The agent carries feasible authorized production and coordination. The implementation changes below remain proposals requiring the maintainer's confirmation.
+The researcher's clarified role is confirmed: direct the ideas and scholarly expression, make consequential judgments, and review final work. The agent carries feasible authorized production and coordination. The implementation changes below remain proposals requiring the maintainer's confirmation, except result production: on 2026-10-28 the maintainer decided that `research-code-setup` and `research-investigation` carry authorized work to actual results, recorded in `research/results/`, without a new skill.
 
 The maintainer accepted the complete-path objective specifically as a test. Its bounded example must not become a product scope limit, mandatory researcher workflow, or a claim that real submission readiness has been demonstrated.
 

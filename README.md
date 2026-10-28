@@ -2,7 +2,7 @@
 
 An organized workspace for developing research ideas, reading literature, writing a manuscript, and preparing submission files with an AI agent.
 
-**Project status: early implementation.** The workspace folders, their descriptions, and the agent operating contract (`AGENTS.md`) exist. The setup skills (project onboarding, environment checks, privacy checks, and confirmed rules) and document import with MinerU (references and review documents) are implemented and passed a documented review. They are not yet tested on Windows or in Codex. Document import was tested on macOS with synthetic files, both on this computer and with the live mineru.net service. The other workflows below describe the intended experience. Follow the [design plan](docs/design-plan.md) to review the current proposal, and see the [implementation status](docs/implementation-status.md) for what actually works.
+**Project status: early implementation.** The workspace folders, their descriptions, and the agent operating contract (`AGENTS.md`) exist. The setup skills (project onboarding, environment checks, privacy checks, and confirmed rules), document import with MinerU (references and review documents), literature search and evidence work, and research development (ideas, impact, journal comparison, research plans, collaborator feedback, and research code with recorded results) are implemented and passed a documented review. They are not yet tested on Windows or in Codex. Document import was tested on macOS with synthetic files, both on this computer and with the live mineru.net service. The other workflows below describe the intended experience. Follow the [design plan](docs/design-plan.md) to review the current proposal, and see the [implementation status](docs/implementation-status.md) for what actually works.
 
 For framework development, the [MVP implementation guideline](docs/mvp-implementation-guideline.md) organizes the work into nine planned increments with concrete deliverables and acceptance criteria.
 
@@ -73,7 +73,7 @@ See the [hands-on guide](docs/hands-on.md). These are design previews, not imple
 | Requirements | [`requirements/`](requirements/README.md) | Your confirmed project, writing, privacy, and submission requirements. |
 | Manuscript | [`manuscript/`](manuscript/README.md) | The working text and its figures and other assets. |
 | Ideas | [`ideas/`](ideas/README.md) | Research directions and thoughts you choose to keep, including unfinished ones. |
-| Research records | [`research/`](research/README.md) | Important confirmed choices and their rationale, plus attributed feedback from co-researchers, collaborators, coauthors, supervisors, or other contributors and its follow-up. |
+| Research records | [`research/`](research/README.md) | The research plan, important confirmed choices and their rationale, attributed feedback from co-researchers, collaborators, coauthors, supervisors, or other contributors and its follow-up, journal assessments, and the project's own results with their provenance. |
 | Reviews | [`reviews/`](reviews/README.md) | Editorial and reviewer correspondence, responses, and changes by submission round. |
 | Major revisions, proposed | [`revisions/`](revisions/README.md) | Recoverable starting versions or references, revision plans, changes, and current checks for substantial rewrites. |
 | Outputs | [`outputs/`](outputs/README.md) | Previews and preserved submission packages. |

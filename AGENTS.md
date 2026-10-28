@@ -38,7 +38,10 @@ The only list of what works. `python scripts/check_capabilities.py` checks it ag
 | Search and screen literature within a confirmed query scope | `literature-discovery` | Available now; Sciverse agentic, query-only metadata, and bounded content endpoints were observed on 2026-10-28. The model-host fallback, catalog filters, cursor continuation, relations, resource retrieval, experimental Paper Schema operations, and account limits remain unverified |
 | Download public PDF references from supported DOI or direct URLs | `reference-download` | Available now for public PDF responses only; deterministic retrieval is tested locally, and publisher or institutional access is not verified |
 | Retrieve and compare evidence from imported sources | `literature-and-evidence`, `research-investigation` | Available now; local extraction search is tested, while evidence quality on a research corpus and Codex/Windows operation remain unverified |
-| Develop ideas; assess impact; choose a journal | — | Not available yet |
+| Develop and examine research ideas; assess a contribution's impact | `research-ideation`, `idea-deepening`, `impact-assessment` | Available now |
+| Compare journals and examine a named journal from its official sources | `journal-selection` | Available now; reading the venue pages depends on the agent application's web access, which has not been exercised in this workspace |
+| Plan the research; organize advice from collaborators, supervisors, and others | `research-planning`, `research-feedback` | Available now |
+| Set up research code, run analyses with recorded provenance, and record results | `research-code-setup`, `scripts/research.py` | Available now; Python runs are tested on macOS, while Windows and other languages are not verified |
 | Outline, write, audit, and revise the manuscript, including rewriting a passage | — | Not available yet |
 | Format, export, and check readiness | — | Not available yet |
 | Version control with Git | — | Not available yet |

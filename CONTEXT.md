@@ -69,3 +69,10 @@ A particular submission or revision event for a venue, with its own manuscript v
 
 **Idea**:
 A researcher contribution that may be exploratory, developed, incorporated, or abandoned without necessarily being a verified scholarly claim.
+
+**Result record**:
+A record of one of the project's own results: its inputs, method or code version, parameters, run, outputs, checks, limitations, and the claims that use it. Its status distinguishes proposed, attempted, observed, checked, and failed work; a result whose inputs changed is stale until the work is repeated.
+_Avoid_: Finding, for work that has not been checked.
+
+**Venue assessment**:
+An examination of a journal or other venue from its current official sources, assessing the manuscript's fit separately from its impact and its readiness.

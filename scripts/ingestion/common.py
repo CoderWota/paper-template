@@ -17,8 +17,7 @@ import unicodedata
 import urllib.parse
 from pathlib import Path
 
-MANAGED_BEGIN = "<!-- maintained by scripts/ingest.py: begin -->"
-MANAGED_END = "<!-- maintained by scripts/ingest.py: end -->"
+MANAGED_MARKERS = "<!-- maintained by {owner}: begin -->", "<!-- maintained by {owner}: end -->"
 # Files that are never documents, wherever they appear.
 IGNORED_NAMES = frozenset({".DS_Store", "Thumbs.db", "desktop.ini"})
 WINDOWS_RESERVED = frozenset({"CON", "PRN", "AUX", "NUL", *(f"COM{n}" for n in range(1, 10)), *(f"LPT{n}" for n in range(1, 10))})
@@ -119,17 +118,18 @@ def relative(path: Path, root: Path) -> str:
         return str(path)
 
 
-def update_readme(path: Path, title: str, body: str) -> bool:
+def update_readme(path: Path, title: str, body: str, owner: str = "scripts/ingest.py") -> bool:
     """Create or update a README whose maintained block holds body. Text outside the block is kept.
 
-    Returns True when the file changed.
+    The block is marked with the script that owns it. Returns True when the file changed.
     """
-    block = f"{MANAGED_BEGIN}\n{body.strip()}\n{MANAGED_END}"
+    begin, end_marker = (marker.format(owner=owner) for marker in MANAGED_MARKERS)
+    block = f"{begin}\n{body.strip()}\n{end_marker}"
     if path.is_file():
         text = path.read_text(encoding="utf-8")
-        if MANAGED_BEGIN in text and MANAGED_END in text:
-            start = text.index(MANAGED_BEGIN)
-            end = text.index(MANAGED_END) + len(MANAGED_END)
+        if begin in text and end_marker in text:
+            start = text.index(begin)
+            end = text.index(end_marker) + len(end_marker)
             new = text[:start] + block + text[end:]
         else:
             new = text.rstrip("\n") + "\n\n" + block + "\n"

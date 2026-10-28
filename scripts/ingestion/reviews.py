@@ -1,8 +1,10 @@
-"""Formal review documents: venue and round folders, Word comments and tracked changes, and PDF annotations.
+"""Review rounds and research feedback events: folders, Word comments and tracked changes, and PDF annotations.
 
-MinerU converts the main text of a review document. It does not convert Word comments, and it shows
+Formal review documents go to reviews/<venue-id>/<round-id>/; advice from co-researchers, collaborators,
+coauthors, supervisors, and other contributors goes to research/feedback/<feedback-id>/, with the same
+layout. MinerU converts the main text of a document. It does not convert Word comments, and it shows
 tracked changes as if they had been accepted, so those structures are read here from the original
-file's XML. PDF annotations are found with a simple scan of the file.
+file's XML, with each author. PDF annotations are found with a simple scan of the file.
 """
 
 from __future__ import annotations
@@ -22,6 +24,7 @@ W = "{http://schemas.openxmlformats.org/wordprocessingml/2006/main}"
 W14 = "{http://schemas.microsoft.com/office/word/2010/wordml}"
 W15 = "{http://schemas.microsoft.com/office/word/2012/wordml}"
 DESTINATION = re.compile(r"^reviews/([a-z0-9][a-z0-9-]{0,59})/([a-z0-9][a-z0-9-]{0,59})$")
+FEEDBACK_DESTINATION = re.compile(r"^research/feedback/([a-z0-9]+(?:-[a-z0-9]+)*)$")
 SCHEMA = "paper-template.review-extraction/1"
 
 
@@ -32,7 +35,28 @@ def parse_destination(value: str) -> tuple:
     return match.group(1), match.group(2)
 
 
+def parse_feedback_destination(value: str) -> str:
+    match = FEEDBACK_DESTINATION.match(value.strip().strip("/"))
+    if not match or len(match.group(1)) > 80:
+        raise ValueError("a feedback destination looks like research/feedback/<feedback-id>, in lowercase letters, digits, and single hyphens")
+    return match.group(1)
+
+
+def open_destination(root: Path, value: str):
+    """The review round or feedback event that a destination names; ValueError for anything else."""
+    value = value.strip().strip("/")
+    if value.startswith("research/feedback/"):
+        return FeedbackEvent(root, parse_feedback_destination(value))
+    try:
+        return Round(root, *parse_destination(value))
+    except ValueError:
+        raise ValueError("a destination is references, reviews/<venue-id>/<round-id>, or research/feedback/<feedback-id>, "
+                         "in lowercase letters, digits, and hyphens") from None
+
+
 class Round:
+    role, details = "review", "the README of this review round"
+
     def __init__(self, root: Path, venue: str, round_id: str):
         self.root, self.venue, self.round = root, venue, round_id
         self.folder = root / "reviews" / venue / round_id
@@ -123,6 +147,67 @@ class Round:
             document_id, number = f"{base}-{number}", number + 1
         return document_id
 
+
+
+class FeedbackEvent(Round):
+    """One research feedback event: a received document, a set of comments, or meeting notes."""
+
+    role, details = "feedback", "the README of this feedback event"
+
+    def __init__(self, root: Path, feedback_id: str):
+        self.root, self.venue, self.round = root, None, feedback_id
+        self.folder = root / "research" / "feedback" / feedback_id
+        self.originals = self.folder / "originals"
+        self.markdown = self.folder / "extracted" / "markdown"
+        self.assets = self.folder / "extracted" / "assets"
+        self.record_path = self.folder / "extracted" / "provenance.json"
+
+    def ensure(self) -> None:
+        for folder in (self.originals, self.markdown, self.assets):
+            folder.mkdir(parents=True, exist_ok=True)
+        name = f"the feedback event `{self.round}`"
+        self.update_round_readme()
+        update_readme(self.originals / "README.md", f"Originals: feedback {self.round}", (
+            f"Documents and notes of {name}, exactly as received or as the researcher gave them. They are never edited or "
+            "replaced; readable copies are in [`../extracted/markdown/`](../extracted/markdown/README.md)."
+        ))
+        update_readme(self.folder / "extracted" / "README.md", f"Extraction: feedback {self.round}", (
+            f"Readable versions of the documents of {name}: Markdown in [`markdown/`](markdown/README.md), images in "
+            "[`assets/`](assets/README.md), and the checksum, converter, settings, coverage, and gaps of each document in "
+            "[`provenance.json`](provenance.json). Extraction can contain errors; the originals are authoritative."
+        ))
+        update_readme(self.markdown / "README.md", f"Feedback Markdown: {self.round}", (
+            f"One Markdown file per document of {name}. Word comments, replies, tracked changes, and PDF annotations are "
+            "listed in a separate section at the end of each file with the author that the file names, so that each "
+            "suggestion keeps its own attribution."
+        ))
+        update_readme(self.assets / "README.md", f"Feedback images: {self.round}", (
+            f"Images and table pictures extracted from the documents of {name}. Each file name starts with the identifier "
+            "of its document and two hyphens, and the Markdown files link to them."
+        ))
+
+    def record(self) -> dict:
+        data = read_json(self.record_path)
+        if not isinstance(data, dict) or data.get("schema") != SCHEMA:
+            data = {"schema": SCHEMA, "feedback": self.round, "documents": {}}
+        return data
+
+    def update_round_readme(self) -> None:
+        documents = self.record().get("documents", {}) if self.record_path.is_file() else {}
+        lines = [f"Research feedback event `{self.round}`: advice from co-researchers, collaborators, coauthors, supervisors, "
+                 "or other contributors. Received documents and notes are in [`originals/`](originals/README.md) and their "
+                 "readable versions in [`extracted/`](extracted/README.md). `actions.md` lists each suggestion with its "
+                 "author, its source location, the researcher's decision, and the actual change. Advice here is not a "
+                 "requirement or a decision until the researcher adopts it."]
+        if documents:
+            lines += ["", "| Document | Extraction | Comments, changes, annotations |", "| --- | --- | --- |"]
+            names = {"comments": "comment(s)", "insertions": "insertion(s)", "deletions": "deletion(s)", "pdf_annotations": "PDF annotation(s)"}
+            for document_id, entry in sorted(documents.items()):
+                structures = entry.get("structures") or {}
+                found = ", ".join(f"{value} {names.get(name, name)}" for name, value in structures.items() if isinstance(value, int)) or "none found"
+                status = {"needs-review": "needs review"}.get(entry.get("status"), entry.get("status"))
+                lines.append(f"| [{entry.get('original_name', document_id)}](extracted/markdown/{document_id}.md) | {status} | {found} |")
+        update_readme(self.folder / "README.md", f"Feedback: {self.round}", "\n".join(lines))
 
 def text_of(element) -> str:
     return "".join(node.text or "" for node in element.iter(W + "t"))

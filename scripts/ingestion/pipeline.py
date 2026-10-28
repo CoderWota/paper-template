@@ -63,7 +63,7 @@ class Pipeline:
         self.log = Log(root, record.id, self.redact)
         self.reconvert, self.overwrite_edited, self.emit = reconvert, overwrite_edited, emit
         destination = record.data["destination"]
-        self.round = None if destination == "references" else reviews.Round(root, *reviews.parse_destination(destination))
+        self.round = None if destination == "references" else reviews.open_destination(root, destination)
         self.work = root / ".tmp" / "ingest" / record.id
 
     # Collecting the items
@@ -93,7 +93,7 @@ class Pipeline:
             return
         sha = sha256_file(path)
         item = {"input": shown, "name": path.name, "sha256": sha, "bytes": path.stat().st_size, "kind": kind_of(path),
-                "role": "review" if self.round else "reference", "status": "pending", "notes": []}
+                "role": self.round.role if self.round else "reference", "status": "pending", "notes": []}
         twin = self.record.find(sha)
         if twin:
             item.update(status="duplicate", notes=[f"same content as {twin['input']}"])
@@ -237,7 +237,7 @@ class Pipeline:
             # The stage mirrors extracted/: markdown/ and assets/ side by side, so that links are checked as published.
             document = stage / "markdown" / f"{document_id}.md"
             result = extraction.build(raw, kind=kind, original=archived, document=document, asset_dir=stage / "assets",
-                                      asset_link="../assets/", asset_prefix=f"{document_id}--", details="the README of this review round")
+                                      asset_link="../assets/", asset_prefix=f"{document_id}--", details=self.round.details)
             summary, section, extra = reviews.inspect(archived, kind)
             if section:
                 with open(document, "a", encoding="utf-8", newline="\n") as stream:

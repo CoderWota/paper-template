@@ -173,10 +173,20 @@ The tree shows representative files and explicitly includes a `README.md` at eve
 │   └── index.md
 ├── research/                                      # Proposed research rationale and collaboration records
 │   ├── README.md
+│   ├── plan.md                                    # Research plan, created on request
+│   ├── impact.md                                  # Kept impact assessments, created on request
 │   ├── decisions/
 │   │   ├── README.md
 │   │   ├── index.md                               # Confirmed decisions, scope, and supersession links
 │   │   └── 0001-short-title.md                    # Create only for a consequential confirmed choice
+│   ├── results/
+│   │   ├── README.md
+│   │   ├── index.md
+│   │   └── r001-short-title.md                    # The project's own result, with inputs, checks, and status
+│   ├── venues/
+│   │   ├── README.md
+│   │   ├── index.md                               # Venue comparison and recommendation
+│   │   └── <venue-id>.md                          # One examined venue, from dated official sources
 │   └── feedback/
 │       ├── README.md
 │       └── <feedback-id>/
@@ -225,8 +235,10 @@ The tree shows representative files and explicitly includes a `README.md` at eve
 │           └── README.md
 ├── scripts/                                       # Reusable workspace automation
 │   └── README.md
-├── code/                                          # Optional research implementation
-│   └── README.md
+├── code/                                          # Optional research implementation, created by research-code-setup
+│   ├── README.md
+│   ├── src/  data/raw/  data/derived/  outputs/   # Only the parts a project needs, each with a README
+│   └── runs/<run-id>/                             # Recorded runs: command, code checksum, inputs, outputs, logs
 ├── state/
 │   ├── README.md
 │   └── current.md                                 # Concise handoff and unresolved work
@@ -256,7 +268,7 @@ Implementation checks cover both README presence and useful directory-specific c
 
 Avoid maintaining the same fact manually in multiple places. The bibliography owns citation metadata; the source index aids discovery; evidence notes own interpretations and support relationships; the section manifest owns assembly order.
 
-`research/decisions/` replaces the earlier single `requirements/decisions.md`. It owns decision rationale and history; `requirements/` owns the current confirmed requirements and links back when useful. The `research/decisions/` and `research/feedback/` locations are confirmed; their record formats are refined in MVP 4.
+`research/decisions/` replaces the earlier single `requirements/decisions.md`. It owns decision rationale and history; `requirements/` owns the current confirmed requirements and links back when useful. The `research/decisions/` and `research/feedback/` locations are confirmed; their record formats were refined in MVP 4 (2026-10-28), stated in the folder READMEs, and checked by `scripts/research.py`. `research/results/` holds the project's own result records (decided 2026-10-28).
 
 Plain Markdown is the text interface, not a ban on structured formats. BibTeX, YAML, JSON, images, data, and original documents complement it where they prevent ambiguity or loss.
 
@@ -612,6 +624,8 @@ Within each venue, separate submission rounds so reviewer numbering, decisions, 
 
 Keep `scripts/` for workspace operations and `code/` for the research method or analysis. Research code may need a separate environment; adding an ingestion dependency must not silently destabilize an analysis environment. Data placement, sensitive data, reproducibility, and large artifacts are onboarding topics, not universal defaults.
 
+Decided 2026-10-28: `research-code-setup` and `research-investigation` carry authorized research work through to actual results. Each result gets a record in `research/results/` with its inputs, method or code version, parameters, run, outputs, checks, limitations, and the claims that use it; computational runs are recorded in `code/runs/`. A result whose inputs or outputs changed is stale until the work is repeated.
+
 ## 12. Dependencies and portability
 
 The confirmed deployment baseline is a lightweight Windows laptop such as a Surface. Exact Windows version, RAM/storage limits, and required processor architectures remain to be defined; the product family name is not a complete test specification. Do not interpret optional high-performance configurations as minimum requirements.
@@ -716,7 +730,7 @@ Discuss one decision at a time. Resolved items are labeled; the remaining recomm
 14. **Template-based formatting — resolved:** Supplied rules and adopted reference templates must control the delivered layout, with actual output checks and reusable profile implementation. Engine and first target profile remain implementation choices to validate.
 15. **Independent stages — resolved:** Hands-on stages are standalone skills as well as parts of guided paths. Section 9 proposes their task boundaries and names; guided and direct use share the same procedures and project records.
 16. **Flexible intake — requirements resolved:** Provide an intake directory, existing-manuscript adoption, batch reference download and conversion/indexing, and reviewer-document extraction as independently usable, composable skills. Exact names, format support, access integrations, and archive mappings remain implementation choices to validate.
-17. **Research decisions and feedback — locations confirmed:** Keep consequential confirmed decisions with rationale under `research/decisions/`, attributed research feedback under `research/feedback/`, and current rules under `requirements/`. Feedback includes co-researchers, collaborators, coauthors, supervisors, and other contributors. The locations were confirmed on 2026-10-26; record formats are refined in MVP 4. This is not permission to persist inferred preferences or impose a new mandatory process.
+17. **Research decisions and feedback — locations confirmed:** Keep consequential confirmed decisions with rationale under `research/decisions/`, attributed research feedback under `research/feedback/`, and current rules under `requirements/`. Feedback includes co-researchers, collaborators, coauthors, supervisors, and other contributors. The locations were confirmed on 2026-10-26; the record formats were refined in MVP 4 on 2026-10-28. This is not permission to persist inferred preferences or impose a new mandatory process.
 18. **Major revision — proposed coverage:** Add `manuscript-revision` and lightweight revision records for recoverable changes of argument, structure, evidence, and venue, with affected-check invalidation and an explicit active draft. It must work before peer review as well as after it, without making Git expertise or a fixed paper structure prerequisites. The workflow and exact directory layout remain design proposals.
 19. **Directory descriptions — confirmed:** Every designed project directory has its own meaningful `README.md`, including nested and dynamically created directories. Creation and maintenance belong to the agent; English is the canonical language, with optional human-facing translations.
 20. **Major decisions and questions — confirmed:** Obtain the user's explicit confirmation before committing any major decision. All skills, including grilling, use the shared question format. English questions follow ASD-STE100; non-English questions retain the chosen language and use corresponding clarity principles. Exact recognition examples and verification are documented for implementation in `agent-interaction.md`.

@@ -1,6 +1,6 @@
 # Agent-Led Research and Versioning Hands-On
 
-Status: design preview aligned with design plan v0.9. These skills are not implemented yet.
+Status: design preview aligned with design plan v0.9. The availability table in [`AGENTS.md`](../AGENTS.md) lists which of these tasks are implemented; the guided paths themselves (`paper-hands-on` and `git-hands-on`) are not implemented yet.
 
 This guide organizes the intended learning experience for researchers with ordinary computer literacy and no assumed coding or software-engineering knowledge. The [design plan](design-plan.md) defines the wider framework.
 

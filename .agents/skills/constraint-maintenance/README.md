@@ -10,4 +10,4 @@ Keeps your confirmed requirements in one place, so that every later session, wit
 - Rules are written in your language. Examples and exceptions appear only when you give them or confirm them.
 - A change to a requirement or to your research goal never edits your manuscript text on its own: the agent lists the passages that it affects and asks first.
 
-Ask "Which writing rules apply to this paper?" at any time. The agent instructions are in [SKILL.md](SKILL.md). Related skills: `project-onboarding`, `privacy-configuration`, and `research-feedback` (planned, not available yet).
+Ask "Which writing rules apply to this paper?" at any time. The agent instructions are in [SKILL.md](SKILL.md). Related skills: `project-onboarding`, `privacy-configuration`, and `research-feedback`.

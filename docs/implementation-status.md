@@ -11,7 +11,7 @@ Updated: 2026-10-28.
 | 1 | Usable project and confirmed memory | In progress: scaffold, adopted AGENTS.md, skill copy script, and all four skills implemented. The four skills were accepted by review on 2026-10-28 (maintainer ruling; see the [skill review](acceptance/mvp-1-skill-review.md)). Thirteen live runs on Claude Code (runs 1 to 8 with Sonnet 5.5, runs 9 to 13 with Haiku 5.5) are history; the last run passed 11 of 18 scenarios. Codex, Windows, and the English question checks are open, so MVP 1 as a whole is not verified; the MinerU service research was done with MVP 2 |
 | 2 | Flexible intake and MinerU batch ingestion | In progress: implemented on 2026-10-28 (import script, both MinerU routes, both skills), and both skills were accepted by review the same day (see the [skill review](acceptance/mvp-2-skill-review.md)). The scripts pass their tests, and both routes were observed working on macOS with synthetic files: the local route, and the mineru.net route with the maintainer's token. Windows, Codex, and the training-use and retention terms of mineru.net are open, so MVP 2 as a whole is not verified |
 | 3 | Searchable literature and traceable evidence | Accepted by the maintainer on 2026-10-28 under the MVP 2-style gate: all four skills passed written review, 79 tests and mechanical checks pass, and live Sciverse checks were recorded. Catalog filters/relations, resources, Paper Schema, live public-PDF access, model-host fallback, Windows, and Codex remain explicitly unverified |
-| 4 | Ideas, impact, journal choice, and feasible research plans | Planned |
+| 4 | Ideas, impact, journal choice, and feasible research plans | Accepted by review on 2026-10-28: seven skills and the result-record extension of `research-investigation` passed written review ([skill review](acceptance/mvp-4-skill-review.md)); `scripts/research.py` and feedback import pass their tests. Live venue reading, fresh-session behavior, Windows, and Codex are unverified |
 | 5 | Evidence-based writing, audit, and major revision | Planned |
 | 6 | Template-driven layout and readiness | Planned |
 | 7 | Practical Git control and explicit backup | Planned |
@@ -630,7 +630,41 @@ Not verified:
 
 MVP 3 acceptance passed under the maintainer's MVP 2-style ruling. Live public-PDF access, the model-host fallback, original-checked evidence quality, catalog filters/relations, resource and Paper Schema operations, and Windows/Codex operation remain unverified; do not describe these integrations as working.
 
+## Decisions of 2026-10-28 for MVP 4 to 9
+
+The maintainer asked to implement all MVPs from MVP 4 on (“继续完成MVP4开始的所有mvp的实装”) and answered four questions the same day:
+
+- Result production: `research-code-setup` and `research-investigation` carry authorized research work through to actual results, each recorded in a result record (inputs, method or code version, parameters, outputs, checks, limitations, and the claims that use it) in `research/results/`. No new skill is added. This settles the open item that the guideline placed before MVP 4.
+- Export trial: only Pandoc is installed for the trial (with pandoc-crossref), in the ignored `.tools/`. Quarto is not installed or compared.
+- First output profile for MVP 6: a neutral profile and a synthetic representative journal profile with explicit rules, Word (DOCX) first and PDF later.
+- Version control of this work: commit on `main` in one batch per MVP, without a branch and without pushing. The pending MVP 3 acceptance changes were committed first (`8810f41`), as the maintainer asked (“先提交上一次会话留下的、未提交的 MVP 3 验收改动”).
+
+Implementation choices made without a separate question, because they are reversible layout details inside the confirmed scope: the research plan is `research/plan.md`, kept impact assessments are `research/impact.md`, venue notes are in `research/venues/`, and research runs are recorded in `code/runs/`.
+
+## MVP 4: ideas, impact, journal choice, research plans, feedback, and research code
+
+Status: all seven skills accepted by review on 2026-10-28 ([skill review](acceptance/mvp-4-skill-review.md)), together with the extension of `research-investigation` to project results. MVP 4 as a whole is not verified: no venue page was read live, no skill ran in a fresh session, and Windows and Codex were not exercised.
+
+Implemented:
+
+- Skills `research-ideation`, `idea-deepening`, `impact-assessment`, `journal-selection`, `research-planning`, `research-feedback`, and `research-code-setup`, with generated Claude Code copies. `research-investigation` now writes a result record for documentary, qualitative, or theoretical research work.
+- Record formats, refined as the design plan scheduled for MVP 4, in the READMEs of `research/decisions/` (decision records with supersession links in both directions), `research/feedback/` (`actions.md` with author, source, kind, status, decision, and change), `research/results/` (result records), `research/venues/` (venue notes with dated official sources), and `ideas/` (idea notes and index lines). Values are in the interaction language; the labels are fixed, and the listed Chinese labels are accepted.
+- `scripts/research.py`: `check` validates those records and reports a result as stale when an input or output checksum changed; `code-init` creates only the requested parts of `code/` with READMEs and, on request, the separate environment `code/.venv`; `run` records a research run (command, code checksum, Git commit, interpreter, inputs and outputs with checksums, logs, exit status, and optionally the package list) in `code/runs/<run-id>/`; `runs` lists the runs and the files that changed since.
+- `scripts/ingest.py` accepts `research/feedback/<feedback-id>` as a destination, with the same extraction as a review round: Word comments, replies, and tracked changes keep their authors. The README helper now names the script that maintains each README block.
+- Earlier skills no longer call research feedback or idea development unavailable (`constraint-maintenance`, `review-ingestion`, `source-ingestion`, `project-onboarding`). `constraint-maintenance` writes decision records with the folder's layout and runs the record check.
+- New folders `research/results/` and `research/venues/`, each with a README and an empty index; the `research/` README, the root README, the skills README, the scripts READMEs, and the glossary (result record, venue assessment).
+
+Verification observed (macOS 26.6.2, Apple Silicon; Python 3.12.9, and Python 3.9.6 for the research tests):
+
+- 96 script tests pass, 17 of them new: 15 in `test_research.py` (decision chains in Chinese and English, feedback attribution and decisions, ideas, venue notes, result records with a stale input, the code folder, a run in the separate `code/.venv` with its package list, failures, missing outputs, and refused inputs) and 2 in `test_ingest.py` (a feedback event with two comment authors, and destination validation).
+- The skill copies match, the availability table matches the skills folder, every project directory has a README, and the template's empty research records pass `research.py check`.
+- Claude Code listed the seven new skills in this session after their copies were generated.
+
+Not verified:
+
+- Reading venue pages through the agent application's web access; the behavior of a model in the interview, planning, and feedback procedures; research runs on Windows, in other languages, with large data, or for long runs; Codex discovery.
+
 ## Open items affecting the order
 
-- Result production for the complete-path test: no MVP yet owns producing actual research results. Decide before MVP 9, preferably before MVP 4.
+- Result production for the complete-path test: decided on 2026-10-28 (see the decisions above).
 - Verification resources: a Windows test machine matching the baseline (x64 or ARM64), access to Codex, and rights-cleared test fixtures. Without them, MVP 1 and MVP 2 can be implemented but not marked verified.

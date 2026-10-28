@@ -25,7 +25,7 @@ from ingestion import extraction, pdf, reviews  # noqa: E402
 
 FAKE = Path(__file__).resolve().parent / "fake_mineru_kit.py"
 STATIC = ("", "references", "references/originals", "references/extracted", "references/notes", "inbox", "inbox/imports",
-          "reviews", "requirements", "manuscript", "state")
+          "reviews", "research", "research/feedback", "requirements", "manuscript", "state")
 W = 'xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"'
 
 
@@ -346,6 +346,42 @@ class ReviewTests(WorkspaceTestCase):
         self.assertEqual(sorted(p.name for p in (round_folder / "originals").iterdir()), ["README.md", "decision letter.docx", "report 2.pdf"])
         readmes = subprocess.run([sys.executable, str(SCRIPTS / "check_readmes.py"), str(self.root)], capture_output=True, text=True, encoding="utf-8")
         self.assertEqual(readmes.returncode, 0, readmes.stdout)
+
+    def test_a_feedback_event_keeps_each_contributors_comments_apart_from_review_rounds(self) -> None:
+        make_docx(self.inputs / "draft with comments.docx")
+        (self.inputs / "meeting notes.md").write_text("# 组会记录\n\n王老师：把问题收窄到城市样本。\n", encoding="utf-8")
+        destination = "research/feedback/2026-10-20-group-meeting"
+        result = self.ingest("run", "--route", "local", "--tier", "flash", "--to", destination, str(self.inputs))
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        event = self.root / destination
+        draft = (event / "extracted" / "markdown" / "draft-with-comments.md").read_text(encoding="utf-8")
+        self.assertIn("### Comment 1 (Reviewer 1, 2026-09-01)", draft)
+        self.assertIn("### Comment 2 (Author, 2026-09-03), a reply to comment 1", draft)
+        notes = (event / "extracted" / "markdown" / "meeting-notes.md").read_text(encoding="utf-8")
+        self.assertIn("王老师：把问题收窄到城市样本。", notes)
+        self.assertEqual({item["role"] for item in self.record()["items"]}, {"feedback"})
+        self.assertIn("not a requirement or a decision until the researcher adopts it", (event / "README.md").read_text(encoding="utf-8"))
+        provenance = json.loads((event / "extracted" / "provenance.json").read_text(encoding="utf-8"))
+        self.assertEqual(provenance["feedback"], "2026-10-20-group-meeting")
+        self.assertEqual(provenance["documents"]["draft-with-comments"]["structures"]["comments"], 2)
+        for folder in ("", "originals", "extracted", "extracted/markdown", "extracted/assets"):
+            self.assertTrue((event / folder / "README.md").is_file(), folder)
+        self.assertEqual([p.name for p in (self.root / "reviews").iterdir()], ["README.md"])
+        again = self.ingest("run", "--route", "local", "--tier", "flash", "--to", destination, str(self.inputs))
+        self.assertEqual(again.returncode, 0)
+        self.assertEqual(set(self.statuses(self.record()).values()), {"already-imported"})
+        readmes = subprocess.run([sys.executable, str(SCRIPTS / "check_readmes.py"), str(self.root)], capture_output=True, text=True, encoding="utf-8")
+        self.assertEqual(readmes.returncode, 0, readmes.stdout)
+
+    def test_feedback_destinations_are_validated(self) -> None:
+        self.assertEqual(reviews.parse_feedback_destination("research/feedback/2026-10-20-group-meeting/"), "2026-10-20-group-meeting")
+        self.assertIsInstance(reviews.open_destination(self.root, "research/feedback/x1"), reviews.FeedbackEvent)
+        self.assertIsInstance(reviews.open_destination(self.root, "reviews/j/r1"), reviews.Round)
+        for bad in ("research/feedback/Group Meeting", "research/feedback/a--b", "research/feedback/a-", "research/decisions/x", "research/feedback"):
+            with self.assertRaises(ValueError):
+                reviews.open_destination(self.root, bad)
+        refused = self.ingest("plan", "--to", "research/feedback/Bad Name", str(self.inputs))
+        self.assertNotEqual(refused.returncode, 0)
 
 
 class UnitTests(unittest.TestCase):

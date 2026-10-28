@@ -42,7 +42,7 @@ Recommend the language the researcher writes in. Say that you will use it in the
 
 Ask what the researcher wants to achieve: a topic, an interest, a question, or an existing draft. "Not sure yet" is a valid answer. If you found material in `inbox/` or a draft, say what you found and use it to suggest an answer.
 
-Record the goal with the researcher's exact words in quotation marks, and never call a paraphrase their words. Do not turn an unclear interest into a research question by yourself; developing ideas is a separate task that is not available yet.
+Record the goal with the researcher's exact words in quotation marks, and never call a paraphrase their words. Do not turn an unclear interest into a research question by yourself; developing ideas is a separate task (`research-ideation`), which you can offer as the next action.
 
 ## Step 4: Ask for the manuscript language
 

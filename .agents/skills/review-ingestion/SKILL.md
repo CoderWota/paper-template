@@ -19,7 +19,7 @@ Outcome: `reviews/<venue-id>/<round-id>/` holds the received documents in `origi
 1. Look for the venue, the manuscript identifier, and the round in the documents and in `reviews/`: the journal or conference named in the letter, "first revision", a decision date. Reuse an existing venue folder for the same venue.
 2. Ask only when the venue or the round is missing or ambiguous.
 3. Identifiers use lowercase letters, digits, and hyphens, for example `journal-of-synthetic-tests` and `round-1`.
-4. Comments from co-researchers, collaborators, coauthors, or supervisors are research feedback, not a review round, even when they look like a review. Do not file them under `reviews/`. Organizing research feedback is not available yet: keep the files where they are, say so, and, when they arrived in a mixed batch, record them as `source-ingestion` describes in its step 1 (`--role feedback`).
+4. Comments from co-researchers, collaborators, coauthors, or supervisors are research feedback, not a review round, even when they look like a review. Do not file them under `reviews/`; they go to `research-feedback`, which files them in `research/feedback/`.
 
 ## Step 2: Prepare the route
 

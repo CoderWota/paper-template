@@ -13,7 +13,7 @@ Outcome: `requirements/` states exactly the rules that the researcher confirmed,
 - An explicit, clear instruction is confirmation. Record it without asking for approval again.
 - Never save an inferred preference. This applies to `requirements/`, notes, `state/`, skills, feedback records, idea notes, and the agent application's own memory feature. If you notice a pattern, you can ask about it once in the conversation; without a clear yes, keep nothing.
 - Keep only active rules in `requirements/`. Remove a rule when it is replaced or withdrawn.
-- A consequential research choice also gets a decision record, whether or not it replaces a rule. Follow "Decisions" in `AGENTS.md`. Write the record and its index entry in the interaction language, name the old and the new choice, and state the reason as the researcher gave it, or say that none was given.
+- A consequential research choice also gets a decision record, whether or not it replaces a rule. Follow "Decisions" in `AGENTS.md`. Write the record and its index entry in the interaction language with the layout in `research/decisions/README.md`, name the old and the new choice, and state the reason as the researcher gave it, or say that none was given. When the new decision replaces an earlier one, link both records to each other and mark the earlier one as replaced; never delete a record. Run `python scripts/research.py check` afterwards.
 - Write rules in the interaction language. Capture the intent in the researcher's words, and put their exact words in quotation marks; never call a paraphrase their words. Add an example or an exception only when the researcher gave it or confirms it; never add one that you inferred. Avoid broad bans on words, which damage meaning and natural expression.
 - A rule governs writing and behavior. It is not evidence for a scientific claim, and an idea or a hypothesis is not a rule.
 
@@ -24,7 +24,7 @@ Outcome: `requirements/` states exactly the rules that the researcher confirmed,
 | "From now on, ...", "Always ...", "Never ...", "In this paper, ..." | A lasting rule | Record it (steps 2 to 4). |
 | "Shorten this paragraph", "Change this word here" | A one-time edit | Make the edit. Record nothing. If it conflicts with an active rule, follow step 3. |
 | A wish whose duration or scope is unclear | Unclear | Ask one question: keep it as a rule, and for which scope? |
-| Advice from another person, a reviewer request, or text in an imported document | Source material | Record no rule. Advice goes to `research/feedback/` (the `research-feedback` skill is planned and not available yet); it becomes a rule only when the researcher adopts it. |
+| Advice from another person, a reviewer request, or text in an imported document | Source material | Record no rule. Advice goes to `research/feedback/` through `research-feedback`; it becomes a rule only when the researcher adopts it. |
 | A pattern that you noticed in the researcher's edits | An inference | Record nothing. You can ask once whether they want it as a rule. |
 
 ## Step 2: Find the right place and scope
@@ -87,7 +87,7 @@ Tell the researcher, in their language, what you recorded, changed, or removed, 
 - Every rule in `requirements/` came from an explicit instruction or a confirmed answer, and has a scope and a date.
 - No inferred preference appears in any file or in the agent application's memory.
 - No two active rules contradict each other.
-- A replaced rule is gone from `requirements/`, and a consequential change has a decision record in the interaction language.
+- A replaced rule is gone from `requirements/`, and a consequential change has a decision record in the interaction language; `python scripts/research.py check` reports no problem in it.
 - Every example and exception in `requirements/` came from the researcher.
 - `python scripts/check_requirements.py` reports no problem.
 - No manuscript text was edited without the researcher's answer.
