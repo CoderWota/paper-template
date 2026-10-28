@@ -1,8 +1,8 @@
 # Markdown, Diagrams, and Native Word Equations
 
-Status: confirmed requirements with a proposed implementation contract. GitHub-renderable mathematics, Mermaid explanation diagrams, and native Word equations are required. Conversion and rendering checks are not implemented yet.
+Status: confirmed requirements with an implementation contract. GitHub-renderable mathematics, Mermaid explanation diagrams, and native Word equations are required. The publishing engine (Pandoc with pandoc-crossref and citeproc) and the citation and cross-reference syntax were decided on 2026-10-28 after the [export trial](export-trial.md).
 
-Apply this contract to maintained Markdown, adopted manuscripts, and derived document extractions. Preserve received originals and parser-native results. Normalize derived syntax only when its meaning is preserved; flag uncertain formulas instead of guessing them. Publishing-engine selection remains open.
+Apply this contract to maintained Markdown, adopted manuscripts, and derived document extractions. Preserve received originals and parser-native results. Normalize derived syntax only when its meaning is preserved; flag uncertain formulas instead of guessing them.
 
 ## Mathematics in Markdown
 
@@ -16,7 +16,30 @@ $$
 
 GitHub documents these delimiters and its MathJax renderer in [Writing mathematical expressions](https://docs.github.com/en/get-started/writing-on-github/working-with-advanced-formatting/writing-mathematical-expressions). Use commands that the target renderer supports. Full LaTeX packages and arbitrary custom macros are not the workspace's default math interface. Do not replace editable formula source with a screenshot. Keep literal currency symbols distinct from math delimiters using the documented context-specific syntax.
 
-GitHub also documents alternative inline delimiters and `math` fences. The workspace defaults above keep one common form for export. An importer must preserve or safely normalize supported alternatives, not nest math delimiters inside a math fence. Citation, equation numbering, and cross-reference conventions still need an export-engine trial; do not assume that a LaTeX-only label or command works on GitHub.
+GitHub also documents alternative inline delimiters and `math` fences. The workspace defaults above keep one common form for export. An importer must preserve or safely normalize supported alternatives, not nest math delimiters inside a math fence. Equation labels follow the next section; a LaTeX-only `\label{}` or `\tag{}` is not part of the workspace syntax.
+
+## Citations and cross-references
+
+Decided on 2026-10-28 after the [export trial](export-trial.md). Outputs are built with Pandoc, pandoc-crossref, and citeproc; the agent writes and maintains this syntax.
+
+- **Citations:** `[@key]` in parentheses, `@key` in running text, `[@key, p. 12]` with a locator, `[@key1; @key2]` for several, and `[-@key]` without the author name. Keys come from `references/bibliography.bib`. A key that does not resolve is a build failure, and a key that resolves is still not evidence of support.
+- **Figures:** `![Caption](assets/name.png){#fig:id}`; the text refers to `@fig:id`.
+- **Tables:** a caption line after the table, `: Caption {#tbl:id}`; the text refers to `@tbl:id`.
+- **Equations:** a display block, then a blank line, then a paragraph that holds only the label:
+
+  ```text
+  $$
+  \hat{\mu} = \frac{1}{n}\sum_{i=1}^{n} x_i
+  $$
+
+  {#eq:mean}
+  ```
+
+  The text refers to `@eq:mean`. Never write the label on the closing `$$` line or on the line after it without a blank line: GitHub then shows the equation as plain text. The export attaches the label with the project filter `scripts/export/equation-labels.lua`.
+- **Sections:** a heading is referred to by its automatic identifier, `@sec:<identifier>`, which Pandoc derives from the heading text (lowercase, spaces become hyphens, leading numbers and punctuation dropped; Chinese characters are kept, as in `@sec:研究方法`). Add an explicit `{#sec:id}` to a heading only when a reference must survive a change of the heading text.
+- **Identifiers and numbers:** labels use lowercase letters, digits, and hyphens after the prefix, and are unique per kind. Never number figures, tables, equations, sections, or citations by hand. The words in front of a number (“Figure”, “Eq.”, “图”) come from the output profile, so write `@fig:id`, not “Figure @fig:id”.
+
+On GitHub, `{#fig:id}`, the table caption line, and the `{#eq:id}` paragraph show as text, and `@fig`, `@eq`, `@tbl`, or `@sec` can show as links to GitHub users of those names. These effects touch only the GitHub preview; the export resolves every reference, and an unresolved label is a build failure.
 
 ## Mermaid explanation diagrams
 
@@ -44,7 +67,7 @@ Authored manuscript formulas in DOCX must become native Office Math objects, sto
 
 Images, plain text, unconverted LaTeX strings, and legacy embedded equation objects do not satisfy this native-equation requirement. Putting an unparsed LaTeX string inside an OMML text node also does not pass. Preserve fractions, scripts, operators, limits, accents, matrices, alignment, and symbols. Handle numbering, captions, and cross-references through the adopted profile without changing mathematical meaning.
 
-The [Pandoc math documentation](https://pandoc.org/MANUAL.html#math) describes OMML output for DOCX, which makes it a candidate route to evaluate. This does not settle the publishing-engine decision or prove every formula converts correctly. Check the actual source-to-output mapping and the rendered result.
+The [Pandoc math documentation](https://pandoc.org/MANUAL.html#math) describes OMML output for DOCX. The export trial observed every fixture formula as a separate, correctly structured native equation that Word 16.114.2 rendered correctly; this does not prove that every formula converts correctly. Check the actual source-to-output mapping and the rendered result for each manuscript.
 
 If a formula cannot be converted faithfully, identify its source location and the failed construct. Preserve the original and mark the affected output requirement unmet. Do not silently fall back to an image, plain text, or a changed formula and report success. An equation available only as an imported image needs checked transcription before it can satisfy native-equation export.
 

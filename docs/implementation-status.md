@@ -18,7 +18,7 @@ Updated: 2026-10-28.
 | 8 | Review rounds and coauthor reconciliation | Planned |
 | 9 | Connected paper hands-on and release candidate | Planned |
 
-Execution order (revised 2026-10-26): 1 → 7 → 2 → 3 → 4 → 5 → 6 → 8 → 9, with the export trial running alongside MVP 7; see the [MVP implementation guideline](mvp-implementation-guideline.md#3-mvp-overview-and-dependencies). The export trial is planned.
+Execution order (revised 2026-10-26): 1 → 7 → 2 → 3 → 4 → 5 → 6 → 8 → 9, with the export trial running alongside MVP 7; see the [MVP implementation guideline](mvp-implementation-guideline.md#3-mvp-overview-and-dependencies). The export trial ran on 2026-10-28 ([record](export-trial.md)).
 
 The four MVP 1 skills are implemented and were accepted by review on 2026-10-28, after thirteen live runs on Claude Code. The two MVP 2 skills are implemented and were accepted by review the same day. Acceptance by review shows that the skill text meets the documented requirements; no skill is verified on Windows or in Codex. No end-to-end test has been run.
 
@@ -663,6 +663,14 @@ Verification observed (macOS 26.6.2, Apple Silicon; Python 3.12.9, and Python 3.
 Not verified:
 
 - Reading venue pages through the agent application's web access; the behavior of a model in the interview, planning, and feedback procedures; research runs on Windows, in other languages, with large data, or for long runs; Codex discovery.
+
+## Export trial (2026-10-28)
+
+Status: done; its decisions are recorded in the [export trial record](export-trial.md#6-decisions). Pandoc 3.12.1 and pandoc-crossref 0.3.26 were installed into `.tools/` from their official releases (checksums verified), and `@mermaid-js/mermaid-cli` 12.0.0 with npm, using the installed Chrome. Quarto was not trialed.
+
+Observed on a synthetic manuscript: all 11 formulas, including one in a footnote, became separate native OMML equations with matching structure, and Word 16.114.2 rendered them correctly after the maintainer handled a Word dialog; citations and section, figure, table, and equation references resolved, and missing keys or labels produce warnings that a build can treat as failures; a reference document carried page size, margins, line numbers, fonts, and spacing. GitHub's Markdown API, given synthetic samples with the maintainer's permission, showed that a `{#eq:...}` label on the closing `$$` line stops GitHub from rendering the equation, while a label paragraph after a blank line keeps it; the maintainer adopted that form, attached at export by a project Lua filter. Mermaid flowcharts with Chinese labels, punctuation, and a long label rendered with mmdc.
+
+Not exercised: editing an equation in Word, Word fields for figure and table numbers, the PDF route, Windows, and Quarto.
 
 ## Open items affecting the order
 
