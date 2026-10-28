@@ -10,6 +10,8 @@ The reference library: every source collected for possible use in the manuscript
 | [`originals/`](originals/README.md) | Archived source files exactly as received. |
 | [`extracted/`](extracted/README.md) | Derived Markdown, images, and provenance for reading and search. |
 | [`notes/`](notes/README.md) | Interpretation and evidence notes, one per source. |
+| [`searches/`](searches/README.md) | Provider-specific literature search records and source locators. |
+| [`downloads/`](downloads/README.md) | Resumable reference-acquisition records and access outcomes. Retrieved files remain in `originals/`. |
 | `bibliography.bib` | Citation metadata in BibTeX, created when the first source's details are recorded. Each entry names its source ID; details read from the document itself are marked as not yet checked against a registry. |
 
 Each source has a stable source ID that does not depend on its filename, title, or citation key: `src-` followed by the start of the original file's SHA-256 checksum. The same file always gets the same ID, and another version of a work, such as a preprint and the published article, gets its own. The same ID names its folders in `originals/` and `extracted/` and its note in `notes/`.

@@ -66,11 +66,10 @@ class CapabilityTableTests(WorkspaceTestCase):
         self.assertEqual(result.returncode, 1)
         self.assertIn("ingest-pdfs", result.stdout)
 
-    def test_not_available_row_naming_an_existing_skill_fails(self) -> None:
+    def test_not_available_row_can_name_an_implemented_draft_skill(self) -> None:
         self.write_agents(AGENTS_GOOD.replace("| — | Not available yet", "| `project-onboarding` | Not available yet"))
         result = self.run_script("check_capabilities.py")
-        self.assertEqual(result.returncode, 1)
-        self.assertIn("not available yet, but skill", result.stdout)
+        self.assertEqual(result.returncode, 0)
 
     def test_unknown_status_fails(self) -> None:
         self.write_agents(AGENTS_GOOD.replace("Available now |\n| Import", "Maybe |\n| Import"))

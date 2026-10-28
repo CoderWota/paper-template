@@ -14,6 +14,8 @@ The [MinerU integration](mineru-integration.md) note records the MinerU research
 
 The [Markdown and export conventions](markdown-and-export-conventions.md) record GitHub-renderable LaTeX math, Mermaid explanation diagrams, and native editable Office Math/OMML equations in DOCX. They define shared source conventions, faithful conversion, and rendering/editability checks. These requirements are confirmed; the converters and validation workflows are not yet implemented.
 
+The [Sciverse integration note](sciverse-integration.md) records the API fields and limits checked for MVP 3, the query-sharing gate, and the distinction between documented service behavior and unverified account access.
+
 The [research workflow review and knowledge transfer](research-workflow-review.md) assesses the gap between an organized writing workspace and a complete researcher-directed production process. Its bounded complete-path objective is confirmed for framework testing only; it does not narrow the product or prove real submission readiness. The detailed execution, result/evidence, verification, package, and user-effort implementation contracts remain proposals. The test has not been executed.
 
 Its primary-source legwork is retained in [OpenAI scientific case notes](openai-science-source-notes.md) and [agent engineering/submission notes](agent-workflow-source-notes.md). These are dated evidence notes, not operating instructions. Read them when the relevant design choice needs evidence; do not load every source note into ordinary writing sessions.

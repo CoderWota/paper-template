@@ -10,7 +10,7 @@ Updated: 2026-10-28.
 | --- | --- | --- |
 | 1 | Usable project and confirmed memory | In progress: scaffold, adopted AGENTS.md, skill copy script, and all four skills implemented. The four skills were accepted by review on 2026-10-28 (maintainer ruling; see the [skill review](acceptance/mvp-1-skill-review.md)). Thirteen live runs on Claude Code (runs 1 to 8 with Sonnet 5.5, runs 9 to 13 with Haiku 5.5) are history; the last run passed 11 of 18 scenarios. Codex, Windows, and the English question checks are open, so MVP 1 as a whole is not verified; the MinerU service research was done with MVP 2 |
 | 2 | Flexible intake and MinerU batch ingestion | In progress: implemented on 2026-10-28 (import script, both MinerU routes, both skills), and both skills were accepted by review the same day (see the [skill review](acceptance/mvp-2-skill-review.md)). The scripts pass their tests, and both routes were observed working on macOS with synthetic files: the local route, and the mineru.net route with the maintainer's token. Windows, Codex, and the training-use and retention terms of mineru.net are open, so MVP 2 as a whole is not verified |
-| 3 | Searchable literature and traceable evidence | Planned |
+| 3 | Searchable literature and traceable evidence | In progress: core scripts and four skills implemented; no acceptance evidence observed |
 | 4 | Ideas, impact, journal choice, and feasible research plans | Planned |
 | 5 | Evidence-based writing, audit, and major revision | Planned |
 | 6 | Template-driven layout and readiness | Planned |
@@ -600,6 +600,27 @@ Remaining for MVP 2:
 - A fresh read of the mineru.net terms before uploading researcher materials; the live run used synthetic files, and the terms do not state training use or retention.
 - Windows runs of both routes, and Codex discovery of the two skills.
 - A decision on testing the standard tier.
+
+## MVP 3, implementation increment: literature search, retrieval, and evidence records
+
+Status: implementation in progress. The four MVP 3 skill drafts and their supporting scripts exist, but they are not yet listed as available to researchers. No written skill review or MVP 3 acceptance evidence has been completed. The [MVP 3 checklist](acceptance/mvp-3.md) is prepared and not run.
+
+Implemented on 2026-10-28:
+
+- `scripts/literature.py` and `scripts/literature/` use the Python standard library. `search-sciverse` calls Sciverse `agentic-search` only after a machine marker is written beside a human-readable confirmed scope in `requirements/privacy.md`; `search-sciverse-metadata` provides query-only title/DOI lookup. `authorize-sciverse` records a confirmation supplied by the skill and supports confirmed scope replacement or revocation, and the API key is loaded through the existing private credential flow. Requests use the documented fixed host, bearer header, bounded retries for server errors, and no retry for HTTP 429. `read-sciverse-context` stores full-text ranges separately from search snippets.
+- Search records under `references/searches/<search-id>/` retain the query, date, provider, source identifiers/locators, metadata, limitations, errors, and separately appended model-host results. Local retrieval streams selected extracted Markdown and reports line numbers with extraction revisions; it does not claim that a line number is a PDF page locator.
+- `download` reads BibTeX, Markdown, and text DOI/URL lists; it archives only publicly returned PDF files after checking the PDF signature and end marker. It retains per-item retrieval status, checksum, source ID, sanitized locator, duplicate information, and identity/version review in `references/downloads/<batch-id>/`. It does not store signed query-string URLs or use publisher credentials. Conversion is handed to `source-ingestion`; download records and archived originals are independent of conversion success.
+- `audit-bibliography` checks BibTeX key uniqueness and links to archived source IDs. It explicitly does not assess claim support. Evidence support, quotes, page numbering, extraction revision, and limitations are governed by `literature-and-evidence`.
+- The four canonical skill drafts are `literature-discovery`, `reference-download`, `literature-and-evidence`, and `research-investigation`. They remain marked "Not available yet" until accepted. `.env.example`, the references directory descriptions, and the acceptance checklist document their boundaries.
+- The Sciverse API facts checked from public documentation are recorded in [Sciverse integration](sciverse-integration.md). The new API adapter has not sent a request.
+
+Not verified:
+
+- Python syntax, CLI help, README, capability-table, skill-mirror, and writing-rule checks pass; the script test suite and acceptance scenarios were not run. No Sciverse key or query-sharing confirmation was supplied; the live API, account permissions, query behavior, full-text content, and quotas are unverified.
+- No public publisher/repository download, different-version identification, interrupted transfer/retry, conversion-failure retention, or actual download-to-ingestion handoff has been exercised. The downloader supports direct public PDFs only; authenticated integrations are not implemented.
+- The evidence retrieval/checking behavior has not been observed on a known corpus. Windows and Codex operation remain unverified.
+
+The status is deliberately in progress until the checks in the acceptance checklist are observed and the skill drafts pass written review.
 
 ## Open items affecting the order
 

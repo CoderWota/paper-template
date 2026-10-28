@@ -8,7 +8,7 @@ The researcher's confirmed requirements: what currently governs work on this pro
 | --- | --- |
 | [`project.md`](project.md) | Purpose, intended contribution, audience, article type, and languages. |
 | [`writing.md`](writing.md) | Active writing rules and terminology, each with its scope. |
-| [`privacy.md`](privacy.md) | Confirmed document-processing choices and data-use requirements. |
+| [`privacy.md`](privacy.md) | Confirmed document-processing choices, external query-sharing scopes, and data-use requirements. |
 | [`profiles/`](profiles/README.md) | Output profiles: journal or thesis requirements and their format resources. |
 
 ## The confirmation rule

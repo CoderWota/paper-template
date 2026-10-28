@@ -67,6 +67,7 @@ Never classify a control as observed because you showed instructions or wrote a 
 
 - Write a short report in `.local/privacy-report.md` from [report-template.md](report-template.md), in the researcher's language. `.local/` stays on this computer and outside version history. Do not include account identifiers, email addresses, credentials, screenshots, or research content.
 - Write to `requirements/privacy.md` only the choices that the researcher confirms as project requirements, for example "Use only services that do not train on my documents." Use the interaction language.
+- This file can contain separate scopes for document processing and external search queries. When recording a processing choice, preserve any confirmed query-sharing scope and its machine markers. Permission to search does not authorize document uploads, and a document-processing choice does not authorize sending queries to another service.
 - A wish to use a cloud service is not yet a confirmed choice. Before you record one, ask one question that gives your recommendation for its scope (which documents may leave this computer) and notes that the service's own terms are checked before the first upload. Record the choice, with that scope and the service's address (mineru.net for the official MinerU service), only after the researcher answers. Until then, note the wish as open in `state/current.md`.
 - Report each route with its control, state, and evidence type, the exceptions that remain, and one next step.
 

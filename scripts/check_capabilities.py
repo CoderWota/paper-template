@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """Check that the "Available now" table in AGENTS.md matches the skills folder.
 
-Every skill in .agents/skills/ must appear in the table. A row marked "Available now" must name
-a skill or a script that exists. A row marked "Not available yet" must name no skill that exists.
-This keeps the list of what works in one place, checked against the files.
+Every skill in .agents/skills/ must appear in the table. An "Available now" row names working
+skills and scripts. A "Not available yet" row may name an implemented draft skill, but it does
+not make that capability available to researchers. This keeps availability distinct from files
+that exist during development.
 
 Usage: python scripts/check_capabilities.py [WORKSPACE_ROOT]
 Exit status: 0 when the table matches the folder, 1 otherwise. Uses only the Python standard library.
@@ -51,7 +52,7 @@ def check(root: Path) -> list[str]:
 
     skills_dir = root / ".agents" / "skills"
     skills = {p.name for p in skills_dir.iterdir() if p.is_dir()} if skills_dir.is_dir() else set()
-    named_skills: set[str] = set()
+    represented_skills: set[str] = set()
 
     for cells in rows:
         if len(cells) != 3:
@@ -67,22 +68,17 @@ def check(root: Path) -> list[str]:
             if available:
                 problems.append(f"AGENTS.md: {capability!r} is available but names no skill or script")
             continue
-        if not available:
-            for name in names:
-                if name in skills:
-                    problems.append(f"AGENTS.md: {capability!r} is not available yet, but skill {name!r} exists")
-            continue
         for name in names:
             if "/" in name:
                 if not (root / name).exists():
                     problems.append(f"AGENTS.md: {capability!r} names {name!r}, which does not exist")
             else:
-                named_skills.add(name)
+                represented_skills.add(name)
                 if name not in skills:
                     problems.append(f"AGENTS.md: {capability!r} names skill {name!r}, which is not in .agents/skills/")
 
-    for skill in sorted(skills - named_skills):
-        problems.append(f"AGENTS.md: skill {skill!r} is not in the 'Available now' table")
+    for skill in sorted(skills - represented_skills):
+        problems.append(f"AGENTS.md: skill {skill!r} is not represented in the availability table")
     return problems
 
 
