@@ -1,6 +1,6 @@
 # MVP 3 Acceptance Checklist
 
-Status: prepared on 2026-10-28. It has not been run. Do not copy this checklist into a researcher workspace; it contains expected outcomes.
+Status: prepared on 2026-10-28. The checklist has not been run end to end; one isolated live search request is recorded below. Do not copy this checklist into a researcher workspace; it contains expected outcomes.
 
 The checklist covers the acceptance evidence in the [MVP implementation guideline](../mvp-implementation-guideline.md#mvp-3--searchable-literature-and-traceable-evidence). Use a disposable test copy and rights-cleared fixtures. Record the host, version, model, operating system, processor, date, Sciverse account state, and whether each step used a simulated or live service. A simulated download does not prove publisher or institutional access.
 
@@ -65,4 +65,4 @@ Inspect that query records, download batch folders, and any new source folders h
 
 ## Results
 
-No scenarios have been run. Sciverse API account availability, a live query, full-text access, public publisher/repository access, interruption/resumption, conversion handoff, Windows, and Codex remain unverified.
+One explicitly authorized live `agentic-search` request with a synthetic non-manuscript query was made in an isolated temporary workspace on 2026-10-28. It returned three snippets with provider IDs and locator objects. This confirms one successful call for the configured account. The acceptance scenarios have not been run end to end; repeat availability, metadata search, full-text access, public publisher/repository access, interruption/resumption, conversion handoff, Windows, and Codex remain unverified.
