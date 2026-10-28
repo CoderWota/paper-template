@@ -44,7 +44,8 @@ The only list of what works. `python scripts/check_capabilities.py` checks it ag
 | Set up research code, run analyses with recorded provenance, and record results | `research-code-setup`, `scripts/research.py` | Available now; Python runs are tested on macOS, while Windows and other languages are not verified |
 | Outline, write, audit, and revise the manuscript, including rewriting a passage | — | Not available yet |
 | Format, export, and check readiness | — | Not available yet |
-| Version control with Git | — | Not available yet |
+| Inspect, set up, save, compare, and recover versions with Git; practice on a separate copy | `git-inspection`, `git-setup`, `git-save`, `git-compare`, `git-recovery`, `git-hands-on`, `scripts/versions.py` | Available now; tested with disposable repositories on macOS |
+| Back up saved versions to a destination the researcher confirmed | `git-backup` | Available now; the push and its check are tested only with a destination on this computer, and no hosting service is verified |
 | Respond to reviews; guide the whole paper | — | Not available yet |
 
 ## Decisions and questions

@@ -14,7 +14,7 @@ Updated: 2026-10-28.
 | 4 | Ideas, impact, journal choice, and feasible research plans | Accepted by review on 2026-10-28: seven skills and the result-record extension of `research-investigation` passed written review ([skill review](acceptance/mvp-4-skill-review.md)); `scripts/research.py` and feedback import pass their tests. Live venue reading, fresh-session behavior, Windows, and Codex are unverified |
 | 5 | Evidence-based writing, audit, and major revision | Planned |
 | 6 | Template-driven layout and readiness | Planned |
-| 7 | Practical Git control and explicit backup | Planned |
+| 7 | Practical Git control and explicit backup | Accepted by review on 2026-10-28: seven skills passed written review ([skill review](acceptance/mvp-7-skill-review.md)); `scripts/versions.py` passes 13 tests in disposable repositories. No hosting service, Windows, or Codex was exercised |
 | 8 | Review rounds and coauthor reconciliation | Planned |
 | 9 | Connected paper hands-on and release candidate | Planned |
 
@@ -663,6 +663,19 @@ Verification observed (macOS 26.6.2, Apple Silicon; Python 3.12.9, and Python 3.
 Not verified:
 
 - Reading venue pages through the agent application's web access; the behavior of a model in the interview, planning, and feedback procedures; research runs on Windows, in other languages, with large data, or for long runs; Codex discovery.
+
+## MVP 7: practical Git control and explicit backup
+
+Status: the seven skills were accepted by review on 2026-10-28 ([skill review](acceptance/mvp-7-skill-review.md)). MVP 7 as a whole is not verified: no hosting service, Windows machine, or Codex session was used, and no live guided lesson was run.
+
+Implemented after MVP 4, as part of the maintainer's request to implement every MVP from MVP 4 on; the planned order had placed MVP 7 directly after MVP 1.
+
+- Skills `git-inspection`, `git-setup`, `git-save`, `git-compare`, `git-recovery`, `git-backup`, and `git-hands-on`, with generated copies. `project-onboarding` now reads the version history (read-only) and offers `git-setup` when it finds the template's history, an external copy, or research versions that the folder does not show.
+- `scripts/versions.py`: `inspect` and `scope` (read-only, including the template's root commit, versions with research material, remotes and what they were seen to hold, unfinished operations, tracked secrets, and tracked files that ignore rules exclude); `init` and `identity`; `save` (exact scope, refusing secrets, files over 100 MB, and other prepared changes); `history` and `compare` (by area, renames, never-saved files, changed words); `retrieve` (to `.tmp/recovered/`) and `restore` (keeps the current content first); `untrack`; `practice` (a separate practice copy); `remotes`; and `backup`, which pushes only to a destination named in `requirements/privacy.md`, never with force, and checks the remote afterwards.
+
+Verification observed: 13 tests in disposable repositories with an empty global Git configuration, on Python 3.12.9 and 3.9.6, including a clone of the backed-up copy and an unreachable destination. `inspect` on this repository reported its state without changing it.
+
+Not verified: GitHub or another hosting service, sign-in, and repository visibility; Git for Windows; Codex; a guided lesson with a researcher.
 
 ## Export trial (2026-10-28)
 

@@ -50,7 +50,7 @@ Do not stop unrelated drafting because an optional provider, journal, architectu
 | 4 | Develop ideas and research plans, compare target journals, work through feedback, and retain consequential confirmed rationale. | MVP 1; MVP 3 for source-backed investigation; existing material can also be used. | Accepted by review on 2026-10-28; not verified on Windows, in Codex, or with live venue pages |
 | 5 | Adopt, write, audit, or substantially revise a manuscript with recoverable prior work. | MVP 1, source/evidence contracts from MVP 3, and the export trial's citation and cross-reference syntax; MVP 2 for converted drafts; existing inputs can substitute for earlier research stages. MVP 7 comes earlier in the main sequence, but local snapshots must still support revision without Git. | Planned |
 | 6 | Produce a manuscript/package checked against the selected journal's actual format requirements, and assess readiness. | MVP 5 conventions or an existing manuscript; source/citation integrity from MVP 3; the engine chosen in the export trial; a target from `journal-selection` (MVP 4) or the researcher. | Planned |
-| 7 | Preserve, compare, recover, and explicitly back up versions through the agent. | MVP 1 only. Implemented immediately after MVP 1, before MVP 2. | Planned |
+| 7 | Preserve, compare, recover, and explicitly back up versions through the agent. | MVP 1 only. Planned immediately after MVP 1; implemented after MVP 4 on 2026-10-28. | Accepted by review on 2026-10-28; no hosting service, Windows, or Codex verified |
 | 8 | Process review rounds and reconcile coauthor edits without losing the canonical manuscript. | MVP 5; MVP 2 for converted correspondence, MVP 6 for re-export, MVP 7 when version history is used. | Planned |
 | 9 | Follow or resume the complete paper hands-on using the same independent skills. | MVPs 1–6; MVP 7 for demonstrated Git handoff and MVP 8 for the revision extension. | Planned |
 
@@ -254,6 +254,8 @@ Under the review ruling (section 6), the skill behavior below is accepted by a w
 - In a disposable workspace, directly inspect, save, compare, and retrieve selected content; also run the guided lesson. Confirm unrelated edits and current real work survive and the saved scope matches the request.
 - Use test credentials and representative originals/assets to check actual tracked scope, including already-tracked material where ignore rules alone cannot help. Explain what is preserved locally in ordinary language.
 - A local-save request sends nothing to a remote. An explicitly requested test backup has a checked destination and recoverable content; account access unavailable means unverified, not successful backup.
+
+Under the review ruling (section 6), the skill behavior above is accepted by written review and the script behavior by tests in disposable repositories; the [MVP 7 skill review](acceptance/mvp-7-skill-review.md) records both.
 
 **Not yet:** mandatory branch/rebase training, publication of the research repository, or a claim that local Git history is an off-machine backup.
 

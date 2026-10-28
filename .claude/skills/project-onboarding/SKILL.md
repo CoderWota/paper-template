@@ -23,6 +23,7 @@ Read these without asking the researcher:
 - `state/current.md` and the files in `requirements/`
 - `manuscript/manifest.yaml`, `references/index.md`, and `ideas/index.md`
 - the lists of files in `inbox/`, `references/originals/`, `research/`, and `reviews/`
+- the version history, with `python scripts/versions.py inspect`, which changes nothing. When it reports the template's own history, an external copy such as `origin`, or versions with research material that this folder does not show, mention it in the final report and offer `git-setup`; change nothing in the history during onboarding.
 
 Research material means sources in the library, manuscript sections in the manifest, retained ideas, research records, or review rounds. Files in `inbox/` are intake material, not another paper.
 
