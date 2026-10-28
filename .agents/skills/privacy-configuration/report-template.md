@@ -1,5 +1,7 @@
 # Privacy Check
 
+<!-- Write the report in the researcher's language: translate every heading and sentence, and keep the table columns. -->
+
 Checked on: <date>
 
 This report stays on this computer. It contains no account identifiers, credentials, screenshots, or research content.
