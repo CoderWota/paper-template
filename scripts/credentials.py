@@ -5,6 +5,8 @@ Credentials live in .env.local at the workspace root. Git ignores that file, but
 it is not encrypted. A value is entered privately on a one-time page that only
 this computer can open (or at a hidden terminal prompt), never in the
 conversation or in a command argument, and this script never prints a value.
+Saving or removing one name keeps every other line of the file. Writers take
+turns, so two saves that overlap cannot lose each other's value.
 
 Usage:
   python scripts/credentials.py set NAME [--label TEXT] [--note TEXT] [--help-url URL]
@@ -22,6 +24,8 @@ Uses only the Python standard library.
 from __future__ import annotations
 
 import argparse
+import contextlib
+import errno
 import fnmatch
 import html
 import os
@@ -30,6 +34,7 @@ import secrets
 import shutil
 import subprocess
 import sys
+import tempfile
 import time
 import urllib.parse
 import webbrowser
@@ -43,6 +48,14 @@ NAME = re.compile(r"[A-Z][A-Z0-9_]*")
 LINE = re.compile(r"\s*(?:export\s+)?([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(.*)$")
 MAX_VALUE = 4096
 MAX_BODY = 16384
+LOCK_FILE = ".tmp/credentials.lock"
+LOCK_WAIT = 30  # seconds to wait for another writer; a change takes milliseconds
+# Errors that mean "another process holds the lock" (POSIX flock, Windows msvcrt.locking).
+HELD = {errno.EACCES, errno.EAGAIN, errno.EWOULDBLOCK, getattr(errno, "EDEADLOCK", errno.EAGAIN)}
+
+
+class Busy(Exception):
+    """Another process kept .env.local locked for too long."""
 
 
 def unquote(raw: str) -> str:
@@ -72,25 +85,96 @@ def load_env_local(root: Path = ROOT) -> dict[str, str]:
     return values
 
 
-def write_value(root: Path, name: str, value: str | None) -> None:
-    """Set name to value, or remove it when value is None, keeping every other line."""
+def lock_file(handle) -> None:
+    """Take the lock on the first byte of an open file without waiting; raise OSError when another process holds it."""
+    if os.name == "nt":
+        import msvcrt
+
+        msvcrt.locking(handle.fileno(), msvcrt.LK_NBLCK, 1)
+    else:
+        import fcntl
+
+        fcntl.flock(handle.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+
+
+def unlock_file(handle) -> None:
+    try:
+        if os.name == "nt":
+            import msvcrt
+
+            handle.seek(0)
+            msvcrt.locking(handle.fileno(), msvcrt.LK_UNLCK, 1)
+        else:
+            import fcntl
+
+            fcntl.flock(handle.fileno(), fcntl.LOCK_UN)
+    except OSError:
+        pass  # closing the file frees the lock as well
+
+
+@contextlib.contextmanager
+def exclusive(root: Path):
+    """Hold an exclusive lock while .env.local is read, changed, and replaced.
+
+    Two writers that overlap would each start from the same old lines, and the later one would drop the value of the
+    earlier one. The operating system frees the lock when a process ends, so a crash leaves no stale lock. A file
+    system that cannot lock at all is used without a lock, as it was before."""
+    lock = root / LOCK_FILE
+    lock.parent.mkdir(parents=True, exist_ok=True)
+    with open(lock, "a+b") as handle:
+        if handle.seek(0, os.SEEK_END) == 0:
+            handle.write(b"\0")
+            handle.flush()
+        deadline, locked = time.monotonic() + LOCK_WAIT, False
+        while not locked:
+            try:
+                handle.seek(0)
+                lock_file(handle)
+                locked = True
+            except OSError as error:
+                if error.errno not in HELD:
+                    break
+                if time.monotonic() >= deadline:
+                    raise Busy(f"another change to {ENV_FILE} did not finish within {LOCK_WAIT} seconds") from None
+                time.sleep(0.05)
+        try:
+            yield
+        finally:
+            if locked:
+                unlock_file(handle)
+
+
+def write_value(root: Path, name: str, value: str | None) -> bool:
+    """Set name to value, or remove it when value is None, keeping every other line.
+
+    Returns whether name was set before. The file is read, changed, and replaced under a lock, in a temporary file
+    of its own, so that another writer cannot lose this value and this one cannot lose another writer's."""
     path = root / ENV_FILE
-    lines = []
-    for line in read_lines(path):
-        match = LINE.match(line)
-        if not (match and match.group(1) == name and not line.lstrip().startswith("#")):
-            lines.append(line)
-    if not lines:
-        lines = [HEADER]
-    if value is not None:
-        lines.append(f"{name}={quote(value)}")
-    temporary = path.with_name(ENV_FILE + ".tmp")
-    descriptor = os.open(temporary, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
-    with os.fdopen(descriptor, "w", encoding="utf-8", newline="\n") as handle:
-        handle.write("\n".join(lines) + "\n")
-    os.replace(temporary, path)
-    if os.name == "posix":
-        os.chmod(path, 0o600)
+    with exclusive(root):
+        lines, existed = [], False
+        for line in read_lines(path):
+            match = LINE.match(line)
+            if match and match.group(1) == name and not line.lstrip().startswith("#"):
+                existed = True
+            else:
+                lines.append(line)
+        if not lines:
+            lines = [HEADER]
+        if value is not None:
+            lines.append(f"{name}={quote(value)}")
+        descriptor, temporary = tempfile.mkstemp(dir=root, prefix=ENV_FILE + ".", suffix=".tmp")
+        try:
+            with os.fdopen(descriptor, "w", encoding="utf-8", newline="\n") as handle:
+                handle.write("\n".join(lines) + "\n")
+                handle.flush()
+                os.fsync(handle.fileno())
+            os.replace(temporary, path)
+        except BaseException:
+            Path(temporary).unlink(missing_ok=True)
+            raise
+        if os.name == "posix":
+            os.chmod(path, 0o600)
+    return existed
 
 
 def quiet(command: list[str]) -> int:
@@ -260,8 +344,11 @@ def command_set(args: argparse.Namespace) -> int:
     if not acceptable(value):
         print("Not saved: the value is empty, too long, or contains a line break.")
         return 1
-    replaced = args.name in load_env_local(ROOT)
-    write_value(ROOT, args.name, value)
+    try:
+        replaced = write_value(ROOT, args.name, value)
+    except Busy as error:
+        print(f"Not saved: {error}. Try again.")
+        return 1
     action = "Replaced" if replaced else "Saved"
     print(f"{action} {args.name} ({len(value)} characters) in {ENV_FILE}. Git ignores this file; it is not encrypted.")
     return 0
@@ -283,7 +370,11 @@ def command_remove(args: argparse.Namespace) -> int:
     if args.name not in load_env_local(ROOT):
         print(f"{args.name} was not set.")
         return 0
-    write_value(ROOT, args.name, None)
+    try:
+        write_value(ROOT, args.name, None)
+    except Busy as error:
+        print(f"Not removed: {error}. Try again.")
+        return 1
     print(f"Removed {args.name} from {ENV_FILE}.")
     return 0
 

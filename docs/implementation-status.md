@@ -770,6 +770,22 @@ Not verified: how a model follows the changed text of `review-ingestion`, `manus
 
 Remaining: no defect of run 2 is open. Its other model misses stay recorded residual risks (last bullet above), and the deterministic levers stay proposals.
 
+## Credential saves keep every other value (2026-10-29)
+
+Status: done and checked by tests; the Windows lock code has not run on Windows. The maintainer asked to be sure that saving the key of one service never removes the key of another in `.env.local`.
+
+Confirmed first. Saving B after A keeps A, replacing A keeps B, and removing one keeps the other: `write_value` in `scripts/credentials.py` rereads the file and drops only the lines of the name it is given, and an in-process check and the new end-to-end tests (which also pass on the previous code) show it. What was not safe was two saves at the same moment. All writers used one temporary file, `.env.local.tmp`, and read the old lines without any lock. In a reproduction with 12 processes saving different names at once, 11 of the 12 stopped with `FileNotFoundError` (`.env.local.tmp` had already been moved by another writer) and did not save their value, in every one of 15 rounds. Even without that error, two writers that start from the same old lines lose one value (a lost update). In normal use the window is a few milliseconds, but nothing guarded it.
+
+The fix is in the same function:
+
+- Reading, changing, and replacing the file happen under an exclusive lock on `.tmp/credentials.lock`, so writers take turns (`fcntl.flock` on macOS and Linux, `msvcrt.locking` on Windows). The operating system frees the lock when a process ends, so a crash leaves nothing stale. A writer waits up to 30 seconds and then stops with “Not saved: … Try again.” instead of overwriting. A file system that cannot lock is used without a lock, as before.
+- Each write uses a temporary file of its own (`.env.local.*.tmp`, mode 600), flushed to disk before the replacement. If anything fails, that file is removed and the old `.env.local` stays as it was.
+- `write_value` returns whether the name was set before, so that “Saved” and “Replaced” stay right when two saves overlap.
+
+Verification observed (macOS 26.6.2, Apple Silicon; Python 3.12.9): the same reproduction on the fixed script lost nothing in 15 rounds of 12 writers and 10 rounds of 24 writers, with no errors. The credential tests pass (14, six of them new), and four of the six fail on the previous code: ten processes saving at once, a writer that waits for the lock, a failed replacement that left `.env.local.tmp` behind, and the lock file. The two sequential tests pass on the previous code too, because that part was already correct. The full suite passes with 168 tests (162 before), and the availability, README (103 directories), rule-form, research-record, and skill-copy checks pass.
+
+Not verified: the Windows branch (`msvcrt.locking`), a cloud-synced or network folder where file locks may not work (the script then saves without the lock), and a very slow disk. Saving the same variable name twice replaces the value by design, which is how a token is renewed. Different services must therefore keep different names (`MINERU_API_TOKEN`, `SCIVERSE_API_KEY`), and `credentials.py status NAME` shows whether a name is already set.
+
 ## Open items affecting the order
 
 - Result production for the complete-path test: decided on 2026-10-28 (see the decisions above).
