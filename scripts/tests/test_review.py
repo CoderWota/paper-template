@@ -117,6 +117,20 @@ class ResponseRecordTests(ReviewTestCase):
         self.assertIn("R1.1: is marked addressed, but C1 is not done", self.run_review("check").stdout)
 
 
+    def test_a_change_recorded_only_in_a_revision_is_reported_with_the_remedy(self) -> None:
+        self.write("reviews/journal-a/round-1/response.md", RESPONSE)
+        self.write("reviews/journal-a/round-1/changes.md", "# 改动\n")
+        self.write("revisions/2026-11-scope/changes.md", CHANGES)  # the revision's own file holds C1; the round's does not
+        result = self.run_review("check")
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("reviews/journal-a/round-1/response.md R1.1: the change C1 is not in reviews/journal-a/round-1/changes.md.", result.stdout)
+        self.assertIn("also when a revision made the change (with a Revision: line); the changes.md inside a revision folder does not count", result.stdout)
+        # The remedy that the message names makes the round pass.
+        self.write("reviews/journal-a/round-1/changes.md", CHANGES.replace("- Status: done", "- Revision: `revisions/2026-11-scope/`\n- Status: done"))
+        result = self.run_review("check")
+        self.assertEqual(result.returncode, 0, result.stdout)
+
+
 class ReconcileTests(ReviewTestCase):
     def tracked_docx(self) -> Path:
         edited = (run("Cities are warming ") + '<w:del w:id="1" w:author="Chen"><w:r><w:delText>faster</w:delText></w:r></w:del>'

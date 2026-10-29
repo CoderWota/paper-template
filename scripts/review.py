@@ -96,7 +96,8 @@ def check_round(root: Path, folder: Path) -> list:
                 problems.append(f"{item}: an {status} item links the change that addresses it (Change: C1)")
             for change in linked:
                 if change not in change_ids:
-                    problems.append(f"{item}: the change {change} is not in changes.md")
+                    problems.append(f"{item}: the change {change} is not in {where}/changes.md. Add it there, also when a revision "
+                                    "made the change (with a Revision: line); the changes.md inside a revision folder does not count")
                 elif status_of(one(change_fields[change], "status"), CHANGE_STATUS) != "done":
                     problems.append(f"{item}: is marked {status}, but {change} is not done")
     for change, fields in change_fields.items():

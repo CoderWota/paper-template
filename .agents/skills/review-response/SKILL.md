@@ -34,11 +34,11 @@ Outcome: for one venue and round, `response.md` with every editor and reviewer i
 ## Step 2: Decide with the researcher
 
 4. For each substantive item, check what it asks against the evidence and the manuscript (`literature-and-evidence`, `research/results/`), group related items, and propose an action: a change, a justified explanation, or work that needs research. Ask about consequential items one at a time, with your recommendation, and record the decision in the item's status.
-5. A request that changes the argument, the structure, or the evidence base goes through `manuscript-revision`; its plan lists the items it answers, and `changes.md` links to it instead of duplicating its tracking.
+5. A request that changes the argument, the structure, or the evidence base goes through `manuscript-revision`; its plan lists the items it answers. The round's own `changes.md` (`reviews/<venue-id>/<round-id>/changes.md`) still gets an entry for each change that answers an item, with a `Revision:` line that points to the revision, and does not copy the revision's tracking. The `changes.md` inside the revision folder is a different file, the old-to-new map: a response cannot cite a change that is recorded only there.
 
 ## Step 3: Make and record the changes
 
-6. Make agreed text changes with `manuscript-writing`, and new analyses or sources with the research skills. Record each change in `changes.md`:
+6. Make agreed text changes with `manuscript-writing`, and new analyses or sources with the research skills. Record each change in the round's `changes.md`, also a change made through a revision:
 
    ```text
    ## C3 <short title>
@@ -65,7 +65,7 @@ Outcome: for one venue and round, `response.md` with every editor and reviewer i
 
 ## Completion check
 
-- Every item of the round has a status; addressed items link a done change whose location exists; declined items have a justification; nothing was claimed that was not done.
+- Every item of the round has a status; addressed items link a done change in this round's `changes.md` whose location exists; declined items have a justification; nothing was claimed that was not done.
 - Structural changes went through `manuscript-revision`, and the changed parts were rechecked.
 - Coauthor edits were compared, not imported; only the researcher's chosen edits were applied, and conflicts were decided by the researcher.
 - `python scripts/review.py check` reports no problem, and nothing was sent to the venue or anyone else.
