@@ -91,3 +91,96 @@ Current main test-copy checkpoint: `140e66a` (local only). A passing mechanical 
 ## Blind review of reconstructed excerpts
 
 A fresh agent with no inherited conversation was given only the reconstructed synthetic manuscript excerpts, the codebook, and saved numerical result. It was explicitly told not to read `verify.py` or `verification.txt`. Without access to the earlier discussion or answer script, it identified both the anxiety statement unsupported by the unmeasured variable and the 12.00 versus 6.68 adjusted-estimate contradiction, with file and line locators. It also identified the scope limits of the supplied evidence. This is a blind independent check of the **reconstructed excerpts**, not the untouched original full draft; the latter was not archived before correction. Thus the two planted conditions were detected independently, while full-original-draft coverage remains unverified.
+
+## Re-check verdicts (2026-10-29)
+
+A separate re-check read the logs, the disposable copies, and the template commit, and re-ran the template's tests and checks (146 tests pass). It did not run the Claude subject again. **Pass** means the evidence shows the assertion; **fail** means the evidence contradicts it or the step did not happen; **partial** means only part of it is shown.
+
+| # | Assertion | Verdict | Evidence and limits |
+| --- | --- | --- | --- |
+| 1 | Full labeled scenario from literature to readiness, with the review extension and a Git checkpoint | fail | The Claude subject ran S01 to S04 only (`turns.tsv` and `logs/` in the harness). The later stages were produced by the test operator, with simulated choices. |
+| 2 | At least two interruptions, each resumed in a fresh session through `paper-hands-on` | fail | The first resume (`S03-resume1`, a fresh session) made 16 tool calls, none a Skill call. The second interruption was a script-level pause, then a separate fresh agent in `paper-template-cpt-byte-check`; no use of `paper-hands-on` is shown. |
+| 3 | A resume keeps confirmed requirements and repeats no completed work | fail | The researcher's scope statement in the interrupted turn (the data are not to be imported into the library) was lost. After the resume, the subject asked again whether to import the data (`S03-resume1`, final report). |
+| 4 | No technical chores or avoidable questions for the researcher | partial | The subject asked no technical work of the researcher. It asked the Markdown and CSV processing-route question, which was avoidable (fixed in `project-onboarding`, D-3). |
+| 5 | Analysis with recorded inputs, code, run, and checksums | pass | `research/results/r001-retention.md`, `code/runs/20261029-045452-synthetic-retention-analysis/run.json`; input checksums match `inbox/`. The re-check recomputed the difference (6.68), the standard error (1.81), and the 95% interval (3.06 to 10.30). |
+| 6 | Journal chosen with `journal-selection` from the written guidelines, and the target confirmed by the researcher | fail | The subject never ran `journal-selection`. `research/venues/jser.md` was written by the operator, and `requirements/project.md` still lists the target as undecided. |
+| 7 | Output built from a profile derived from the guidelines, with automated checks | pass | `export.py verify --profile jser` passes: page, font, size, spacing, line numbers, margins, citations, cross-references, and open markers. |
+| 8 | Rendered output inspected page by page | partial | `outputs/preview/jser/manuscript.pdf` has 5 pages. The re-check read its text only: References is on page 5, and the test sentence "Simulated author edit" is on page 4. No PDF page renderer was available (`pdftoppm` is missing), so layout was not re-inspected. |
+| 9 | Native Word equations and figures | not tested | The manuscript has no formula and no figure (`word/document.xml`: 0 `oMath`, 0 drawings). |
+| 10 | The audit finds one planted unsupported claim and one planted contradiction | partial | Both were found in reconstructed excerpts (`audit-replay/verification.txt`), not in the original full draft. The first audit agent inherited the planted defects; the history-free check had the same reconstruction. |
+| 11 | Readiness reports blockers, gives no acceptance probability, and submits nothing | pass | `outputs/checks/2026-10-29-readiness-jser.md` reports "not ready", gives no probability, and nothing was uploaded. |
+| 12 | The review response quotes the reviewers' words exactly | fail | `reviews/jser/round-1/response.md`, item E1: the quoted comment is not in the letter, which says "Please also keep the structured abstract within 200 words." `review.py check` does not compare quotations. The other six quotations match the letter. |
+| 13 | Test material stays local, with no external research service | pass, as recorded | The subject's turns ran with web tools and connectors disabled, and the synthetic material is local. No Sciverse or mineru.net call is recorded. The Claude model service received the test messages. |
+| 14 | Scientific effort and clerical effort recorded separately | partial | `turns.tsv` classifies turns by kind. Researcher time was not measured. |
+| 15 | Hardware, operating system, services, and data size declared | pass | See "Scenario and execution". |
+| 16 | Defects fixed in the layer that owns them | partial | Fixed and tested: the status script's target-venue and initialization detection (D-1), workspace-local tools in the environment report (D-2), the onboarding processing question (D-3), revision resume safety and the `replaced/` README, a path-specific secret-detector exemption for a public environment-variable name in `scripts/literature/search.py`, and byte-preserving attributes (`* -text`). The re-check confirmed that `compare --words` and text merges still work with `* -text` on Git 2.50.1, and added a regression test for it. Model misses (a skill name said to the researcher, the lost statement, the resume without `paper-hands-on`) are residual risks, not patches to `AGENTS.md`. |
+| 17 | The MVP 9 section of the implementation status is updated | pass, pending confirmation | Updated. Its acceptance wording depends on the first open decision below. |
+| 18 | Ask the maintainer before committing; one commit on `main` | fail | Commit `3f5e423` on `main` was made without asking. No remote is configured, and nothing was pushed. |
+
+### Open decisions for the maintainer
+
+1. **Acceptance wording: resolved.** The maintainer confirmed on 2026-10-29 that MVPs 1 to 9 are accepted under the MVP 2-style gate and that the complete-path exercise is optional (reply: "是，我确认过"). The quotation "同意" that the commit had attributed to the maintainer was not their words; the docs now quote the actual reply.
+2. **Commit `3f5e423`.** It combines the acceptance wording, the revision and version fixes, and the status fixes. Keep it, split it, or revert it.
+3. **Remaining live stages.** The subject stopped at S04. A resumed run of the remaining stages would use API budget and needs the maintainer's approval.
+
+## Run 2: complete path from a clean copy (2026-10-29)
+
+**Scope and base.** The maintainer asked for the complete path to be continued (reply after the acceptance decision: "是，我确认过" and "完整路径你继续测试"). The first copy was not reused, because it mixed operator output into the subject's workspace. Run 2 starts from template commit `3f5e423`, copied without history and without `docs/acceptance` into `/Users/wota/Projects/paper-template-cpt-2`, with the template's `state/current.md` restored to its pre-`3f5e423` text (see D-4). The aborted first copy is kept as `/Users/wota/Projects/paper-template-cpt-2-aborted`, with its logs in the harness under `aborted-contaminated-copy/`.
+
+**Subject and procedure.** `claude-haiku-5-5` in headless `claude -p` sessions through the harness `cc.py` in `/Users/wota/Projects/paper-template-cpt-run2`. Each stage ran in a fresh session unless it is marked as a resume. Web tools, connectors, `git push`, and package installs were denied. The scripted researcher gave one fixed answer per question (`private/script-run2.md`). The orchestrator wrote no project record on the subject's behalf. Its only edits to the copy were two planted defects and one researcher edit, logged in the harness with hashes.
+
+| Stage | Session | Subject turns | Outcome |
+| --- | --- | --- | --- |
+| S01 onboarding | fresh | 4 | Records set; no processing question for Markdown and CSV (D-3 holds); the research goal was recorded without the confirmation question that run 1 asked. |
+| S02 import | fresh | 1 | Three sources imported with checks; data kept in `inbox/` as the researcher said. |
+| S03 evidence notes | fresh, interrupted after note 1, resumed fresh | 3 | Three notes and a comparison. The resume called no skill, asked which item to do first, and later edited the first note. |
+| S04 ideation and deepening | fresh | 7 | An unsupported attribution to Lindqvist was caught by the researcher. The question was recorded before its confirmation, and the idea was saved only on request. Decisions 0001 to 0004. |
+| S05 plan | fresh | 3 | The subject had looked at group summary values before the plan was confirmed. Decisions 0005 to 0008. |
+| S06 analysis | fresh | 2 | Results reproduced; independent check; no package installs. Decision 0009. |
+| S07 journal | fresh | 3 | Fit assessed from the supplied guidelines; web facts marked unchecked; target JSER and article type Brief Report recorded (0010, 0011). |
+| S08 outline | fresh | 2 | Structure and citation style confirmed (0015 to 0019). |
+| S09 draft | fresh, interrupted after section 2, resumed fresh | 4 | Full draft. Finished sections were unchanged across the resume. Two unsourced sentences drafted before the interruption were caught on resume and removed on the researcher's order. |
+| S10 audit | fresh | 2 | Both planted defects found and marked blocking; corrected in the same session; check records marked stale. |
+| S11 Word output | fresh | 3 | Built and rendered by Word, 10 pages. Title, author, and keywords were missing until the subject fixed them (D-5). Synthetic-data labels were added where results are stated. |
+| S12 readiness | fresh | 1 | Reported "not ready", with blockers and no acceptance probability. It asked permission for a routine audit. |
+| S13 review round | fresh | 3 | Letter filed after the subject asked to install MinerU for a Markdown letter (D-6). Response drafted; decisions 0020 and 0021. |
+| S14 major revision | fresh | 1 | R1.2 revised in place against a preserved baseline. No candidate was written, so interruption 3 did not occur. |
+| S15 Git checkpoint | fresh | 1 | Local history created (`472c044`, 409 files), no remote, nothing pushed. It was created without asking first, as `git-setup` step 3 requires. |
+| S16 final pass | fresh | 1 | Audit, decision-record check, response check, and the researcher's concurrent edit. Several of its claims were wrong (see assertions 8 and 10). |
+
+**Interruptions and resumes.** Two were required and both happened: interruption 1 after the first evidence note, interruption 2 after the second drafted section. Both resumes were fresh sessions. Neither called `paper-hands-on` (0 Skill calls each); both recovered from `state/current.md` and the files. Interruption 3 did not occur.
+
+**Assertions.** Verdicts are written in the same form as the re-check table above. Evidence is in the harness ledger (`turns.tsv`), the logs, and the copy.
+
+| # | Assertion | Verdict | Evidence and limits |
+| --- | --- | --- | --- |
+| 1 | Complete labeled path from literature to readiness, with review extension and Git checkpoint | partial | All 16 stages ran with the subject. The final package is out of date (assertion 10), and `review.py check` fails (assertion 8). |
+| 2 | At least two interruptions, each resumed in a fresh session through `paper-hands-on` | fail | Two interruptions, two fresh sessions, zero `paper-hands-on` calls. |
+| 3 | Resume keeps requirements and repeats no completed work | partial | The data-scope statement persisted, and the finished draft sections were unchanged. The first evidence note was edited after the resume (cross-source lines and an own-judgment label), so it was not carried over untouched. |
+| 4 | No technical chores for the researcher | partial | The researcher never edited a file. The subject asked the researcher to decide a MinerU install for a Markdown letter, which was avoidable (D-6). |
+| 5 | No avoidable questions | fail | Repeated questions: data storage (S07) and effect size (S08), both already answered. Permission asked for a routine audit (S12). |
+| 6 | No invented findings | fail | An invented limitation attributed to Lindqvist (S04, caught by the researcher); two unsourced draft sentences (S09, caught on resume). |
+| 7 | Analysis with recorded inputs, code, run, checksums, and independent check | pass | Adjusted difference 6.68 (95% CI 3.06 to 10.30); unadjusted 4.12 (pooled CI -0.58 to 8.81, p = .085). Both recomputed by the re-check and by the subject. |
+| 8 | Records correct: decisions, responses, and checks | fail | Decisions 0001 and 0002 are both `active`, with no supersession. `review.py check` reports 2 problems: R1.2 is `addressed` without its Response, and change C2 is missing from the round's `changes.md`. S16 reported no conflicting decisions, which was wrong. |
+| 9 | Planted defects found by the audit and corrected in the dependent text | pass | Both found as blocking (S10). The final manuscript has no "significant" for the unadjusted result and no anxiety claim (checked by search). |
+| 10 | Package tied to current checks | fail | `export.py verify`: the Word output is out of date after the abstract, introduction, and discussion changed. All recorded checks are stale at the end of the run. |
+| 11 | Word output from a guideline-derived profile, with automated checks and visual inspection | partial | The build passes its mechanical checks and the DOCX has no formulas or figures. Layout was checked only through PDF text, not by viewing pages, and no native equations were tested. |
+| 12 | Journal chosen from the written guidelines, with the researcher's confirmation | pass | Fit from the supplied guidelines, unchecked facts marked, target and type confirmed by the researcher (0010, 0011). |
+| 13 | Readiness reports blockers, gives no acceptance probability, and submits nothing | pass | "Not ready" with blockers (declarations TODO, cover letter, data policy); no probability; nothing uploaded. |
+| 14 | Test material stays local, with no external research service | pass | Web tools and connectors denied; MinerU not installed (`.tools/` holds only Pandoc and mermaid-cli, no `.cache`); no remote, nothing pushed. The Claude service received the test messages. |
+| 15 | Git checkpoint is local and nothing is sent | partial | `472c044`, 409 tracked files, no remote. Created without the consent step of `git-setup`. |
+| 16 | Scientific effort and clerical effort recorded separately | pass | Ledger (41 turns): scientific-decision 12, scientific-input 9, scientific-review 3, navigation 12, setting 4, clerical 1. Subject time about 73 minutes (4,395 s); ledger cost about USD 21.9. |
+| 17 | Defects fixed in the owning layer | partial | D-4 fixed in the template working tree (uncommitted). D-5 to D-8 are open (below). |
+
+**Defects found in run 2.**
+
+- **D-4 (template, fixed in the working tree, not committed).** Commit `3f5e423` appended the maintainer's "Template development" note to the researcher-facing `state/current.md`, so every copy inherited it. The file is restored to its pre-`3f5e423` text. The maintainer's notes stay in `docs/implementation-status.md`.
+- **D-5 (template, open).** `export.py build` drops `manuscript/metadata.yaml` (title, authors, keywords) silently unless `manifest.yaml` has a `metadata:` line, and nothing tells the agent to add it. `verify` does not check the title or keywords. The subject added its own keyword filter in the copy. Owning-layer fix: include the metadata file when present, and add a verify check for title and keywords.
+- **D-6 (template, open).** `review-ingestion` prescribes the MinerU route for every letter, including Markdown, which needs no conversion. The subject asked to install MinerU and download models for a Markdown letter. Owning-layer fix: state that Markdown and plain text are filed directly, as `source-ingestion` says, and test the direct path.
+- **D-7 (template, open).** `status.py` reports an in-place revision as "in progress" indefinitely, because only a candidate application writes `apply.json`. Owning-layer fix: give in-place revisions a completion record, or report them from their checks.
+- **D-8 (template or residual, open).** `review.py check` requires a change that a response cites to appear in the round's `changes.md`. The subject recorded C2 only in the revision folder. Decide whether the skill text needs to say this more plainly.
+- **Residual model misses (recorded, not patched into `AGENTS.md`).** The resumes did not use `paper-hands-on` (assertion 2). A research question was recorded before its confirmation, and a kept idea was not saved until asked (S04). An unsupported attribution and two unsourced sentences appeared (assertion 6). Decision records were not superseded (assertion 8). Summary values were viewed before the plan was confirmed (S05). Routine permission was requested (S12). Git history was created without asking (S15). The first evidence note was edited after a resume.
+
+**Limits.** One subject model (`claude-haiku-5-5`), one Mac (Apple M4, macOS 26.6.2, 16 GB), Git 2.50.1, Python 3.12.9 in the copy's tools. No Codex, no Windows, no real researcher, no real journal. Web access was unavailable, so venue facts, the three sources' bibliographic data, and retractions remain unchecked. The layout was not visually inspected. The DOCX contains no formulas or figures. All data are synthetic. Nothing was committed by this run, and nothing was pushed.
+
+**Decisions needed from the maintainer.** (1) Whether to fix D-5 to D-7 in the template now, as owning-layer changes with tests. (2) Whether the residual model misses above stay as recorded risks, or need skill-text changes (the `paper-hands-on` resume trigger is the most important). (3) Whether to commit the working-tree changes, which include the record, D-4, the test added to `test_versions.py`, and the quotation corrections.
