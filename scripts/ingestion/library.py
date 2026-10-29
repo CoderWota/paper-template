@@ -149,7 +149,7 @@ def write_readmes(stage: Path, record: dict) -> None:
         lines.append("- The automatic checks found no problem. They do not prove that the text, tables, or formulas are correct.")
     lines += [f"- {note[0].upper()}{note[1:]}." for note in notes]
     native_role = ("stays empty because no parser was used" if record["conversion"].get("route") == "direct"
-                   else "keeps the parser's own output")
+                   else "keeps the parser's own output (on this computer only, not in version history)")
     lines += [
         "",
         f"[`document.md`](document.md) is the readable text with working image links. [`assets/`](assets/README.md) holds its images, "
@@ -170,9 +170,12 @@ def write_readmes(stage: Path, record: dict) -> None:
         text = (f"No parser output exists for source `{source_id}`: `{name}` was read directly. This folder stays empty "
                 "so that every extraction has the same layout.")
     else:
-        text = (f"The parser's own output for source `{source_id}` (`{name}`), kept unchanged for provenance and structured retrieval: "
-                + ", ".join(f"`{path}`" for path in native) + ". Its Markdown links images under `images/`; those images are in "
-                "`../assets/` with the same names. Page numbers inside these files count from 0.")
+        text = (f"The parser's own output for source `{source_id}` (`{name}`): "
+                + ", ".join(f"`{path}`" for path in native) + ". These files stay on this computer. They are not saved in version "
+                "history or in Git backups, because the paper does not need them and nothing in the workspace reads them. If they "
+                "are missing, import the document again to get new ones. The text to read is `../document.md`, and "
+                "`../provenance.json` records which parser and settings made it. The parser's Markdown links images under "
+                "`images/`; those images are in `../assets/` with the same names. Page numbers inside these files count from 0.")
     update_readme(stage / "native" / "README.md", f"Parser output: {source_id}", text)
 
 

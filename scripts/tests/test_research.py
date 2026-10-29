@@ -245,6 +245,7 @@ class ResultAndRunTests(ResearchTestCase):
         self.assertIn(".venv", record["interpreter"]["resolved"])
         self.assertIn(".venv", (self.root / "code/outputs/smoke.txt").read_text(encoding="utf-8"))
         self.assertTrue((next((self.root / "code" / "runs").glob("*-smoke")) / "environment.txt").is_file())
+        self.assertIn("environment.txt", (next((self.root / "code" / "runs").glob("*-smoke")) / "README.md").read_text(encoding="utf-8"))
         again = self.research("code-init", "--venv")
         self.assertIn("already exists", again.stdout)
 

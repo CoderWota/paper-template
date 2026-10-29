@@ -433,7 +433,7 @@ PARTS = {
              "history is decided with you; large or sensitive data can stay outside the workspace and be referenced by path "
              "and checksum."),
     "runs": ("Research Runs", "the recorded runs", "One folder per recorded run of the research code: the exact command, the code checksum, the "
-             "interpreter, the inputs and outputs with their checksums, the logs, and the exit status. Runs are written by "
+             "interpreter, the inputs and outputs with their checksums, the logs, the exit status, and, when asked for, the versions of the installed packages (`environment.txt`). Runs are written by "
              "`python scripts/research.py run` and are never edited; a new run gets a new folder."),
     "outputs": ("Research Outputs", "figures, tables, and other run outputs", "Figures, tables, and other files produced by recorded runs. A file here is a result only "
                 "after its result record in `research/results/` says what it shows and how it was checked."),
@@ -578,8 +578,9 @@ def command_run(args, root: Path) -> int:
         record["error"] = "declared outputs are missing: " + ", ".join(absent)
     record["status"] = "complete" if record.get("exit_code") == 0 and not absent else "failed"
     write_json_atomic(folder / "run.json", record)
+    versions = "; the versions of the installed packages are in `environment.txt`" if record.get("environment") else ""
     lines = [f"Recorded run of `{args.name}`" + (f": {args.note}" if args.note else "") + ". The record is "
-             "[`run.json`](run.json); the program's output is in `stdout.txt` and `stderr.txt`. Runs are never edited; "
+             "[`run.json`](run.json); the program's output is in `stdout.txt` and `stderr.txt`" + versions + ". Runs are never edited; "
              "repeat the command below to reproduce it, and compare the checksums.",
              "", f"- Status: {record['status']}" + (f" ({record['error']})" if record.get("error") else ""),
              f"- Command: `{' '.join(command)}` (started in the workspace root)"]

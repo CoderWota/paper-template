@@ -1,6 +1,9 @@
 # Ignore paths by role, not by document type (design plan Section 13).
 # PDFs, Word files, LaTeX sources, and images are NOT ignored globally:
 # originals, format templates, and manuscript assets can be authoritative.
+#
+# Saved versions are read by people without programming knowledge, so they hold the paper and the
+# records that explain it. Files that the scripts build for their own use, or can build again, stay out.
 
 # Local credentials and machine-specific files. Never commit secrets.
 .env
@@ -16,6 +19,7 @@ __pycache__/
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
+.ipynb_checkpoints/
 
 # Separate tool environments, installed dependencies, model files, and caches
 .tools/
@@ -25,9 +29,22 @@ node_modules/
 # Temporary conversion and build staging
 .tmp/
 
+# Half-written files. A script writes a hidden temporary file next to its final location and
+# renames it when the write is complete, so a crash or a full disk can leave the temporary file behind.
+.writing-*
+*.copying-*
+*.replaced-*
+*.part
+
 # Rebuildable previews (releases are preserved)
 outputs/preview/*
 !outputs/preview/README.md
+
+# The parser's own output for an imported document (page layout and model data). The paper does not
+# need it and nothing in the workspace reads it. It stays on the computer that ran the import, and
+# importing the document again creates it anew. The README in each native/ folder stays and says so.
+references/extracted/*/native/*
+!references/extracted/*/native/README.md
 
 # Claude Code personal settings
 .claude/settings.local.json

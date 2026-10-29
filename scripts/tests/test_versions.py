@@ -194,6 +194,16 @@ class CompareAndRecoveryTests(VersionsTestCase):
         words = self.run_versions("compare", "--words", "--path", "manuscript/01-introduction.md")
         self.assertIn("[-first-]{+second+}", words.stdout)
 
+    def test_comparisons_still_read_text_with_the_shipped_byte_preserving_attributes(self) -> None:
+        # The template ships `* -text` so that saved bytes, and the checksums recorded for them, survive Git.
+        shutil.copy2(SCRIPTS.parent / ".gitattributes", self.root / ".gitattributes")
+        self.setup_history()
+        self.write("manuscript/01-introduction.md", "# Introduction\n\nThe second draft of the introduction.\n")
+        result = self.run_versions("compare")
+        self.assertIn("manuscript/01-introduction.md (changed, +1 −1 lines)", result.stdout)
+        words = self.run_versions("compare", "--words", "--path", "manuscript/01-introduction.md")
+        self.assertIn("[-first-]{+second+}", words.stdout)
+
     def test_history_retrieve_and_restore_keep_current_work_recoverable(self) -> None:
         self.setup_history()
         first = self.git("rev-parse", "--short", "HEAD").strip()
@@ -312,6 +322,41 @@ class InheritedHistoryAndBackupTests(VersionsTestCase):
         self.assertIn("old/.env.production", refused.stdout)
         facts = json.loads(self.run_versions("inspect", "--json").stdout)
         self.assertIn("old/.env.production", facts["secrets_tracked"])
+
+
+class TemplateIgnoreRulesTests(VersionsTestCase):
+    """The template's own .gitignore keeps what the scripts build for themselves out of saved versions and keeps the paper in."""
+
+    # Built for the scripts' own use, or left behind when a script stops midway. The temporary names come from
+    # ingestion/common.py, ingestion/library.py, export.py, and export/docx.py.
+    LEFT_OUT = (
+        ".env.local", ".local/logs/ingest-x.log", ".tmp/ingest.lock", ".tools/pandoc/bin/pandoc", ".cache/mineru/models/m.bin",
+        "code/.venv/bin/python", "code/notebooks/.ipynb_checkpoints/explore-checkpoint.ipynb", "outputs/preview/journal/build.json",
+        "references/.writing-ab12cd34", "references/originals/src-0123456789ab/.copying-0123456789abcdef",
+        "references/extracted/.src-0123456789ab.replaced-01234567/document.md",
+        "references/extracted/.src-0123456789ab.copying-01234567/document.md",
+        "outputs/releases/.2026-11-round-1.part/manuscript.docx", "requirements/profiles/journal/templates/reference.docx.part",
+        "references/extracted/src-0123456789ab/native/layout.json",
+    )
+    # The paper and the records that explain it.
+    KEPT = (
+        "manuscript/02-results.md", "references/originals/src-0123456789ab/paper.pdf",
+        "references/extracted/src-0123456789ab/document.md", "references/extracted/src-0123456789ab/assets/figure.jpg",
+        "references/extracted/src-0123456789ab/provenance.json", "references/extracted/src-0123456789ab/native/README.md",
+        "inbox/imports/2026-10-29-draft/import.json", "outputs/preview/README.md", "outputs/checks/checks.json",
+        "outputs/releases/2026-11-round-1/manuscript.docx", "outputs/releases/2026-11-round-1/release.json",
+        "code/runs/20261029-101010-fit/run.json", "code/runs/20261029-101010-fit/stdout.txt", "code/outputs/mean.json",
+        "requirements/profiles/journal/templates/reference.docx", ".env.example", ".claude/skills/git-save/SKILL.md",
+    )
+
+    def test_what_the_scripts_build_for_themselves_stays_out_and_the_paper_stays_in(self) -> None:
+        shutil.copy2(SCRIPTS.parent / ".gitignore", self.root / ".gitignore")
+        self.git("init", "-q")
+        for path in self.LEFT_OUT + self.KEPT:
+            self.write(path, "synthetic\n")
+        offered = set(self.git("ls-files", "--others", "--exclude-standard").splitlines())
+        self.assertEqual(sorted(set(self.LEFT_OUT) & offered), [], "these files must stay out of saved versions")
+        self.assertEqual(sorted(set(self.KEPT) - offered), [], "these files belong in saved versions")
 
 
 if __name__ == "__main__":

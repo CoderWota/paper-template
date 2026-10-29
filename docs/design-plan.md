@@ -141,7 +141,7 @@ The tree shows representative files and explicitly includes a `README.md` at eve
 │   │       ├── assets/
 │   │       │   └── README.md
 │   │       ├── provenance.json
-│   │       └── native/                            # Parser JSON and other original outputs
+│   │       └── native/                            # Parser output; on this computer only, not in version history
 │   │           └── README.md
 │   └── notes/
 │       ├── README.md
@@ -308,7 +308,7 @@ Use upstream packages or existing compatible CLI installations, with a thin proj
 
 Each import records source ID and original checksum, converter/version, settings or tier, execution mode, time, expected and processed page coverage where measurable, output paths, and warnings. Preserve unknown coverage explicitly. A partial extraction must remain visibly partial.
 
-Normalize asset links into the project layout without breaking references. Keep parser-native JSON for provenance and structured retrieval; use a small normalized metadata layer rather than pretending all parsers return equivalent structures.
+Normalize asset links into the project layout without breaking references. Keep the parser's native output on the computer that ran the import and out of version history (decided 2026-10-29, Section 13): the paper does not need it and nothing in the workspace reads it, while the normalized text, the images, and `provenance.json` carry what the paper needs. Use a small normalized metadata layer rather than pretending all parsers return equivalent structures.
 
 Use a temporary destination and publish the completed extraction atomically. Re-running an unchanged import should reuse a matching result. Re-conversion must preserve researcher notes and any reviewed corrections separately.
 
@@ -684,9 +684,11 @@ Telemetry reduction can be offered separately where useful. Do not disable unrel
 
 ## 13. Version control and ignore policy
 
-Ignore `.venv`, optional tool environments, Python caches, model weights, retrieval caches, temporary conversion files, editor/OS artifacts, secrets including `.env.local` and other credential-bearing local environment files, local privacy-verification reports, and rebuildable previews. Explicitly allow tracked placeholder-only environment examples if provided.
+Ignore `.venv`, optional tool environments, Python caches, model weights, retrieval caches, temporary conversion files, the temporary files that a script leaves behind when it stops midway, the parser's native output for imported documents (`references/extracted/*/native/`, except its README), editor/OS artifacts, secrets including `.env.local` and other credential-bearing local environment files, local privacy-verification reports, and rebuildable previews. Explicitly allow tracked placeholder-only environment examples if provided.
 
 Do not globally ignore `*.pdf`, `*.docx`, `*.tex`, or images: originals, format resources, and manuscript assets can be authoritative. Ignore paths by role instead.
+
+Saved versions are for people without programming knowledge: a saved version stays clear and concise, and nobody has to guess what a generated file is for. A generated file stays in version history only when the README of its folder describes it, as it does for `import.json`, `provenance.json`, `run.json`, and `release.json`. Output that the paper does not need and that nothing in the workspace reads is ignored, as the parser's native output is. Originals, research data, and run outputs remain a project choice (Section 15, item 5).
 
 The public template ships placeholders and redistributable fixtures, never researchers' documents. A cloned workspace needs an explicit tracking/backup policy for originals, extracted content, datasets, and release packages. `.gitignore` is neither access control nor a backup system. Consider large-file handling only when actual corpus size requires it.
 
@@ -738,5 +740,6 @@ Discuss one decision at a time. Resolved items are labeled; the remaining recomm
 22. **Complete-path objective — confirmed for testing only:** Test an idea/materials-to-results-to-manuscript-to-submission-package path with a bounded case. Accessible inputs and small scale control the test, not the product scope. Passing this test does not establish journal acceptance, real manuscript readiness, or untested capabilities, and this decision does not adopt every workflow proposal or reorder the roadmap.
 23. **Record language — resolved:** Records the researcher reads and confirms (requirements, ideas, source notes, decision and feedback records, revision plans, and project state) use the researcher's interaction language, with quotations in their original language. AGENTS.md, skills, directory READMEs, framework documents, and technical metadata stay in English; the manuscript uses its chosen language.
 24. **Agent entry files and skill adapters — resolved:** AGENTS.md was adopted on 2026-10-26, and CLAUDE.md imports it with `@AGENTS.md`. Skills are written once in `.agents/skills/`; `.claude/skills/` holds generated, committed copies checked for consistency. Actual loading in fresh sessions of both agents still needs verification.
+25. **Generated files in saved versions — resolved 2026-10-29:** The repository is for people without programming knowledge, so a saved version stays clear and concise and nobody has to guess what a generated file is for. A generated file stays in version history only when the README of its folder describes it. The parser's native output (`references/extracted/*/native/`) and the temporary files that scripts leave behind when they stop midway are ignored; Section 13 lists the rules. Originals, research data, and run outputs remain a project choice (item 5).
 
 The next draft should incorporate researcher answers and narrow implementation milestones. Do not install conversion stacks while the remaining integration choices are being discussed.

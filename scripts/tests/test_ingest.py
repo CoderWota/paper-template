@@ -169,6 +169,35 @@ class LocalImportTests(WorkspaceTestCase):
         verify = self.ingest("verify")
         self.assertEqual(verify.returncode, 0, verify.stdout)
 
+    def test_a_finished_import_leaves_no_temporary_files(self) -> None:
+        make_pdf(self.inputs / "report.pdf", 3)
+        result = self.ingest("run", "--route", "local", "--tier", "flash", str(self.inputs / "report.pdf"))
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        # The ignore rules for half-written files are a safety net for a crash, not a place to hide leftovers.
+        left = [p.relative_to(self.root).as_posix() for p in self.root.rglob("*")
+                if p.name.startswith(".writing-") or ".copying-" in p.name or ".replaced-" in p.name or p.name.endswith(".part")]
+        self.assertEqual(left, [])
+
+    def test_the_parser_output_stays_out_of_saved_versions(self) -> None:
+        make_pdf(self.inputs / "report.pdf", 3)
+        result = self.ingest("run", "--route", "local", "--tier", "flash", str(self.inputs / "report.pdf"))
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        folder = next((self.root / "references" / "extracted").glob("src-*"))
+        self.assertIn("middle_json.json", [p.name for p in (folder / "native").iterdir()])
+        shutil.copy2(SCRIPTS.parent / ".gitignore", self.root / ".gitignore")
+        empty = self.base / "empty gitconfig"
+        empty.write_text("", encoding="utf-8")
+        env = dict(os.environ, GIT_CONFIG_GLOBAL=str(empty), GIT_CONFIG_NOSYSTEM="1")
+        subprocess.run(["git", "-C", str(self.root), "init", "-q"], env=env, check=True)
+        offered = subprocess.run(["git", "-C", str(self.root), "ls-files", "--others", "--exclude-standard"], env=env, check=True,
+                                 capture_output=True, text=True, encoding="utf-8").stdout.splitlines()
+        relative = folder.relative_to(self.root).as_posix()
+        for kept in ("README.md", "document.md", "provenance.json", "native/README.md"):
+            self.assertIn(f"{relative}/{kept}", offered)
+        self.assertEqual([p for p in offered if p.startswith(f"{relative}/native/") and p != f"{relative}/native/README.md"], [])
+        readme = (folder / "native" / "README.md").read_text(encoding="utf-8")
+        self.assertIn("not saved in version history", readme)
+
     def test_a_stop_keeps_finished_work_and_the_import_continues(self) -> None:
         make_pdf(self.inputs / "a.pdf", 2)
         make_pdf(self.inputs / "b.pdf", 3)
