@@ -169,6 +169,16 @@ class CheckTests(ManuscriptTestCase):
         self.assertNotIn("Not body text", text)
         self.assertIn("CJK characters", result.stdout)
 
+    def test_metadata_yaml_is_used_even_when_the_manifest_does_not_name_it(self) -> None:
+        self.write("manuscript/manifest.yaml", MANIFEST_HEADER + "version: 1\nsections:\n  - 01-introduction.md\n  - 02-methods.md\n")
+        assembled = self.run_script("assemble")
+        self.assertEqual(assembled.returncode, 0, assembled.stdout)
+        self.assertTrue((self.root / "outputs" / "preview" / "manuscript.md").read_text(encoding="utf-8").startswith("---\ntitle: \"A synthetic paper\""))
+        self.write("manuscript/metadata.yaml", "lang: zh-CN\n")
+        self.assertIn("manuscript/metadata.yaml: no title", self.run_script("check").stdout)
+        self.write("manuscript/manifest.yaml", MANIFEST_HEADER + "version: 1\nmetadata: front.yaml\nsections:\n  - 01-introduction.md\n")
+        self.assertIn("the metadata file manuscript/front.yaml does not exist", self.run_script("check").stdout)
+
 
 class CheckRecordTests(ManuscriptTestCase):
     def test_a_changed_input_makes_a_recorded_check_stale(self) -> None:
@@ -227,6 +237,60 @@ class RevisionTests(ManuscriptTestCase):
         self.assertEqual((self.root / "manuscript" / "01-introduction.md").read_text(encoding="utf-8"), INTRO)
         readmes = subprocess.run([sys.executable, str(SCRIPTS / "check_readmes.py"), str(self.root)], capture_output=True, text=True, encoding="utf-8")
         self.assertNotIn("revisions/2026-11-argument/baseline/", readmes.stdout)
+
+    def test_an_in_place_revision_is_closed_with_a_record_that_shows_what_is_left(self) -> None:
+        self.assertEqual(self.run_script("revision-start", "--id", "r1").returncode, 0)
+        folder = self.root / "revisions" / "r1"
+        self.assertEqual(self.run_script("record-check", "--name", "Audit of methods", "--kind", "audit", "--input", "manuscript/02-methods.md",
+                                         "--result", "passed", "--summary", "No findings").returncode, 0)
+        self.write("manuscript/01-introduction.md", INTRO.replace("城市热岛研究很多", "修订后的论证"))
+        self.write("manuscript/02-methods.md", METHODS + "\nA new claim. [TODO: add the evidence]\n")
+        self.assertFalse((folder / "closed.json").exists())
+        done = self.run_script("revision-complete", "--id", "r1", "--note", "scope narrowed to cities")
+        self.assertEqual(done.returncode, 0, done.stdout)
+        self.assertIn("recorded as completed (in place)", done.stdout)
+        self.assertIn("0 problem(s) and 1 open marker(s), and 1 recorded check(s) are stale", done.stdout)
+        self.assertIn("does not hide this", done.stdout)
+        record = json.loads((folder / "closed.json").read_text(encoding="utf-8"))
+        self.assertEqual((record["outcome"], record["mode"], record["note"]), ("completed", "in place", "scope narrowed to cities"))
+        self.assertEqual(record["remaining"], {"problems": 0, "open_markers": 1, "stale_checks": 1})
+        self.assertIn("Closed: completed on", self.run_script("revision-status", "--id", "r1").stdout)
+        again = self.run_script("revision-complete", "--id", "r1")
+        self.assertEqual(again.returncode, 3)
+        self.assertIn("already completed", again.stdout)
+        self.assertEqual(self.run_script("revision-complete", "--id", "never-started").returncode, 3)
+
+    def test_a_revision_with_an_unapplied_candidate_or_an_interrupted_application_is_not_completed(self) -> None:
+        self.assertEqual(self.run_script("revision-start", "--id", "r2").returncode, 0)
+        folder = self.root / "revisions" / "r2"
+        (folder / "candidate").mkdir()
+        (folder / "candidate" / "01-introduction.md").write_text("# New introduction\n", encoding="utf-8")
+        refused = self.run_script("revision-complete", "--id", "r2")
+        self.assertEqual(refused.returncode, 3)
+        self.assertIn("1 file(s) that were not applied", refused.stdout)
+        self.assertFalse((folder / "closed.json").exists())
+        (folder / "apply.json").write_text(json.dumps({"status": "in progress", "operations": []}), encoding="utf-8")
+        interrupted = self.run_script("revision-complete", "--id", "r2")
+        self.assertEqual(interrupted.returncode, 3)
+        self.assertIn("interrupted", interrupted.stdout)
+        (folder / "apply.json").unlink()
+        self.assertEqual(self.run_script("revision-apply", "--id", "r2").returncode, 0)
+        done = self.run_script("revision-complete", "--id", "r2")
+        self.assertEqual(done.returncode, 0, done.stdout)
+        self.assertEqual(json.loads((folder / "closed.json").read_text(encoding="utf-8"))["mode"], "candidate")
+
+    def test_restoring_the_baseline_records_the_revision_as_abandoned(self) -> None:
+        self.assertEqual(self.run_script("revision-start", "--id", "r3").returncode, 0)
+        self.write("manuscript/01-introduction.md", INTRO + "\nAn edit that the researcher drops.\n")
+        restored = self.run_script("revision-restore", "--id", "r3")
+        self.assertEqual(restored.returncode, 0, restored.stdout)
+        self.assertIn("recorded as abandoned", restored.stdout)
+        record = json.loads((self.root / "revisions" / "r3" / "closed.json").read_text(encoding="utf-8"))
+        self.assertEqual((record["outcome"], record["mode"]), ("abandoned", "in place"))
+        self.assertIn("Closed: abandoned on", self.run_script("revision-status", "--id", "r3").stdout)
+        self.assertEqual(self.run_script("revision-complete", "--id", "r3").returncode, 3)
+        readmes = subprocess.run([sys.executable, str(SCRIPTS / "check_readmes.py"), str(self.root)], capture_output=True, text=True, encoding="utf-8")
+        self.assertNotIn("revisions/r3", readmes.stdout)
 
     def test_an_interrupted_application_is_detected_and_resumed(self) -> None:
         self.assertEqual(self.run_script("revision-start", "--id", "r1").returncode, 0)

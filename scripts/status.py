@@ -141,8 +141,14 @@ def facts(root: Path) -> dict:
     revisions = []
     for folder in sorted((root / "revisions").iterdir()) if (root / "revisions").is_dir() else []:
         if (folder / "baseline.json").is_file():
-            log = folder / "apply.json"
-            state = json.loads(log.read_text(encoding="utf-8"))["status"] if log.is_file() else "in progress"
+            # The closing record (completed or abandoned) wins; else the application log; else the work is still open.
+            closed, log = folder / "closed.json", folder / "apply.json"
+            if closed.is_file():
+                state = json.loads(closed.read_text(encoding="utf-8"))["outcome"]
+            elif log.is_file():
+                state = json.loads(log.read_text(encoding="utf-8"))["status"]
+            else:
+                state = "in progress"
             revisions.append(f"{folder.name}: {state}")
     data["revisions"] = revisions
     git = subprocess.run(["git", "-C", str(root), "status", "--porcelain"], capture_output=True, text=True) if (root / ".git").exists() else None

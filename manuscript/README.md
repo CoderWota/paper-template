@@ -7,8 +7,8 @@ The working text of the paper and its figures, tables, and other assets. Write i
 | Path | Role |
 | --- | --- |
 | [`outline.md`](outline.md) | The argument and section plan. Not a second copy of the body text. |
-| [`manifest.yaml`](manifest.yaml) | The explicit list and order of section files that make up the manuscript, and the name of the metadata file. |
-| `metadata.yaml` | Title, authors, abstract, keywords, and language, created when the manuscript gets them. Maintained by the agent. |
+| [`manifest.yaml`](manifest.yaml) | The explicit list and order of section files that make up the manuscript. A `metadata:` line is needed only to name a metadata file other than `metadata.yaml`. |
+| `metadata.yaml` | Title, authors (plain names), abstract, keywords, and language, created when the manuscript gets them. Maintained by the agent. The check, the preview, and every build use it whenever it exists, and a build reports a declared title, author, or keyword that the Word file lacks. |
 | Section files, for example `01-introduction.md` | Body text: at most one Markdown file per chapter or major section. A single-file manuscript is also fine. |
 | [`assets/`](assets/README.md) | Figures, tables, captions, and their sources. |
 

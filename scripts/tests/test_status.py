@@ -60,6 +60,22 @@ class StatusTests(unittest.TestCase):
         self.assertIn("build a formatted preview (submission-assembly)", steps)
         self.assertNotIn("project-onboarding", steps)
 
+    def test_a_revision_stays_open_until_it_is_completed_or_abandoned(self) -> None:
+        for name in ("r1", "r2", "r3", "r4", "r5"):
+            self.write(f"revisions/{name}/baseline.json", "{}\n")
+        self.write("revisions/r2/closed.json", json.dumps({"outcome": "completed"}))
+        self.write("revisions/r3/closed.json", json.dumps({"outcome": "abandoned"}))
+        self.write("revisions/r4/apply.json", json.dumps({"status": "applied"}))
+        self.write("revisions/r5/apply.json", json.dumps({"status": "in progress"}))
+        data = self.status()
+        self.assertEqual(data["revisions"], ["r1: in progress", "r2: completed", "r3: abandoned", "r4: applied", "r5: in progress"])
+        self.assertIn("continue the open major revision (manuscript-revision)", data["next_steps"])
+        self.write("revisions/r1/closed.json", json.dumps({"outcome": "completed"}))
+        self.write("revisions/r5/closed.json", json.dumps({"outcome": "abandoned"}))
+        data = self.status()
+        self.assertEqual(data["revisions"], ["r1: completed", "r2: completed", "r3: abandoned", "r4: applied", "r5: abandoned"])
+        self.assertNotIn("continue the open major revision (manuscript-revision)", data["next_steps"])
+
     def test_open_items_are_not_recorded_settings(self) -> None:
         # The venue is listed as still open, and the onboarding of another copy is still in progress.
         self.write("requirements/project.md", "# 项目要求\n\n状态：已初始化（2026-10-29）。目标期刊待定。\n\n## 尚未确定\n\n- 目标期刊\n- 文章类型\n")

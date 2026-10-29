@@ -6,7 +6,8 @@ checkable expectations, templates/ holds the Word reference document and an opti
 supplied guidelines, and requirements.md maps each adopted rule to its source, implementation, and check. A build
 assembles the files that manuscript/manifest.yaml lists with Pandoc, pandoc-crossref, citeproc, and the workspace's
 Lua filters, renders Mermaid diagrams as figures, and checks the DOCX: one native Word equation per source formula
-with matching structure, figures, references, citations, layout expectations, word limits, and anonymization.
+with matching structure, figures, references, citations, the title, authors, and keywords that manuscript/metadata.yaml
+declares, layout expectations, word limits, and anonymization.
 Previews go to outputs/preview/<profile-id>/; a release copies a passing, current build into outputs/releases/<id>/
 and is never overwritten.
 
@@ -220,9 +221,9 @@ def render_diagrams(root: Path, info: dict, blocks: list, folder: Path, scale: s
 
 def pandoc_command(root: Path, info: dict, profile: dict, folder: Path, sections: list, figures: Path) -> list:
     command = [info["pandoc"], "--from", "markdown", "--resource-path", "manuscript"]
-    manifest = manuscript.read_manifest(root)
-    if manifest.get("metadata") and (root / "manuscript" / manifest["metadata"]).is_file():
-        command += ["--metadata-file", f"manuscript/{manifest['metadata']}"]
+    metadata = manuscript.metadata_name(root, manuscript.read_manifest(root))
+    if metadata and (root / "manuscript" / metadata).is_file():
+        command += ["--metadata-file", f"manuscript/{metadata}"]
     command += [f"manuscript/{name}" for name in sections]
     # Cross-reference settings go in a metadata file, because prefixes with a plural form are lists.
     settings = {"autoSectionLabels": True, "mermaid-figures": figures.as_posix()}
@@ -256,9 +257,9 @@ def pandoc_command(root: Path, info: dict, profile: dict, folder: Path, sections
 
 def build_inputs(root: Path, folder: Path, profile: dict, sections: list) -> list:
     paths = [f"manuscript/{name}" for name in sections] + ["manuscript/manifest.yaml"]
-    manifest = manuscript.read_manifest(root)
-    if manifest.get("metadata"):
-        paths.append(f"manuscript/{manifest['metadata']}")
+    metadata = manuscript.metadata_name(root, manuscript.read_manifest(root))
+    if metadata:
+        paths.append(f"manuscript/{metadata}")
     for value in ("references/bibliography.bib",):
         if (root / value).is_file():
             paths.append(value)
@@ -291,6 +292,11 @@ def verify(root: Path, profile: dict, output: Path, facts: dict, warnings: list,
     checks.append(("cross-references", not unresolved, "all resolved" if not unresolved else "unresolved: " + ", ".join(unresolved[:8])))
     missing = [w for w in warnings if "Citeproc" in w and "not found" in w]
     checks.append(("citations", not missing, "all keys found" if not missing else "; ".join(missing[:8])))
+    declared = facts.get("front_matter") or {}
+    lost, found = docx.compare_front_matter(declared, output)
+    checks.append(("front matter", not lost, "; ".join(lost) if lost else
+                   ("in the Word file, from the manuscript metadata: " + ", ".join(found)) if found else
+                   "the manuscript metadata declares no title, authors, or keywords, so the Word file has none"))
     fetched = [w for w in warnings if "Could not fetch" in w or "could not be found" in w.lower()]
     if fetched:
         checks.append(("resources", False, "; ".join(fetched[:5])))
@@ -343,7 +349,9 @@ def command_build(args, root: Path) -> int:
         print(f"Pandoc failed: {built.stderr.strip()[:600]}")
         return 1
     tree = subprocess.run(command + ["-t", "json"], cwd=root, capture_output=True, text=True, encoding="utf-8")
-    facts = docx.ast_facts(json.loads(tree.stdout))
+    ast = json.loads(tree.stdout)
+    facts = docx.ast_facts(ast)
+    facts["front_matter"] = docx.front_matter(ast)
     facts["images"] = len(re.findall(r'"t":\s*"Image"', tree.stdout))
     warnings = [line.strip() for line in built.stderr.splitlines() if line.strip()]
     checks = verify(root, profile, output, facts, warnings, sections)

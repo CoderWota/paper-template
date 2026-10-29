@@ -2,12 +2,14 @@
 """Check, assemble, and revise the manuscript with the workspace's Markdown conventions.
 
 The manuscript is the files that manuscript/manifest.yaml lists, in that order, with optional Pandoc metadata
-(title, authors, abstract, keywords) in the file that its `metadata` key names. `check` applies the conventions in
+(title, authors, abstract, keywords) in manuscript/metadata.yaml, or in the file that the manifest's `metadata` key
+names. `check` applies the conventions in
 docs/markdown-and-export-conventions.md: math delimiters, equation labels, figure, table, equation, and section
 labels and the references to them, citation keys against references/bibliography.bib, image links, hand-numbered
 references, and open markers. `assemble` joins the listed files for a preview. Check records in outputs/checks/
 remember which inputs a check examined, so that a changed input makes the result stale. Major revisions keep a
-baseline snapshot in revisions/<revision-id>/baseline/ and apply a staged candidate with a resumable log.
+baseline snapshot in revisions/<revision-id>/baseline/, apply a staged candidate with a resumable log, and end with a
+closing record (closed.json) when the revision is completed, in place or after the candidate, or abandoned.
 
 Usage:
   python scripts/manuscript.py check
@@ -20,6 +22,7 @@ Usage:
   python scripts/manuscript.py revision-start --id ID [--include PATH ...]
   python scripts/manuscript.py revision-status --id ID
   python scripts/manuscript.py revision-apply --id ID [--reconciled PATH ...] [--resume]
+  python scripts/manuscript.py revision-complete --id ID [--note TEXT]
   python scripts/manuscript.py revision-restore --id ID
 All commands take --root WORKSPACE. Exit status: 0 done; 1 problems found or an application stopped; 2 the
 records are valid but some are stale; 3 refused. Uses only the Python standard library.
@@ -100,6 +103,17 @@ def unquote(value: str) -> str:
     if len(value) >= 2 and value[0] == value[-1] and value[0] in "'\"":
         return value[1:-1]
     return value
+
+
+METADATA = "metadata.yaml"
+
+
+def metadata_name(root: Path, manifest: dict) -> str | None:
+    """The Pandoc metadata file (title, authors, abstract, keywords): the file the manifest names, else manuscript/metadata.yaml."""
+    named = manifest.get("metadata")
+    if named:
+        return named
+    return METADATA if (root / "manuscript" / METADATA).is_file() else None
 
 
 def command_set_sections(args, root: Path) -> int:
@@ -326,7 +340,7 @@ def analyse(root: Path) -> dict:
     manifest = read_manifest(root)
     paths, problems = section_paths(root, manifest)
     scan = Scan()
-    metadata = manifest.get("metadata")
+    metadata = metadata_name(root, manifest)
     if metadata:
         meta = root / "manuscript" / metadata
         if not meta.is_file():
@@ -384,7 +398,7 @@ def command_assemble(args, root: Path) -> int:
     if not paths:
         raise Refused("the manifest lists no section files yet")
     parts = []
-    metadata = manifest.get("metadata")
+    metadata = metadata_name(root, manifest)
     if metadata and (root / "manuscript" / metadata).is_file():
         parts.append("---\n" + (root / "manuscript" / metadata).read_text(encoding="utf-8").strip() + "\n---")
     for name, path in paths:
@@ -665,6 +679,12 @@ def command_record_check(args, root: Path) -> int:
     return 0
 
 
+def changed_inputs(root: Path, entry: dict) -> list:
+    """The inputs of a recorded check that no longer exist or no longer match their checksum."""
+    return [item["path"] for item in entry["inputs"]
+            if not (root / item["path"]).exists() or checksum(root / item["path"]) != item["sha256"]]
+
+
 def command_checks(args, root: Path) -> int:
     data = load_checks(root)
     if not data["checks"]:
@@ -672,8 +692,7 @@ def command_checks(args, root: Path) -> int:
         return 0
     stale = 0
     for entry in data["checks"]:
-        changed = [item["path"] for item in entry["inputs"]
-                   if not (root / item["path"]).exists() or checksum(root / item["path"]) != item["sha256"]]
+        changed = changed_inputs(root, entry)
         state = "stale: " + ", ".join(changed) + " changed" if changed else "current"
         stale += bool(changed)
         print(f"{entry['id']}: {entry['kind']}, {entry['result']} — {entry['summary'][:100]} ({state})")
@@ -720,6 +739,21 @@ def load_baseline(folder: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+def load_closure(folder: Path) -> dict | None:
+    """The closing record of a revision (completed or abandoned), or None while the revision is open."""
+    path = folder / "closed.json"
+    return json.loads(path.read_text(encoding="utf-8")) if path.is_file() else None
+
+
+def write_closure(folder: Path, outcome: str, note: str = "", **extra) -> dict:
+    log = folder / "apply.json"
+    record = {"schema": "paper-template.revision-closed/1", "revision": folder.name, "outcome": outcome,
+              "closed": datetime.now().isoformat(timespec="seconds"), "mode": "candidate" if log.is_file() else "in place",
+              "note": note, **extra}
+    write_json_atomic(folder / "closed.json", record)
+    return record
+
+
 def command_revision_start(args, root: Path) -> int:
     folder = revision_folder(root, args.id)
     if (folder / "baseline.json").exists():
@@ -744,7 +778,8 @@ def command_revision_start(args, root: Path) -> int:
         f"{record['created'][:10]} with checksums in `baseline.json`, so it can be recovered with or without Git. `plan.md` "
         "states the goal, scope, affected material, ordered work, and next action; `changes.md` maps old to new sections, "
         "claims, figures, and citations; `checks.md` records which inputs were checked with what result. A staged manuscript, "
-        "when one is used, is in `candidate/` and is never assembled until it is applied."), OWNER)
+        "when one is used, is in `candidate/` and is never assembled until it is applied. `closed.json` appears when the "
+        "revision is completed or abandoned; until then the project status reports the revision as open."), OWNER)
     update_readme(baseline / "README.md", f"Baseline of {args.id}", (
         f"The starting version of revision `{args.id}`: the manuscript, the requirements, the bibliography, the research plan, "
         "and any other included files, exactly as they were when the revision began. Nothing here is edited; "
@@ -775,6 +810,9 @@ def command_revision_status(args, root: Path) -> int:
     baseline = load_baseline(folder)
     changed, added, removed = changed_since(root, baseline)
     print(f"Revision {args.id}, baseline of {baseline['created'][:10]}:")
+    closed = load_closure(folder)
+    if closed:
+        print(f"  Closed: {closed['outcome']} on {closed['closed'][:10]} ({closed['mode']})" + (f"; {closed['note']}" if closed.get("note") else "") + ".")
     for label, items in (("Changed since the baseline", changed), ("New since the baseline", added), ("Removed since the baseline", removed)):
         if items:
             print(f"  {label}: " + ", ".join(items))
@@ -889,6 +927,32 @@ def command_revision_apply(args, root: Path) -> int:
     return 0
 
 
+def command_revision_complete(args, root: Path) -> int:
+    """Record that a revision is finished, so that the project status stops reporting it as open."""
+    folder = revision_folder(root, args.id)
+    load_baseline(folder)
+    closed = load_closure(folder)
+    if closed:
+        raise Refused(f"revision {args.id} was already {closed['outcome']} on {closed['closed'][:10]}")
+    log_path = folder / "apply.json"
+    log = json.loads(log_path.read_text(encoding="utf-8")) if log_path.is_file() else None
+    if log and log["status"] != "applied":
+        raise Refused("the application of the candidate was interrupted; continue it with revision-apply --resume first")
+    staged = candidate_files(folder)
+    if staged and not log:
+        raise Refused(f"revisions/{args.id}/candidate/ holds {len(staged)} file(s) that were not applied. Apply them with "
+                      "revision-apply, or ask the researcher what to do with the candidate before completing the revision in place")
+    analysis = analyse(root)
+    stale = sum(bool(changed_inputs(root, entry)) for entry in load_checks(root)["checks"])
+    remaining = {"problems": len(analysis["problems"]), "open_markers": len(analysis["open_items"]), "stale_checks": stale}
+    record = write_closure(folder, "completed", args.note or "", remaining=remaining)
+    print(f"Revision {args.id} is recorded as completed ({record['mode']}). The manuscript check reports {remaining['problems']} "
+          f"problem(s) and {remaining['open_markers']} open marker(s), and {stale} recorded check(s) are stale.")
+    if any(remaining.values()):
+        print("The record does not hide this: recheck these (python scripts/manuscript.py check and checks) before calling the revision checked.")
+    return 0
+
+
 def command_revision_restore(args, root: Path) -> int:
     folder = revision_folder(root, args.id)
     baseline = load_baseline(folder)
@@ -907,6 +971,8 @@ def command_revision_restore(args, root: Path) -> int:
           (f" The current versions were kept in revisions/{args.id}/replaced/{stamp}/." if changed else ""))
     if added:
         print("Files created after the baseline were left in place: " + ", ".join(added))
+    write_closure(folder, "abandoned", "the baseline was restored")
+    print(f"Revision {args.id} is recorded as abandoned; start a new revision for another attempt.")
     return 0
 
 
@@ -939,11 +1005,14 @@ def main(argv: list | None = None) -> int:
     for name, help_text in (("revision-start", "keep a baseline snapshot for a major revision"),
                             ("revision-status", "compare the workspace and the candidate with the baseline"),
                             ("revision-apply", "apply the staged candidate to manuscript/, resumably"),
-                            ("revision-restore", "copy the baseline back, keeping the current versions")):
+                            ("revision-complete", "record a revision, in place or applied, as completed"),
+                            ("revision-restore", "copy the baseline back, keeping the current versions, and record the revision as abandoned")):
         command = commands.add_parser(name, help=help_text)
         command.add_argument("--id", required=True)
         if name == "revision-start":
             command.add_argument("--include", action="append")
+        if name == "revision-complete":
+            command.add_argument("--note", help="a short remark kept in the closing record")
         if name == "revision-apply":
             command.add_argument("--reconciled", action="append")
             command.add_argument("--resume", action="store_true")
@@ -952,7 +1021,7 @@ def main(argv: list | None = None) -> int:
     handlers = {"check": command_check, "set-sections": command_set_sections, "assemble": command_assemble, "adopt": command_adopt,
                 "record-check": command_record_check, "checks": command_checks, "revision-start": command_revision_start,
                 "revision-status": command_revision_status, "revision-apply": command_revision_apply,
-                "revision-restore": command_revision_restore}
+                "revision-complete": command_revision_complete, "revision-restore": command_revision_restore}
     try:
         return handlers[args.command](args, root)
     except Refused as error:

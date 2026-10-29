@@ -151,6 +151,14 @@ class CompletePathTest(unittest.TestCase):
         if HAVE_PANDOC:
             self.assertIn("rebuild the formatted output (submission-assembly)", status["next_steps"])
 
+        # A revision made in place stays open in the project status until it is completed.
+        self.script("manuscript.py", "revision-start", "--id", "2026-12-wording")
+        self.assertIn("continue the open major revision (manuscript-revision)", json.loads(self.script("status.py", "--json"))["next_steps"])
+        self.script("manuscript.py", "revision-complete", "--id", "2026-12-wording", "--note", "wording only")
+        status = json.loads(self.script("status.py", "--json"))
+        self.assertEqual(status["revisions"], ["2026-11-scope: applied", "2026-12-wording: completed"])
+        self.assertNotIn("continue the open major revision (manuscript-revision)", status["next_steps"])
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -105,6 +105,14 @@ class WorkspaceTestCase(unittest.TestCase):
         return subprocess.run([sys.executable, str(SCRIPTS / "ingest.py"), "--root", str(self.root), *args], capture_output=True,
                               text=True, encoding="utf-8", env=env, timeout=300)
 
+    def ingest_without_parser(self, *args: str) -> subprocess.CompletedProcess:
+        """Run the script as on a computer where MinerU was never installed and no token exists."""
+        env = dict(os.environ)
+        for name in ("INGEST_MINERU_KIT", "MINERU_API_TOKEN"):
+            env.pop(name, None)
+        return subprocess.run([sys.executable, str(SCRIPTS / "ingest.py"), "--root", str(self.root), *args], capture_output=True,
+                              text=True, encoding="utf-8", env=env, timeout=300)
+
     def calls(self) -> list:
         if not self.log.is_file():
             return []
@@ -373,6 +381,29 @@ class ReviewTests(WorkspaceTestCase):
         self.assertEqual(again.returncode, 0)
         self.assertEqual(set(self.statuses(self.record()).values()), {"already-imported"})
         self.assertEqual(sorted(p.name for p in (round_folder / "originals").iterdir()), ["README.md", "decision letter.docx", "report 2.pdf"])
+        readmes = subprocess.run([sys.executable, str(SCRIPTS / "check_readmes.py"), str(self.root)], capture_output=True, text=True, encoding="utf-8")
+        self.assertEqual(readmes.returncode, 0, readmes.stdout)
+
+    def test_markdown_and_text_letters_are_filed_directly_without_a_route_or_a_parser(self) -> None:
+        (self.inputs / "decision letter.md").write_text("# Decision\n\nReviewer 1\n\n1. The claim is too strong.\n2. 请补充样本量。\n", encoding="utf-8")
+        (self.inputs / "reviewer 2.txt").write_text("Reviewer 2\n\n1. Report the sample size.\n", encoding="utf-8")
+        destination = "reviews/test-journal/round-1"
+        planned = self.ingest_without_parser("plan", "--to", destination, str(self.inputs))
+        self.assertEqual(planned.returncode, 0, planned.stdout + planned.stderr)
+        self.assertNotIn("needs a processing route", planned.stdout)
+        result = self.ingest_without_parser("run", "--to", destination, str(self.inputs))
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertNotIn("MinerU is not installed", result.stdout + result.stderr)
+        round_folder = self.root / "reviews" / "test-journal" / "round-1"
+        self.assertIn("2. 请补充样本量。", (round_folder / "extracted" / "markdown" / "decision-letter.md").read_text(encoding="utf-8"))
+        self.assertIn("Reviewer 2", (round_folder / "extracted" / "markdown" / "reviewer-2.md").read_text(encoding="utf-8"))
+        self.assertEqual(sorted(p.name for p in (round_folder / "originals").iterdir()), ["README.md", "decision letter.md", "reviewer 2.txt"])
+        self.assertEqual(self.statuses(self.record()), {"decision letter.md": "converted", "reviewer 2.txt": "converted"})
+        self.assertEqual({item["role"] for item in self.record()["items"]}, {"review"})
+        again = self.ingest_without_parser("run", "--to", destination, str(self.inputs))
+        self.assertEqual(again.returncode, 0, again.stdout + again.stderr)
+        self.assertEqual(set(self.statuses(self.record()).values()), {"already-imported"})
+        self.assertEqual(self.calls(), [])
         readmes = subprocess.run([sys.executable, str(SCRIPTS / "check_readmes.py"), str(self.root)], capture_output=True, text=True, encoding="utf-8")
         self.assertEqual(readmes.returncode, 0, readmes.stdout)
 

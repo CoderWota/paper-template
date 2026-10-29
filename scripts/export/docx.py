@@ -3,7 +3,8 @@
 `build_reference_doc` edits Pandoc's default reference document as text, so that every namespace and attribute
 that Word expects survives, and writes the section properties in the order that the Office Open XML schema requires.
 The check functions read a built DOCX: native equations (OMML) in the body and the footnotes, drawings, text, core
-properties, and the layout that its section properties and styles produce.
+properties, the front matter (title, authors, keywords) that the manuscript metadata declares, and the layout that
+its section properties and styles produce.
 """
 
 from __future__ import annotations
@@ -225,6 +226,43 @@ def ast_facts(ast: dict) -> dict:
     return facts
 
 
+def _plain(node) -> str:
+    """The plain text of Pandoc inlines or blocks: words, spaces, and quoted or formatted text, without link targets or notes."""
+    if isinstance(node, list):
+        return "".join(_plain(item) for item in node)
+    if not isinstance(node, dict):
+        return ""
+    kind, content = node.get("t"), node.get("c")
+    if kind in ("Str", "MetaString"):
+        return content
+    if kind in ("Space", "SoftBreak", "LineBreak"):
+        return " "
+    if kind == "Code":
+        return content[1]
+    if kind in ("Math", "Note"):
+        return ""
+    if kind in ("Para", "Plain"):
+        return _plain(content) + " "
+    return _plain(content) if isinstance(content, (list, dict)) else ""
+
+
+def front_matter(ast: dict) -> dict:
+    """The title, the authors, and the keywords that the metadata of a Pandoc JSON AST declares, as plain text."""
+    meta = ast.get("meta", {})
+
+    def texts(value) -> list:
+        if not isinstance(value, dict):
+            return []
+        if value.get("t") == "MetaList":
+            return [text for item in value["c"] for text in texts(item)]
+        if value.get("t") == "MetaMap":  # an author written as a mapping: only its name counts
+            return texts(value["c"].get("name"))
+        text = " ".join(_plain(value).split())
+        return [text] if text else []
+
+    return {"title": " ".join(texts(meta.get("title"))), "authors": texts(meta.get("author")), "keywords": texts(meta.get("keywords"))}
+
+
 def compare_formulas(facts: dict, objects: list) -> list:
     """Problems found when the source formulas are matched, in order, with the native equations."""
     problems = []
@@ -259,6 +297,38 @@ def core_properties(docx: Path) -> dict:
     if root is None:
         return {}
     return {node.tag.split("}")[-1]: (node.text or "") for node in root}
+
+
+def _letters(text: str) -> str:
+    """Letters and digits in lower case: quotes, dashes, and spacing differ between the metadata and the Word text."""
+    return re.sub(r"[\W_]+", "", text).casefold()
+
+
+def compare_front_matter(declared: dict, docx: Path) -> tuple:
+    """(problems, found): what the manuscript metadata declares but the Word file lacks, and what it holds.
+
+    The title and each author must be in the text. Pandoc writes the keywords to the file properties, not to the text,
+    so a keyword counts when it is in either place."""
+    text, properties = _letters(text_of(docx)), _letters(core_properties(docx).get("keywords", ""))
+    problems, found = [], []
+    title = declared.get("title", "")
+    if title and _letters(title) in text:
+        found.append("the title")
+    elif title:
+        problems.append(f"the title “{title}” is not in the Word file")
+    authors = declared.get("authors", [])
+    lost = [name for name in authors if _letters(name) not in text]
+    if lost:
+        problems.append("author(s) not in the Word file: " + ", ".join(lost))
+    elif authors:
+        found.append(f"{len(authors)} author(s)")
+    keywords = declared.get("keywords", [])
+    lost = [word for word in keywords if _letters(word) not in properties and _letters(word) not in text]
+    if lost:
+        problems.append("keyword(s) not in the Word file: " + ", ".join(lost))
+    elif keywords:
+        found.append(f"{len(keywords)} keyword(s)")
+    return problems, found
 
 
 def _style_chain(styles, style_id: str) -> list:

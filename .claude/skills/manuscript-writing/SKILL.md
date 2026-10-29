@@ -26,7 +26,7 @@ Outcome: the requested text in the manuscript, written in the manuscript languag
 
 ## Step 4: Apply and check
 
-9. Write the section file. A new section gets its own file (one file per major section at most, or a single file for a short paper); add it to the manifest in the outline's order with `python scripts/manuscript.py set-sections FILE ...`. Never list the outline, notes, or drafts.
+9. Write the section file. A new section gets its own file (one file per major section at most, or a single file for a short paper); add it to the manifest in the outline's order with `python scripts/manuscript.py set-sections FILE ...`. Never list the outline, notes, or drafts. The title, authors, and keywords of the paper go in `manuscript/metadata.yaml`, not in a section file (`title:`, `author:` as a list of plain names, `keywords:` as a list). The check, the preview, and every build use that file whenever it exists, and a Word build fails when a declared title, author, or keyword does not reach the Word file. Take them from the researcher; never invent them.
 10. Run `python scripts/manuscript.py check` and fix every problem in the text you wrote: unresolved labels, unknown citation keys, missing images, broken math. When a citation key is missing from the bibliography, add the entry only from a real source: the archived document through `python scripts/ingest.py metadata`, or the metadata of a recorded search result. Never type in bibliographic details from memory.
 
 ## Step 5: Report

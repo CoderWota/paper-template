@@ -1,6 +1,6 @@
 ---
 name: review-ingestion
-description: Use when the researcher gives editor or reviewer documents to archive and convert, such as decision letters, reviewer reports, annotated PDFs, or Word files with comments or tracked changes, or asks what a review round contains. Files them by venue and submission round in reviews/, converts the main text with MinerU as the researcher confirmed, lists Word comments, tracked changes, and PDF annotations separately, keeps reviewer labels and numbering, and reports gaps. It drafts no response and sends nothing.
+description: Use when the researcher gives editor or reviewer documents to archive and convert, such as decision letters, reviewer reports, annotated PDFs, or Word files with comments or tracked changes, or asks what a review round contains. Files them by venue and submission round in reviews/, converts PDF and Word letters with MinerU as the researcher confirmed (Markdown and plain-text letters are filed as they are, with no converter), lists Word comments, tracked changes, and PDF annotations separately, keeps reviewer labels and numbering, and reports gaps. It drafts no response and sends nothing.
 ---
 
 # Review ingestion
@@ -10,7 +10,8 @@ Outcome: `reviews/<venue-id>/<round-id>/` holds the received documents in `origi
 ## Rules for this skill
 
 - Follow `AGENTS.md`. Review documents are confidential correspondence.
-- Use the route confirmed in `requirements/privacy.md`. Upload review documents to mineru.net only if the confirmed scope covers editorial and review correspondence; a scope of "published papers" does not. When in doubt, ask, and recommend this computer.
+- A Markdown or plain-text letter needs no converter: the script reads it directly on this computer. Install nothing and ask nothing about a route, a tier, or an upload for it.
+- For a letter in another format, use the route confirmed in `requirements/privacy.md`. Upload review documents to mineru.net only if the confirmed scope covers editorial and review correspondence; a scope of "published papers" does not. When in doubt, ask, and recommend this computer.
 - Keep rounds apart. Importing the same files again must not create a second copy.
 - Do not draft, send, or plan a response, and do not edit the manuscript. Responding is a separate task, `review-response`, which starts from this extraction.
 
@@ -23,12 +24,20 @@ Outcome: `reviews/<venue-id>/<round-id>/` holds the received documents in `origi
 
 ## Step 2: Prepare the route
 
-Settle and prepare the processing route as `source-ingestion` describes in its steps 2 and 3, with the scope check above. A Word letter needs only the flash tier on this computer. A scanned letter needs the basic tier or OCR.
+If every supplied file is Markdown or plain text, skip this step: nothing is converted, so no route, tier, or MinerU installation is needed.
+
+Otherwise settle and prepare the processing route as `source-ingestion` describes in its steps 2 and 3, with the scope check above. A Word letter needs only the flash tier on this computer. A scanned letter needs the basic tier or OCR.
 
 ## Step 3: Run the import
 
 ```text
 python scripts/ingest.py run --route local --tier flash --ocr-mode txt --to reviews/<venue-id>/<round-id> PATH...
+```
+
+When every file is Markdown or plain text, leave out `--route`, `--tier`, and `--ocr-mode`; the same command then needs no parser:
+
+```text
+python scripts/ingest.py run --to reviews/<venue-id>/<round-id> PATH...
 ```
 
 The script archives the files, converts them, adds a section to each Markdown file for what the main conversion does not show, and keeps a resumable record in `inbox/imports/<import-id>/`. Continue a stopped import with `python scripts/ingest.py run --import-id ID`.

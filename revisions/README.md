@@ -16,10 +16,11 @@ One subdirectory per major revision, created only when the scale warrants it: `<
 ├── checks.md      # Which input versions were checked, with what result, and the remaining gaps
 ├── candidate/     # Optional staged manuscript, never assembled until it is applied
 ├── apply.json     # The log of applying the candidate, so an interruption can be resumed
+├── closed.json    # Written when the revision is completed or abandoned: the outcome, the date, in place or candidate, and what was still open
 └── replaced/      # Versions that an application or a restore replaced
 ```
 
-`python scripts/manuscript.py` keeps the baseline (`revision-start`), compares the workspace and the candidate with it (`revision-status`), applies the candidate (`revision-apply`, with `--resume` after an interruption), and copies the baseline back (`revision-restore`).
+`python scripts/manuscript.py` keeps the baseline (`revision-start`), compares the workspace and the candidate with it (`revision-status`), applies the candidate (`revision-apply`, with `--resume` after an interruption), records a finished revision, made in place or with a candidate (`revision-complete`), and copies the baseline back and records the revision as abandoned (`revision-restore`). A revision without `closed.json` is reported as open by the project status.
 
 The agent creates each of these folders with its own README.
 

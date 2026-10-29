@@ -38,13 +38,19 @@ STYLES = (f'<w:styles {W_NS}><w:docDefaults><w:rPrDefault><w:rPr><w:rFonts w:asc
 DOCUMENT = f'<w:document {W_NS}><w:body><w:p /><w:sectPr><w:footnotePr><w:numRestart w:val="eachSect" /></w:footnotePr></w:sectPr></w:body></w:document>'
 
 
-def make_package(path: Path, document: str = DOCUMENT, styles: str = STYLES, footnotes: str | None = None) -> Path:
+CORE = ('<cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" '
+        'xmlns:dc="http://purl.org/dc/elements/1.1/"><dc:title>A study</dc:title><cp:keywords>{keywords}</cp:keywords></cp:coreProperties>')
+
+
+def make_package(path: Path, document: str = DOCUMENT, styles: str = STYLES, footnotes: str | None = None, core: str | None = None) -> Path:
     with zipfile.ZipFile(path, "w") as package:
         package.writestr("[Content_Types].xml", '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"/>')
         package.writestr("word/document.xml", document)
         package.writestr("word/styles.xml", styles)
         if footnotes:
             package.writestr("word/footnotes.xml", footnotes)
+        if core:
+            package.writestr("docProps/core.xml", core)
     return path
 
 
@@ -126,6 +132,37 @@ class FormulaCheckTests(unittest.TestCase):
             {"t": "Figure", "c": []}, {"t": "CodeBlock", "c": [["", ["mermaid"], []], "flowchart LR"]}]}
         facts = docx.ast_facts(ast)
         self.assertEqual((len(facts["body"]), len(facts["notes"]), facts["figures"], facts["mermaid_code"], facts["todo"]), (1, 1, 1, 1, 1))
+
+    def test_the_front_matter_is_read_from_the_metadata_of_the_ast(self) -> None:
+        def inlines(*words):
+            parts = []
+            for word in words:
+                parts += ([{"t": "Space"}] if parts else []) + [{"t": "Str", "c": word}]
+            return {"t": "MetaInlines", "c": parts}
+
+        title = {"t": "MetaInlines", "c": [{"t": "Str", "c": "A"}, {"t": "Space"}, {"t": "Quoted", "c": [{"t": "DoubleQuote"}, [{"t": "Str", "c": "quoted"}]]},
+                                           {"t": "Space"}, {"t": "Str", "c": "study"}]}
+        authors = {"t": "MetaList", "c": [inlines("Test", "Author"), {"t": "MetaMap", "c": {"name": inlines("Second", "Author")}}]}
+        keywords = {"t": "MetaList", "c": [inlines("urban", "heat"), inlines("城市热岛")]}
+        self.assertEqual(docx.front_matter({"meta": {"title": title, "author": authors, "keywords": keywords}}),
+                         {"title": "A quoted study", "authors": ["Test Author", "Second Author"], "keywords": ["urban heat", "城市热岛"]})
+        self.assertEqual(docx.front_matter({"meta": {}}), {"title": "", "authors": [], "keywords": []})
+        self.assertEqual(docx.front_matter({"meta": {"author": inlines()}})["authors"], [])
+
+    def test_declared_front_matter_that_the_word_file_lacks_is_reported(self) -> None:
+        body = "<w:p><w:r><w:t>A “quoted” study – 城市热岛</w:t></w:r></w:p><w:p><w:r><w:t>Test Author</w:t></w:r></w:p>"
+        built = make_package(self.base / "front.docx", f'<w:document {W_NS}><w:body>{body}<w:sectPr /></w:body></w:document>',
+                             core=CORE.format(keywords="urban heat, 城市热岛"))
+        declared = {"title": "A quoted study – 城市热岛", "authors": ["Test Author"], "keywords": ["urban heat", "城市热岛"]}
+        self.assertEqual(docx.compare_front_matter(declared, built), ([], ["the title", "1 author(s)", "2 keyword(s)"]))
+        problems, found = docx.compare_front_matter({"title": "Another title", "authors": ["Test Author", "Second Author"],
+                                                     "keywords": ["urban heat", "remote sensing"]}, built)
+        self.assertEqual(found, [])
+        self.assertEqual(problems, ["the title “Another title” is not in the Word file", "author(s) not in the Word file: Second Author",
+                                    "keyword(s) not in the Word file: remote sensing"])
+        self.assertEqual(docx.compare_front_matter({}, built), ([], []))
+        bare = make_package(self.base / "bare.docx", f'<w:document {W_NS}><w:body><w:p><w:r><w:t>Keywords: remote sensing</w:t></w:r></w:p><w:sectPr /></w:body></w:document>')
+        self.assertEqual(docx.compare_front_matter({"keywords": ["remote sensing", "urban heat"]}, bare)[0], ["keyword(s) not in the Word file: urban heat"])
 
 
 class ReleaseTests(unittest.TestCase):
@@ -230,6 +267,41 @@ class BuildTests(unittest.TestCase):
         self.assertEqual(record["tools"]["pandoc"], INFO["pandoc_version"])
         self.assertNotIn("Test Author", docx.text_of(self.root / "outputs/preview/neutral/manuscript.docx"))
         self.assertEqual(self.run_export("verify", "--profile", "neutral").returncode, 0)
+
+    def test_the_metadata_file_is_used_without_a_manifest_line(self) -> None:
+        self.write("manuscript/manifest.yaml", "version: 1\nsections:\n  - 01-main.md\n")
+        self.write("manuscript/metadata.yaml", "title: \"A study of heat -- 城市热岛\"\nauthor:\n  - Test Author\nkeywords: [urban heat, remote sensing]\n")
+        self.run_export("profile-init", "--id", "neutral", "--name", "Neutral")
+        built = self.run_export("build", "--profile", "neutral")
+        self.assertEqual(built.returncode, 0, built.stdout)
+        self.assertIn("[pass] front matter: in the Word file, from the manuscript metadata: the title, 1 author(s), 2 keyword(s)", built.stdout)
+        output = self.root / "outputs/preview/neutral/manuscript.docx"
+        self.assertIn("城市热岛", docx.text_of(output))
+        self.assertIn("Test Author", docx.text_of(output))
+        self.assertEqual(docx.core_properties(output)["keywords"], "urban heat, remote sensing")
+        record = json.loads((self.root / "outputs/preview/neutral/build.json").read_text(encoding="utf-8"))
+        self.assertIn("manuscript/metadata.yaml", [item["path"] for item in record["inputs"]])
+        self.assertEqual(self.run_export("verify", "--profile", "neutral").returncode, 0)
+        self.write("manuscript/metadata.yaml", "title: \"Another title\"\n")
+        self.assertIn("out of date because these changed: manuscript/metadata.yaml", self.run_export("verify", "--profile", "neutral").stdout)
+
+    def test_an_author_that_the_word_writer_leaves_out_fails_the_front_matter_check(self) -> None:
+        # Pandoc 3.12.1 shows an author written as a mapping (name:, affiliation:) nowhere in a Word file.
+        self.write("manuscript/metadata.yaml", "title: \"Build test\"\nauthor:\n  - Test Author\n  - name: Second Author\n    affiliation: Somewhere\n")
+        self.run_export("profile-init", "--id", "neutral", "--name", "Neutral")
+        built = self.run_export("build", "--profile", "neutral")
+        self.assertEqual(built.returncode, 1, built.stdout)
+        self.assertIn("[FAIL] front matter: author(s) not in the Word file: Second Author", built.stdout)
+        record = json.loads((self.root / "outputs/preview/neutral/build.json").read_text(encoding="utf-8"))
+        self.assertEqual(record["status"], "failed")
+
+    def test_a_manuscript_without_metadata_builds_and_says_that_it_has_no_title(self) -> None:
+        self.write("manuscript/manifest.yaml", "version: 1\nsections:\n  - 01-main.md\n")
+        (self.root / "manuscript" / "metadata.yaml").unlink()
+        self.run_export("profile-init", "--id", "neutral", "--name", "Neutral")
+        built = self.run_export("build", "--profile", "neutral")
+        self.assertEqual(built.returncode, 0, built.stdout)
+        self.assertIn("[pass] front matter: the manuscript metadata declares no title, authors, or keywords, so the Word file has none", built.stdout)
 
     def test_a_manuscript_with_problems_is_not_built(self) -> None:
         self.run_export("profile-init", "--id", "neutral", "--name", "Neutral")

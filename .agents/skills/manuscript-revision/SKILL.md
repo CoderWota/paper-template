@@ -48,7 +48,8 @@ Outcome: one clearly identified active manuscript that implements the confirmed 
 ## Step 7: Establish the current version
 
 15. Report the research-relevant differences against the baseline (`git-compare` or `revision-status`), the remaining gaps, and the state: checked revision, draft needing evidence, or ready for formatting. The active manuscript is what the manifest lists; the outline and the confirmed requirements match it.
-16. Abandoning the revision is a risky recovery: ask first, then `python scripts/manuscript.py revision-restore --id <revision-id>`, which copies the baseline back and keeps the current versions.
+16. When every work item in `plan.md` is done or dropped and the researcher accepts that state, close the revision, whether it was made in place or with a candidate: `python scripts/manuscript.py revision-complete --id <revision-id> [--note "..."]`. It refuses while a candidate is staged but not applied or an application is interrupted. It records the date, whether the work was in place or through a candidate, and how many manuscript problems, open markers, and stale check records remain. It hides none of them: a revision that is closed with stale checks is not a checked revision. Until the record exists, the project status reports the revision as open and suggests continuing it.
+17. Abandoning the revision is a risky recovery: ask first, then `python scripts/manuscript.py revision-restore --id <revision-id>`, which copies the baseline back, keeps the current versions, and records the revision as abandoned. Another attempt starts a new revision.
 
 ## Completion check
 
@@ -57,3 +58,4 @@ Outcome: one clearly identified active manuscript that implements the confirmed 
 - No intervening author edit was lost, and an interrupted application can be resumed.
 - Changed claims were rechecked; stale checks were redone, not carried forward; research still missing is reported as missing.
 - One active manuscript is defined by the manifest, and no candidate was assembled by accident.
+- A finished revision is closed with `revision-complete`, and an abandoned one with `revision-restore`, so that the project status no longer reports it as open.
