@@ -60,6 +60,21 @@ class StatusTests(unittest.TestCase):
         self.assertIn("build a formatted preview (submission-assembly)", steps)
         self.assertNotIn("project-onboarding", steps)
 
+    def test_open_items_are_not_recorded_settings(self) -> None:
+        # The venue is listed as still open, and the onboarding of another copy is still in progress.
+        self.write("requirements/project.md", "# 项目要求\n\n状态：已初始化（2026-10-29）。目标期刊待定。\n\n## 尚未确定\n\n- 目标期刊\n- 文章类型\n")
+        data = self.status()
+        self.assertTrue(data["initialized"])
+        self.assertFalse(data["target_venue_recorded"])
+        self.assertIn("compare possible venues (journal-selection)", data["next_steps"])
+        self.write("requirements/project.md", "# 项目要求\n\n状态：初始化进行中（尚未完成）。\n\n- 目标期刊：待定\n")
+        data = self.status()
+        self.assertFalse(data["initialized"])
+        self.assertFalse(data["target_venue_recorded"])
+        self.assertEqual(data["next_steps"][0], "set up the project (project-onboarding)")
+        self.write("requirements/project.md", "# Project\n\nStatus: initialized on 2026-10-29.\n\n## Target venue\n\nJournal of Synthetic Tests\n")
+        self.assertTrue(self.status()["target_venue_recorded"])
+
 
 if __name__ == "__main__":
     unittest.main()

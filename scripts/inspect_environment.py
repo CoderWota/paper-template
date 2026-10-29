@@ -146,11 +146,28 @@ def pythons() -> list[dict]:
     return found
 
 
+def workspace_tool(name: str) -> str | None:
+    """A tool installed in the workspace's own .tools/ folder, where the export and import scripts look first."""
+    suffix = ".exe" if os.name == "nt" else ""
+    if name == "mineru":
+        folder = ROOT / ".tools" / "mineru"
+        candidates = [folder / "Scripts" / "mineru-kit.exe", folder / "bin" / "mineru-kit"]
+    elif name == "pandoc" and (ROOT / ".tools" / "pandoc").is_dir():
+        candidates = sorted((ROOT / ".tools" / "pandoc").rglob(f"pandoc{suffix}"))
+    else:
+        candidates = []
+    found = [p for p in candidates if p.is_file() and os.access(p, os.X_OK)]
+    return str(found[-1]) if found else None
+
+
 def tools() -> dict:
     report = {}
     for name in TOOLS:
-        path = shutil.which(name)
-        report[name] = {"path": path, "version": first_line([path, "--version"]) if path else None}
+        path, location = shutil.which(name), "PATH"
+        if not path:
+            path, location = workspace_tool(name), "workspace .tools"
+        version = first_line([path, "--version"]) if path and name != "mineru" else None
+        report[name] = {"path": path, "location": location if path else None, "version": version}
     return report
 
 
@@ -178,7 +195,8 @@ def tool_summary(name: str, info: dict) -> str:
     if not info["path"]:
         return f"{name} not found"
     version = info["version"] or "(found)"
-    return version if version.lower().startswith(name) else f"{name} {version}"
+    text = version if version.lower().startswith(name) else f"{name} {version}"
+    return text + (" in the workspace .tools folder" if info.get("location") == "workspace .tools" else "")
 
 
 def gigabytes(value: int | None) -> str:

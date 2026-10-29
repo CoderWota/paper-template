@@ -92,6 +92,22 @@ class EnvironmentReportTests(unittest.TestCase):
         self.assertEqual(set(report), {"os", "processor", "memory_bytes", "python", "pythons_on_path", "tools", "workspace"})
         self.assertIn(report["processor"]["python_bits"], (32, 64))
 
+    @unittest.skipIf(sys.platform == "win32", "the stand-in executable is a POSIX shell script")
+    def test_reports_a_tool_installed_in_the_workspace(self) -> None:
+        root = Path(tempfile.mkdtemp(prefix="environment test ä "))
+        self.addCleanup(shutil.rmtree, root, ignore_errors=True)
+        (root / "scripts").mkdir()
+        shutil.copy2(SCRIPTS / "inspect_environment.py", root / "scripts" / "inspect_environment.py")
+        pandoc = root / ".tools" / "pandoc" / "9.9" / "bin" / "pandoc"
+        pandoc.parent.mkdir(parents=True)
+        pandoc.write_text("#!/bin/sh\necho 'pandoc 9.9'\n", encoding="utf-8")
+        pandoc.chmod(0o755)
+        result = subprocess.run([sys.executable, str(root / "scripts" / "inspect_environment.py"), "--json"], capture_output=True,
+                                text=True, encoding="utf-8", timeout=120, env={"PATH": "/usr/bin:/bin"})
+        self.assertEqual(result.returncode, 0, result.stderr)
+        found = json.loads(result.stdout)["tools"]["pandoc"]
+        self.assertEqual((found["location"], found["version"]), ("workspace .tools", "pandoc 9.9"))
+
 
 if __name__ == "__main__":
     unittest.main()

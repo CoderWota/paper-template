@@ -40,6 +40,8 @@ WARN_BYTES, LIMIT_BYTES = 50 * 1024 * 1024, 100 * 1024 * 1024
 SECRET_NAME = re.compile(r"(^|/)(\.env(\.(?!example$)[^/]+)?|[^/]+\.(pem|p12|pfx)|id_(rsa|ed25519|ecdsa)[^/]*)$", re.I)
 SECRET_LINE = re.compile(r"^\s*(export\s+)?[A-Z][A-Z0-9_]*(TOKEN|KEY|SECRET|PASSWORD)[A-Z0-9_]*\s*=\s*['\"]?[^\s'\"#]{12,}"
                          r"|-----BEGIN [A-Z ]*PRIVATE KEY-----", re.M)
+# This exact source declaration contains the public environment-variable name, not its value.
+PUBLIC_ENV_DECLARATION = re.compile(r'^\s*API_KEY_NAME\s*=\s*["\']SCIVERSE_API_KEY["\']\s*$', re.M)
 AREAS = (
     ("manuscript/", "manuscript"), ("references/originals/", "reference originals"), ("references/", "references"),
     ("requirements/", "requirements"), ("research/", "research records"), ("ideas/", "ideas"), ("reviews/", "reviews"),
@@ -150,7 +152,10 @@ def risks(root: Path, paths: list) -> tuple:
             secrets.append(path)
         elif size <= 2 * 1024 * 1024:
             try:
-                if SECRET_LINE.search(file.read_text(encoding="utf-8", errors="ignore")):
+                content = file.read_text(encoding="utf-8", errors="ignore")
+                if path == "scripts/literature/search.py":
+                    content = PUBLIC_ENV_DECLARATION.sub("", content)
+                if SECRET_LINE.search(content):
                     secrets.append(path)
             except OSError:
                 pass

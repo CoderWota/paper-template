@@ -1,3 +1,3 @@
-# Store text files with LF line endings; Git detects binary files automatically.
-# This keeps version comparisons clean between Windows, macOS, and Linux.
-* text=auto
+# Preserve exact bytes: originals, data, source and output checksums must survive Git saves and clones.
+# Git must not change line endings, including when a researcher's global core.autocrlf is enabled.
+* -text

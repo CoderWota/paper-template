@@ -1,6 +1,6 @@
 # Implementation Status
 
-Agent-maintained record of what has actually been implemented and verified, one entry per MVP from the [MVP implementation guideline](mvp-implementation-guideline.md). A capability counts as working only after its acceptance evidence has been observed. The presence of a directory, a README, or a SKILL.md is not evidence.
+Agent-maintained record of what has actually been implemented and verified, one entry per MVP from the [MVP implementation guideline](mvp-implementation-guideline.md). Acceptance by review follows the maintainer’s 2026-10-29 MVP 2-style gate; claims about specific platforms, services or live behavior require observed evidence. The presence of a directory, a README, or a SKILL.md is not evidence.
 
 Updated: 2026-10-29.
 
@@ -8,19 +8,19 @@ Updated: 2026-10-29.
 
 | MVP | Researcher-visible outcome | Status |
 | --- | --- | --- |
-| 1 | Usable project and confirmed memory | In progress: scaffold, adopted AGENTS.md, skill copy script, and all four skills implemented. The four skills were accepted by review on 2026-10-28 (maintainer ruling; see the [skill review](acceptance/mvp-1-skill-review.md)). Thirteen live runs on Claude Code (runs 1 to 8 with Sonnet 5.5, runs 9 to 13 with Haiku 5.5) are history; the last run passed 11 of 18 scenarios. Codex, Windows, and the English question checks are open, so MVP 1 as a whole is not verified; the MinerU service research was done with MVP 2 |
-| 2 | Flexible intake and MinerU batch ingestion | In progress: implemented on 2026-10-28 (import script, both MinerU routes, both skills), and both skills were accepted by review the same day (see the [skill review](acceptance/mvp-2-skill-review.md)). The scripts pass their tests, and both routes were observed working on macOS with synthetic files: the local route, and the mineru.net route with the maintainer's token. Windows, Codex, and the training-use and retention terms of mineru.net are open, so MVP 2 as a whole is not verified |
+| 1 | Usable project and confirmed memory | Accepted under the MVP 2-style gate on 2026-10-29; the four skills passed [written review](acceptance/mvp-1-skill-review.md). Earlier live-run misses, Codex/Windows behavior and English question checks remain recorded or unverified. |
+| 2 | Flexible intake and MinerU batch ingestion | Accepted under the MVP 2-style gate on 2026-10-29; both skills passed [written review](acceptance/mvp-2-skill-review.md), script tests passed, and local and mineru.net routes were observed on macOS with synthetic files. Windows, Codex, and mineru.net training-use and retention terms remain unverified. |
 | 3 | Searchable literature and traceable evidence | Accepted by the maintainer on 2026-10-28 under the MVP 2-style gate: all four skills passed written review, 79 tests and mechanical checks pass, and live Sciverse checks were recorded. Catalog filters/relations, resources, Paper Schema, live public-PDF access, model-host fallback, Windows, and Codex remain explicitly unverified |
 | 4 | Ideas, impact, journal choice, and feasible research plans | Accepted by review on 2026-10-28: seven skills and the result-record extension of `research-investigation` passed written review ([skill review](acceptance/mvp-4-skill-review.md)); `scripts/research.py` and feedback import pass their tests. Live venue reading, fresh-session behavior, Windows, and Codex are unverified |
 | 5 | Evidence-based writing, audit, and major revision | Accepted by review on 2026-10-29: five skills passed written review ([skill review](acceptance/mvp-5-skill-review.md)); the convention check, check records, revisions, and Pandoc adoption of Word, LaTeX, and OpenDocument pass their tests. Real manuscripts, PDF adoption, Windows, and Codex are unverified |
 | 6 | Template-driven layout and readiness | Accepted by review on 2026-10-29: both skills passed written review ([skill review](acceptance/mvp-6-skill-review.md)); the Word route was built, rendered by Word, and inspected with a neutral and a synthetic journal profile on macOS. A real journal template, other PDF routes, Windows, and Codex are unverified |
 | 7 | Practical Git control and explicit backup | Accepted by review on 2026-10-28: seven skills passed written review ([skill review](acceptance/mvp-7-skill-review.md)); `scripts/versions.py` passes 13 tests in disposable repositories. No hosting service, Windows, or Codex was exercised |
 | 8 | Review rounds and coauthor reconciliation | Accepted by review on 2026-10-29 ([skill review](acceptance/mvp-8-skill-review.md)); `scripts/review.py` passes 5 tests with synthetic material. No real round or coauthor file was used |
-| 9 | Connected paper hands-on and release candidate | `paper-hands-on` accepted by review on 2026-10-29 ([skill review](acceptance/mvp-9-skill-review.md)); a scripted complete-path pass over the deterministic layer passes. The guided path with a researcher in fresh sessions, Codex, and Windows are not run, so MVP 9 is not verified |
+| 9 | Connected paper hands-on and release candidate | Accepted under the MVP 2-style gate on 2026-10-29; [written review](acceptance/mvp-9-skill-review.md) and scripted integration evidence are recorded. The optional [complete-path live exercise](acceptance/mvp-9-complete-path.md) is partial and not a pass; its limitations remain. |
 
 Execution order (revised 2026-10-26): 1 → 7 → 2 → 3 → 4 → 5 → 6 → 8 → 9, with the export trial running alongside MVP 7; see the [MVP implementation guideline](mvp-implementation-guideline.md#3-mvp-overview-and-dependencies). The export trial ran on 2026-10-28 ([record](export-trial.md)).
 
-All 33 skills of the catalog are implemented: the MVP 1 to MVP 4 and MVP 7 skills were accepted by review on 2026-10-28, and the MVP 5, 6, 8, and 9 skills on 2026-10-29. Acceptance by review shows that the skill text meets the documented requirements; no skill is verified on Windows or in Codex. A scripted pass over the complete path's deterministic layer passes; the complete path has not been run with a researcher in fresh sessions.
+All 33 skills are implemented and passed their written reviews; MVPs 1–9 are accepted under the MVP 2-style gate confirmed by the maintainer on 2026-10-29. The maintainer answered “同意” to applying that standard to MVPs 1–9 and updating their status, while retaining the complete-path records and findings. This replaces the prior requirement that MVP 9 acceptance await the stricter complete-path live test. Acceptance is distinct from verification: untested platform, service, real-manuscript and researcher-experience claims remain unverified. Earlier run statuses below describe the evidence at the time, not the current acceptance gate.
 
 ## MVP 1, partial increment: workspace scaffold
 
@@ -538,11 +538,11 @@ Not covered. Windows and ARM64, Codex, real provider settings, ASD-STE100 compli
 
 Documents changed to match: the guideline (status, section 1 step 4, sections 5 and 6), the design plan (section 14), rule placement (principle 6, the testing row, and the residual risks), the acceptance README and checklist, the documents README, the skills READMEs, and the root README.
 
-## Remaining for MVP 1
+## Additional verification and residual risks for MVP 1
 
-The four MVP 1 skills are implemented and were accepted by review on 2026-10-28. The live runs on Claude Code (1 to 13) are history. Remaining for MVP 1 as a whole:
+MVP 1 is accepted under the 2026-10-29 gate. The four skills passed review on 2026-10-28 and Claude Code runs 1–13 remain historical evidence. The following are additional verification or residual risks, not acceptance blockers:
 - Decide whether a deterministic lever is worth adding for the residual model risks (the readiness routing, a cloud wish that is not noted in the state, the one-time-edit reply, and English notes): a host hook for the language reminder and the form check, scripts that write the records, or a machine-readable interaction-language setting. The review accepts the skills without it. Add no sentence to `AGENTS.md`. D-14 (an English first note before a skill call) belongs here.
-- Codex: install it and sign in before claiming Codex support, then check skill discovery and `AGENTS.md` loading. The Codex test copy still holds the state before the fixes. For GPT use `gpt-6-luna`.
+- Codex: a targeted fresh-agent recovery was observed during the later complete-path exercise, but this does not verify every MVP 1 flow; check current skill discovery, `AGENTS.md` loading and relevant scenarios before broad platform claims.
 - Windows baseline: no Windows machine yet, so Windows and ARM64 stay unverified.
 - English question checks against the official ASD-STE100 issue, and the clarity review for questions in other languages. The standard and its dictionary are not bundled with the template; they need access under the publisher's terms.
 - Optional: the scenarios that the live runs could not exercise (the interactive question tool, missing Python or tools, and an account control that the researcher can read).
@@ -553,7 +553,7 @@ The [MVP 1 skill review](acceptance/mvp-1-skill-review.md) holds the requirement
 
 ## MVP 2: flexible intake and MinerU batch ingestion
 
-Status: both skills accepted by review on 2026-10-28 ([skill review](acceptance/mvp-2-skill-review.md)); MVP 2 as a whole is not verified. The scripts pass their tests, and both routes were observed working on macOS with synthetic files: the local route, and the mineru.net route with the maintainer's token. Windows and Codex have not been run. Under the maintainer's ruling of 2026-10-28 ([guideline section 6](mvp-implementation-guideline.md#6-completion-record-for-each-mvp)), skills pass acceptance by a written review instead of live scenario runs.
+Status: MVP 2 accepted under the MVP 2-style gate on 2026-10-29; both skills passed [written review](acceptance/mvp-2-skill-review.md) on 2026-10-28. Platform and service claims outside the observed evidence remain unverified. The scripts pass their tests, and both routes were observed working on macOS with synthetic files: the local route, and the mineru.net route with the maintainer's token. Windows and Codex have not been run. Under the maintainer's ruling of 2026-10-28 ([guideline section 6](mvp-implementation-guideline.md#6-completion-record-for-each-mvp)), skills pass acceptance by a written review instead of live scenario runs.
 
 Request: on 2026-10-28 the template maintainer asked to implement MVP 2 in a new worktree and to merge it into the main branch when done. The planned order put MVP 7 and the export trial first; the maintainer chose MVP 2.
 
@@ -707,13 +707,17 @@ Not verified: real rounds and complex coauthor edits (moved paragraphs, tables, 
 
 ## MVP 9: connected paper hands-on
 
-Status: `paper-hands-on` accepted by review on 2026-10-29 ([skill review](acceptance/mvp-9-skill-review.md)); MVP 9 as a whole is not verified, because the complete path has not been run with a researcher in fresh sessions of either agent.
+A synthetic Claude Code live run began on 2026-10-29 but was interrupted during idea deepening. Codex continued through analysis, a fictional title page and abstract, independent evidence checks, a five-page Word render, review response, revision and local checkpoints; a fresh agent recovered an interrupted revision in a separate copy. A history-free agent detected both planted defects in reconstructed excerpts, but the untouched original draft was not archived; the full path was split across agents, and actual-author and venue-policy checks remain unresolved. The optional live exercise is not a full pass. See the [complete-path record](acceptance/mvp-9-complete-path.md).
+
+Status: MVP 9 accepted under the MVP 2-style gate on 2026-10-29; `paper-hands-on` passed [written review](acceptance/mvp-9-skill-review.md). The complete-path live exercise is optional follow-up and has not fully passed; acceptance does not verify untested platforms or real submission readiness.
 
 - Skill `paper-hands-on` with its generated copy, coordinating the standalone skills without repeating their procedures.
 - `scripts/status.py`: a read-only summary of the project's records and the gaps that suggest a next task, for recognizing the stage of a project in a fresh session; 2 tests.
 - `scripts/tests/test_complete_path.py`: a scripted integration pass over the deterministic layer with synthetic, labeled material: a source imported and cited, an idea, a plan, a target decision, a venue note, a recorded run with a checked result, a manuscript that cites the source and reports the result, an audit record, a build and a release (where Pandoc is installed), a review round answered with a recorded change (which makes the audit stale), a major revision applied from a candidate, a saved version, and the status summary. It passes; it does not test the agent's judgment or a researcher's decisions.
 
 ## MVP 7: practical Git control and explicit backup
+
+Follow-up (2026-10-29): a workspace-scope check incorrectly flagged the public `SCIVERSE_API_KEY` environment-variable name in the literature client as a secret. The detector now exempts that exact public declaration in that file while continuing to flag a separate credential assignment; a regression test covers both. This does not exempt credentials from version checks. The full script suite passed 146 tests on this Mac after the fix.
 
 Status: the seven skills were accepted by review on 2026-10-28 ([skill review](acceptance/mvp-7-skill-review.md)). MVP 7 as a whole is not verified: no hosting service, Windows machine, or Codex session was used, and no live guided lesson was run.
 
@@ -737,4 +741,4 @@ Not exercised: editing an equation in Word, Word fields for figure and table num
 ## Open items affecting the order
 
 - Result production for the complete-path test: decided on 2026-10-28 (see the decisions above).
-- Verification resources: a Windows test machine matching the baseline (x64 or ARM64), access to Codex, and rights-cleared test fixtures. Without them, MVP 1 and MVP 2 can be implemented but not marked verified.
+- Verification resources: a Windows test machine matching the baseline (x64 or ARM64), access to Codex, and rights-cleared test fixtures. Without them, Windows and other unobserved behavior cannot be marked verified; MVP acceptance under the 2026-10-29 review gate is separate.

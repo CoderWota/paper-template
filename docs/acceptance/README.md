@@ -1,6 +1,6 @@
 # Acceptance Records
 
-Acceptance records for each MVP. Since 2026-10-28, a skill passes acceptance when a written review against its requirements passes (maintainer ruling); live scenario runs are not required. The review lists every requirement with its source, a verdict, and the evidence, and it names what it does not cover. The scenario checklists remain as the history of the live runs and as an optional manual aid.
+Acceptance records for each MVP. Since 2026-10-28, a skill passes acceptance when a written review against its requirements passes (maintainer ruling); live scenario runs are not required. The review lists every requirement with its source, a verdict, and the evidence, and it names what it does not cover. On 2026-10-29, the maintainer confirmed this MVP 2-style gate for MVPs 1–9. The complete-path live exercise is optional follow-up, not a gate; the checklists, test evidence and findings remain as history and optional aids.
 
 - [MVP 1 skill review](mvp-1-skill-review.md): the review of `project-onboarding`, `environment-management`, `privacy-configuration`, and `constraint-maintenance`.
 - [MVP 1 checklist](mvp-1.md): the scenarios and the results of the 13 live runs (instruction loading, onboarding, environment and credentials, privacy configuration, confirmed rules, and decision confirmation).
@@ -14,6 +14,7 @@ Acceptance records for each MVP. Since 2026-10-28, a skill passes acceptance whe
 - [MVP 7 skill review](mvp-7-skill-review.md): the review of the seven Git skills, with the tests in disposable repositories (2026-10-28).
 - [MVP 8 skill review](mvp-8-skill-review.md): the review of `review-response` and the reconciliation of coauthor Word edits (2026-10-29).
 - [MVP 9 skill review](mvp-9-skill-review.md): the review of `paper-hands-on`, and the status of the complete-path test (2026-10-29).
+- [MVP 9 complete-path live test](mvp-9-complete-path.md): interrupted partial run, observations, and remaining checks.
 - [Literature quality evaluation](sciverse-quality-evaluation.md): candidate multilingual cases and scoring procedure, plus the bounded four-query retrieval smoke run and its remaining source-check gaps.
 
 Never copy this folder into a test workspace: an agent under test could read the expected results. After a review, the agent in the template repository records the result in the [implementation status](../implementation-status.md). Only the template maintainer uses these records; researchers never need them.

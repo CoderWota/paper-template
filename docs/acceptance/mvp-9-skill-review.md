@@ -1,6 +1,6 @@
 # MVP 9 Skill Review
 
-Status: `paper-hands-on` passed written review on 2026-10-29 under the gate used since MVP 2, and `scripts/status.py` passes 2 tests. The guideline's MVP 9 acceptance also asks for a complete, clearly labeled test path run in fresh sessions of both agents; that is a live test of the framework, not of a skill, and its status is in section 5.
+Status: `paper-hands-on` passed written review on 2026-10-29 under the gate used since MVP 2, and `scripts/status.py` passes 2 tests. On 2026-10-29 the maintainer confirmed the MVP 2-style gate for MVPs 1–9; the complete-path exercise is optional follow-up verification, with its observations and limits in section 5.
 
 ## 1. Rule and pass criteria
 
@@ -34,4 +34,4 @@ Read `.agents/skills/paper-hands-on/`, `scripts/status.py`, and `scripts/tests/t
 
 ## 5. Not covered: the complete-path test
 
-The guideline asks for a complete, labeled test scenario from literature to ideas, actual supplied evidence, manuscript, impact and journal assessment, template-driven output, and readiness, with the review extension and a Git checkpoint, interrupted and resumed in fresh sessions of Codex and Claude Code. A scripted integration pass over the deterministic layer is recorded in the [implementation status](../implementation-status.md); a guided run with a researcher in fresh sessions, Codex, and Windows have not been done, so MVP 9 as a whole is not verified.
+The original complete-path scenario was a stricter live framework exercise, now optional under the maintainer’s 2026-10-29 decision. A deterministic scripted pass and a partial mixed-agent exercise are recorded in [implementation status](../implementation-status.md) and the [test record](mvp-9-complete-path.md). The full live path has not passed; acceptance by review does not establish the untested platforms, services, or real submission readiness.

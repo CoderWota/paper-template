@@ -26,6 +26,40 @@ import manuscript  # noqa: E402
 import research  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
+NOT_INITIALIZED = re.compile(r"not (yet )?initialized|未初始化|初始化进行中|尚未完成|in progress", re.I)
+OPEN_HEADING = re.compile(r"尚未确定|待定|未定|open items|open questions|not yet decided|undecided|to be decided", re.I)
+OPEN_VALUE = re.compile(r"^\W*(待定|未定|尚未|未确定|暂无|无$|not yet|undecided|to be decided|tbd|none)", re.I)
+VENUE_LABEL = r"(?:target venue|target journal|目标期刊|投稿目标)"
+
+
+def initialized(text: str) -> bool:
+    """The project's status line says initialized; an onboarding in progress or not started does not count."""
+    found = re.search(r"(?im)^\s*(?:status|状态)\s*[:：]\s*(.+)$", text)
+    if not found:
+        return bool(text) and "not initialized" not in text.lower() and "尚未初始化" not in text
+    value = found.group(1)
+    return bool(re.search(r"initialized|已初始化|初始化完成", value, re.I)) and not NOT_INITIALIZED.search(value)
+
+
+def target_venue(text: str) -> bool:
+    """A venue label with a value, as in "- 目标期刊：<venue>" or a "## Target venue" heading followed by the venue.
+
+    A bare label in a list of open items, or a value such as 待定 or "not yet decided", is not a recorded target.
+    """
+    lines = text.splitlines()
+    open_section = False
+    for number, line in enumerate(lines):
+        if line.startswith("#"):
+            open_section = bool(OPEN_HEADING.search(line))
+            if re.search(VENUE_LABEL, line, re.I) and not open_section:
+                following = next((l.strip() for l in lines[number + 1:] if l.strip()), "")
+                if following and not following.startswith("#") and not OPEN_VALUE.search(following.lstrip("-* ")):
+                    return True
+            continue
+        found = re.match(rf"^\s*(?:[-*]\s*)?(?:\*\*)?{VENUE_LABEL}(?:\*\*)?\s*[:：]\s*(\S.*)$", line, re.I)
+        if found and not open_section and not OPEN_VALUE.search(found.group(1)):
+            return True
+    return False
 
 
 def count(folder: Path, pattern: str, skip=("README.md", "index.md")) -> int:
@@ -49,8 +83,8 @@ def facts(root: Path) -> dict:
     data: dict = {}
     project = root / "requirements" / "project.md"
     text = project.read_text(encoding="utf-8") if project.is_file() else ""
-    data["initialized"] = bool(text) and "not initialized" not in text.lower() and "尚未初始化" not in text
-    data["target_venue_recorded"] = bool(re.search(r"(?im)^.*(target venue|目标期刊|投稿目标).*\S", text))
+    data["initialized"] = initialized(text)
+    data["target_venue_recorded"] = target_venue(text)
     references = root / "references"
     data["sources"] = sum(1 for p in (references / "originals").glob("src-*") if p.is_dir()) if (references / "originals").is_dir() else 0
     data["searches"] = sum(1 for p in (references / "searches").iterdir() if p.is_dir()) if (references / "searches").is_dir() else 0

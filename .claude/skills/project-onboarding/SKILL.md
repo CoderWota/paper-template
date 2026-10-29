@@ -51,7 +51,7 @@ Recommend a language from what you know, such as the field, a target journal, or
 
 ## Step 5: Ask how documents can be processed
 
-Ask this when the researcher has documents to import now or wants to settle it now. Otherwise, list the processing choice as open ("decide at the first import") and continue.
+Ask this when the researcher has documents that need conversion now (PDFs, office files, or images) or wants to settle it now. Markdown and plain-text files are read directly and need no processing choice, and data files are not documents to convert. Otherwise, list the processing choice as open ("decide at the first import") and continue.
 
 1. Use `environment-management` to inspect the computer first: operating system, processor, memory, storage, and installed tools. Do not install anything in this step.
 2. Explain the options in plain words:

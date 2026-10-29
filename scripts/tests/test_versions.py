@@ -66,6 +66,23 @@ class VersionsTestCase(unittest.TestCase):
 
 
 class SetupAndSaveTests(VersionsTestCase):
+    def test_saved_inputs_and_originals_keep_bytes_across_clones(self) -> None:
+        shutil.copy2(SCRIPTS.parent / ".gitattributes", self.root / ".gitattributes")
+        paths = ("inbox/data.csv", "references/originals/src-test/source.md", "code/data/raw/input.csv",
+                 "revisions/rev/baseline/manuscript/section.md")
+        expected = b"first,second\r\n3,4\r\n"
+        for name in paths:
+            path = self.root / name
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_bytes(expected)
+        self.setup_history()
+        for setting in ("true", "false"):
+            clone = self.base / ("clone-" + setting)
+            subprocess.run(["git", "-c", "core.autocrlf=" + setting, "clone", "--quiet", str(self.root), str(clone)],
+                           capture_output=True, text=True, env=self.env, check=True)
+            for name in paths:
+                self.assertEqual((clone / name).read_bytes(), expected, name)
+
     def test_inspect_changes_nothing_and_init_creates_a_protected_history(self) -> None:
         before = self.run_versions("inspect")
         self.assertIn("no version history of its own yet", before.stdout)
@@ -97,6 +114,12 @@ class SetupAndSaveTests(VersionsTestCase):
         self.assertIn("(deleted)", removed.stdout)
         self.assertEqual(self.git("ls-files", "manuscript").split(), ["manuscript/02-methods.md"])
         self.assertIn("Nothing to save", self.run_versions("save", "--message", "again", "--path", "manuscript").stdout)
+
+    def test_public_environment_variable_name_is_not_a_secret(self) -> None:
+        source = self.write("scripts/literature/search.py", 'API_KEY_NAME = "SCIVERSE_API_KEY"\n')
+        self.assertEqual(versions.risks(self.root, [str(source.relative_to(self.root))])[0], [])
+        source.write_text('API_KEY_NAME = "SCIVERSE_API_KEY"\nSCIVERSE_API_KEY = "abcdefghijklmnop1234"\n', encoding="utf-8")
+        self.assertEqual(versions.risks(self.root, [str(source.relative_to(self.root))])[0], ["scripts/literature/search.py"])
 
     def test_secrets_and_oversized_files_are_refused(self) -> None:
         self.setup_history()

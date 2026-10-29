@@ -781,17 +781,33 @@ def command_revision_status(args, root: Path) -> int:
     if not (changed or added or removed):
         print("  The workspace still matches the baseline.")
     staged = candidate_files(folder)
+    log = folder / "apply.json"
+    data = json.loads(log.read_text(encoding="utf-8")) if log.is_file() else None
+    applied = {op["path"]: op["new_sha256"] for op in (data or {}).get("operations", []) if op.get("done")}
     if staged:
-        conflicts = [f"manuscript/{name}" for name in staged if f"manuscript/{name}" in changed or f"manuscript/{name}" in added]
+        conflicts = []
+        for name in staged:
+            path = f"manuscript/{name}"
+            current = root / path
+            if path in applied:
+                if not current.is_file() or sha256_file(current) != applied[path]:
+                    conflicts.append(path)
+            elif path in changed or path in added:
+                conflicts.append(path)
         print(f"  Candidate: {len(staged)} file(s)." + (" Edited in manuscript/ since the baseline, to reconcile before applying: "
                                                         + ", ".join(conflicts) if conflicts else ""))
-    log = folder / "apply.json"
-    if log.is_file():
-        data = json.loads(log.read_text(encoding="utf-8"))
+    if data:
         done = sum(op["done"] for op in data["operations"])
         state = data["status"] if data["status"] != "in progress" else f"interrupted after {done} of {len(data['operations'])} file(s); continue with revision-apply --resume"
         print(f"  Application: {state}.")
     return 0
+
+
+def describe_replaced(folder: Path) -> None:
+    update_readme(folder / "replaced" / "README.md", "Replaced manuscript versions", (
+        "Copies of manuscript or other workspace files kept before a revision candidate was applied or a baseline "
+        "was restored. The dated folders preserve the previous contents so changes can be inspected and recovered; "
+        "the application log identifies the saved files when a candidate was applied."), OWNER)
 
 
 def command_revision_apply(args, root: Path) -> int:
@@ -827,6 +843,7 @@ def command_revision_apply(args, root: Path) -> int:
             if target.is_file():
                 keep = f"replaced/{stamp}/manuscript/{name}"
                 (folder / keep).parent.mkdir(parents=True, exist_ok=True)
+                describe_replaced(folder)
                 shutil.copy2(target, folder / keep)
             operations.append({"path": f"manuscript/{name}", "from": f"candidate/{name}", "kept_previous": keep,
                                "new_sha256": sha256_file(folder / "candidate" / name), "done": False})
@@ -834,11 +851,25 @@ def command_revision_apply(args, root: Path) -> int:
                "started": datetime.now().isoformat(timespec="seconds"), "reconciled": sorted(reconciled), "operations": operations}
         write_json_atomic(log_path, log)
     for operation in log["operations"]:
-        if operation["done"]:
-            continue
         source, target = folder / operation["from"], root / operation["path"]
+        if operation["done"]:
+            if not target.is_file() or sha256_file(target) != operation["new_sha256"]:
+                print(f"The applied file {operation['path']} changed during the interruption; the application stopped without overwriting it.")
+                return 1
+            continue
         if sha256_file(source) != operation["new_sha256"]:
             print(f"The candidate file {operation['from']} changed during the application; the application stopped.")
+            return 1
+        # A file may have been replaced just before a crash, before its completed flag was saved.
+        if target.is_file() and sha256_file(target) == operation["new_sha256"]:
+            operation["done"] = True
+            write_json_atomic(log_path, log)
+            continue
+        previous = folder / operation["kept_previous"] if operation.get("kept_previous") else None
+        unchanged = (previous is not None and previous.is_file() and target.is_file()
+                     and sha256_file(previous) == sha256_file(target)) or (previous is None and not target.exists())
+        if not unchanged:
+            print(f"The file {operation['path']} changed during the application; the application stopped without overwriting it.")
             return 1
         target.parent.mkdir(parents=True, exist_ok=True)
         temporary = target.with_name(f".applying-{target.name}")
@@ -866,6 +897,7 @@ def command_revision_restore(args, root: Path) -> int:
     for name in changed:
         keep = folder / "replaced" / stamp / name
         keep.parent.mkdir(parents=True, exist_ok=True)
+        describe_replaced(folder)
         shutil.copy2(root / name, keep)
     for name in changed + removed:
         target = root / name

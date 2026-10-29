@@ -100,6 +100,8 @@ A separate result-verification or research-execution skill may be justified late
 
 ## 7. Confirmed test objective and proposed test procedure
 
+**Acceptance update (2026-10-29).** The maintainer confirmed that MVPs 1–9 use the MVP 2-style written-review and script-evidence gate; the complete-path live exercise is optional follow-up, not an MVP acceptance requirement. The original objective and proposed pass criteria below are retained for anyone who chooses to run and claim that stricter test. Existing runs and findings remain in [the test record](acceptance/mvp-9-complete-path.md); acceptance does not prove the live test passed or establish real submission readiness.
+
 Confirmed test objective: exercise a complete **idea/materials → actual results → supported manuscript → checked submission package** path using a bounded case. Accessible material or existing data keeps the test controllable; it does not limit the framework to those inputs, a particular discipline, a small project, or one study type. It is a test of integration and researcher effort, not a product definition or a promise of publication.
 
 The existing nine-MVP roadmap remains planned. This confirmation does not reorder the roadmap, narrow the first release, or adopt every implementation recommendation in this review. The detailed fixture, tools, resource envelope, and appropriate checks still need to be specified when preparing the test. Recovery is part of the tested path.
@@ -117,4 +119,4 @@ Pass criteria:
 - Keep test assertions separate from real manuscript readiness. A negative case can pass its test by correctly reporting a blocker. A successful test package does not establish novelty, real author approval, journal acceptance, or untested format/platform coverage.
 - At least one positive case must complete the full path and produce the expected linked results and package. Correctly reporting a blocker in a negative case tests failure handling; it cannot replace a successful complete-path demonstration.
 
-The core test objective no longer awaits confirmation. No test has been executed and no real journal submission is required by this decision. Report future test evidence as such; keep the general framework open to other materials, scales, methods, and external research dependencies without inventing capabilities that have not been implemented or verified.
+The original test objective was confirmed, and no real journal submission was required. The [test record](acceptance/mvp-9-complete-path.md) describes the partial exercise and its limits. Report further test evidence as such; keep the general framework open to other materials, scales, methods, and external research dependencies without inventing capabilities that have not been implemented or verified.
