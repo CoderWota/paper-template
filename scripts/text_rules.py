@@ -139,3 +139,51 @@ def signature_problems(text: str, display: str, *, metadata: bool = False) -> li
         if AI_SIGNATURE.search(line) or (in_authors and AI_AUTHOR.search(line)):
             problems.append(f"{display}:{number}: possible AI signature or AI author; inspect and remove unintended attribution")
     return problems
+
+
+# LaTeX commands in Markdown prose. Pandoc reads them as raw LaTeX and drops them from a Word file,
+# so a citation, a reference, or emphasized words would disappear without an error. Escapes such as
+# \% or \_ are not commands and stay valid Markdown; an escaped backslash (\\) starts no command.
+_LATEX_COMMAND = re.compile(r"(?<!\\)\\([A-Za-z]+)\*?(?:\[[^\]\n]*\])*(?:\{[^{}\n]*\})*")
+_LATEX_ADVICE = (
+    (("cite", "citep", "citet", "citealp", "citealt", "citeauthor", "citeyear", "parencite", "textcite", "autocite",
+      "footcite", "nocite"), "write [@key], or @key inside the sentence"),
+    (("ref", "eqref", "autoref", "cref", "Cref", "pageref", "nameref"), "write @fig:id, @tbl:id, @eq:id, or @sec:id"),
+    (("label",), "write {#fig:id}, {#tbl:id}, {#eq:id}, or {#sec:id} where the conventions place a label"),
+    (("textbf", "textit", "emph", "underline", "texttt", "textsc", "textsf", "textrm", "textup"),
+     "write the words plainly, or with Markdown emphasis"),
+    (("part", "chapter", "section", "subsection", "subsubsection", "paragraph"), "write a Markdown heading"),
+    (("begin", "end", "item"), "write a Markdown list, table, or block"),
+    (("footnote",), "write a Markdown footnote, [^id], with its note"),
+    (("url", "href"), "write <address> or [text](address)"),
+    (("includegraphics",), "write ![Caption](assets/file){#fig:id}"),
+    (("newpage", "clearpage", "pagebreak", "vspace", "hspace", "noindent"), "leave page layout to the output profile"),
+)
+
+# Half-width punctuation after Chinese or Japanese text. Korean, which uses half-width marks, is excluded.
+_FULLWIDTH_MARKS = _RULES.get("fullwidth_punctuation", {})
+_HAN_OR_KANA = "\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff"
+_KANA = re.compile(r"[\u3040-\u30ff]")
+_HALFWIDTH_MARK = re.compile(r"(?<=[" + _HAN_OR_KANA + r"])[,.;:!?](?=\s*[" + _HAN_OR_KANA + r"]|\s*$)")
+
+
+def raw_latex(text: str) -> list[tuple[str, str]]:
+    """Find LaTeX commands in prose whose math and code are removed, each with the Markdown form to use instead."""
+    found = []
+    for match in _LATEX_COMMAND.finditer(text):
+        advice = next((advice for names, advice in _LATEX_ADVICE if match.group(1) in names),
+                      "write it in the workspace's Markdown form, or put a path or code in backticks")
+        found.append((match.group(0).strip(), advice))
+    return found
+
+
+def halfwidth_punctuation(text: str) -> list[tuple[str, str]]:
+    """Find half-width punctuation after Chinese or Japanese text, with the usual full-width form for that language.
+
+    Citation keys and cross-references are masked first: an identifier such as @sec:<Chinese heading> is not
+    Chinese text, so the period of an English sentence after it is not reported.
+    """
+    for key in sorted(set(citation_keys(text)), key=len, reverse=True):
+        text = text.replace("@" + key, "@key")
+    marks = _FULLWIDTH_MARKS.get("ja" if _KANA.search(text) else "zh", {})
+    return [(match.group(0), marks.get(match.group(0), "")) for match in _HALFWIDTH_MARK.finditer(text)]

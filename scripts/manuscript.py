@@ -42,8 +42,8 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from ingestion.common import checksum, sha256_file, slug, update_readme, write_json_atomic, write_text_atomic  # noqa: E402
-from text_rules import (CJK, WORD, citation_keys, doubled_reference, hand_numbered, normalize_reference, open_marker,
-                        signature_problems)  # noqa: E402
+from text_rules import (CJK, WORD, citation_keys, doubled_reference, halfwidth_punctuation, hand_numbered, normalize_reference,
+                        open_marker, raw_latex, signature_problems)  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 OWNER = "scripts/manuscript.py"
@@ -295,6 +295,14 @@ def scan_file(path: Path, display: str, scan: Scan, folder: Path) -> None:
                 scan.warnings.append(f"{at}: “{match}” repeats the word that the output puts before the number; write the @-reference alone")
             for match in hand_numbered(text):
                 scan.warnings.append(f"{at}: “{match.strip()}” looks hand-numbered; refer with @fig:, @tbl:, @eq:, or @sec: instead")
+            visible = re.sub(r"<!--.*?-->", " ", text)
+            for command, advice in raw_latex(visible):
+                scan.problems.append(f"{at}: the LaTeX command “{command[:60]}” is dropped from the Word file; {advice}")
+            marks = halfwidth_punctuation(visible)
+            if marks:
+                listed = ", ".join(f"“{mark}” (usually “{full}”)" if full else f"“{mark}”" for mark, full in marks)
+                scan.warnings.append(f"{at}: half-width punctuation after Chinese or Japanese text: {listed}; keep it only where a "
+                                     "confirmed rule or the venue's style asks for half-width marks")
             if open_marker(line):
                 scan.open_items.append(f"{at}: {line.strip()[:120]}")
 

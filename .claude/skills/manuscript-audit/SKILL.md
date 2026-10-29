@@ -15,7 +15,7 @@ Outcome: a prioritized list of findings, each tied to an exact passage and to th
 
 ## Step 2: Examine, one check at a time
 
-4. **Mechanics.** `python scripts/manuscript.py check` (labels, citation keys, images, math, hand-numbered references, open `[TODO: ...]` markers) and `python scripts/literature.py audit-bibliography` (keys linked to archived sources). A key that resolves is not support.
+4. **Mechanics.** `python scripts/manuscript.py check` (labels, citation keys, images, math, LaTeX commands left in the prose, hand-numbered references, half-width punctuation after Chinese or Japanese text, open `[TODO: ...]` markers) and `python scripts/literature.py audit-bibliography` (keys linked to archived sources). A key that resolves is not support.
 5. **Argument.** Does the text make the main claim of the outline? Are steps missing, claims stronger than their support, alternatives or limitations ignored? Do sections contradict each other, for example a number in the abstract that differs from the results, or a conclusion that the methods cannot support?
 6. **Support.** For each substantive claim: the cited source's passage, checked with `literature-and-evidence` (support, contradiction, qualification, or not checked), or the result record and its status. `python scripts/research.py check` reports stale results; a stale or unchecked result does not support a finding.
 7. **Terminology and rules.** Each active rule in `requirements/writing.md`, applied within its scope; the terminology table; consistency of terms across sections.

@@ -1,5 +1,11 @@
 # Implementation Status
 
+## Maintenance: LaTeX left in the text and punctuation in Chinese and Japanese (2026-10-30)
+
+- `python scripts/manuscript.py check` now reports every LaTeX command outside math and code (for example `\cite{key}`, `\ref{fig:id}`, `\textbf{word}`, `\begin{itemize}`) as a problem, with the Markdown form to use. Pandoc 3.12.1 was observed to read such commands as raw LaTeX and drop them from the Word file without an error: “See \cite{smith2020} and …, \textbf{bold word}” became “See and …,”. Backslash escapes (`\%`, `\_`, `\&`, `\$`), an escaped backslash, math, code, and HTML comments are not reported. Before this change only the import inventory counted lines that start with a LaTeX command.
+- The check also warns about half-width punctuation directly after Chinese or Japanese text, and names the usual full-width form from `scripts/text_rules.json`; Korean and English text and cross-references with Chinese identifiers are not reported. A confirmed rule or the venue's style can keep half-width marks, so this stays a warning.
+- The detectors live in `scripts/text_rules.py` with the other language rules, and the marks are data in `scripts/text_rules.json`. `test_manuscript.py` gained two tests; the manuscript tests (28) and the whole suite (198 tests) pass on macOS. The conventions document, the script READMEs, and the check lists of `manuscript-writing` and `manuscript-audit` describe both checks.
+
 ## Extension: researcher–AI collaboration (2026-10-30)
 
 - Implemented the maintainer-approved [collaboration design](researcher-ai-collaboration.md) in ten existing skills. It centers evidence-based discussion, meaningful method alternatives, observation versus interpretation, the author's argument and expression, and continuous routine work toward an agreed goal. Scientific choices still return to the researcher; planning-only and audit-only requests remain bounded. The earlier guided default of finishing one task and proposing the next is replaced for already-authorized handoffs.

@@ -113,6 +113,27 @@ class CheckTests(ManuscriptTestCase):
         for phrase in ("Figure 2", "figure 3", "图2", "圖2", "図2", "図 @fig:"):
             self.assertIn(f"“{phrase}", result.stdout)
 
+    def test_latex_commands_in_prose_are_problems_and_escapes_are_not(self) -> None:
+        self.write("manuscript/01-introduction.md", INTRO + "\nPrior work \\cite{doe2021synthetic} shows \\textbf{large} gains "
+                   "(see \\ref{fig:gradient}). It costs 95\\% for R\\&D, with $\\beta$ and `\\cite{code}`.\n\n"
+                   "<!-- \\todo{private note} -->\n")
+        result = self.run_script("check")
+        self.assertEqual(result.returncode, 1, result.stdout)
+        self.assertIn("“\\cite{doe2021synthetic}” is dropped from the Word file; write [@key]", result.stdout)
+        self.assertIn("“\\textbf{large}” is dropped from the Word file", result.stdout)
+        self.assertIn("“\\ref{fig:gradient}” is dropped from the Word file; write @fig:id", result.stdout)
+        for kept in ("\\%", "\\&", "\\beta", "\\cite{code}", "\\todo"):
+            self.assertNotIn("“" + kept, result.stdout)
+
+    def test_halfwidth_punctuation_after_chinese_or_japanese_text_is_a_warning(self) -> None:
+        self.write("manuscript/01-introduction.md", INTRO + "\n夜间热岛更强,白天较弱.\n\n結果は明確である,次に述べる。\n\n"
+                   "결과는, 명확하다. Results, however, vary by 3.5 degrees.\n")
+        result = self.run_script("check")
+        self.assertEqual(result.returncode, 0, result.stdout)
+        self.assertIn("“,” (usually “，”), “.” (usually “。”)", result.stdout)
+        self.assertIn("“,” (usually “、 or ，”)", result.stdout)
+        self.assertEqual(result.stdout.count("half-width punctuation"), 2, result.stdout)
+
     def test_citations_allow_adjacent_cjk_and_japanese_text_without_hiding_unknown_keys(self) -> None:
         self.write("manuscript/01-introduction.md", INTRO.replace(
             "城市热岛研究很多 [@doe2021synthetic]。@zhang2019fixture 给出了手册。",
