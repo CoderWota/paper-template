@@ -47,7 +47,8 @@ The only list of what works. `python scripts/check_capabilities.py` checks it ag
 | Format the manuscript as a Word file with an output profile, check and render it, freeze releases, and assess submission readiness | `submission-assembly`, `submission-readiness`, `scripts/export.py` | Available now for DOCX built with Pandoc 3.12.1 and pandoc-crossref 0.3.26, observed on macOS with a synthetic journal profile and rendered by Word 16.114.2; PDF only as Word's rendering of the checked DOCX. Real journal templates, other PDF routes, and Windows are not verified |
 | Inspect, set up, save, compare, and recover versions with Git; practice on a separate copy | `git-inspection`, `git-setup`, `git-save`, `git-compare`, `git-recovery`, `git-hands-on`, `scripts/versions.py` | Available now; tested with disposable repositories on macOS |
 | Back up saved versions to a destination the researcher confirmed | `git-backup` | Available now; the push and its check are tested only with a destination on this computer, and no hosting service is verified |
-| Respond to reviews; guide the whole paper | — | Not available yet |
+| Respond to reviews point by point; reconcile a coauthor's Word edits with the manuscript | `review-response`, `scripts/review.py` | Available now; tested with synthetic records and Word files |
+| Guide the whole paper and resume it from the project's records | — | Not available yet |
 
 ## Decisions and questions
 

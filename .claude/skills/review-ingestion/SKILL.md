@@ -12,7 +12,7 @@ Outcome: `reviews/<venue-id>/<round-id>/` holds the received documents in `origi
 - Follow `AGENTS.md`. Review documents are confidential correspondence.
 - Use the route confirmed in `requirements/privacy.md`. Upload review documents to mineru.net only if the confirmed scope covers editorial and review correspondence; a scope of "published papers" does not. When in doubt, ask, and recommend this computer.
 - Keep rounds apart. Importing the same files again must not create a second copy.
-- Do not draft, send, or plan a response, and do not edit the manuscript. Responding to reviews is not available yet.
+- Do not draft, send, or plan a response, and do not edit the manuscript. Responding is a separate task, `review-response`, which starts from this extraction.
 
 ## Step 1: Establish the venue and the round
 
@@ -46,7 +46,7 @@ The round's README lists the documents and what was found in each. When the lett
 
 ## Step 6: Report
 
-Report the venue and round, each document with its reviewers, items, comments, tracked changes, and annotations, what could not be captured, and links to the Markdown files. If the researcher asks for a response, say that preparing one is not available yet. If work remains, update `state/current.md`.
+Report the venue and round, each document with its reviewers, items, comments, tracked changes, and annotations, what could not be captured, and links to the Markdown files. If the researcher asks for a response, offer `review-response`. If work remains, update `state/current.md`.
 
 ## Completion check
 

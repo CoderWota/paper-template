@@ -15,7 +15,7 @@ Updated: 2026-10-29.
 | 5 | Evidence-based writing, audit, and major revision | Accepted by review on 2026-10-29: five skills passed written review ([skill review](acceptance/mvp-5-skill-review.md)); the convention check, check records, revisions, and Pandoc adoption of Word, LaTeX, and OpenDocument pass their tests. Real manuscripts, PDF adoption, Windows, and Codex are unverified |
 | 6 | Template-driven layout and readiness | Accepted by review on 2026-10-29: both skills passed written review ([skill review](acceptance/mvp-6-skill-review.md)); the Word route was built, rendered by Word, and inspected with a neutral and a synthetic journal profile on macOS. A real journal template, other PDF routes, Windows, and Codex are unverified |
 | 7 | Practical Git control and explicit backup | Accepted by review on 2026-10-28: seven skills passed written review ([skill review](acceptance/mvp-7-skill-review.md)); `scripts/versions.py` passes 13 tests in disposable repositories. No hosting service, Windows, or Codex was exercised |
-| 8 | Review rounds and coauthor reconciliation | Planned |
+| 8 | Review rounds and coauthor reconciliation | Accepted by review on 2026-10-29 ([skill review](acceptance/mvp-8-skill-review.md)); `scripts/review.py` passes 5 tests with synthetic material. No real round or coauthor file was used |
 | 9 | Connected paper hands-on and release candidate | Planned |
 
 Execution order (revised 2026-10-26): 1 → 7 → 2 → 3 → 4 → 5 → 6 → 8 → 9, with the export trial running alongside MVP 7; see the [MVP implementation guideline](mvp-implementation-guideline.md#3-mvp-overview-and-dependencies). The export trial ran on 2026-10-28 ([record](export-trial.md)).
@@ -694,6 +694,16 @@ Implemented, after the export trial's decisions:
 Verification observed (macOS 26.6.2, Apple Silicon; Word 16.114.2; Chrome 156): 10 export tests, two of them real builds and one a Mermaid figure. A live synthetic manuscript built with both profiles: 9 of 9 formulas native, 2 of 2 figures, all references and citations resolved, and every journal expectation met; Word's PDF was inspected page by page (A4, line numbers, Times New Roman, double spacing, numbered black headings, equations, the diagram with a Chinese label, the table, the references). The inspection found a missing plural prefix ("Eq. 1, 2"), fixed in the build. Releases were frozen once, refused for a reused ID, and refused after an edit made the build out of date.
 
 Not verified: a real journal's own template and current guidelines; editing an equation in Word; Word fields for figure and table numbers; Word on Windows and LibreOffice rendering; PDF routes other than Word's rendering of the checked DOCX; missing fonts; Codex.
+
+## MVP 8: review rounds and coauthor reconciliation
+
+Status: `review-response` accepted by review on 2026-10-29 ([skill review](acceptance/mvp-8-skill-review.md)). No real review round or coauthor file was used.
+
+- Skill `review-response` with its generated copy; `review-ingestion` now hands over to it.
+- `scripts/review.py`: `check` validates a round's `response.md` and `changes.md` (every item's reviewer, source, comment, status, and response; addressed items link a done change in the same round whose location exists; declined items give a justification); `reconcile` compares a coauthor's Word file with the version they received (its tracked changes, or a separate file) and with the current manuscript, locating each edited paragraph and marking it as applying cleanly or conflicting with a later change, and lists Word comments with their authors, without changing anything.
+- 5 tests with synthetic records and Word files.
+
+Not verified: real rounds and complex coauthor edits (moved paragraphs, tables, equations, fields), which the paragraph-based comparison reports for a manual check; Codex; Windows.
 
 ## MVP 7: practical Git control and explicit backup
 
