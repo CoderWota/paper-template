@@ -2,6 +2,8 @@
 
 Automated tests for the workspace scripts in [`scripts/`](../README.md). They use only the Python standard library and temporary folders whose paths contain spaces and non-ASCII characters, so the same tests can confirm behavior on Windows, macOS, and Linux.
 
+The manuscript tests also cover AI signatures and author metadata, with ordinary AI discussion and disclosure as allowed cases. They verify that multilingual vocabulary stays in the data file rather than in Python rule code. Export tests cover signature refusal, final DOCX signatures split across runs in a header, AI creator properties, numeric tool release ordering, an explicit browser path, and Windows installation roots using simulated platform settings; these simulations do not verify operation on Windows.
+
 Run them from the workspace root:
 
 ```text

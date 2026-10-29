@@ -48,6 +48,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 import manuscript  # noqa: E402
+from text_rules import AI_AUTHOR, open_marker, signature_problems  # noqa: E402
 from export import docx, tools  # noqa: E402
 from ingestion.common import sha256_file, update_readme, write_json_atomic, write_text_atomic  # noqa: E402
 
@@ -277,6 +278,11 @@ def build_inputs(root: Path, folder: Path, profile: dict, sections: list) -> lis
 def verify(root: Path, profile: dict, output: Path, facts: dict, warnings: list, sections: list) -> list:
     """Checks of a built DOCX: (name, passed, detail)."""
     checks = []
+    signatures = [problem for part, paragraph in docx.paragraph_texts(output)
+                  for problem in signature_problems(paragraph, part)]
+    signatures.extend(f"file properties: AI author in {key}" for key, value in docx.core_properties(output).items()
+                      if key in ("creator", "lastModifiedBy") and AI_AUTHOR.search(value))
+    checks.append(("AI signatures", not signatures, "; ".join(signatures) or "no recognized AI signature or AI author"))
     objects = docx.omml_objects(output)
     formula_problems = docx.compare_formulas(facts, objects)
     total = len(facts["body"]) + len(facts["notes"])
@@ -320,7 +326,9 @@ def verify(root: Path, profile: dict, output: Path, facts: dict, warnings: list,
         core = docx.core_properties(output)
         names = [v for k, v in core.items() if k in ("creator", "lastModifiedBy") and v.strip()]
         checks.append(("anonymization", not names, "no author in the file properties" if not names else "file properties name " + ", ".join(names)))
-    checks.append(("open items", facts["todo"] == 0, f"{facts['todo']} [TODO: ...] marker(s) in the text"))
+    output_open_items = sum(open_marker(paragraph) for _, paragraph in docx.paragraph_texts(output))
+    open_items = facts["todo"] + output_open_items
+    checks.append(("open items", open_items == 0, f"{open_items} open marker(s) in the text"))
     return checks
 
 

@@ -54,6 +54,8 @@ def _service_error(error: urllib.error.HTTPError) -> dict:
         body = error.read(65536)
     except OSError:
         pass
+    finally:
+        error.close()
     try:
         parsed = json.loads(body.decode("utf-8", "replace"))
     except ValueError:

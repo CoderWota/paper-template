@@ -23,6 +23,8 @@ import subprocess
 import sys
 from pathlib import Path
 
+from export.tools import find_in_tools
+
 ROOT = Path(__file__).resolve().parent.parent
 TOOLS = ("git", "uv", "pandoc", "quarto", "mineru", "node", "winget")
 CLOUD_SYNC_MARKERS = ("onedrive", "dropbox", "google drive", "icloud drive", "mobile documents", "box sync")
@@ -148,12 +150,12 @@ def pythons() -> list[dict]:
 
 def workspace_tool(name: str) -> str | None:
     """A tool installed in the workspace's own .tools/ folder, where the export and import scripts look first."""
-    suffix = ".exe" if os.name == "nt" else ""
     if name == "mineru":
         folder = ROOT / ".tools" / "mineru"
         candidates = [folder / "Scripts" / "mineru-kit.exe", folder / "bin" / "mineru-kit"]
-    elif name == "pandoc" and (ROOT / ".tools" / "pandoc").is_dir():
-        candidates = sorted((ROOT / ".tools" / "pandoc").rglob(f"pandoc{suffix}"))
+    elif name == "pandoc":
+        found = find_in_tools(ROOT, "pandoc", "pandoc")
+        return str(found) if found else None
     else:
         candidates = []
     found = [p for p in candidates if p.is_file() and os.access(p, os.X_OK)]
@@ -163,9 +165,9 @@ def workspace_tool(name: str) -> str | None:
 def tools() -> dict:
     report = {}
     for name in TOOLS:
-        path, location = shutil.which(name), "PATH"
+        path, location = workspace_tool(name), "workspace .tools"
         if not path:
-            path, location = workspace_tool(name), "workspace .tools"
+            path, location = shutil.which(name), "PATH"
         version = first_line([path, "--version"]) if path and name != "mineru" else None
         report[name] = {"path": path, "location": location if path else None, "version": version}
     return report

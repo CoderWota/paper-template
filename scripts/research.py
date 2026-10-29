@@ -21,7 +21,6 @@ Exit status: 0 done; 1 problems found, or the run failed; 2 the records are vali
 from __future__ import annotations
 
 import argparse
-import hashlib
 import json
 import os
 import platform
@@ -35,7 +34,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from ingestion.common import relative, sha256_file, slug, update_readme, write_json_atomic, write_text_atomic  # noqa: E402
+from ingestion.common import checksum, relative, slug, update_readme, write_json_atomic, write_text_atomic  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 FIELD = re.compile(r"^[-*] ([^:：\[\]`]{1,40}?)\s*[:：]\s*(.*)$")
@@ -149,18 +148,6 @@ def link_targets(text: str) -> list:
 def is_empty(value: str | None) -> bool:
     text = (value or "").strip().strip(".。").lower()
     return not text or any(text == word or text.startswith(word + " ") for word in NONE_WORDS)
-
-
-def sha256_tree(path: Path) -> str:
-    """Checksum of a folder: every file except README.md, by relative path and content."""
-    digest = hashlib.sha256()
-    for file in sorted(p for p in path.rglob("*") if p.is_file() and p.name != "README.md"):
-        digest.update(f"{file.relative_to(path).as_posix()}\t{sha256_file(file)}\n".encode("utf-8"))
-    return digest.hexdigest()
-
-
-def checksum(path: Path) -> str:
-    return sha256_tree(path) if path.is_dir() else sha256_file(path)
 
 
 # Checks by record type

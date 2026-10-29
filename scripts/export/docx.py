@@ -292,6 +292,22 @@ def text_of(docx: Path) -> str:
     return "".join(node.text or "" for node in root.iter(W + "t")) if root is not None else ""
 
 
+def paragraph_texts(docx: Path) -> list:
+    """Text per paragraph, including headers, footers, notes, and comments.
+
+    Keep paragraph boundaries and join Word runs so split formatting cannot
+    conceal a signature from the manuscript's text check.
+    """
+    paragraphs = []
+    with zipfile.ZipFile(docx) as package:
+        for name in package.namelist():
+            if name.startswith("word/") and name.endswith(".xml"):
+                root = ET.fromstring(package.read(name))
+                paragraphs.extend((name, "".join(node.text or "" for node in para.iter(W + "t")))
+                                  for para in root.iter(W + "p"))
+    return paragraphs
+
+
 def core_properties(docx: Path) -> dict:
     root = _xml(docx, "docProps/core.xml")
     if root is None:

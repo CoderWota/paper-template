@@ -26,11 +26,11 @@ PANDOC_RELEASE = f"https://github.com/jgm/pandoc/releases/download/{PANDOC_VERSI
 CROSSREF_RELEASE = f"https://github.com/lierdakil/pandoc-crossref/releases/download/v{CROSSREF_VERSION}/"
 # (platform, machine) -> (archive name, SHA-256), as published on the release pages (read 2026-10-28).
 PANDOC_ARCHIVES = {
-    ("darwin", "arm64"): ("pandoc-3.12.1-arm64-macOS.zip", "c2146cf33a583f3ac93eccddf1bb662371d5cfcce1aad1c87ad860cca1435d46"),
-    ("darwin", "x86_64"): ("pandoc-3.12.1-x86_64-macOS.zip", "81ed3e2cfecf096df15d407152f89a684fd65221082b919963f738e977fad3bc"),
-    ("windows", "x86_64"): ("pandoc-3.12.1-windows-x86_64.zip", "6ef431cb20b2c24a0371fc19200dc49d452be54b1b5c9239f3462841ef53e587"),
-    ("linux", "x86_64"): ("pandoc-3.12.1-linux-amd64.tar.gz", "d0c90410e90204c9ca83b8539fac5c7aed01fd537207e4585849f8abc5df20b8"),
-    ("linux", "arm64"): ("pandoc-3.12.1-linux-arm64.tar.gz", "445d96fd08801fe636cab1158b4f017ee320ac3b7446328b4fe2f902117b19b9"),
+    ("darwin", "arm64"): (f"pandoc-{PANDOC_VERSION}-arm64-macOS.zip", "c2146cf33a583f3ac93eccddf1bb662371d5cfcce1aad1c87ad860cca1435d46"),
+    ("darwin", "x86_64"): (f"pandoc-{PANDOC_VERSION}-x86_64-macOS.zip", "81ed3e2cfecf096df15d407152f89a684fd65221082b919963f738e977fad3bc"),
+    ("windows", "x86_64"): (f"pandoc-{PANDOC_VERSION}-windows-x86_64.zip", "6ef431cb20b2c24a0371fc19200dc49d452be54b1b5c9239f3462841ef53e587"),
+    ("linux", "x86_64"): (f"pandoc-{PANDOC_VERSION}-linux-amd64.tar.gz", "d0c90410e90204c9ca83b8539fac5c7aed01fd537207e4585849f8abc5df20b8"),
+    ("linux", "arm64"): (f"pandoc-{PANDOC_VERSION}-linux-arm64.tar.gz", "445d96fd08801fe636cab1158b4f017ee320ac3b7446328b4fe2f902117b19b9"),
 }
 CROSSREF_ARCHIVES = {
     ("darwin", "arm64"): ("pandoc-crossref-macOS-ARM64.tar.xz", "5bd7ab1472c37c22b775042b1e8b82449a541ca1a2181e402e98a8def5d0ce76"),
@@ -43,11 +43,14 @@ BROWSERS = {
     "darwin": ["/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
                "/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge",
                "/Applications/Chromium.app/Contents/MacOS/Chromium"],
-    "windows": [r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe",
-                r"C:\Program Files\Microsoft\Edge\Application\msedge.exe",
-                r"C:\Program Files\Google\Chrome\Application\chrome.exe"],
     "linux": ["chromium", "chromium-browser", "google-chrome", "microsoft-edge"],
 }
+
+
+def windows_program_folders() -> list[Path]:
+    """Use the computer's installation roots, including per-user installations."""
+    return list(dict.fromkeys(Path(value) for name in ("ProgramFiles", "ProgramFiles(x86)", "LOCALAPPDATA")
+                              if (value := os.environ.get(name))))
 
 
 def system() -> str:
@@ -68,7 +71,14 @@ def find_in_tools(root: Path, folder: str, name: str) -> Path | None:
     base = root / ".tools" / folder
     if not base.is_dir():
         return None
-    found = sorted(p for p in base.rglob(executable(name)) if p.is_file() and os.access(p, os.X_OK))
+    # Compare numeric version components as numbers (10 follows 9). A path is
+    # the tie-breaker for unpacked releases with the same version.
+    def release_key(path: Path) -> tuple:
+        versions = [tuple(map(int, re.findall(r"\d+", part))) for part in path.relative_to(base).parts[:-1]
+                    if re.fullmatch(r"v?\d+(?:\.\d+)+", part)]
+        return (versions[0] if versions else (), path.as_posix())
+
+    found = sorted((p for p in base.rglob(executable(name)) if p.is_file() and os.access(p, os.X_OK)), key=release_key)
     return found[-1] if found else None
 
 
@@ -82,7 +92,17 @@ def version_of(command: list) -> str | None:
 
 
 def browser() -> str | None:
-    for candidate in BROWSERS.get(system(), []):
+    candidates = []
+    if os.environ.get("PUPPETEER_EXECUTABLE_PATH"):
+        candidates.append(os.environ["PUPPETEER_EXECUTABLE_PATH"])
+    if system() == "windows":
+        candidates.extend(str(base / relative) for base in windows_program_folders()
+                          for relative in ("Microsoft/Edge/Application/msedge.exe", "Google/Chrome/Application/chrome.exe"))
+    else:
+        candidates.extend(BROWSERS.get(system(), []))
+        if system() == "darwin":
+            candidates.extend(str(Path.home() / candidate.lstrip("/")) for candidate in BROWSERS["darwin"])
+    for candidate in candidates:
         if os.path.isabs(candidate):
             if Path(candidate).exists():
                 return candidate
@@ -95,8 +115,8 @@ def word_available() -> bool:
     if system() == "darwin":
         return Path("/Applications/Microsoft Word.app").exists()
     if system() == "windows":
-        return any(Path(p).exists() for p in (r"C:\Program Files\Microsoft Office\root\Office16\WINWORD.EXE",
-                                               r"C:\Program Files (x86)\Microsoft Office\root\Office16\WINWORD.EXE"))
+        return any((base / "Microsoft Office" / "root" / "Office16" / "WINWORD.EXE").is_file()
+                   for base in windows_program_folders())
     return False
 
 

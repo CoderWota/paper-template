@@ -191,8 +191,9 @@ def _fetch(url: str, temporary: Path) -> tuple[str, str, int, str]:
     try:
         response = urllib.request.urlopen(request, timeout=45)
     except urllib.error.HTTPError as error:
-        status = "login/manual-access-needed" if error.code in (401, 402, 403) else "unavailable" if error.code in (404, 410) else "rate-limited" if error.code == 429 else "failed"
-        return status, safe_http_url(error.geturl()) or safe_http_url(url) or "", 0, f"HTTP {error.code}"
+        with error:
+            status = "login/manual-access-needed" if error.code in (401, 402, 403) else "unavailable" if error.code in (404, 410) else "rate-limited" if error.code == 429 else "failed"
+            return status, safe_http_url(error.geturl()) or safe_http_url(url) or "", 0, f"HTTP {error.code}"
     except (urllib.error.URLError, TimeoutError, OSError) as error:
         return "failed", safe_http_url(url) or "", 0, type(error).__name__
     with response:

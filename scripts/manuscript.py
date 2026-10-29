@@ -31,7 +31,6 @@ records are valid but some are stale; 3 refused. Uses only the Python standard l
 from __future__ import annotations
 
 import argparse
-import hashlib
 import json
 import re
 import shutil
@@ -42,7 +41,9 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from ingestion.common import sha256_file, slug, update_readme, write_json_atomic, write_text_atomic  # noqa: E402
+from ingestion.common import checksum, sha256_file, slug, update_readme, write_json_atomic, write_text_atomic  # noqa: E402
+from text_rules import (CJK, WORD, citation_keys, doubled_reference, hand_numbered, normalize_reference, open_marker,
+                        signature_problems)  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 OWNER = "scripts/manuscript.py"
@@ -54,16 +55,9 @@ ATTRIBUTES = re.compile(r"\s*\{([^{}]*)\}\s*$")
 IMAGE = re.compile(r"!\[([^\]]*)\]\(\s*<?([^)\s>]+)>?(?:\s+\"[^\"]*\")?\s*\)(\{[^}]*\})?")
 CAPTION = re.compile(r"^(?::|Table:)\s+(.*?)\s*(\{([^{}]*)\})?\s*$")
 EQ_LABEL = re.compile(r"^\{#(eq:[^\s{}]+)\}$")
-CITATION = re.compile(r"(?<![\w@.\\/])-?@(\w[\w:.#$%&+?<>~/\-]*)")
 INLINE_CODE = re.compile(r"`+[^`]*`+")
 INLINE_MATH = re.compile(r"(?<![\\$])\$(?!\s)([^$\n]+?)(?<![\s\\])\$(?!\d)")
 CURRENCY = re.compile(r"(?<![\\$])\$\d")
-HAND_NUMBERED = re.compile(r"(?<![@\w])(Figure|Fig\.|Table|Equation|Eq\.|Section|Sect\.)\s*\(?\d+\)?|(?<![@])([图表式])\s*\d+(?![\d.])")
-DOUBLED_WORD = re.compile(r"(?i)\b(sections?|sect\.|figures?|figs?\.|tables?|tabs?\.|equations?|eqs?\.|eqns?\.)\s+\[?-?@(sec|fig|tbl|eq):"
-                          r"|[图表式节]\s*\[?-?@(sec|fig|tbl|eq):")
-OPEN_MARKER = re.compile(r"\bTODO\b|\bTBD\b|\bFIXME\b|\bXXX\b|(?i:citation needed)|待补|待定|需引用|待核实")
-CJK = re.compile(r"[\u3400-\u9fff\uf900-\ufaff\u3040-\u30ff\uac00-\ud7af]")
-WORD = re.compile(r"[A-Za-z0-9\u00c0-\u024f]+(?:['\u2019\-][A-Za-z0-9\u00c0-\u024f]+)*")
 
 
 class Refused(Exception):
@@ -207,6 +201,7 @@ class Scan:
         self.labels: dict = {}
         self.references: list = []
         self.citations: list = []
+        self.citation_occurrences: list = []
         self.problems: list = []
         self.warnings: list = []
         self.open_items: list = []
@@ -227,7 +222,9 @@ class Scan:
 
 
 def scan_file(path: Path, display: str, scan: Scan, folder: Path) -> None:
-    blocks = blocks_of(path.read_text(encoding="utf-8"))
+    text = path.read_text(encoding="utf-8")
+    scan.problems.extend(signature_problems(text, display))
+    blocks = blocks_of(text)
     for position, (kind, lang, lines, start) in enumerate(blocks):
         where = f"{display}:{start}"
         following = blocks[position + 1] if position + 1 < len(blocks) else None
@@ -292,20 +289,14 @@ def scan_file(path: Path, display: str, scan: Scan, folder: Path) -> None:
             text = prose(line)
             if CURRENCY.search(INLINE_CODE.sub(" ", line)):
                 scan.warnings.append(f"{at}: a dollar sign before a number is read as math; write a literal amount as \\$")
-            for match in CITATION.finditer(text):
-                key = match.group(1).rstrip(":.#$%&-+?<>~/")
-                prefix = key.split(":", 1)[0]
-                if ":" in key and prefix in CROSSREF:
-                    scan.references.append((key, at))
-                else:
-                    scan.citations.append((key, at))
-            for match in DOUBLED_WORD.finditer(text):
-                scan.warnings.append(f"{at}: “{match.group(0)}” repeats the word that the output puts before the number; write the @-reference alone")
-            for match in HAND_NUMBERED.finditer(text):
-                scan.warnings.append(f"{at}: “{match.group(0)}” looks hand-numbered; refer with @fig:, @tbl:, @eq:, or @sec: instead")
-            for match in OPEN_MARKER.finditer(line):
+            for key in citation_keys(text):
+                scan.citation_occurrences.append((key, at))
+            for match in doubled_reference(text):
+                scan.warnings.append(f"{at}: “{match}” repeats the word that the output puts before the number; write the @-reference alone")
+            for match in hand_numbered(text):
+                scan.warnings.append(f"{at}: “{match.strip()}” looks hand-numbered; refer with @fig:, @tbl:, @eq:, or @sec: instead")
+            if open_marker(line):
                 scan.open_items.append(f"{at}: {line.strip()[:120]}")
-                break
 
 
 def bibliography_keys(root: Path) -> set | None:
@@ -345,18 +336,31 @@ def analyse(root: Path) -> dict:
         meta = root / "manuscript" / metadata
         if not meta.is_file():
             problems.append(f"manuscript/manifest.yaml: the metadata file manuscript/{metadata} does not exist")
-        elif not re.search(r"^title\s*:", meta.read_text(encoding="utf-8"), re.M):
-            scan.warnings.append(f"manuscript/{metadata}: no title")
+        else:
+            text = meta.read_text(encoding="utf-8")
+            scan.problems.extend(signature_problems(text, f"manuscript/{metadata}", metadata=True))
+            if not re.search(r"^title\s*:", text, re.M):
+                scan.warnings.append(f"manuscript/{metadata}: no title")
     totals = [0, 0]
     for name, path in paths:
         scan_file(path, f"manuscript/{name}", scan, root / "manuscript")
         words, cjk = count_words(path.read_text(encoding="utf-8"))
         totals[0] += words
         totals[1] += cjk
+    keys = bibliography_keys(root)
+    known = set(scan.labels)
+    if keys:
+        known.update(keys)
+    for raw, where in scan.citation_occurrences:
+        key = normalize_reference(raw, known)
+        prefix = key.split(":", 1)[0]
+        if ":" in key and prefix in CROSSREF:
+            scan.references.append((key, where))
+        else:
+            scan.citations.append((key, where))
     for label, where in scan.references:
         if label not in scan.labels:
             scan.problems.append(f"{where}: @{label} refers to no figure, table, equation, or section")
-    keys = bibliography_keys(root)
     cited = sorted({key for key, _ in scan.citations})
     if cited and keys is None:
         problems.append("references/bibliography.bib does not exist, but the manuscript cites " + ", ".join(cited[:10]))
@@ -490,8 +494,7 @@ def inventory(name: str, text: str) -> dict:
             for image in IMAGE.finditer(joined):
                 found["images"] += 1
                 found["equation_images"] += int(image.group(2).lower().endswith((".wmf", ".emf")))
-            for match in CITATION.finditer(prose(joined)):
-                key = match.group(1).rstrip(":.#$%&-+?<>~/")
+            for key in citation_keys(prose(joined)):
                 (found["labels"] if key.split(":", 1)[0] in CROSSREF and ":" in key else found["citations"]).add(key)
     return found
 
@@ -625,15 +628,6 @@ def command_adopt(args, root: Path) -> int:
 
 
 # Input-versioned check records
-
-def checksum(path: Path) -> str:
-    if path.is_dir():
-        digest = hashlib.sha256()
-        for file in sorted(p for p in path.rglob("*") if p.is_file() and p.name != "README.md"):
-            digest.update(f"{file.relative_to(path).as_posix()}\t{sha256_file(file)}\n".encode("utf-8"))
-        return digest.hexdigest()
-    return sha256_file(path)
-
 
 def checks_file(root: Path) -> Path:
     return root / "outputs" / "checks" / "checks.json"

@@ -56,7 +56,8 @@ class CredentialTests(unittest.TestCase):
             with urllib.request.urlopen(urllib.request.Request(url, data=data, headers=headers or {}), timeout=10) as response:
                 return response.status
         except urllib.error.HTTPError as error:
-            return error.code
+            with error:
+                return error.code
 
     def test_browser_entry_saves_value_and_never_prints_it(self) -> None:
         process, url = self.start_form()

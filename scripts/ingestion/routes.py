@@ -355,6 +355,7 @@ class CloudRoute:
                 with self.opener.open(request, timeout=60) as response:
                     payload = json.loads(response.read().decode("utf-8"))
             except urllib.error.HTTPError as error:
+                error.close()
                 if error.code in (401, 403):
                     raise BatchStop("mineru.net refused the token", "token-rejected") from None
                 if (error.code == 429 or error.code >= 500) and attempt < len(delays):

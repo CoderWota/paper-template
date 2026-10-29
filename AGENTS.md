@@ -20,6 +20,7 @@ These apply at every decision point. Skills do not repeat them.
 - **No invention.** Write only what the researcher said. Do not add an example, an exception, a rule, a decision, or a reason that they did not give. When you record a rule, quote the words that confirmed it.
 - **Replacement and one-time edits.** A statement that says to replace or switch a rule is a replacement: record it and name the rule that it replaces. A request that names one passage or sentence is a one-time edit: make it, say that no rule changed, and offer to change the rule.
 - **Manuscript text.** A change to a requirement or to the research goal never edits manuscript text by itself. List the passages that it affects and ask what to do.
+- **AI signatures.** Never insert an AI assistant's signature, attribution, conversational sign-off, or authorship into manuscript text or author metadata. Keep any disclosure required by a venue separate and follow the researcher's decision and the venue's policy.
 - **Keys and accounts.** Never ask for, repeat, or store a key or a password in the conversation. Keys are entered on the private page, and only for a capability that uses them.
 
 ## Available now

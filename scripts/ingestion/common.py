@@ -39,6 +39,20 @@ def sha256_file(path: Path) -> str:
     return digest.hexdigest()
 
 
+def checksum(path: Path) -> str:
+    """Hash a file or a directory's relative paths and contents, excluding READMEs.
+
+    Keep the directory encoding stable: existing research and manuscript records
+    use these digests to determine whether their inputs have changed.
+    """
+    if not path.is_dir():
+        return sha256_file(path)
+    digest = hashlib.sha256()
+    for file in sorted(p for p in path.rglob("*") if p.is_file() and p.name != "README.md"):
+        digest.update(f"{file.relative_to(path).as_posix()}\t{sha256_file(file)}\n".encode("utf-8"))
+    return digest.hexdigest()
+
+
 def sha256_text(text: str) -> str:
     return hashlib.sha256(text.encode("utf-8")).hexdigest()
 

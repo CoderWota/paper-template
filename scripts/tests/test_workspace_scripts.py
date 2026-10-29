@@ -98,6 +98,7 @@ class EnvironmentReportTests(unittest.TestCase):
         self.addCleanup(shutil.rmtree, root, ignore_errors=True)
         (root / "scripts").mkdir()
         shutil.copy2(SCRIPTS / "inspect_environment.py", root / "scripts" / "inspect_environment.py")
+        shutil.copytree(SCRIPTS / "export", root / "scripts" / "export", ignore=shutil.ignore_patterns("__pycache__"))
         pandoc = root / ".tools" / "pandoc" / "9.9" / "bin" / "pandoc"
         pandoc.parent.mkdir(parents=True)
         pandoc.write_text("#!/bin/sh\necho 'pandoc 9.9'\n", encoding="utf-8")
