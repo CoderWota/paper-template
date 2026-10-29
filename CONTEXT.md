@@ -53,6 +53,10 @@ A verified, researcher-confirmed requirement governing some aspect of the manusc
 A wording or structural habit that adds emphasis, decoration, or generality without adding content, such as an inflated claim of significance, an uncited appeal to authority, or a stock connective at the start of every sentence. It is a signal for editing, not evidence of who wrote a text, and it governs writing only when the researcher confirms a rule about it.
 _Avoid_: AI trace, when it implies a judgment of authorship.
 
+**Style preset**:
+An optional set of writing choices, such as tense, punctuation, or caption case, that applies to one scope of the manuscript only after the researcher chooses it. A venue requirement overrides it.
+_Avoid_: Default style, when it suggests the choice was made for the researcher.
+
 **Research decision record**:
 A concise account of a consequential researcher-confirmed choice, its scope, rationale, and implications; it is distinct from evidence that the choice is scientifically valid.
 

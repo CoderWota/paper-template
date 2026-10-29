@@ -1,0 +1,37 @@
+# Reviewer's View
+
+A critical reading of the manuscript from a reviewer's position, for the researcher to act on before submission. It is not a prediction of any real review. It gives no score, rating, percentile, or chance of acceptance. The same evidence rules as the audit apply: every point names its location and its support.
+
+## Inputs
+
+- The manuscript files that `manuscript/manifest.yaml` lists, and the title and abstract in `manuscript/metadata.yaml`.
+- The venue note in `research/venues/` when a target is set: scope, article types, length, required sections, and the AI policy.
+- The outline, and the result records and evidence notes that the text relies on. Do not use a stale record as support.
+
+## Checks
+
+Make these checks separately from the audit's checks, and report the result of each one.
+
+1. **Claims and evidence.** Each contribution that the abstract and introduction claim has a result record or a checked source behind it. List every claim that has neither.
+2. **Baselines.** Each comparison uses the same data, settings, and versions as far as the record shows. Name any baseline that differs.
+3. **Design choices.** The ablations and sensitivity checks cover the key design decisions that the methods section describes.
+4. **Consistency.** The numbers agree across the abstract, the results, and the conclusion. The conclusion reaches no further than the data.
+5. **Reader check (optional).** Give only the section text to a reader who has no project context. Use a fresh session or a subagent when one is available. Ask the reader to state, in their own words, the main claim, the method in one paragraph, the main result with its conditions, and the three points that are unclear. Compare the answers with the outline, and make each gap a finding. The reader's answers test clarity. They are not evidence.
+
+## Report
+
+Write the report in the interaction language, with these parts:
+
+1. **Summary.** One sentence on what the paper claims and where it sits in its field, taken from the text.
+2. **Strengths.** One to three. For each, say why it matters to the field and where its evidence is.
+3. **Weaknesses.** In order of severity. For each one, give the passage or setting it concerns, what is missing or overstated, whether it is a matter of presentation or of substance (method, evidence, or scope), and whether a revision can fix it or it needs new work or a narrower claim. If no weakness is critical, say so plainly.
+4. **Root causes.** Why each weakness arose: a gap in the design, or wording that hides a real limit.
+5. **Action guide.** The analysis to add, with its dataset and setting named; the passage to rewrite; the limitation to state; and how the response letter should address each point without overclaiming. Use `review-response` when a real review round exists.
+
+## Rules
+
+- Go straight to the judgment. Skip courtesy and praise that carries no information.
+- Criticize the claim, not the author. Every point names its location and its evidence.
+- Separate a critical problem from a minor one. Do not list a style preference as a weakness unless it hurts understanding.
+- Give no score, rating, or chance of acceptance. If the researcher asks for one, say that the workspace does not give one, and why: a number would suggest a precision that the evidence does not support.
+- Save the report to `outputs/checks/<date>-review-<scope>.md`, and record it with `python scripts/manuscript.py record-check --name "Reviewer's view of <scope>" --kind audit --input <each reviewed section> --input references/bibliography.bib --result findings --summary "..." --report outputs/checks/<file>.md`.

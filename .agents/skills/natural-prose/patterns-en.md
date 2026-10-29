@@ -58,7 +58,15 @@ The triad only repeated what the concrete sentences show, so it goes; the single
 
 ## 6. Stock vocabulary
 
-Watch these words, especially in groups: delve, intricate, intricacies, meticulous, meticulously, pivotal, paramount, showcase, underscore (verb), highlight (verb, when nothing is singled out), bolster, foster, harness, leverage (verb, outside finance), garner, commendable, noteworthy, realm, landscape (abstract), tapestry, testament, multifaceted, nuanced, holistic, seamless, seamlessly, cutting-edge, game-changing, synergy, unlock, unleash, elevate, empower, embark, myriad, plethora, ever-evolving, "navigate the complexities", "in the realm of", "a deep dive". "Crucial", "robust", and "comprehensive" count only outside their literal or technical senses.
+Watch these words, especially in groups. Each one is a signal, not a ban: choose the plain word that fits the sentence, or cut the word.
+
+- Verbs that inflate a plain action: bolster, delve, elucidate, endeavor, foster, galvanize, harness, leverage (outside finance), navigate (figurative), showcase, spearhead, underscore, unveil.
+- Nouns that dress up a plain thing: cornerstone, interplay, journey (figurative), landscape (figurative), nexus, realm, tapestry, testament.
+- Adjectives that add no information: commendable, crucial, groundbreaking, holistic, intricate, meticulous, multifaceted, noteworthy, nuanced, paramount, pivotal, profound, seamless, vibrant.
+- Connectives that repeat: additionally, furthermore, importantly, moreover, notably. Count them only when two or more appear in a short passage.
+- Phrases: a deep dive, ever-evolving, game-changing, in the realm of, navigate the complexities.
+
+Words such as robust, comprehensive, and key are signals only in figurative use. Keep their technical senses, such as "robust estimator" or "key-value store".
 
 ## 7. Template formatting
 

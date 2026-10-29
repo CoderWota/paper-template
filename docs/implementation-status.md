@@ -41,6 +41,13 @@ Requested by the maintainer: bring established practices of scholarly editing in
 - New `scripts/check_edit.py`, with its word lists in `scripts/check_edit.json`, compares an edit with its original: it lists protected items that were lost or added, and hedges, negations, and limiting words whose count changed. It reuses the citation and open-marker helpers of `scripts/text_rules.py`.
 - Verification on macOS: the 11 new tests and the whole suite (192 tests) pass; the skill copies (34 packages), the capability table, the READMEs (105 directories), and the writing-rule forms pass their checks; the 18 examples of the language lists pass the edit check as intended; no fragment of 8 words or 10 Chinese or Japanese characters is shared with the external material, and its names do not occur in the workspace. Accepted by [written review](acceptance/natural-prose-skill-review.md). Not verified: how a model applies the lists and thresholds, real manuscripts, other languages, Codex, and Windows.
 
+## Extension: writing prompts converted (2026-10-29)
+
+- Eighteen writing prompts from an external collection were checked one by one. Sixteen are converted into the procedures of `manuscript-writing`, `manuscript-audit`, and `research-code-setup`, and the word lists of `natural-prose` were extended. One Word-output prompt is merged into the translation procedure, and one image-tool prompt is partly carried over as a figure brief. Model recommendations are left out. The [written review](acceptance/writing-prompts-review.md) gives the ledger and the reason for each decision.
+- New reference files: `style-presets.md` (optional style choices, off by default, applied only after the researcher chooses them) and `reviewer-view.md` (a reviewer's report without a score, with an optional reader check). `editing-guide.md` and `figure-guide.md` gained the procedures for translation, shortening, expanding, polishing, results passages, captions and table titles, method diagrams, chart recommendations, and tables.
+- Verification on macOS: the skill copies (34 packages), the availability table, the READMEs (105 directories), and the writing-rule forms pass their checks; the 192 script tests pass; the relative links resolve; no fragment of 8 words or 10 CJK characters is shared with the external texts, and no name or credit of them appears in the workspace. The review passes.
+- Not verified: how a model applies the procedures and presets, real manuscripts, researcher use of the presets, Codex, and Windows.
+
 ## MVP 1, partial increment: workspace scaffold
 
 Status: in progress. This increment is narrower than MVP 1 and does not meet its acceptance evidence.

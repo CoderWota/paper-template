@@ -26,7 +26,7 @@ Outcome: a prioritized list of findings, each tied to an exact passage and to th
 ## Step 3: Report the findings
 
 11. For each finding give: its priority (blocking, important, or minor), the location (file and line, with a short quotation), what is wrong, the evidence or rule behind the finding (with locators), and a suggested remedy. A missing source or result is reported as a research gap; never repair it with an invented citation or number.
-12. When the researcher asks for a reviewer's view, present the same findings as a reviewer's report: one sentence on what the paper claims to contribute; the strengths, each with its evidence; and the weaknesses in order of severity, each specific (which comparison, data, or passage). Label each weakness twice, as a problem of presentation or of substance (method, evidence, or scope), and as fixable within a revision or structural, and give the action that would address it: an analysis to add, a passage to rewrite, a limitation to state. Give no score, rating, or chance of acceptance.
+12. When the researcher asks for a reviewer's view, follow [the reviewer's view](reviewer-view.md): its inputs, its checks (including the optional reader check), and its report. The report gives no score, rating, or chance of acceptance.
 13. Write the report in the interaction language to `outputs/checks/<date>-audit-<scope>.md`, then record it:
 
     ```text

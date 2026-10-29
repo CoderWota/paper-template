@@ -56,7 +56,15 @@ Keep “首先……其次……” for steps with a real order, a parallel stru
 
 ## 6. Stock vocabulary
 
-Watch these words, especially in groups: 赋能, 助力, 打造, 深耕, 抓手, 底层逻辑, 顶层设计, 颗粒度, 链路, 全方位, 多维度, 深度融合, 无缝, 极致, 深入探讨, 至关重要, 不可或缺, 举足轻重. Keep technical senses: “闭环控制”, “维度” in mathematics, “范式” in its philosophical sense, “生态” in ecology.
+Watch these words, especially in groups. Each one is a signal, not a ban: choose the specific wording that fits, or cut the word.
+
+- Empty emphasis: 毋庸置疑, 不可磨灭, 举足轻重, 切中要害, 深刻, and 本质上 when it only adds emphasis.
+- Inflated verbs and nouns: 赋能, 助力, 打造, 深耕, 抓手, 底层逻辑, 顶层设计, 颗粒度, 链路, 范式转移, 颠覆性.
+- Words that add no information: 全方位, 多维度, 深度融合, 无缝, 极致, 至关重要, 不可或缺, 深入探讨.
+
+Keep the technical senses: “闭环控制”, “维度” in mathematics, “范式” in its philosophical sense, and “生态” in ecology.
+
+When a sentence only praises a method, replace the praise with what the method does. Before: “该方法十分强大，令人印象深刻，在三个数据集上的准确率均高于两种基线方法。” After: “该方法在三个数据集上的准确率均高于两种基线方法。”
 
 ## 7. Template formatting
 
