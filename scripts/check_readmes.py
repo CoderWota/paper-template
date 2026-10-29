@@ -39,6 +39,11 @@ OPAQUE_PATTERNS = (
     "research/feedback/*/originals",
     "reviews/*/*/originals",
     "revisions/*/candidate",
+    "revisions/*/baseline",
+    "revisions/*/replaced",
+    "code/data/raw",
+    "code/data/derived",
+    "code/outputs",
     "outputs/releases/*",
 )
 
@@ -94,7 +99,7 @@ def readme_problems(text: str) -> list[str]:
         problems.append(
             f"has {words} words after the heading; a useful description needs at least {MIN_WORDS}"
         )
-    if PLACEHOLDER.search(text):
+    if PLACEHOLDER.search(re.sub(r"`[^`\n]*`", " ", text)):  # quoted syntax, such as a documented marker, is not a placeholder
         problems.append("contains a placeholder marker (TODO, TBD, FIXME, or lorem ipsum)")
     return problems
 

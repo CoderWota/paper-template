@@ -2,7 +2,7 @@
 
 Agent-maintained record of what has actually been implemented and verified, one entry per MVP from the [MVP implementation guideline](mvp-implementation-guideline.md). A capability counts as working only after its acceptance evidence has been observed. The presence of a directory, a README, or a SKILL.md is not evidence.
 
-Updated: 2026-10-28.
+Updated: 2026-10-29.
 
 ## Summary
 
@@ -12,7 +12,7 @@ Updated: 2026-10-28.
 | 2 | Flexible intake and MinerU batch ingestion | In progress: implemented on 2026-10-28 (import script, both MinerU routes, both skills), and both skills were accepted by review the same day (see the [skill review](acceptance/mvp-2-skill-review.md)). The scripts pass their tests, and both routes were observed working on macOS with synthetic files: the local route, and the mineru.net route with the maintainer's token. Windows, Codex, and the training-use and retention terms of mineru.net are open, so MVP 2 as a whole is not verified |
 | 3 | Searchable literature and traceable evidence | Accepted by the maintainer on 2026-10-28 under the MVP 2-style gate: all four skills passed written review, 79 tests and mechanical checks pass, and live Sciverse checks were recorded. Catalog filters/relations, resources, Paper Schema, live public-PDF access, model-host fallback, Windows, and Codex remain explicitly unverified |
 | 4 | Ideas, impact, journal choice, and feasible research plans | Accepted by review on 2026-10-28: seven skills and the result-record extension of `research-investigation` passed written review ([skill review](acceptance/mvp-4-skill-review.md)); `scripts/research.py` and feedback import pass their tests. Live venue reading, fresh-session behavior, Windows, and Codex are unverified |
-| 5 | Evidence-based writing, audit, and major revision | Planned |
+| 5 | Evidence-based writing, audit, and major revision | Accepted by review on 2026-10-29: five skills passed written review ([skill review](acceptance/mvp-5-skill-review.md)); the convention check, check records, revisions, and Pandoc adoption of Word, LaTeX, and OpenDocument pass their tests. Real manuscripts, PDF adoption, Windows, and Codex are unverified |
 | 6 | Template-driven layout and readiness | Planned |
 | 7 | Practical Git control and explicit backup | Accepted by review on 2026-10-28: seven skills passed written review ([skill review](acceptance/mvp-7-skill-review.md)); `scripts/versions.py` passes 13 tests in disposable repositories. No hosting service, Windows, or Codex was exercised |
 | 8 | Review rounds and coauthor reconciliation | Planned |
@@ -663,6 +663,23 @@ Verification observed (macOS 26.6.2, Apple Silicon; Python 3.12.9, and Python 3.
 Not verified:
 
 - Reading venue pages through the agent application's web access; the behavior of a model in the interview, planning, and feedback procedures; research runs on Windows, in other languages, with large data, or for long runs; Codex discovery.
+
+## MVP 5: evidence-based writing, audit, and major revision
+
+Status: the five skills were accepted by review on 2026-10-29 ([skill review](acceptance/mvp-5-skill-review.md)). MVP 5 as a whole is not verified: no model followed the procedures in a fresh session, and real manuscripts, Codex, and Windows were not exercised.
+
+Decision (2026-10-29): the researcher's own editable manuscript (Word, OpenDocument, LaTeX) is converted with Pandoc on this computer; PDFs and every other document keep the MinerU routes. The maintainer chose this (“可编辑稿件用 Pandoc（推荐）”) and asked for a comparison with more widely adopted open-source converters (“或者你看看有没有更先进，星多的开源实现也可以”). The comparison, in the [skill review](acceptance/mvp-5-skill-review.md#5-the-converter-decision-and-its-evidence), found MarkItDown, Docling, MinerU's Office engine, and mammoth worse on formulas, footnotes, and tracked changes, so Pandoc was kept. `AGENTS.md` names the exception in its MinerU rule.
+
+Implemented:
+
+- Skills `manuscript-import`, `manuscript-outline`, `manuscript-writing`, `manuscript-audit`, and `manuscript-revision`, with generated copies. `constraint-maintenance`, `source-ingestion`, and `git-recovery` route to them.
+- `scripts/manuscript.py`: `check` (the conventions: manifest, math and equation labels, figure, table, equation, and section references, citation keys against the bibliography, images, hand numbering, words repeated before references, currency, open `[TODO: ...]` markers); `set-sections`; `assemble` with word counts; `record-check` and `checks` (check records with input checksums in `outputs/checks/`, stale when an input changes); `adopt` (a converted manuscript into section files with its images, metadata, footnotes, and a mapping report, refusing tracked-change marks and never writing over a manuscript, or into a revision candidate); and `revision-start`, `revision-status`, `revision-apply` (resumable, refusing unreconciled author edits), and `revision-restore`.
+- `scripts/ingest.py --to manuscript` keeps the original and the extraction in the import record; `--route pandoc` (only for the manuscript) reads Word with citation fields and tracked changes as marks (`--track-changes all|accept|reject`), OpenDocument, and LaTeX; `scripts/ingestion/adopt-conventions.lua` applies the workspace conventions (formulas, label paragraphs, prefixed labels, `@`-references, inline formulas in OpenDocument text, bookmark removal). Word comments and tracked changes are listed beside the text in `<document>.annotations.md`.
+- The `[TODO: ...]` marker and the Mermaid figure caption (`: Caption {#fig:id}` after the block) in the [conventions](markdown-and-export-conventions.md); the READMEs of `manuscript/`, `outputs/`, and `revisions/`; `check_readmes.py` treats revision baselines and research data folders as received or generated content, and quoted syntax as documentation.
+
+Verification observed (macOS, Python 3.12.9; Pandoc 3.12.1): 15 tests, 4 of them live Pandoc conversions; a live adoption of the export-trial Word file (four sections, its image and metadata, three typed equation numbers flagged, a second adoption refused).
+
+Not verified: real Word manuscripts with complex fields, cross-references, or old equation-editor objects; a PDF manuscript through MinerU; model behavior in the writing, audit, and revision procedures; Codex; Windows.
 
 ## MVP 7: practical Git control and explicit backup
 

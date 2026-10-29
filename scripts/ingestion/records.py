@@ -103,8 +103,16 @@ class ImportRecord:
 
     def readme(self) -> str:
         destination = self.data["destination"]
-        where = "the reference library (`references/`)" if destination == "references" else f"the review round `{destination}/`"
-        route = {"local": "MinerU on this computer", "cloud": "the mineru.net service"}.get(self.data.get("route") or "", "direct reading only")
+        if destination == "references":
+            where = "the reference library (`references/`)"
+        elif destination == "manuscript":
+            where = "this import's own [`originals/`](originals/README.md) and [`extracted/`](extracted/README.md), for adoption into `manuscript/`"
+        elif destination.startswith("research/feedback/"):
+            where = f"the feedback event `{destination}/`"
+        else:
+            where = f"the review round `{destination}/`"
+        route = {"local": "MinerU on this computer", "cloud": "the mineru.net service",
+                 "pandoc": "Pandoc on this computer"}.get(self.data.get("route") or "", "direct reading only")
         counts = ", ".join(f"{count} {LABELS.get(status, status)}" for status, count in sorted(self.counts().items())) or "no items yet"
         lines = [
             f"Import `{self.id}`, started {self.data['created_at']} and last updated {self.data['updated_at']}. "

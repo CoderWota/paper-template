@@ -42,7 +42,8 @@ The only list of what works. `python scripts/check_capabilities.py` checks it ag
 | Compare journals and examine a named journal from its official sources | `journal-selection` | Available now; reading the venue pages depends on the agent application's web access, which has not been exercised in this workspace |
 | Plan the research; organize advice from collaborators, supervisors, and others | `research-planning`, `research-feedback` | Available now |
 | Set up research code, run analyses with recorded provenance, and record results | `research-code-setup`, `scripts/research.py` | Available now; Python runs are tested on macOS, while Windows and other languages are not verified |
-| Outline, write, audit, and revise the manuscript, including rewriting a passage | — | Not available yet |
+| Outline, draft, and revise manuscript text, including rewriting a passage; audit it; coordinate a major revision with a recoverable baseline | `manuscript-outline`, `manuscript-writing`, `manuscript-audit`, `manuscript-revision`, `scripts/manuscript.py` | Available now; the convention check, check records, and revision baselines are tested on macOS |
+| Adopt an existing manuscript into the workspace | `manuscript-import` | Available now; Word, LaTeX, and OpenDocument through Pandoc are tested on macOS with synthetic files; PDF manuscripts use the MinerU routes, and real manuscripts with complex fields or old equation objects are not verified |
 | Format, export, and check readiness | — | Not available yet |
 | Inspect, set up, save, compare, and recover versions with Git; practice on a separate copy | `git-inspection`, `git-setup`, `git-save`, `git-compare`, `git-recovery`, `git-hands-on`, `scripts/versions.py` | Available now; tested with disposable repositories on macOS |
 | Back up saved versions to a destination the researcher confirmed | `git-backup` | Available now; the push and its check are tested only with a destination on this computer, and no hosting service is verified |
@@ -85,7 +86,7 @@ Full rules: [docs/agent-interaction.md](docs/agent-interaction.md). No skill can
 - Reuse compatible installed tools and record their versions. Create the project-local `.venv` only when a script needs packages, and call its interpreter directly. Basic work must not need a GPU, Docker, WSL, or a local model.
 - Ignored local paths: `.env.local` (credentials), `.venv/`, `.tools/` (separate tool environments), `.cache/` (rebuildable caches and model files), `.tmp/` (staging), and `.local/` (machine-specific reports and logs).
 - Confirm that the storage file for a credential is excluded from Git before you write a secret.
-- Parse documents with MinerU, in the mode confirmed in [requirements/privacy.md](requirements/privacy.md). Never switch to a cloud service or another parser silently.
+- Parse documents with MinerU, in the mode confirmed in [requirements/privacy.md](requirements/privacy.md). The researcher's own editable manuscript (Word, OpenDocument, or LaTeX) is converted with Pandoc on this computer instead. Never switch to a cloud service or another parser silently.
 - Do not push, publish, upload, or send anything outside this computer without an explicit instruction for that destination.
 
 ## Language and formats

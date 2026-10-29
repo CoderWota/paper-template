@@ -6,6 +6,7 @@ Formatted manuscripts and submission packages produced from the working text. Ou
 
 - [`preview/`](preview/README.md): rebuildable drafts for checking, not kept in version history.
 - [`releases/`](releases/README.md): preserved packages, frozen once created.
+- `checks/`: reports and records of audits, evidence checks, format checks, and readiness assessments, each with the checksums of the files it examined. Created with the first recorded check.
 
 A successful export is not proof of format compliance or submission readiness. Each output comes with a short summary of the profile applied, the checks that passed, and what still needs attention.
 

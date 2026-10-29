@@ -40,12 +40,17 @@ KINDS = {
     ".rtf": "rtf", ".epub": "epub",
     ".html": "html", ".htm": "html", ".mhtml": "html", ".mht": "html",
     ".csv": "table", ".tsv": "table",
-    ".md": "markdown", ".markdown": "markdown", ".txt": "text",
+    ".md": "markdown", ".markdown": "markdown", ".txt": "text", ".tex": "latex",
 }
 # Local MinerU reads these as whole documents with its flash tier.
 LOCAL_WHOLE_DOCUMENT = frozenset({"word", "slides", "spreadsheet", "opendocument", "rtf", "epub", "html", "table"})
 CLOUD_KINDS = frozenset({"pdf", "image", "word", "slides", "spreadsheet", "legacy-office"})
 DIRECT_KINDS = frozenset({"markdown", "text"})
+# The researcher's own editable manuscript is read by Pandoc on this computer (maintainer's decision of
+# 2026-10-29); references and review documents keep the MinerU routes.
+PANDOC_KINDS = {"word": "docx+citations", "opendocument": "odt", "latex": "latex"}
+PANDOC_OUTPUT = "markdown-simple_tables-multiline_tables-grid_tables"
+ADOPT_FILTER = Path(__file__).resolve().parent / "adopt-conventions.lua"
 # (route, kind, tier or cloud model) combinations observed to work in this template with synthetic
 # files; see docs/implementation-status.md. Others are documented by MinerU but unverified here, so
 # their results are flagged for review.
@@ -53,6 +58,7 @@ VERIFIED = frozenset({
     ("local", "pdf", "flash"), ("local", "pdf", "basic"), ("local", "word", "flash"),
     ("cloud", "pdf", "vlm"),
     ("direct", "markdown", ""), ("direct", "text", ""),
+    ("pandoc", "word", ""), ("pandoc", "latex", ""), ("pandoc", "opendocument", ""),
 })
 MODELS_MISSING = re.compile(r"Model repo \S+ is not ready|quality_tier_unavailable", re.I)
 
@@ -81,6 +87,8 @@ def handler_for(kind: str, route: str) -> str | None:
     """The route that converts this kind under the confirmed processing route, or None."""
     if kind in DIRECT_KINDS:
         return "direct"
+    if route == "pandoc":
+        return "pandoc" if kind in PANDOC_KINDS else None
     if route == "local" and (kind in ("pdf", "image") or kind in LOCAL_WHOLE_DOCUMENT):
         return "local"
     if route == "cloud" and kind in CLOUD_KINDS:
@@ -89,6 +97,10 @@ def handler_for(kind: str, route: str) -> str | None:
 
 
 def unsupported_reason(kind: str, route: str) -> str:
+    if route == "pandoc" and kind in ("pdf", "image"):
+        return "a PDF or scanned manuscript is converted with MinerU (the local or cloud route), not with Pandoc"
+    if route == "pandoc" and kind == "legacy-office":
+        return "Pandoc does not read old Word files (.doc); a copy saved as .docx can be imported"
     if kind == "legacy-office" and route == "local":
         return "the local parser does not read old Office formats (.doc, .ppt, .xls); a copy saved as .docx, .pptx, or .xlsx can be imported"
     if kind == "unknown":
@@ -238,6 +250,46 @@ class LocalRoute:
         raw = work / "raw"
         safe_extract(archives[0], raw)
         return raw
+
+
+class PandocRoute:
+    """The researcher's own editable manuscript (Word, OpenDocument, or LaTeX), read by Pandoc on this computer.
+
+    Comments and tracked changes are kept as Pandoc marks them by default (track_changes "all"), so that adoption
+    stops on them; "accept" or "reject" applies the researcher's choice. Citation fields from Zotero, Mendeley, and
+    EndNote become Pandoc citations with their metadata. adopt-conventions.lua applies the workspace conventions.
+    """
+
+    name = "pandoc"
+
+    def __init__(self, executable: str, track_changes: str = "all"):
+        self.executable, self.track_changes = executable, track_changes
+
+    def version(self) -> str:
+        completed = subprocess.run([self.executable, "--version"], capture_output=True, text=True)
+        return (completed.stdout.splitlines() or [""])[0].replace("pandoc", "").strip()
+
+    def settings(self, kind: str) -> dict:
+        return {"route": "pandoc", "converter": "pandoc", "version": self.version(), "reader": PANDOC_KINDS.get(kind),
+                "writer": PANDOC_OUTPUT, "track_changes": self.track_changes if kind == "word" else None,
+                "filter": "scripts/ingestion/adopt-conventions.lua"}
+
+    def convert(self, original: Path, work: Path, kind: str, source_folder: Path | None = None) -> tuple[Path, list[str]]:
+        raw = work / "raw"
+        raw.mkdir(parents=True, exist_ok=True)
+        command = [self.executable, str(original), "-f", PANDOC_KINDS[kind], "-t", PANDOC_OUTPUT, "-s", "--wrap=none",
+                   "--extract-media=images", "--lua-filter", str(ADOPT_FILTER), "-M", f"adopt-source={kind}", "-o", "markdown.md"]
+        if kind == "word":
+            command.append(f"--track-changes={self.track_changes}")
+        completed = subprocess.run(command, cwd=raw, capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=600)
+        if completed.returncode != 0:
+            raise ConversionError(f"Pandoc could not read the file: {tail(completed.stderr)}")
+        notes = [line.strip() for line in completed.stderr.splitlines() if line.strip()][:5]
+        text = (raw / "markdown.md").read_text(encoding="utf-8")
+        if kind == "latex" and source_folder is not None:
+            text = DirectRoute.copy_images(text, source_folder, raw / "images")
+            (raw / "markdown.md").write_text(text, encoding="utf-8")
+        return raw, notes
 
 
 class _SameOriginRedirects(urllib.request.HTTPRedirectHandler):

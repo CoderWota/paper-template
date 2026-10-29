@@ -42,15 +42,17 @@ def parse_feedback_destination(value: str) -> str:
     return match.group(1)
 
 
-def open_destination(root: Path, value: str):
-    """The review round or feedback event that a destination names; ValueError for anything else."""
+def open_destination(root: Path, value: str, import_id: str | None = None):
+    """The review round, feedback event, or manuscript import that a destination names; ValueError for anything else."""
     value = value.strip().strip("/")
+    if value == "manuscript":
+        return ManuscriptStage(root, import_id or "pending")
     if value.startswith("research/feedback/"):
         return FeedbackEvent(root, parse_feedback_destination(value))
     try:
         return Round(root, *parse_destination(value))
     except ValueError:
-        raise ValueError("a destination is references, reviews/<venue-id>/<round-id>, or research/feedback/<feedback-id>, "
+        raise ValueError("a destination is references, manuscript, reviews/<venue-id>/<round-id>, or research/feedback/<feedback-id>, "
                          "in lowercase letters, digits, and hyphens") from None
 
 
@@ -209,6 +211,51 @@ class FeedbackEvent(Round):
                 lines.append(f"| [{entry.get('original_name', document_id)}](extracted/markdown/{document_id}.md) | {status} | {found} |")
         update_readme(self.folder / "README.md", f"Feedback: {self.round}", "\n".join(lines))
 
+
+class ManuscriptStage(Round):
+    """The researcher's own manuscript, converted for adoption: originals and extraction inside its import record.
+
+    The comments and tracked changes that the XML lists go to <document>.annotations.md, beside the converted text,
+    so that they never enter the body. manuscript.py adopt moves the reviewed text into manuscript/.
+    """
+
+    role, details = "manuscript", "the README of this import"
+
+    def __init__(self, root: Path, import_id: str):
+        self.root, self.venue, self.round = root, None, import_id
+        self.folder = root / "inbox" / "imports" / import_id
+        self.originals = self.folder / "originals"
+        self.markdown = self.folder / "extracted" / "markdown"
+        self.assets = self.folder / "extracted" / "assets"
+        self.record_path = self.folder / "extracted" / "provenance.json"
+
+    def ensure(self) -> None:
+        for folder in (self.originals, self.markdown, self.assets):
+            folder.mkdir(parents=True, exist_ok=True)
+        update_readme(self.originals / "README.md", f"Manuscript originals: {self.round}", (
+            "The researcher's manuscript files of this import, exactly as received. They are never edited or replaced; "
+            "the converted text is in [`../extracted/markdown/`](../extracted/markdown/README.md)."))
+        update_readme(self.folder / "extracted" / "README.md", f"Manuscript extraction: {self.round}", (
+            "The manuscript converted for adoption: Markdown in [`markdown/`](markdown/README.md), its images in "
+            "[`assets/`](assets/README.md), and the converter, settings, and gaps of each document in "
+            "[`provenance.json`](provenance.json). Nothing here is assembled; `python scripts/manuscript.py adopt` moves the "
+            "reviewed text into the manuscript."))
+        update_readme(self.markdown / "README.md", f"Manuscript Markdown: {self.round}", (
+            "One Markdown file per converted manuscript document, in the workspace conventions. Word comments and tracked "
+            "changes, when the file had them, are listed in `<document>.annotations.md`, so that they never enter the body."))
+        update_readme(self.assets / "README.md", f"Manuscript images: {self.round}", (
+            "Images extracted from the converted manuscript documents. Each file name starts with the identifier of its "
+            "document and two hyphens; adoption copies the images that the text uses into `manuscript/assets/`."))
+
+    def record(self) -> dict:
+        data = read_json(self.record_path)
+        if not isinstance(data, dict) or data.get("schema") != SCHEMA:
+            data = {"schema": SCHEMA, "manuscript_import": self.round, "documents": {}}
+        return data
+
+    def update_round_readme(self) -> None:
+        """The import record's own README is maintained by the import; nothing more is added here."""
+
 def text_of(element) -> str:
     return "".join(node.text or "" for node in element.iter(W + "t"))
 
@@ -358,3 +405,8 @@ def publish(round_: Round, document_id: str, stage: Path) -> None:
     for image in sorted((stage / "assets").glob("*")) if (stage / "assets").is_dir() else []:
         os.replace(image, round_.assets / image.name)
     os.replace(stage / "markdown" / f"{document_id}.md", round_.markdown / f"{document_id}.md")
+    annotations = stage / "markdown" / f"{document_id}.annotations.md"
+    if annotations.is_file():
+        os.replace(annotations, round_.markdown / annotations.name)
+    elif (round_.markdown / annotations.name).is_file():
+        (round_.markdown / annotations.name).unlink()

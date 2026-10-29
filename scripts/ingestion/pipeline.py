@@ -54,16 +54,16 @@ def coverage_words(coverage: dict) -> str:
 
 
 class Pipeline:
-    def __init__(self, root: Path, record: ImportRecord, *, local=None, cloud=None, redact: Redactor | None = None,
+    def __init__(self, root: Path, record: ImportRecord, *, local=None, cloud=None, pandoc=None, redact: Redactor | None = None,
                  reconvert: bool = False, overwrite_edited: bool = False, emit=print):
         self.root, self.record = root, record
         self.route = record.data.get("route")
-        self.local, self.cloud, self.direct = local, cloud, DirectRoute()
+        self.local, self.cloud, self.pandoc, self.direct = local, cloud, pandoc, DirectRoute()
         self.redact = redact or Redactor()
         self.log = Log(root, record.id, self.redact)
         self.reconvert, self.overwrite_edited, self.emit = reconvert, overwrite_edited, emit
         destination = record.data["destination"]
-        self.round = None if destination == "references" else reviews.open_destination(root, destination)
+        self.round = None if destination == "references" else reviews.open_destination(root, destination, record.id)
         self.work = root / ".tmp" / "ingest" / record.id
 
     # Collecting the items
@@ -110,6 +110,8 @@ class Pipeline:
             return self.local.settings(item["kind"])
         if handler == "cloud":
             return self.cloud.settings(item["kind"])
+        if handler == "pandoc":
+            return self.pandoc.settings(item["kind"])
         return self.direct.settings(item["kind"])
 
     def run(self) -> int:
@@ -211,6 +213,8 @@ class Pipeline:
         try:
             if handler == "local":
                 raw, notes = self.local.convert(archived, work, item["kind"]), []
+            elif handler == "pandoc":
+                raw, notes = self.pandoc.convert(archived, work, item["kind"], resolve_display(item["input"], self.root).parent)
             else:
                 raw, notes = self.direct.convert(archived, work, item["kind"], resolve_display(item["input"], self.root).parent)
             self.finish(item, raw, work, archived, started, notes, self.settings_for(item))
@@ -239,7 +243,13 @@ class Pipeline:
             result = extraction.build(raw, kind=kind, original=archived, document=document, asset_dir=stage / "assets",
                                       asset_link="../assets/", asset_prefix=f"{document_id}--", details=self.round.details)
             summary, section, extra = reviews.inspect(archived, kind)
-            if section:
+            if self.round.role == "manuscript":
+                if section and (any(summary.values()) or "could not be read" in section):
+                    section = section.replace("The text above shows the document as if every tracked change had been accepted: "
+                                              "inserted text appears without a mark and deleted text is missing.",
+                                              "The converted text keeps them as marks unless the researcher chose to accept or reject them.")
+                    (document.parent / f"{document_id}.annotations.md").write_text(section.lstrip("\n -"), encoding="utf-8")
+            elif section:
                 with open(document, "a", encoding="utf-8", newline="\n") as stream:
                     stream.write(section)
             result.warnings += extra
@@ -249,9 +259,10 @@ class Pipeline:
             result = extraction.build(raw, kind=kind, original=archived, document=document, asset_dir=stage / "assets",
                                       asset_link="assets/", native_dir=stage / "native")
             summary = None
-        if settings["route"] == "direct":
+        if settings["route"] in ("direct", "pandoc"):
             # Nothing was transcribed: the text is the original, so coverage is whole and formulas are as written.
-            result.coverage = {"unit": "document", "status": "complete", "method": "read directly"}
+            result.coverage = {"unit": "document", "status": "complete",
+                               "method": "read directly" if settings["route"] == "direct" else "converted from the editable source with Pandoc"}
             result.warnings = [w for w in result.warnings if w["code"] not in ("formulas-unverified", "coverage-unknown")]
         for note in notes:
             result.warn("not-utf8", note)

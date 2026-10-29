@@ -8,12 +8,18 @@ One subdirectory per major revision, created only when the scale warrants it: `<
 
 ```text
 <revision-id>/
-├── README.md    # Goal, current state, and where the active manuscript stands
-├── plan.md      # Baseline reference, your goal and scope, affected material, ordered work, next action
-├── changes.md   # Old-to-new mapping of sections, claims, figures, and citations, and the actual changes
-├── checks.md    # Which input versions were checked, with what result, and the remaining gaps
-└── candidate/   # Optional staged manuscript, never assembled until it is applied
+├── README.md      # Goal, current state, and where the active manuscript stands
+├── baseline/      # The starting version: manuscript, requirements, bibliography, plan, and included files
+├── baseline.json  # Checksums of the baseline and the Git version, if any
+├── plan.md        # Baseline reference, your goal and scope, affected material, ordered work, next action
+├── changes.md     # Old-to-new mapping of sections, claims, figures, and citations, and the actual changes
+├── checks.md      # Which input versions were checked, with what result, and the remaining gaps
+├── candidate/     # Optional staged manuscript, never assembled until it is applied
+├── apply.json     # The log of applying the candidate, so an interruption can be resumed
+└── replaced/      # Versions that an application or a restore replaced
 ```
+
+`python scripts/manuscript.py` keeps the baseline (`revision-start`), compares the workspace and the candidate with it (`revision-status`), applies the candidate (`revision-apply`, with `--resume` after an interruption), and copies the baseline back (`revision-restore`).
 
 The agent creates each of these folders with its own README.
 

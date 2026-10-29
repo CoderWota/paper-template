@@ -5,7 +5,9 @@ Archives each original unchanged, converts it with the processing route that the
 confirmed, checks the result (page coverage, text left out of the Markdown, image links, and
 formulas), publishes it in one step, and keeps a resumable record of the batch in
 inbox/imports/<import-id>/. References go to references/; review documents go to
-reviews/<venue-id>/<round-id>/; research feedback goes to research/feedback/<feedback-id>/.
+reviews/<venue-id>/<round-id>/; research feedback goes to research/feedback/<feedback-id>/. The researcher's own
+manuscript goes to its import record (--to manuscript) for adoption with scripts/manuscript.py adopt; an editable
+manuscript (Word, OpenDocument, LaTeX) is read with Pandoc on this computer (--route pandoc), a PDF with MinerU.
 Nothing ever switches to another route or parser.
 
 Usage:
@@ -13,13 +15,14 @@ Usage:
   python scripts/ingest.py run --route local --tier flash|basic|standard|advanced [--ocr-mode auto|txt|ocr]
       [--to DEST] [--recursive] [--reconvert] [--overwrite-edited] PATH...
   python scripts/ingest.py run --route cloud [--model-version vlm|pipeline] [--language CODE] [--ocr] [--to DEST] PATH...
+  python scripts/ingest.py run --to manuscript --route pandoc [--track-changes all|accept|reject] PATH...
   python scripts/ingest.py run --import-id ID          continue an import: open, interrupted, and failed items
   python scripts/ingest.py status [--import-id ID]
   python scripts/ingest.py verify [SOURCE_ID ...]
   python scripts/ingest.py metadata SOURCE_ID [--type TYPE] [--title TEXT] [--author "Family, Given" ...] [--year YEAR]
       [--doi DOI] [--journal TEXT] [--field NAME=VALUE ...] [--key KEY] [--source document|researcher|registry]
   python scripts/ingest.py note --import-id ID --role ROLE --reason TEXT PATH...
-DEST is "references" (the default), reviews/<venue-id>/<round-id>, or research/feedback/<feedback-id>.
+DEST is "references" (the default), manuscript, reviews/<venue-id>/<round-id>, or research/feedback/<feedback-id>.
 Markdown and plain text need no route.
 The cloud route needs a confirmed choice that names mineru.net in requirements/privacy.md and the
 MINERU_API_TOKEN credential, entered with scripts/credentials.py.
@@ -43,7 +46,7 @@ from ingestion import extraction, library, reviews  # noqa: E402
 from ingestion.common import LockedError, Redactor, WorkspaceLock, sha256_file  # noqa: E402
 from ingestion.pipeline import Pipeline, list_files  # noqa: E402
 from ingestion.records import LABELS, ImportRecord, display_path  # noqa: E402
-from ingestion.routes import (DIRECT_KINDS, OCR_MODES, TIERS, CloudRoute, LocalRoute, handler_for, kind_of,  # noqa: E402
+from ingestion.routes import (DIRECT_KINDS, OCR_MODES, TIERS, CloudRoute, LocalRoute, PandocRoute, handler_for, kind_of,  # noqa: E402
                               unsupported_reason)
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -75,6 +78,15 @@ def cloud_route(root: Path, options: dict) -> CloudRoute:
                       is_ocr=options.get("is_ocr", False), base_url=os.environ.get("INGEST_MINERU_API_URL") or None,
                       poll_interval=float(os.environ.get("INGEST_POLL_INTERVAL", "10")),
                       poll_timeout=float(os.environ.get("INGEST_POLL_TIMEOUT", "3600")), redact=Redactor([token]))
+
+
+def pandoc_route(root: Path, options: dict) -> PandocRoute:
+    from export import tools
+    found = tools.find(root)["pandoc"]
+    if not found:
+        raise Refused("Pandoc is not installed for this workspace. Install it with the researcher's consent: "
+                      "python scripts/export.py install --component pandoc (see the submission-assembly skill).")
+    return PandocRoute(found, options.get("track_changes", "all"))
 
 
 def local_route(root: Path, options: dict) -> LocalRoute:
@@ -161,8 +173,12 @@ def command_run(args, root: Path) -> int:
                 raise Refused("not found: " + ", ".join(missing))
             if args.route == "local" and not args.tier:
                 raise Refused("the local route needs --tier (flash, basic, standard, or advanced)")
+            if args.route == "pandoc" and args.to != "manuscript":
+                raise Refused("the pandoc route is only for the researcher's own manuscript (--to manuscript); "
+                              "references and review documents are converted with MinerU")
             options = {"tier": args.tier, "ocr_mode": args.ocr_mode} if args.route == "local" else \
-                {"model_version": args.model_version, "language": args.language, "is_ocr": args.ocr} if args.route == "cloud" else {}
+                {"model_version": args.model_version, "language": args.language, "is_ocr": args.ocr} if args.route == "cloud" else \
+                {"track_changes": args.track_changes} if args.route == "pandoc" else {}
             if not args.route:
                 kinds = {kind_of(file) for value in args.paths
                          for file in list_files(root, Path(value).expanduser().resolve(), args.recursive)[0]}
@@ -172,11 +188,12 @@ def command_run(args, root: Path) -> int:
         route = record.data.get("route") if args.import_id else args.route
         local = local_route(root, options) if route == "local" else None
         cloud = cloud_route(root, options) if route == "cloud" else None
+        pandoc = pandoc_route(root, options) if route == "pandoc" else None
         if not args.import_id:
             inputs = [display_path(Path(value).expanduser().resolve(), root) for value in args.paths]
             record = ImportRecord.create(root, args.to, route, inputs, args.recursive)
             record.data["options"] = options
-        pipeline = Pipeline(root, record, local=local, cloud=cloud, redact=cloud.redact if cloud else Redactor(),
+        pipeline = Pipeline(root, record, local=local, cloud=cloud, pandoc=pandoc, redact=cloud.redact if cloud else Redactor(),
                             reconvert=args.reconvert, overwrite_edited=args.overwrite_edited)
         if not args.import_id:
             pipeline.add_inputs(record.data["inputs"], args.recursive)
@@ -277,7 +294,7 @@ def main(argv: list | None = None) -> int:
     plan = commands.add_parser("plan", help="list what an import would do, without changing anything")
     plan.add_argument("paths", nargs="+")
     plan.add_argument("--to", type=destination, default="references")
-    plan.add_argument("--route", choices=("local", "cloud"))
+    plan.add_argument("--route", choices=("local", "cloud", "pandoc"))
     plan.add_argument("--recursive", action="store_true")
     plan.add_argument("--json", action="store_true")
 
@@ -285,7 +302,9 @@ def main(argv: list | None = None) -> int:
     run.add_argument("paths", nargs="*")
     run.add_argument("--import-id")
     run.add_argument("--to", type=destination, default="references")
-    run.add_argument("--route", choices=("local", "cloud"))
+    run.add_argument("--route", choices=("local", "cloud", "pandoc"))
+    run.add_argument("--track-changes", dest="track_changes", choices=("all", "accept", "reject"), default="all",
+                     help="pandoc route: keep Word comments and tracked changes as marks (all), or apply the researcher's choice")
     run.add_argument("--tier", choices=TIERS)
     run.add_argument("--ocr-mode", choices=OCR_MODES, default="auto")
     run.add_argument("--model-version", choices=("vlm", "pipeline"), default="vlm")
