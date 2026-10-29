@@ -24,6 +24,7 @@ Outcome: three to five research directions that differ in kind, each grounded in
    - feasibility with the resources the researcher named, and what is missing;
    - the first check that would show whether it is worth pursuing.
 6. Keep novelty, significance, feasibility, and support apart. Say what was compared: "not yet compared with prior work" when nothing was searched, or the search scope when something was. Never call a direction new or unprecedented, and never invent a literature gap, a finding, a dataset, or a source. A search that returns little does not show a gap.
+   Identify any ambiguity in the question and a competing explanation or counterexample when the inspected material supplies one. Explain the concrete overlap and difference from inspected work rather than assigning a novelty score or a novel/not-novel label. Frame an untested alternative as a hypothesis, not as the researcher's view or a finding.
 7. Recommend which direction to examine first, and why. Then ask which directions, if any, the researcher wants to keep or examine further.
 
 ## Step 3: Keep what the researcher chooses

@@ -1,6 +1,6 @@
 # Agent Interaction and Decision Confirmation
 
-Status: design specification. Prior user confirmation for major decisions and ASD-STE100 for agent questions are confirmed requirements. The workflow and verification described here are planned, not implemented. The adopted AGENTS.md (2026-10-26) carries the concise rule and links here.
+Status: confirmed interaction specification. Prior user confirmation for major decisions and ASD-STE100 for agent questions are confirmed requirements. The adopted AGENTS.md (2026-10-26) carries the concise rule and links here. The [collaboration update](researcher-ai-collaboration.md), implemented in skill instructions on 2026-10-30, adds continuous routine handoffs toward the agreed goal and evidence-based research discussion. Full behavioral verification on both hosts and formal STE compliance remain unverified.
 
 This document defines the shared interaction rules for all proposed skills, including hands-on guides, idea deepening, and grilling. In a manuscript workspace, the user is the researcher who directs the work. During template development, the user is the template maintainer.
 
@@ -21,6 +21,8 @@ These examples guide recognition; they are not a complete allowlist. If the sign
 An explicit user instruction can itself provide confirmation when the choice and scope are clear. Reuse it within that scope. Do not ask again for the same decision or for each routine step needed to execute it. A general request to improve the paper does not authorize the agent to invent a new central claim. If scope or consequences change materially, ask about the new decision.
 
 Silence, elapsed time, a preselected option, and the agent's recommendation are not confirmation. Record confirmed choices with their scope through the agreed project records. Do not store inferred preferences as proposed rules, pending decisions, or feedback.
+
+Within the confirmed scope, carry routine work through to the requested outcome without asking the researcher to dispatch each skill. Bring observations, interpretations, alternative explanations, and evidence limits back for scientific discussion when needed. A pending choice blocks dependent action only; continue useful independent work already authorized. A planning-only or audit-only request is not permission to execute a study or revise a manuscript.
 
 ## Ask one clear question
 

@@ -4,6 +4,8 @@ Start with [design-plan.md](design-plan.md). It distinguishes confirmed research
 
 Framework documents are maintained in English only; translated copies are not kept.
 
+[Researcher–AI collaboration](researcher-ai-collaboration.md) describes the adopted researcher-led assistance model: evidence-based discussion, result interpretation, argument and writing support, and continuous routine work within the agreed goal. Its [review and tests](acceptance/researcher-ai-collaboration.md) distinguish script evidence from agent behavior. It supersedes the earlier one-step-at-a-time guided default without adopting the whole older workflow proposal.
+
 [Implementation status](implementation-status.md) records what has actually been built and verified, one entry per MVP. Check it before assuming that a described capability works. The skill reviews that decide acceptance, and the scenario checklists of the earlier live runs, are in [acceptance/](acceptance/README.md). The [rule placement](rule-placement.md) note explains where each standing rule must live and what caused each family of acceptance defects.
 
 These documents describe development of the reusable framework. They are not writing instructions for a future manuscript. Do not treat a proposed directory layout or policy as approved runtime behavior.

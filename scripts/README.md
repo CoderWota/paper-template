@@ -32,6 +32,8 @@ Automated tests for these scripts are in [`tests/`](tests/README.md). Run them a
 
 The manuscript check reports explicit AI sign-offs and AI names in author metadata as problems; these prevent a Word build. The built DOCX is also checked for recognized signatures in paragraphs, including headers, footers, notes, and comments, and for AI names in creator properties. It allows ordinary discussion of AI products and disclosure prose. This limited text check supplements the standing instruction against AI signatures; findings require inspection and it does not recognize every possible form or language.
 
+Research result freshness includes code checksums from linked run records, as well as the result's recorded inputs and outputs. `research.py check` prints existing `Used by` references when it finds stale evidence, or asks for dependency inspection when none are recorded. It reports unreadable or incomplete runs used as observed/checked results. It does not infer unrecorded claim relationships or validate scientific reasoning; the agent must inspect those. `research.py runs` also reports recorded code changes.
+
 Tool discovery uses numeric release ordering in `.tools/`. The environment report and export route both prefer workspace Pandoc over PATH. Browser discovery accepts `PUPPETEER_EXECUTABLE_PATH`, uses Windows installation roots from the environment, and checks per-user macOS Applications as well as system Applications. Release pins and published archive digests remain deliberate reproducibility data.
 
 - Prefer the Python standard library. When a script needs packages, use the project-local `.venv` and call its interpreter directly instead of relying on an activated shell.

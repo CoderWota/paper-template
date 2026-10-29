@@ -6,7 +6,7 @@ This guide organizes the intended learning experience for researchers with ordin
 
 ## How the guidance works
 
-Start by describing what you want to achieve. The agent explains the next useful action, carries out technical work, shows the result, and asks one focused question when your judgment is needed. Work on real research material, with small examples or copies when practicing recovery.
+Start by describing what you want to achieve. The agent connects routine tasks toward that goal, prepares evidence and alternatives, shows results and their limits, and asks one focused question when your judgment is needed. It does not stop after each skill solely to propose the next. Work on real research material, with small examples or copies when practicing recovery. The adopted [collaboration design](researcher-ai-collaboration.md) explains handoffs and the limits of their verification.
 
 You do not need to learn skill names, terminal commands, or configuration syntax. The agent maintains Git operations and settings, BibTeX citation records, YAML/JSON configuration, scripts, and indexes. You can say add this source, change the journal format, or save this version; the agent performs and checks the corresponding operation.
 

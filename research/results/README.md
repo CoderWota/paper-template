@@ -35,8 +35,9 @@ Status words: **proposed** (planned, not run), **attempted** (started, no usable
 ## Rules
 
 - A result is recorded only from work that was actually done. Anticipated findings belong in the plan, not here; nothing is invented or selected silently.
-- When an input or output changes after a result was recorded, `python scripts/research.py check` reports the result as stale. A stale result supports no claim until the work is run and checked again.
+- When an input, output, or code version in a linked run changes, `python scripts/research.py check` reports the result as stale and names its recorded dependents. A stale result supports no claim until the work is run and checked again. The check does not infer unrecorded dependencies or validate the scientific argument.
 - Failed or negative results that matter to a conclusion are kept.
+- In the existing result narrative, separate observations, interpretations, and open hypotheses, with evidence and limits. `Used by` names dependent manuscript passages, figures, tables, and checks; keep it current when writing uses the result. If the list is incomplete, say which area needs inspection. Do not silently rewrite author text or update hashes to hide an upstream change.
 
 ## Who edits what
 

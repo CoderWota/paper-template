@@ -44,6 +44,7 @@ Outcome: one clearly identified active manuscript that implements the confirmed 
 
 13. Run `python scripts/manuscript.py check`, `python scripts/manuscript.py checks` (earlier audits and evidence checks whose inputs changed are stale), and `python scripts/research.py check` (stale results). Recheck the support of every changed or moved claim, even when its citation key still resolves, and the whole-manuscript coherence: title, abstract, introduction claims, methods or materials, findings, conclusion, figures, tables, and cross-references. Use `manuscript-audit` and record the checks.
 14. Write `revisions/<revision-id>/checks.md` in the interaction language: which inputs (with the check records) were checked, the results, and the remaining gaps. Rebuild and inspect outputs only as the availability table in `AGENTS.md` allows.
+    Link each finding being addressed to its actual change and fresh check, or its unresolved reason, using the existing change map and checks record. Separate corrections of expression from changes to scientific interpretation. If new evidence challenges the confirmed argument, prepare the alternatives for the researcher before changing that argument; continue independent authorized corrections.
 
 ## Step 7: Establish the current version
 

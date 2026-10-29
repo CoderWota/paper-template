@@ -18,6 +18,7 @@ Outcome: a clearer idea: its question, intended contribution, assumptions, neare
 4. Ask one substantive question per turn, in the shared question form: the point, why it matters, your recommendation and its reason, then the question. Wait for the answer before you build on it.
 5. Challenge a weak premise directly: name the assumption, the evidence against it or missing for it, and what would change your view. Grilling means focused examination. It never means pressure, a long questionnaire, or deciding for the researcher.
 6. Compare the nearest prior work that was actually inspected: what it did, how the idea differs concretely, and how certain that difference is given the search scope. Call the originality assessment preliminary when coverage is limited. A different title or an empty search result is not novelty. Never invent a gap, a source, or a finding.
+   Present the overlap and difference with source locators and access limits, not a novelty score or binary verdict. State which assumption or alternative a concrete next check would distinguish; do not manufacture a rival account solely to fill a comparison.
 7. Keep four questions apart: novelty (what is new compared with inspected work), significance (who would care and why; `impact-assessment` goes deeper), feasibility (resources, access, skills, time, cost), and support (what evidence exists or would be needed). A replication or a negative result need not be presented as novelty.
 8. Offer alternatives where they help: a rival explanation or interpretation, a narrower or broader question, or a different kind of contribution.
 
@@ -25,6 +26,7 @@ Outcome: a clearer idea: its question, intended contribution, assumptions, neare
 
 9. At natural checkpoints, summarize what is settled (in the researcher's words), what is open, and what evidence is pending.
 10. Stop when a useful next action is clear, when the researcher wants to switch tasks, or when the next questions need evidence that does not exist yet. Name that next action.
+    In a broader authorized task, this ends the interview, not the whole task: hand the settled question, inspected comparisons, remaining hypotheses, and next check to the owning skill and continue within scope. A scientific choice still awaiting confirmation blocks its dependent action.
 
 ## Step 4: Record
 

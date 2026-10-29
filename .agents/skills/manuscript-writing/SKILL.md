@@ -17,10 +17,12 @@ Outcome: the requested text in the manuscript, written in the manuscript languag
 3. Read `requirements/project.md` (manuscript language and its exceptions), the rules in `requirements/writing.md` whose scope covers this text, `manuscript/outline.md`, the current text of the section file, and the evidence notes and result records the text will rely on. Always edit the current file as it is now: the researcher may have changed it since you last read it.
 4. When a target venue is set, read its AI policy in `research/venues/`. If the venue restricts drafting by an AI, say so before drafting and follow the researcher's decision about how you may help.
 
+Use the confirmed argument and existing evidence without repeating settled questions. Distinguish an observed result, its interpretation, and a hypothesis in the prose. When a reasoning step is missing or a conclusion exceeds the evidence, suggest a specific local repair or mark the evidence gap; bring a changed main claim or structure back for the researcher's judgment. A confirmed author statement establishes their intention, not empirical support for a factual claim.
+
 ## Step 3: Write
 
 5. Write natural prose in the manuscript language. Keep quotations, proper names, and bibliography titles in their original language, and follow the confirmed exceptions; avoid unintended mixing of languages.
-6. Support every substantive claim with one of: a citation key from `references/bibliography.bib` whose support for this claim was checked with `literature-and-evidence`; a result record in `research/results/` whose status is checked; or the researcher's confirmed statement. Write an observed but unchecked result as preliminary. When no support exists, keep the claim only as a visible marker in the manuscript language, `[TODO: ...]`, naming the evidence needed. Never invent a source, a citation key, a quotation, a number, or a result.
+6. Support substantive findings with a citation key from `references/bibliography.bib` whose support for this claim was checked with `literature-and-evidence`, or a checked result record in `research/results/`. The researcher's confirmed account can establish their own choices or procedures; confirmation alone does not validate an empirical finding. Write an observed but unchecked result as preliminary. When no support exists, keep the claim only as a visible marker in the manuscript language, `[TODO: ...]`, naming the evidence needed. Never invent a source, a citation key, a quotation, a number, or a result.
 7. Follow the [conventions](../../../docs/markdown-and-export-conventions.md): `$...$` and `$$` math; equation labels as a separate `{#eq:id}` paragraph after a blank line; figures `![Caption](assets/name.png){#fig:id}`; table captions `: Caption {#tbl:id}`; Mermaid diagrams in a `mermaid` block, with `: Caption {#fig:id}` after it when they are numbered figures; citations `[@key]` and `@key`; references `@fig:id`, `@tbl:id`, `@eq:id`, `@sec:id`. Never number figures, tables, equations, or citations by hand. Put new figures and their sources in `manuscript/assets/`.
 8. For writing from notes, translating, shortening, expanding, polishing, results passages, captions, and diagrams, follow the matching part of the [editing guide](editing-guide.md). Apply a [style preset](style-presets.md) only when the researcher has chosen it for this scope. Write without the formulaic patterns in [the pattern families](../natural-prose/patterns.md) and the list for the manuscript language beside it.
 9. Keep the researcher's own text unless the request is to change it. When a requested change would remove or rewrite their wording beyond the request, ask first.
@@ -32,14 +34,18 @@ Outcome: the requested text in the manuscript, written in the manuscript languag
 12. Run `python scripts/manuscript.py check` and fix every problem in the text you wrote: unresolved labels, unknown citation keys, missing images, broken math. When a citation key is missing from the bibliography, add the entry only from a real source: the archived document through `python scripts/ingest.py metadata`, or the metadata of a recorded search result. Never type in bibliographic details from memory.
 13. After an edit of existing text, run `python scripts/check_edit.py <copy> <section file>`, adding `--translation` for a translation. Account for every difference it reports: restore what was lost, or tell the researcher why the difference is intended.
 
+Maintain a lightweight support map through the outline's existing claim/evidence links, source notes, and result records' `Used by` fields, including relevant figures and tables. A resolved citation is not a checked argument. If upstream evidence changed, identify affected passages and exhibits, recheck support, and flag associated audit/build checks for renewal; reread author edits before changing them. Do not claim the dependency map is exhaustive when links are missing.
+
 ## Step 5: Report
 
 14. Report in the interaction language: what changed and where, which rules were applied, the claims marked `[TODO: ...]` with the evidence they need, the citations used and whether their support was checked, the literal rendering for checking that the editing guide asks for after a translation or rewrite, and anything the researcher should decide. Offer `manuscript-audit` after a substantial draft.
 
+When a correction and recheck were already requested, continue to that recheck rather than offering it again. Match each earlier finding to the actual revision and inspected support, or state why it remains unresolved. A new scientific choice still requires confirmation; retain the original finding so the repair can be assessed.
+
 ## Completion check
 
 - The change stays inside the requested scope, and the researcher's own text is kept.
-- Every substantive claim is supported by checked evidence, a checked result, or the researcher's statement, or is visibly marked as needing evidence; nothing was invented.
+- Findings have checked evidence or checked results, or are explicitly preliminary or marked as needing evidence. Confirmed author accounts of choices or procedures are not used as empirical validation; nothing was invented.
 - The text follows the rules in force for its scope, the manuscript language, and the workspace conventions; `python scripts/manuscript.py check` reports no problem in it.
 - After an edit of existing text, every difference that `check_edit.py` reported is restored or explained.
 - No rule was created from a one-time request or an inference.

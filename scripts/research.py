@@ -15,7 +15,7 @@ Usage:
   python scripts/research.py runs
 Paths are relative to the workspace root, and a run's command starts in the workspace root.
 Exit status: 0 done; 1 problems found, or the run failed; 2 the records are valid but a result is stale
-(an input or output changed after the result was recorded); 3 refused. Uses only the Python standard library.
+(an input, output, or recorded code version changed); 3 refused. Uses only the Python standard library.
 """
 
 from __future__ import annotations
@@ -318,6 +318,7 @@ def check_results(root: Path) -> tuple:
         if path.name in SKIP:
             continue
         where = f"research/results/{path.name}"
+        stale_start = len(stale)
         if not SLUG_NAME.match(path.stem):
             problems.append(f"{where}: name a result record with lowercase ASCII letters, digits, and hyphens, for example r001-smoke-test.md")
         names.append(path.name)
@@ -341,9 +342,39 @@ def check_results(root: Path) -> tuple:
                     problems.append(f"{where}: the {key[:-1]} {target} does not exist")
                 elif checksum(file) != expected:
                     stale.append(f"{where}: the {key[:-1]} {target} changed after the result was recorded")
-        for target in TICKED.findall(full_text(fields, "run")) + link_targets(full_text(fields, "run")):
-            if "runs/" in target and not local_link_exists(target, folder, root):
+        for target in dict.fromkeys(TICKED.findall(full_text(fields, "run")) + link_targets(full_text(fields, "run"))):
+            if "runs/" not in target:
+                continue
+            run_path = folder / target
+            if not run_path.exists():
+                run_path = root / target.lstrip("/") if target.startswith("/") else root / target
+            if not run_path.is_file():
                 problems.append(f"{where}: the run record {target} does not exist")
+                continue
+            if run_path.name != "run.json":
+                continue
+            try:
+                run = json.loads(run_path.read_text(encoding="utf-8"))
+                if not isinstance(run, dict) or not isinstance(run.get("code", []), list):
+                    raise ValueError("expected a run object with a code list")
+                if status in ("observed", "checked") and run.get("status") != "complete":
+                    problems.append(f"{where}: the run did not complete: {target}")
+                for entry in run.get("code", []):
+                    code_path, expected = entry["path"], entry.get("sha256")
+                    if not expected:
+                        continue
+                    current = resolve(root, code_path)
+                    if not current.exists():
+                        stale.append(f"{where}: the recorded code {code_path} is missing")
+                    elif checksum(current) != expected:
+                        stale.append(f"{where}: the recorded code {code_path} changed after the run")
+            except (OSError, ValueError, KeyError, TypeError, AttributeError) as error:
+                problems.append(f"{where}: cannot read run record {target}: {error}")
+        if len(stale) > stale_start:
+            uses = full_text(fields, "used_by").strip()
+            suffix = (f"; recheck recorded dependents: {uses}" if uses and not is_empty(uses)
+                      else "; dependent passages and exhibits are not recorded; inspect the manuscript before reuse")
+            stale[stale_start:] = [item + suffix for item in stale[stale_start:]]
     index = folder / "index.md"
     listed = {Path(t).name for t in link_targets(index.read_text(encoding="utf-8"))} if index.is_file() else set()
     if names and not index.is_file():
@@ -394,7 +425,7 @@ def command_check(args, root: Path) -> int:
         print(f"Research records: {len(problems)} problem(s)" + (f" and {len(stale)} stale result input(s) or output(s)." if stale else "."))
         return 1
     if stale:
-        print(f"Research records have the required form, but {len(stale)} result input(s) or output(s) changed; run the work again or mark the result stale.")
+        print(f"Research records have the required form, but {len(stale)} result input(s), output(s), or recorded code version(s) changed; run and check the affected work again before reuse.")
         return 2
     print("Research records have the required form.")
     return 0
@@ -596,7 +627,7 @@ def command_runs(args, root: Path) -> int:
         return 0
     for path in records:
         record = json.loads(path.read_text(encoding="utf-8"))
-        changed = [e["path"] for e in record.get("outputs", []) + record.get("inputs", [])
+        changed = [e["path"] for e in record.get("outputs", []) + record.get("inputs", []) + record.get("code", [])
                    if e.get("sha256") and (not resolve(root, e["path"]).exists() or checksum(resolve(root, e["path"])) != e["sha256"])]
         print(f"{record['run_id']}: {record['status']}" + (f"; changed since the run: {', '.join(changed)}" if changed else ""))
     return 0

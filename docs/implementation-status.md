@@ -1,5 +1,14 @@
 # Implementation Status
 
+## Extension: researcher–AI collaboration (2026-10-30)
+
+- Implemented the maintainer-approved [collaboration design](researcher-ai-collaboration.md) in ten existing skills. It centers evidence-based discussion, meaningful method alternatives, observation versus interpretation, the author's argument and expression, and continuous routine work toward an agreed goal. Scientific choices still return to the researcher; planning-only and audit-only requests remain bounded. The earlier guided default of finishing one task and proposing the next is replaced for already-authorized handoffs.
+- Existing plan, source, result, outline, audit, revision and short state records carry the handoffs. No new skill, workflow engine, `workflow.json`, service, dependency, researcher data, or initialized paper project was added. Technical repair is bounded in the instructions, with failures retained; negative evidence is not retried away. The concurrent writing-prompts changes were preserved, and separately requested scored-review/model-recommendation work was left to its own session.
+- A demonstrated freshness gap was repaired: `research.py check` now checks recorded code from linked runs and reports existing `Used by` references when a result becomes stale. Unreadable or incomplete runs cannot serve as observed/checked results; run listings include code changes. This checks recorded relationships, not semantic support or an inferred complete dependency graph.
+- Verification observed on macOS/Apple Silicon, Python 3.14.4: all 196 script tests passed in 103.503 seconds, including two new computational/documentary handoff cases and two code/run regression cases. Skills were synchronized (34 packages); the availability table, writing-rule forms, README check (105 directories), and Git whitespace check passed. The generic skill-creator validator could not run because PyYAML was absent; the repository's own package validator and mirror check passed without adding dependencies.
+- The [review and test record](acceptance/researcher-ai-collaboration.md) separates deterministic evidence, an implementing-agent walkthrough, and observations of the real maintenance interaction. Synthetic study choices and prose are fixtures, not genuine consent or model-generated scientific judgments. Independent model behavior, a complete collaboration with a real researcher, fresh-model-session recovery, measured effort reduction, Windows, and real submission readiness remain unverified. Written review passes within those limits.
+- Authorized follow-up (2026-10-30): the maintainer requested installation, rechecking, repairs and a local commit. PyYAML 6.0.3 was installed in the ignored `.venv/` under Python 3.14.4; the generic validator then passed all 34 existing canonical packages. A writing-instruction conflict was corrected: an author's confirmed account of their choices/procedures does not itself validate an empirical finding. The mirror was regenerated. The full suite passed again: 196 tests in 102.733 seconds. The final scope check uses HEAD plus the 35 collaboration files to exclude ongoing `mock-review`/`model-selection` work; the README (105 directories), capability table, writing rules, skill mirrors (34 packages), and whitespace checks pass. No runtime dependency or other agent's work joins this commit.
+
 ## Maintenance: code quality and manuscript attribution (2026-10-29)
 
 - The standing contract prohibits inserting an AI assistant's signature, conversational sign-off, attribution, or authorship into manuscript text or author metadata; venue-required disclosure remains subject to the researcher's decision and venue policy. The manuscript checker flags recognized explicit AI signatures and AI author metadata, blocking a Word build. A second check inspects the built DOCX's paragraphs (including headers, footers, notes, and comments) and creator properties. Word runs are joined before checking. These bounded patterns do not recognize all forms or languages; findings require inspection and no source text is automatically removed.
@@ -12,7 +21,7 @@
 
 Agent-maintained record of what has actually been implemented and verified, one entry per MVP from the [MVP implementation guideline](mvp-implementation-guideline.md). Acceptance by review follows the maintainer’s 2026-10-29 MVP 2-style gate; claims about specific platforms, services or live behavior require observed evidence. The presence of a directory, a README, or a SKILL.md is not evidence.
 
-Updated: 2026-10-29.
+Updated: 2026-10-30.
 
 ## Summary
 
@@ -47,6 +56,14 @@ Requested by the maintainer: bring established practices of scholarly editing in
 - New reference files: `style-presets.md` (optional style choices, off by default, applied only after the researcher chooses them) and `reviewer-view.md` (a reviewer's report without a score, with an optional reader check). `editing-guide.md` and `figure-guide.md` gained the procedures for translation, shortening, expanding, polishing, results passages, captions and table titles, method diagrams, chart recommendations, and tables.
 - Verification on macOS: the skill copies (34 packages), the availability table, the READMEs (105 directories), and the writing-rule forms pass their checks; the 192 script tests pass; the relative links resolve; no fragment of 8 words or 10 CJK characters is shared with the external texts, and no name or credit of them appears in the workspace. The review passes.
 - Not verified: how a model applies the procedures and presets, real manuscripts, researcher use of the presets, Codex, and Windows.
+
+## Extension: scored mock review and model selection (2026-10-30)
+
+At the maintainer's instruction, two skills were added, which makes 36: `mock-review` gives a simulated peer review with scores on the venue's own review form, and `model-selection` recommends models for each kind of work from the researcher's own AI application. This reverses two exclusions of the writing-prompts conversion: that conversion's procedures still give no score, and the reviewer's view now hands a request for scores to `mock-review`.
+
+- `mock-review`: three independent reviewer perspectives, one reflection each, and a meta-review with the median and range of every score; each score quotes its anchor, names its evidence, and says what would raise it. It never gives a probability, a percentile, or a forecast of the decision, and it reports instructions hidden in a manuscript as an integrity finding. The design follows a survey of open-source automated reviewers, published evaluations of model reviewers, and official venue review forms, made on 2026-10-29 and 2026-10-30; the skill names none of them.
+- `model-selection`: identifies the application, plan type, and provider route, reads the current official model pages, and recommends only offered models, with reasons, trade-offs, and switching steps; a saved default changes only with consent. Dated starting points for Claude Code, Codex, and Cursor are in its `sources.md`.
+- Verification on macOS: the skill copies (36 packages), the availability table, the READMEs (109 directories), and the writing-rule forms pass their checks. Accepted by [written review](acceptance/mock-review-and-model-selection-review.md). Not verified: how a model applies the review procedure, how its scores compare with real reviews, model pages of other applications, Codex, and Windows.
 
 ## MVP 1, partial increment: workspace scaffold
 

@@ -16,6 +16,7 @@ Outcome: `manuscript/outline.md`, a researcher-reviewable plan of the argument a
 
 3. State the main claim in one or two sentences, with its support: the result records and evidence notes behind it, and their status (checked, observed, or still missing).
 4. List the supporting claims in the order the argument needs them. For each: the evidence it needs, what exists (with links), and what is missing. A claim whose support is missing stays in the outline as a gap; it is never presented as a finding.
+   Identify the step from observation to interpretation, alternatives that the evidence has not excluded, and any conclusion stronger than its support. Offer a concrete repair to the argument or a check to obtain support; a different main claim remains a proposal for the researcher.
 5. Fit the structure to the discipline, the article type, and the venue: use a fixed structure such as IMRaD only when the article type or the venue requires it or the researcher asks. Respect the venue's limits (length, required sections, abstract form) as recorded in its venue note, and name the source.
 
 ## Step 3: Map the sections

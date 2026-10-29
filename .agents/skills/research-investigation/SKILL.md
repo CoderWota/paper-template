@@ -29,6 +29,7 @@ Outcome: a concise answer to the researcher's question, with the relevant search
 - Look for contrary findings and alternative explanations. Do not suppress a disagreement because one result is newer, cited more often, or more convenient.
 - State when evidence is indirect, abstract-only, provider-snippet-only, based on an unchecked extraction, or unavailable.
 - If a requested conclusion is unsupported, say what the inspected material establishes and what further source or analysis would be needed. Do not invent experiments, data, results, or a literature gap.
+- If the evidence challenges the working explanation, first check extraction, definitions, source versions, and the actual passages. Show what supports retaining the explanation, what calls for narrowing or revising it, and what remains undecidable, only where the evidence warrants those alternatives. A changed main claim or material scope goes back to the researcher; do not change it to make the investigation look complete.
 
 ## Record a project result
 
@@ -45,6 +46,8 @@ A quick question that needs only an answer gets no result record. Computational 
 ## Report
 
 Use the interaction language. Organize the response around the question, not a generic article outline. Include citations or links to the workspace sources and precise locators wherever available. Separate the supported answer, sources that qualify or disagree, and remaining uncertainty. Keep a durable interpretation in the relevant per-source evidence notes; do not save the whole conversation or a new unconfirmed research decision.
+
+For a project result, keep the observation, interpretation, and open hypothesis distinct in its narrative, with the checks and limitations beside them. Name the next discriminating check or necessary researcher judgment. Pass the result and evidence locators, contrary findings, and unresolved questions to already-authorized planning or writing work; do not expand an answer-only request. Use the existing result's `Used by` field for dependent passages and exhibits, and recheck them when the underlying evidence changes.
 
 ## Completion check
 

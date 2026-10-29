@@ -38,6 +38,7 @@ Outcome: when the research needs computation, a proportionate `code/` folder wit
    It records the command, a checksum of the code (by default `code/src`), the Git commit when there is one, the interpreter, the inputs and outputs with their checksums, the logs, and the exit status in `code/runs/<run-id>/`, and prints the input and output lines for the result record.
 10. A chart of results is an output of a recorded run: choose its form with the [figure guide](figure-guide.md), keep the plotting code in `code/src`, and list the figure as an output of the run.
 11. Investigate routine failures yourself: errors, missing packages, data problems. Ask the researcher only for what you cannot resolve, and say exactly what is needed.
+    Keep the original run and logs. Try at most two repairs of a failing technical action within the confirmed method and permissions, stopping earlier when the same failure repeats without progress. Record the attempts and remaining blocker in the existing work item or result record. Use `--timeout` when a run needs a duration bound. A valid negative result is not a technical failure; do not alter parameters or select runs to obtain a preferred conclusion.
 12. Stay inside the confirmed method and scope. Changing the method, the data scope, or a parameter that affects the conclusions, or excluding an analysis, is a major decision.
 
 ## Step 4: Check and record the results
@@ -46,6 +47,13 @@ Outcome: when the research needs computation, a proportionate `code/` folder wit
 14. Write `research/results/<result-id>.md` with the layout in `research/results/README.md`, and add it to `research/results/index.md`. Copy the input, output, and run lines that the recorder printed. Use the status that matches what was done: observed before checks, checked only after the listed checks. The researcher's review is a separate line.
 15. Never invent data, numbers, or results, and never select favorable runs silently: report every run that bears on a conclusion, including failed and negative ones.
 16. Run `python scripts/research.py check`. A result reported as stale (its inputs or outputs changed) supports no claim until it is run and checked again.
+
+## Interpret and hand off
+
+- Explain the observed result separately from its interpretation and any untested hypothesis. Link the actual output and checks, retain negative findings, and state what the design can and cannot establish.
+- If the result contradicts expectations, inspect calculation, data handling, and the agreed checks first. Present the evidence for keeping, narrowing, or abandoning the explanation where warranted; changing the scientific method or main claim needs the researcher's choice.
+- Populate `Used by` with the manuscript passages, figures, tables, or checks that rely on the result. When an input, output, or recorded code version changes, list those dependents for rechecking; do not silently rewrite them or update checksums to make an old result appear current. State explicitly when the recorded dependency list is incomplete.
+- Hand checked results and their limits to writing that is already in scope. Otherwise deliver the result and the one useful next check or judgment, without starting an unsolicited manuscript.
 
 ## Completion check
 

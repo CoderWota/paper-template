@@ -291,6 +291,34 @@ class ResultAndRunTests(ResearchTestCase):
         listing = self.research("runs")
         self.assertIn("complete; changed since the run: code/outputs/mean.json", listing.stdout)
 
+    def test_changed_or_deleted_run_code_makes_the_result_stale_and_names_its_uses(self) -> None:
+        self.make_analysis()
+        self.assertEqual(self.run_analysis().returncode, 0)
+        text = self.result_record().replace("- Used by: none yet", "- 用于：`manuscript/02-results.md`, `manuscript/assets/mean.svg`, audit of results")
+        self.write("research/results/r001-mean-smoke.md", text)
+        self.write("research/results/index.md", "# Results\n\n- [r001](r001-mean-smoke.md)\n")
+        self.assertCheck(0)
+        code = self.root / "code/src/mean.py"
+        code.write_text(code.read_text(encoding="utf-8") + "\n# changed procedure\n", encoding="utf-8")
+        self.assertCheck(2, "code/src changed", "recheck recorded dependents", "manuscript/02-results.md", "manuscript/assets/mean.svg")
+        self.assertIn("code/src", self.research("runs").stdout)
+        shutil.rmtree(code.parent)
+        self.assertCheck(2, "code/src is missing", "recheck recorded dependents")
+        self.assertEqual((self.root / "research/results/r001-mean-smoke.md").read_text(encoding="utf-8"), text)
+
+    def test_broken_or_failed_run_is_not_usable_as_a_checked_result(self) -> None:
+        self.make_analysis()
+        self.assertEqual(self.run_analysis().returncode, 0)
+        self.write("research/results/r001-mean-smoke.md", self.result_record())
+        self.write("research/results/index.md", "# Results\n\n- [r001](r001-mean-smoke.md)\n")
+        path = next((self.root / "code/runs").glob("*/run.json"))
+        record = json.loads(path.read_text(encoding="utf-8"))
+        path.write_text("{interrupted", encoding="utf-8")
+        self.assertCheck(1, "cannot read run record")
+        record["status"] = "failed"
+        path.write_text(json.dumps(record), encoding="utf-8")
+        self.assertCheck(1, "run did not complete")
+
 
 class VenueTests(ResearchTestCase):
     def test_venue_notes_need_a_date_and_official_addresses(self) -> None:

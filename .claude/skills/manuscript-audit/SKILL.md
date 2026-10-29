@@ -33,7 +33,9 @@ Outcome: a prioritized list of findings, each tied to an exact passage and to th
     python scripts/manuscript.py record-check --name "Audit of <scope>" --kind audit --input <each audited section> --input references/bibliography.bib [--input <evidence notes and result records used>] --result passed|findings|failed --summary "..." --scope "<checks made>" --report outputs/checks/<file>.md
     ```
 
-14. Tell the researcher the most important findings first, with links, and ask which to address. Corrections go through `manuscript-writing`, `natural-prose` for formulaic wording, or `manuscript-revision` for structural ones; a requested correction is applied exactly as agreed, keeping the researcher's own edits.
+14. Tell the researcher the most important findings first, with links. For an audit-only request, ask which to address. If correction and rechecking are already authorized, continue through `manuscript-writing`, `natural-prose` for formulaic wording, or `manuscript-revision` for structural ones within its confirmation requirements. Keep the researcher's current edits, and pause only the work dependent on a new scientific choice.
+
+For a follow-up audit, identify each prior finding by its existing heading or location and link the actual change and the fresh evidence/check, or explain why it remains open. Reinspect the passage and support rather than accepting a completion label. Include the source inputs and run code needed to detect upstream changes in the check record. A model score, an accept/reject recommendation, or agreement between models is not scientific verification.
 
 ## Completion check
 
