@@ -1,6 +1,6 @@
 ---
 name: paper-hands-on
-description: Use when the researcher wants to be guided through the whole paper, from an interest, a set of readings, an idea, data, an existing draft, or reviewer comments toward a journal-format manuscript, or asks "what should I do next?" or to continue where the work stopped. Recognizes the project's current stage from its records, proposes one useful next task at a time, carries it out with the matching standalone skill, connects the results through the shared project files, and keeps a short resumable state, while scientific choices, uploads, and submission stay with the researcher.
+description: Use when the researcher asks, in any language and without naming a task, to continue or resume the previous work (for example "let's continue where we stopped" at the start of a new session), asks "what should I do next?", or wants to be guided through the whole paper, from an interest, a set of readings, an idea, data, an existing draft, or reviewer comments toward a journal-format manuscript. A request for one named task goes to that task's skill instead. Recognizes the project's current stage from its records, proposes one useful next task at a time, carries it out with the matching standalone skill, connects the results through the shared project files, and keeps a short resumable state, while scientific choices, uploads, and submission stay with the researcher.
 ---
 
 # Paper hands-on

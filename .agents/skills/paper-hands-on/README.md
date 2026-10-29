@@ -2,7 +2,7 @@
 
 Guides the whole paper, step by step, from wherever you are: an interest, a set of readings, an idea, data, an existing draft, or reviewer comments. In each step the agent explains what it is for, does the work with the matching task, shows you the result, and proposes the next step.
 
-Ask, for example: "I have an area of interest but no paper yet. Guide me from collecting literature to a manuscript in the format of a suitable journal," or simply "What should I do next on this paper?"
+Ask, for example: "I have an area of interest but no paper yet. Guide me from collecting literature to a manuscript in the format of a suitable journal," or simply "What should I do next on this paper?" or "Let's continue where we stopped."
 
 ## What to expect
 
