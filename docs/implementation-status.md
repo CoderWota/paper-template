@@ -13,7 +13,7 @@ Updated: 2026-10-29.
 | 3 | Searchable literature and traceable evidence | Accepted by the maintainer on 2026-10-28 under the MVP 2-style gate: all four skills passed written review, 79 tests and mechanical checks pass, and live Sciverse checks were recorded. Catalog filters/relations, resources, Paper Schema, live public-PDF access, model-host fallback, Windows, and Codex remain explicitly unverified |
 | 4 | Ideas, impact, journal choice, and feasible research plans | Accepted by review on 2026-10-28: seven skills and the result-record extension of `research-investigation` passed written review ([skill review](acceptance/mvp-4-skill-review.md)); `scripts/research.py` and feedback import pass their tests. Live venue reading, fresh-session behavior, Windows, and Codex are unverified |
 | 5 | Evidence-based writing, audit, and major revision | Accepted by review on 2026-10-29: five skills passed written review ([skill review](acceptance/mvp-5-skill-review.md)); the convention check, check records, revisions, and Pandoc adoption of Word, LaTeX, and OpenDocument pass their tests. Real manuscripts, PDF adoption, Windows, and Codex are unverified |
-| 6 | Template-driven layout and readiness | Planned |
+| 6 | Template-driven layout and readiness | Accepted by review on 2026-10-29: both skills passed written review ([skill review](acceptance/mvp-6-skill-review.md)); the Word route was built, rendered by Word, and inspected with a neutral and a synthetic journal profile on macOS. A real journal template, other PDF routes, Windows, and Codex are unverified |
 | 7 | Practical Git control and explicit backup | Accepted by review on 2026-10-28: seven skills passed written review ([skill review](acceptance/mvp-7-skill-review.md)); `scripts/versions.py` passes 13 tests in disposable repositories. No hosting service, Windows, or Codex was exercised |
 | 8 | Review rounds and coauthor reconciliation | Planned |
 | 9 | Connected paper hands-on and release candidate | Planned |
@@ -680,6 +680,20 @@ Implemented:
 Verification observed (macOS, Python 3.12.9; Pandoc 3.12.1): 15 tests, 4 of them live Pandoc conversions; a live adoption of the export-trial Word file (four sections, its image and metadata, three typed equation numbers flagged, a second adoption refused).
 
 Not verified: real Word manuscripts with complex fields, cross-references, or old equation-editor objects; a PDF manuscript through MinerU; model behavior in the writing, audit, and revision procedures; Codex; Windows.
+
+## MVP 6: template-driven layout and readiness
+
+Status: both skills accepted by review on 2026-10-29 ([skill review](acceptance/mvp-6-skill-review.md)). The Word (DOCX) route is observed on macOS with a neutral and a synthetic journal profile; a real journal template, other PDF routes, Windows, and Codex are not verified.
+
+Implemented, after the export trial's decisions:
+
+- Skills `submission-assembly` and `submission-readiness`, with generated copies; `constraint-maintenance` now routes formatting requirements to the profile through `submission-assembly`.
+- `scripts/export.py` with `scripts/export/`: `tools` and `install` (Pandoc 3.12.1 and pandoc-crossref 0.3.26 from their official releases with checked SHA-256 digests, and mermaid-cli 12.0.0 with npm, using an installed Chrome-family browser); `profile-init`; `reference-doc`, which rebuilds the Word reference document from settings kept in `profile.yaml` and writes the section properties in schema order; `build`, which refuses a manuscript with convention problems, renders Mermaid diagrams as figures, builds the DOCX with the workspace's Lua filters, pandoc-crossref, and citeproc, and checks every source formula against a native Word equation with matching structure, figures, references, citations, layout expectations, length, anonymization, and open markers, recording inputs, tools, and command in `build.json`; `verify`; `render` (Word on macOS and Windows, or LibreOffice); and `release`, which freezes only a passing, current build and never overwrites a release.
+- The profile layout of `requirements.md` (each rule with its source, implementation, check, result, and confirmation) in `requirements/profiles/README.md`; the README check treats quoted syntax as documentation, not as a placeholder.
+
+Verification observed (macOS 26.6.2, Apple Silicon; Word 16.114.2; Chrome 156): 10 export tests, two of them real builds and one a Mermaid figure. A live synthetic manuscript built with both profiles: 9 of 9 formulas native, 2 of 2 figures, all references and citations resolved, and every journal expectation met; Word's PDF was inspected page by page (A4, line numbers, Times New Roman, double spacing, numbered black headings, equations, the diagram with a Chinese label, the table, the references). The inspection found a missing plural prefix ("Eq. 1, 2"), fixed in the build. Releases were frozen once, refused for a reused ID, and refused after an edit made the build out of date.
+
+Not verified: a real journal's own template and current guidelines; editing an equation in Word; Word fields for figure and table numbers; Word on Windows and LibreOffice rendering; PDF routes other than Word's rendering of the checked DOCX; missing fonts; Codex.
 
 ## MVP 7: practical Git control and explicit backup
 

@@ -13,7 +13,22 @@ One subdirectory per intended output, such as a journal submission or a thesis f
 └── templates/         # Word templates, LaTeX classes, citation styles, and other format files
 ```
 
-The agent creates each of these folders with its own README. A project without a target venue can use a neutral profile.
+The agent creates each of these folders with its own README (`python scripts/export.py profile-init`). A project without a target venue can use a neutral profile.
+
+## Layout of requirements.md
+
+One section per adopted rule, in your interaction language. The labels stay as shown.
+
+```text
+## R1 <short name>
+
+- Rule: <what the output must do, quoted from the source when possible>
+- Source: <originals/<file> and its page or section, or your words>
+- Implementation: <reference document setting, profile.yaml key, citation style, or manual step>
+- Check: <build expectation (expect_...), inspection of the rendered pages, or check by you>
+- Result: <passed, failed, or not checked, with the date of the build>
+- Confirmed: <adopted from the supplied guideline or template, or the date and your words>
+```
 
 ## Who edits what
 

@@ -34,7 +34,7 @@ Outcome: `requirements/` states exactly the rules that the researcher confirmed,
 | Writing rules and terminology | `requirements/writing.md` |
 | Purpose, contribution, audience, article type, languages, and target venue | `requirements/project.md` |
 | Document processing and data use | `requirements/privacy.md` (account controls go through `privacy-configuration`) |
-| Formatting requirements of a journal or an institution | the output profile in `requirements/profiles/` (the `submission-assembly` skill is planned and not available yet) |
+| Formatting requirements of a journal or an institution | the output profile in `requirements/profiles/`, through `submission-assembly` |
 
 The scope is the whole manuscript, a named section, or a named output profile. A rule applies to the whole manuscript only when the researcher said so or confirmed it.
 

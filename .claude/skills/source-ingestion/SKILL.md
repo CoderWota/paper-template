@@ -33,7 +33,8 @@ Outcome: every requested document has a status. A converted source has its origi
    | Editor or reviewer correspondence | `review-ingestion` |
    | Advice from co-researchers, collaborators, coauthors, or supervisors | `research-feedback` |
    | The researcher's own manuscript draft | `manuscript-import` |
-   | A journal template or its instructions | Not available yet. Keep the file where it is and record it with `python scripts/ingest.py note --import-id ID --role template\|other --reason "..." PATH`, so that it stays visible. Never add a draft to `manuscript/manifest.yaml`. |
+   | A journal template or its author guidelines | `submission-assembly`, which keeps them in the output profile |
+   | Anything else that is not a reference source | Keep the file where it is and record it with `python scripts/ingest.py note --import-id ID --role other --reason "..." PATH`, so that it stays visible. Never add a draft to `manuscript/manifest.yaml`. |
 
 4. Tell the researcher in one short message how many files will be imported and with which processing route. Routine steps inside a confirmed scope need no further approval.
 

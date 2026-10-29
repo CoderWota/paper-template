@@ -10,6 +10,7 @@ Acceptance records for each MVP. Since 2026-10-28, a skill passes acceptance whe
 - [MVP 3 checklist](mvp-3.md): optional scenarios for search authorization and provider order, evidence locators, literature download/resumption, and source-ingestion handoff. It is not an acceptance gate under the current rule.
 - [MVP 4 skill review](mvp-4-skill-review.md): the review of the seven idea, impact, venue, planning, feedback, and research-code skills, and of the result records added to `research-investigation` (2026-10-28).
 - [MVP 5 skill review](mvp-5-skill-review.md): the review of the five manuscript skills, with the comparison of open-source converters behind the decision to adopt editable manuscripts with Pandoc (2026-10-29).
+- [MVP 6 skill review](mvp-6-skill-review.md): the review of `submission-assembly` and `submission-readiness`, with the live builds and the inspection of Word's rendering (2026-10-29).
 - [MVP 7 skill review](mvp-7-skill-review.md): the review of the seven Git skills, with the tests in disposable repositories (2026-10-28).
 - [Literature quality evaluation](sciverse-quality-evaluation.md): candidate multilingual cases and scoring procedure, plus the bounded four-query retrieval smoke run and its remaining source-check gaps.
 
