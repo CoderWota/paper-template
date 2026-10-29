@@ -20,7 +20,7 @@ Outcome: `manuscript/outline.md`, a researcher-reviewable plan of the argument a
 
 ## Step 3: Map the sections
 
-6. For each section: its file (one file per major section, for example `02-methods.md`, or a single file for a short paper), its title in the manuscript language, its purpose in the argument, its key content, the evidence and results it uses, the figures and tables with their planned labels (`fig:...`, `tbl:...`), and a target length when a limit applies.
+6. For each section: its file (one file per major section, for example `02-methods.md`, or a single file for a short paper), its title in the manuscript language, its purpose in the argument, its key content, the evidence and results it uses, the figures and tables with their planned labels (`fig:...`, `tbl:...`) and the form that suits each one's message (see the [figure guide](../research-code-setup/figure-guide.md)), and a target length when a limit applies.
 7. List the gaps: evidence to obtain, results still to produce, sources to read, and decisions the researcher must make. Name the skill that would close each gap.
 
 ## Step 4: Confirm

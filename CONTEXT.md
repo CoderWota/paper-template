@@ -49,6 +49,10 @@ A reference to a specific passage, page, section, figure, table, or other identi
 **Writing constraint**:
 A verified, researcher-confirmed requirement governing some aspect of the manuscript, such as language, terminology, argument, structure, or style. An agent's unconfirmed inference is not a writing constraint.
 
+**Formulaic pattern**:
+A wording or structural habit that adds emphasis, decoration, or generality without adding content, such as an inflated claim of significance, an uncited appeal to authority, or a stock connective at the start of every sentence. It is a signal for editing, not evidence of who wrote a text, and it governs writing only when the researcher confirms a rule about it.
+_Avoid_: AI trace, when it implies a judgment of authorship.
+
 **Research decision record**:
 A concise account of a consequential researcher-confirmed choice, its scope, rationale, and implications; it is distinct from evidence that the choice is scientifically valid.
 

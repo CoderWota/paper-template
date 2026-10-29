@@ -15,6 +15,7 @@ Acceptance records for each MVP. Since 2026-10-28, a skill passes acceptance whe
 - [MVP 8 skill review](mvp-8-skill-review.md): the review of `review-response` and the reconciliation of coauthor Word edits (2026-10-29).
 - [MVP 9 skill review](mvp-9-skill-review.md): the review of `paper-hands-on`, and the status of the complete-path test (2026-10-29).
 - [MVP 9 complete-path live test](mvp-9-complete-path.md): interrupted partial run, observations, and remaining checks.
+- [Natural prose skill review](natural-prose-skill-review.md): the review of `natural-prose`, added after the MVPs on 2026-10-29, with a second look at `manuscript-writing`, `manuscript-audit`, `submission-readiness`, `research-code-setup`, and `manuscript-outline`, which it extends.
 - [Literature quality evaluation](sciverse-quality-evaluation.md): candidate multilingual cases and scoring procedure, plus the bounded four-query retrieval smoke run and its remaining source-check gaps.
 
 Never copy this folder into a test workspace: an agent under test could read the expected results. After a review, the agent in the template repository records the result in the [implementation status](../implementation-status.md). Only the template maintainer uses these records; researchers never need them.

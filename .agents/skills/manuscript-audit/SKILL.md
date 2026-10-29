@@ -1,6 +1,6 @@
 ---
 name: manuscript-audit
-description: Use when the researcher asks to review, check, critique, or audit the manuscript or a section, to find unsupported claims, contradictions, weak arguments, inconsistent terms, citation problems, or violations of their writing rules, or wants a check before sharing or submitting. Examines argument, evidence and claim support, results, terminology, confirmed rules, language, conventions, and known venue limits as separate checks, and returns prioritized findings linked to exact passages and evidence, recorded with the inputs they examined, without editing the text unless asked.
+description: Use when the researcher asks to review, check, critique, or audit the manuscript or a section, to find unsupported claims, contradictions, weak arguments, inconsistent terms, citation problems, formulaic wording, or violations of their writing rules, or wants a final check before sharing or submitting, or a reviewer's view of the paper. Examines argument, evidence and claim support, results, terminology, confirmed rules, language, style patterns, conventions, and known venue limits as separate checks, and returns prioritized findings linked to exact passages and evidence, recorded with the inputs they examined, without a score and without editing the text unless asked.
 ---
 
 # Manuscript audit
@@ -11,26 +11,29 @@ Outcome: a prioritized list of findings, each tied to an exact passage and to th
 
 1. Name what is audited: the whole manuscript or named sections, and which checks (by default all of step 2). Read `requirements/project.md`, `requirements/writing.md`, `manuscript/outline.md`, the manifest and the section files in scope, the bibliography, the evidence notes and result records the text relies on, and the venue note when a target is set.
 2. Run `python scripts/manuscript.py checks`. A recorded check whose inputs changed is stale: do not reuse its result.
+3. A final check, requested for a text that has already been revised, reports only blocking problems: statements that contradict each other, a key term that changes without explanation, a sentence whose meaning is unclear or wrong, and numbers that disagree between passages. When there are none, say so plainly. Offer the minor findings separately instead of listing them, and record the scope as a final check.
 
 ## Step 2: Examine, one check at a time
 
-3. **Mechanics.** `python scripts/manuscript.py check` (labels, citation keys, images, math, hand-numbered references, open `[TODO: ...]` markers) and `python scripts/literature.py audit-bibliography` (keys linked to archived sources). A key that resolves is not support.
-4. **Argument.** Does the text make the main claim of the outline? Are steps missing, claims stronger than their support, alternatives or limitations ignored? Do sections contradict each other, for example a number in the abstract that differs from the results, or a conclusion that the methods cannot support?
-5. **Support.** For each substantive claim: the cited source's passage, checked with `literature-and-evidence` (support, contradiction, qualification, or not checked), or the result record and its status. `python scripts/research.py check` reports stale results; a stale or unchecked result does not support a finding.
-6. **Terminology and rules.** Each active rule in `requirements/writing.md`, applied within its scope; the terminology table; consistency of terms across sections.
-7. **Language.** The manuscript language throughout, with the confirmed exceptions; unintended mixing; clarity.
-8. **Venue limits**, when a target is set: length (`python scripts/manuscript.py assemble` prints word counts), required sections, the abstract form, and the AI policy. A full readiness assessment is `submission-readiness`.
+4. **Mechanics.** `python scripts/manuscript.py check` (labels, citation keys, images, math, hand-numbered references, open `[TODO: ...]` markers) and `python scripts/literature.py audit-bibliography` (keys linked to archived sources). A key that resolves is not support.
+5. **Argument.** Does the text make the main claim of the outline? Are steps missing, claims stronger than their support, alternatives or limitations ignored? Do sections contradict each other, for example a number in the abstract that differs from the results, or a conclusion that the methods cannot support?
+6. **Support.** For each substantive claim: the cited source's passage, checked with `literature-and-evidence` (support, contradiction, qualification, or not checked), or the result record and its status. `python scripts/research.py check` reports stale results; a stale or unchecked result does not support a finding.
+7. **Terminology and rules.** Each active rule in `requirements/writing.md`, applied within its scope; the terminology table; consistency of terms across sections.
+8. **Language.** The manuscript language throughout, with the confirmed exceptions; unintended mixing; clarity.
+9. **Style patterns.** The [pattern families](../natural-prose/patterns.md) and the list for the manuscript language beside them. Report a strong pattern, or a cluster of weak ones, as a minor finding, and as important when it misstates the evidence, such as "significant" without a test or a claim of novelty without a search. A pattern is never evidence about who wrote the text.
+10. **Venue limits**, when a target is set: length (`python scripts/manuscript.py assemble` prints word counts), required sections, the abstract form, and the AI policy. A full readiness assessment is `submission-readiness`.
 
 ## Step 3: Report the findings
 
-9. For each finding give: its priority (blocking, important, or minor), the location (file and line, with a short quotation), what is wrong, the evidence or rule behind the finding (with locators), and a suggested remedy. A missing source or result is reported as a research gap; never repair it with an invented citation or number.
-10. Write the report in the interaction language to `outputs/checks/<date>-audit-<scope>.md`, then record it:
+11. For each finding give: its priority (blocking, important, or minor), the location (file and line, with a short quotation), what is wrong, the evidence or rule behind the finding (with locators), and a suggested remedy. A missing source or result is reported as a research gap; never repair it with an invented citation or number.
+12. When the researcher asks for a reviewer's view, present the same findings as a reviewer's report: one sentence on what the paper claims to contribute; the strengths, each with its evidence; and the weaknesses in order of severity, each specific (which comparison, data, or passage). Label each weakness twice, as a problem of presentation or of substance (method, evidence, or scope), and as fixable within a revision or structural, and give the action that would address it: an analysis to add, a passage to rewrite, a limitation to state. Give no score, rating, or chance of acceptance.
+13. Write the report in the interaction language to `outputs/checks/<date>-audit-<scope>.md`, then record it:
 
     ```text
     python scripts/manuscript.py record-check --name "Audit of <scope>" --kind audit --input <each audited section> --input references/bibliography.bib [--input <evidence notes and result records used>] --result passed|findings|failed --summary "..." --scope "<checks made>" --report outputs/checks/<file>.md
     ```
 
-11. Tell the researcher the most important findings first, with links, and ask which to address. Corrections go through `manuscript-writing`, or `manuscript-revision` for structural ones; a requested correction is applied exactly as agreed, keeping the researcher's own edits.
+14. Tell the researcher the most important findings first, with links, and ask which to address. Corrections go through `manuscript-writing`, `natural-prose` for formulaic wording, or `manuscript-revision` for structural ones; a requested correction is applied exactly as agreed, keeping the researcher's own edits.
 
 ## Completion check
 
@@ -38,3 +41,4 @@ Outcome: a prioritized list of findings, each tied to an exact passage and to th
 - Each finding points to an exact passage and to its evidence or rule; support and citation resolution were checked separately.
 - Nothing was invented to close a gap, and the text was not edited without a request.
 - The report exists and its check record names the inputs examined.
+- A reviewer's view gives no score, rating, or chance of acceptance.

@@ -1,0 +1,232 @@
+{
+  "_comment": "Words that carry a claim's strength and conditions, counted by scripts/check_edit.py before and after an edit within one language. 'except' lists longer words that contain a counted word without its meaning; their occurrences are subtracted.",
+  "en": {
+    "hedges": {
+      "words": [
+        "may",
+        "might",
+        "could",
+        "possibly",
+        "perhaps",
+        "probably",
+        "potentially",
+        "presumably",
+        "likely",
+        "unlikely",
+        "suggest",
+        "suggests",
+        "suggested",
+        "suggesting",
+        "appear",
+        "appears",
+        "appeared",
+        "seem",
+        "seems",
+        "seemed",
+        "approximately",
+        "roughly",
+        "partly",
+        "partially",
+        "generally",
+        "typically",
+        "tend",
+        "tends",
+        "preliminary"
+      ],
+      "except": []
+    },
+    "negations": {
+      "words": [
+        "not",
+        "no",
+        "never",
+        "none",
+        "neither",
+        "nor",
+        "without",
+        "cannot",
+        "n't",
+        "nothing",
+        "fail",
+        "fails",
+        "failed",
+        "lack",
+        "lacks",
+        "lacked",
+        "absent",
+        "unable"
+      ],
+      "except": []
+    },
+    "limits": {
+      "words": [
+        "only",
+        "solely",
+        "except",
+        "unless",
+        "if",
+        "until",
+        "at least",
+        "at most",
+        "more than",
+        "less than",
+        "fewer than",
+        "up to",
+        "all",
+        "every",
+        "some",
+        "most"
+      ],
+      "except": []
+    }
+  },
+  "zh": {
+    "hedges": {
+      "words": [
+        "可能",
+        "或许",
+        "也许",
+        "似乎",
+        "大概",
+        "大约",
+        "约为",
+        "左右",
+        "一定程度",
+        "倾向于",
+        "推测",
+        "初步",
+        "有望",
+        "据称",
+        "疑似"
+      ],
+      "except": []
+    },
+    "negations": {
+      "words": [
+        "不",
+        "未",
+        "没",
+        "无",
+        "非",
+        "否"
+      ],
+      "except": [
+        "不同",
+        "不断",
+        "不仅",
+        "不过",
+        "不少",
+        "不久",
+        "不管",
+        "不论",
+        "不得不",
+        "未来",
+        "无论",
+        "无线",
+        "非常",
+        "否则",
+        "是否",
+        "能否",
+        "可否",
+        "与否"
+      ]
+    },
+    "limits": {
+      "words": [
+        "仅",
+        "只有",
+        "只要",
+        "除了",
+        "除非",
+        "如果",
+        "若",
+        "当且仅当",
+        "至少",
+        "至多",
+        "最多",
+        "超过",
+        "以上",
+        "以下",
+        "以内",
+        "所有",
+        "全部",
+        "部分",
+        "一些",
+        "大多数"
+      ],
+      "except": [
+        "不仅",
+        "不仅仅"
+      ]
+    }
+  },
+  "ja": {
+    "hedges": {
+      "words": [
+        "可能性",
+        "かもしれ",
+        "と考えられ",
+        "と思われ",
+        "示唆",
+        "推測",
+        "推定",
+        "約",
+        "程度",
+        "傾向",
+        "おそらく",
+        "恐らく",
+        "見られ",
+        "予備的",
+        "ようである"
+      ],
+      "except": []
+    },
+    "negations": {
+      "words": [
+        "ない",
+        "なかった",
+        "ません",
+        "ず",
+        "無",
+        "未",
+        "不",
+        "非"
+      ],
+      "except": [
+        "少ない",
+        "危ない",
+        "必ず",
+        "まず",
+        "わずか",
+        "ずつ",
+        "はず",
+        "いずれ",
+        "ずっと",
+        "未来",
+        "非常",
+        "不可欠",
+        "未満"
+      ]
+    },
+    "limits": {
+      "words": [
+        "のみ",
+        "だけ",
+        "限り",
+        "以外",
+        "場合",
+        "ならば",
+        "少なくとも",
+        "最大",
+        "最小",
+        "以上",
+        "以下",
+        "未満",
+        "すべて",
+        "全て",
+        "一部"
+      ],
+      "except": []
+    }
+  }
+}

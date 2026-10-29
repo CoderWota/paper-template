@@ -32,6 +32,15 @@ Execution order (revised 2026-10-26): 1 → 7 → 2 → 3 → 4 → 5 → 6 → 
 
 All 33 skills are implemented and passed their written reviews; MVPs 1–9 are accepted under the MVP 2-style gate confirmed by the maintainer on 2026-10-29. On 2026-10-29 the maintainer confirmed this wording in the session (reply: “是，我确认过”), covering MVPs 1–9, their status updates, and the retained complete-path records and findings. This replaces the prior requirement that MVP 9 acceptance await the stricter complete-path live test. Acceptance is distinct from verification: untested platform, service, real-manuscript and researcher-experience claims remain unverified. Earlier run statuses below describe the evidence at the time, not the current acceptance gate.
 
+## Extension: natural prose and editing craft (2026-10-29)
+
+Requested by the maintainer: bring established practices of scholarly editing into the template in its own words, without the marks of the external material that informed them. The extension adds a 34th skill to the 33 of MVPs 1–9.
+
+- New skill `natural-prose`: checks or revises text that reads as AI-generated, formulaic, inflated, or translated, with lists for English, Chinese, and Japanese and language-independent pattern families for other languages. It keeps every claim, number, citation, hedge, condition, and the researcher's voice, and it never judges authorship or promises anything about AI detectors.
+- `manuscript-writing` gained an [editing guide](../.agents/skills/manuscript-writing/editing-guide.md): writing from notes, translating into the manuscript language with a literal rendering for checking, translating for reading, shortening, expanding, polishing at the requested depth, results passages, captions, and method diagrams. `manuscript-audit` gained a final check, a style-pattern check, and a reviewer's view without a score; `submission-readiness` labels likely concerns the same way; `research-code-setup` gained a [figure guide](../.agents/skills/research-code-setup/figure-guide.md), which `manuscript-outline` links.
+- New `scripts/check_edit.py`, with its word lists in `scripts/check_edit.json`, compares an edit with its original: it lists protected items that were lost or added, and hedges, negations, and limiting words whose count changed. It reuses the citation and open-marker helpers of `scripts/text_rules.py`.
+- Verification on macOS: the 11 new tests and the whole suite (192 tests) pass; the skill copies (34 packages), the capability table, the READMEs (105 directories), and the writing-rule forms pass their checks; the 18 examples of the language lists pass the edit check as intended; no fragment of 8 words or 10 Chinese or Japanese characters is shared with the external material, and its names do not occur in the workspace. Accepted by [written review](acceptance/natural-prose-skill-review.md). Not verified: how a model applies the lists and thresholds, real manuscripts, other languages, Codex, and Windows.
+
 ## MVP 1, partial increment: workspace scaffold
 
 Status: in progress. This increment is narrower than MVP 1 and does not meet its acceptance evidence.

@@ -1,6 +1,6 @@
 ---
 name: research-code-setup
-description: Use when the research needs code, data analysis, simulation, or other computation, when the researcher asks to set up an analysis environment or a code project, or asks to run an analysis and record what it found. Finds out the actual needs before creating code/, sets up a proportionate structure with its own environment, runs authorized analyses with recorded inputs, code version, parameters, and outputs, checks the results, and writes result records in research/results/ that keep proposed, observed, checked, and failed results distinct. Creates nothing for research that needs no code.
+description: Use when the research needs code, data analysis, simulation, or other computation, when the researcher asks to set up an analysis environment or a code project, asks to run an analysis and record what it found, or asks which chart suits a result. Finds out the actual needs before creating code/, sets up a proportionate structure with its own environment, runs authorized analyses with recorded inputs, code version, parameters, and outputs, checks the results, and writes result records in research/results/ that keep proposed, observed, checked, and failed results distinct. Creates nothing for research that needs no code.
 ---
 
 # Research code setup and runs
@@ -36,15 +36,16 @@ Outcome: when the research needs computation, a proportionate `code/` folder wit
    ```
 
    It records the command, a checksum of the code (by default `code/src`), the Git commit when there is one, the interpreter, the inputs and outputs with their checksums, the logs, and the exit status in `code/runs/<run-id>/`, and prints the input and output lines for the result record.
-10. Investigate routine failures yourself: errors, missing packages, data problems. Ask the researcher only for what you cannot resolve, and say exactly what is needed.
-11. Stay inside the confirmed method and scope. Changing the method, the data scope, or a parameter that affects the conclusions, or excluding an analysis, is a major decision.
+10. A chart of results is an output of a recorded run: choose its form with the [figure guide](figure-guide.md), keep the plotting code in `code/src`, and list the figure as an output of the run.
+11. Investigate routine failures yourself: errors, missing packages, data problems. Ask the researcher only for what you cannot resolve, and say exactly what is needed.
+12. Stay inside the confirmed method and scope. Changing the method, the data scope, or a parameter that affects the conclusions, or excluding an analysis, is a major decision.
 
 ## Step 4: Check and record the results
 
-12. Check each result with methods that suit the work: run it again and compare, compare with a reference result or a known case, test sensitivity to parameters or seeds, look for counterexamples, or compare with the sources. Your own judgment of plausibility, or agreement between two models, is not a check. Record failed checks too.
-13. Write `research/results/<result-id>.md` with the layout in `research/results/README.md`, and add it to `research/results/index.md`. Copy the input, output, and run lines that the recorder printed. Use the status that matches what was done: observed before checks, checked only after the listed checks. The researcher's review is a separate line.
-14. Never invent data, numbers, or results, and never select favorable runs silently: report every run that bears on a conclusion, including failed and negative ones.
-15. Run `python scripts/research.py check`. A result reported as stale (its inputs or outputs changed) supports no claim until it is run and checked again.
+13. Check each result with methods that suit the work: run it again and compare, compare with a reference result or a known case, test sensitivity to parameters or seeds, look for counterexamples, or compare with the sources. Your own judgment of plausibility, or agreement between two models, is not a check. Record failed checks too.
+14. Write `research/results/<result-id>.md` with the layout in `research/results/README.md`, and add it to `research/results/index.md`. Copy the input, output, and run lines that the recorder printed. Use the status that matches what was done: observed before checks, checked only after the listed checks. The researcher's review is a separate line.
+15. Never invent data, numbers, or results, and never select favorable runs silently: report every run that bears on a conclusion, including failed and negative ones.
+16. Run `python scripts/research.py check`. A result reported as stale (its inputs or outputs changed) supports no claim until it is run and checked again.
 
 ## Completion check
 
