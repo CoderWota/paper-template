@@ -33,5 +33,5 @@ Write the report in the interaction language, with these parts:
 - Go straight to the judgment. Skip courtesy and praise that carries no information.
 - Criticize the claim, not the author. Every point names its location and its evidence.
 - Separate a critical problem from a minor one. Do not list a style preference as a weakness unless it hurts understanding.
-- Give no score, rating, or chance of acceptance. If the researcher asks for one, say that the workspace does not give one, and why: a number would suggest a precision that the evidence does not support.
+- Give no score, rating, or chance of acceptance in this report. When the researcher asks for scores, use `mock-review`, which scores on the venue's own form and gives no chance of acceptance either.
 - Save the report to `outputs/checks/<date>-review-<scope>.md`, and record it with `python scripts/manuscript.py record-check --name "Reviewer's view of <scope>" --kind audit --input <each reviewed section> --input references/bibliography.bib --result findings --summary "..." --report outputs/checks/<file>.md`.

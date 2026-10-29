@@ -95,6 +95,7 @@ Counts: 16 converted, 1 merged into a translation procedure, and 1 partly carrie
 - **LaTeX and Word output rules are replaced.** The workspace manuscript is Markdown with its own citation and label syntax, and the export step builds the Word file. The LaTeX escapes and the plain-text Word output do not apply.
 - **No rating.** The reviewer's view gives no score, rating, or chance of acceptance, as the design plan requires for every readiness assessment.
 - **Model recommendations and the image-tool prompt are left out.** Model advice is model-specific and goes out of date. The workspace is model-neutral. The image prompt is written for one external tool; its content survives as the figure brief.
+- **Later change (2026-10-30).** At the maintainer's instruction, scored reviews and model recommendations became two separate skills, `mock-review` and `model-selection`. The procedures reviewed here still give no score; the reviewer's view now hands a request for scores to `mock-review`, which never gives a chance of acceptance, and model advice is read from each application's current official pages instead of being written into the procedures. See the [mock review and model selection review](mock-review-and-model-selection-review.md).
 
 ## 6. Verdict and limits
 

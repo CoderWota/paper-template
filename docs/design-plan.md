@@ -465,6 +465,7 @@ The names and precise boundaries below are proposed. Each skill describes decisi
 | `project-onboarding` | Establish the research goal, language, immediate needs, and initial workspace. | Minimal usable project settings and a clear next action. |
 | `privacy-configuration` | Identify the product/account/service, assist with supported training opt-outs, and verify or qualify the result. | Scoped settings status, official sources, and explicit unresolved items. |
 | `environment-management` | Manage tools, environments, and guided project-local credential setup and recovery. | Usable configuration without requiring programming knowledge or exposing secrets. |
+| `model-selection` | Identify the researcher's AI application, plan, and provider route, and recommend offered models for the project's kinds of work from current official sources. | A dated recommendation for each kind of work, with trade-offs and switching steps; no setting changed without consent. |
 | `constraint-maintenance` | Persist only verified, researcher-confirmed requirements; reconcile scope and changes. | Concise, consistent writing requirements without inferred preferences. |
 
 ### Independent research and manuscript tasks
@@ -491,6 +492,7 @@ The names and precise boundaries below are proposed. Each skill describes decisi
 | `manuscript-revision` | Coordinate a substantial change of argument, structure, evidence, or target using the existing research, writing, audit, and assembly tasks. | A recoverable revision with baseline, scoped plan, content mapping, updated checks, and a clear active draft or remaining gaps. |
 | `submission-assembly` | Interpret adopted requirements/templates, implement their layout, assemble the selected format, and inspect the rendered result. | Formatted files, a readable compliance summary, and a reproducible build record. |
 | `submission-readiness` | Assess a current manuscript and package against the selected venue, reusing current audit/formatting results. | Evidence-based strengths, likely reviewer concerns, and remaining submission tasks, without an invented acceptance probability. |
+| `mock-review` | Score the current manuscript on the target venue's review form through several independent reviewer perspectives and a meta-review, grounded in the project's evidence. | Scores with their anchors, evidence, spread across reviewers, and the actions that would raise them; never a probability of acceptance or a forecast of the decision. |
 | `review-response` | Organize a review round and connect each response to actual changes or a justified explanation. | A traceable point-by-point response. |
 | `research-code-setup` | Elicit analysis/experiment needs before choosing code structure and management. | A proportionate, reproducible code workspace only when relevant. |
 
@@ -513,6 +515,7 @@ The names and precise boundaries below are proposed. Each skill describes decisi
 - Ideation proposes directions; deepening tests a selected direction; impact assessment examines value; journal selection examines venue fit; readiness checks a particular manuscript/package. None substitutes for another's outcome.
 - Research planning specifies what work is needed; investigation advances an actual inquiry. Outlining structures an argument; writing develops it; audit evaluates it; assembly applies layout. Readiness can reuse valid recent results and identify gaps without silently rewriting the manuscript.
 - Natural-prose revision changes wording patterns only, never the content, and works on any text the researcher gives, including response letters. The audit's style check reports the same patterns without editing; writing avoids them while drafting.
+- Readiness and the audit's reviewer's view discuss prospects through strengths, risks, and improvements. A mock review adds scores on the venue's own form; they are a simulation tied to evidence, never a probability, a percentile, or a forecast of the decision. Model selection advises on the AI application's models and changes no research decision.
 - Major revision coordinates these tasks around an existing manuscript and a changed goal. It is independent of a journal review round; `review-response` can invoke it for agreed changes and link its results. Routine prose edits still use `manuscript-writing` directly. Do not duplicate specialist procedures in the revision coordinator.
 - Git inspection is read-only; setup establishes the mechanism; saving creates a local checkpoint; comparison explains differences; recovery retrieves/restores selected content; backup concerns an external copy. Each can be requested directly.
 

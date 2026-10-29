@@ -27,7 +27,7 @@ Outcome: an assessment of the current manuscript and package against the selecte
    - **Strengths**, each with its evidence (a checked result, an inspected source, a passed check).
    - **Likely reviewer concerns**, each tied to the venue's scope or policy, an audit finding, or a known limitation of the evidence, and labeled as `manuscript-audit` labels the weaknesses in a reviewer's view: presentation or substance, and fixable within a revision or structural.
    - **Remaining tasks**, prioritized as blocking, important, or minor, each with its owner (agent, researcher, coauthor, or another person) and the skill or step that addresses it.
-10. Discuss prospects only through these strengths, risks, and improvements. Never state a probability of acceptance or treat a venue's acceptance rate as this paper's chance; never promise an outcome.
+10. Discuss prospects only through these strengths, risks, and improvements. Never state a probability of acceptance or treat a venue's acceptance rate as this paper's chance; never promise an outcome. A scored mock review on the venue's form is `mock-review`; its scores are not a probability either.
 11. Write the report to `outputs/checks/<date>-readiness-<venue-id>.md` and record it with `python scripts/manuscript.py record-check --kind readiness --input <the manuscript files, the build record, and the venue note> --result passed|findings|failed --summary "..." --report <report>`.
 12. Preparing a package is not submitting it. Contacting the venue, uploading files, or filling a submission form is the researcher's own action; do it only on their explicit instruction for that destination, and never as part of this skill.
 

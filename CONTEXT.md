@@ -57,6 +57,10 @@ _Avoid_: AI trace, when it implies a judgment of authorship.
 An optional set of writing choices, such as tense, punctuation, or caption case, that applies to one scope of the manuscript only after the researcher chooses it. A venue requirement overrides it.
 _Avoid_: Default style, when it suggests the choice was made for the researcher.
 
+**Mock review**:
+A simulated peer review of the researcher's own manuscript, scored on a venue's review form by several reviewer perspectives. Its scores are judgments tied to evidence in the workspace, not a forecast of the decision or a probability of acceptance.
+_Avoid_: Predicted score, when it suggests a forecast of real reviews.
+
 **Research decision record**:
 A concise account of a consequential researcher-confirmed choice, its scope, rationale, and implications; it is distinct from evidence that the choice is scientifically valid.
 

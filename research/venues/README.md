@@ -23,6 +23,7 @@ The values are in your interaction language; the `Checked` and `Sources` labels 
 - AI policy: <what the venue permits or requires, with its address>
 - Costs and access: ...
 - Review and timeline: <only what the venue states officially>
+- Review form: <read on YYYY-MM-DD from the reviewer guidelines listed under Sources: each written field, and each scale with every anchor in the venue's wording; only when the venue publishes one>
 - Publications inspected: <recent relevant articles, or none>
 - Fit: <reasons tied to the paper and the sources>
 - Conditions: <what would have to change, and open questions>
