@@ -16,11 +16,11 @@ Updated: 2026-10-29.
 | 6 | Template-driven layout and readiness | Accepted by review on 2026-10-29: both skills passed written review ([skill review](acceptance/mvp-6-skill-review.md)); the Word route was built, rendered by Word, and inspected with a neutral and a synthetic journal profile on macOS. A real journal template, other PDF routes, Windows, and Codex are unverified |
 | 7 | Practical Git control and explicit backup | Accepted by review on 2026-10-28: seven skills passed written review ([skill review](acceptance/mvp-7-skill-review.md)); `scripts/versions.py` passes 13 tests in disposable repositories. No hosting service, Windows, or Codex was exercised |
 | 8 | Review rounds and coauthor reconciliation | Accepted by review on 2026-10-29 ([skill review](acceptance/mvp-8-skill-review.md)); `scripts/review.py` passes 5 tests with synthetic material. No real round or coauthor file was used |
-| 9 | Connected paper hands-on and release candidate | Planned |
+| 9 | Connected paper hands-on and release candidate | `paper-hands-on` accepted by review on 2026-10-29 ([skill review](acceptance/mvp-9-skill-review.md)); a scripted complete-path pass over the deterministic layer passes. The guided path with a researcher in fresh sessions, Codex, and Windows are not run, so MVP 9 is not verified |
 
 Execution order (revised 2026-10-26): 1 → 7 → 2 → 3 → 4 → 5 → 6 → 8 → 9, with the export trial running alongside MVP 7; see the [MVP implementation guideline](mvp-implementation-guideline.md#3-mvp-overview-and-dependencies). The export trial ran on 2026-10-28 ([record](export-trial.md)).
 
-The four MVP 1 skills are implemented and were accepted by review on 2026-10-28, after thirteen live runs on Claude Code. The two MVP 2 skills are implemented and were accepted by review the same day. Acceptance by review shows that the skill text meets the documented requirements; no skill is verified on Windows or in Codex. No end-to-end test has been run.
+All 33 skills of the catalog are implemented: the MVP 1 to MVP 4 and MVP 7 skills were accepted by review on 2026-10-28, and the MVP 5, 6, 8, and 9 skills on 2026-10-29. Acceptance by review shows that the skill text meets the documented requirements; no skill is verified on Windows or in Codex. A scripted pass over the complete path's deterministic layer passes; the complete path has not been run with a researcher in fresh sessions.
 
 ## MVP 1, partial increment: workspace scaffold
 
@@ -704,6 +704,14 @@ Status: `review-response` accepted by review on 2026-10-29 ([skill review](accep
 - 5 tests with synthetic records and Word files.
 
 Not verified: real rounds and complex coauthor edits (moved paragraphs, tables, equations, fields), which the paragraph-based comparison reports for a manual check; Codex; Windows.
+
+## MVP 9: connected paper hands-on
+
+Status: `paper-hands-on` accepted by review on 2026-10-29 ([skill review](acceptance/mvp-9-skill-review.md)); MVP 9 as a whole is not verified, because the complete path has not been run with a researcher in fresh sessions of either agent.
+
+- Skill `paper-hands-on` with its generated copy, coordinating the standalone skills without repeating their procedures.
+- `scripts/status.py`: a read-only summary of the project's records and the gaps that suggest a next task, for recognizing the stage of a project in a fresh session; 2 tests.
+- `scripts/tests/test_complete_path.py`: a scripted integration pass over the deterministic layer with synthetic, labeled material: a source imported and cited, an idea, a plan, a target decision, a venue note, a recorded run with a checked result, a manuscript that cites the source and reports the result, an audit record, a build and a release (where Pandoc is installed), a review round answered with a recorded change (which makes the audit stale), a major revision applied from a candidate, a saved version, and the status summary. It passes; it does not test the agent's judgment or a researcher's decisions.
 
 ## MVP 7: practical Git control and explicit backup
 

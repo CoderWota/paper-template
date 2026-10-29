@@ -2,9 +2,9 @@
 
 An organized workspace for developing research ideas, reading literature, writing a manuscript, and preparing submission files with an AI agent.
 
-**Project status: early implementation.** The workspace folders, their descriptions, and the agent operating contract (`AGENTS.md`) exist. The setup skills (project onboarding, environment checks, privacy checks, and confirmed rules), document import with MinerU (references and review documents), literature search and evidence work, research development (ideas, impact, journal comparison, research plans, collaborator feedback, and research code with recorded results), and version control with Git (saving, comparing, recovering, backing up, and a guided practice) are implemented and passed a documented review. They are not yet tested on Windows or in Codex. Document import was tested on macOS with synthetic files, both on this computer and with the live mineru.net service. The other workflows below describe the intended experience. Follow the [design plan](docs/design-plan.md) to review the current proposal, and see the [implementation status](docs/implementation-status.md) for what actually works.
+**Project status: implemented, not yet verified on Windows or in Codex.** Every workflow below is implemented as a skill and passed a documented review: setup (onboarding, environment and privacy checks, confirmed rules), document import with MinerU, literature search and evidence work, research development (ideas, impact, journal comparison, plans, collaborator feedback, and research code with recorded results), manuscript work (adopting an existing draft, outlining, drafting, auditing, and major revision), formatting as a Word file with checked native equations and frozen release packages, readiness assessment, review responses with coauthor reconciliation, version control with Git, and the two guided paths. A review shows that the instructions meet the documented requirements; it does not show how a particular AI model follows them. The scripts were tested on macOS with synthetic files, including live document import, Word output rendered by Microsoft Word, and a scripted pass over the complete path; the guided path has not yet been run with a researcher. The [implementation status](docs/implementation-status.md) lists exactly what was observed and what remains unverified; the [design plan](docs/design-plan.md) explains the design.
 
-For framework development, the [MVP implementation guideline](docs/mvp-implementation-guideline.md) organizes the work into nine planned increments with concrete deliverables and acceptance criteria.
+For framework development, the [MVP implementation guideline](docs/mvp-implementation-guideline.md) organizes the work into nine increments with concrete deliverables and acceptance criteria.
 
 The [workflow review and public knowledge transfer](docs/research-workflow-review.md) examines what is still needed to carry the researcher's ideas through actual results to a complete submission package. A bounded complete-path case is confirmed as a framework test only. It does not limit supported research or establish real publication readiness; detailed implementation proposals remain open.
 
@@ -14,13 +14,13 @@ Research work spans ideas, source documents, evidence notes, writing requirement
 
 The agent selects appropriate skills and handles routine technical work. It can help explore ideas, examine assumptions, retrieve and compare sources, draft with evidence, and assemble outputs. The researcher directs scholarly decisions and chooses what to retain.
 
-Your main contribution is the research idea, domain knowledge, scholarly judgment, and final author review. Within the scope you confirm, the agent should carry the routine production work and connect the stages itself. You should not need to shuttle text between tools, maintain progress records, or issue a separate instruction for every file and skill. These are design requirements; the workflow is not implemented yet.
+Your main contribution is the research idea, domain knowledge, scholarly judgment, and final author review. Within the scope you confirm, the agent should carry the routine production work and connect the stages itself. You should not need to shuttle text between tools, maintain progress records, or issue a separate instruction for every file and skill. The skills are written to work this way; a full guided run with a researcher has not been recorded yet.
 
 The intended researcher has ordinary computer skills and no coding or software-engineering background. Git operations, BibTeX records, YAML/JSON settings, and scripts are maintained through the agent. Describe the change you want and review the outcome; you do not need to edit those technical files. You can still write manuscript prose and ideas directly.
 
 The framework does not prescribe a discipline, article structure, or writing language. It targets ordinary Windows laptops, with macOS and Linux support to be verified progressively. Heavy local inference is optional.
 
-Markdown formulas use GitHub-renderable LaTeX, and agent-created explanation diagrams use Mermaid. Word exports must contain correct, native editable equations. The agent maintains the syntax and checks both previews and final outputs; scientific result plots retain suitable plotting formats. These are confirmed design requirements awaiting implementation.
+Markdown formulas use GitHub-renderable LaTeX, and agent-created explanation diagrams use Mermaid. Word exports must contain correct, native editable equations. The agent maintains the syntax and checks both previews and final outputs; scientific result plots retain suitable plotting formats. The workspace checks these conventions, and the Word export verifies each equation against its source.
 
 ## Getting started: intended workflow
 
@@ -54,15 +54,15 @@ The agent should report what completed, link the results, and explain anything n
 
 Put mixed material in the intake area, `inbox/`, or simply point the agent to its existing location. You do not need to sort it first. Downloading, conversion, manuscript adoption, and comment extraction can be requested separately or together. Unavailable full text and conversion gaps remain visible; received advice becomes a lasting requirement only when you adopt it.
 
-Major revision is also a proposed independent task, before submission or after feedback. The agent would preserve the starting version, explain affected work, coordinate revision, and recheck changed claims and related passages. You do not need to operate Git, and a small edit does not require a revision project. A changed manuscript needs current checks; an earlier successful export is not proof that the revision is ready.
+Major revision is also an independent task, before submission or after feedback. The agent preserves the starting version, explains affected work, coordinates the revision, and rechecks changed claims and related passages. You do not need to operate Git, and a small edit does not require a revision project. A changed manuscript needs current checks; an earlier successful export is not proof that the revision is ready.
 
 ## Two guided hands-on paths
 
-The planned **paper hands-on** coordinates literature collection, idea exploration, impact assessment, journal fit and readiness, necessary research, drafting, and format checks. Start from your current situation and resume across sessions. The planned **Git hands-on** uses practical examples to help you preserve versions, compare changes, and retrieve earlier material while the agent handles the commands.
+The **paper hands-on** coordinates literature collection, idea exploration, impact assessment, journal fit and readiness, necessary research, drafting, and format checks. Start from your current situation and resume across sessions. The **Git hands-on** uses practical examples to help you preserve versions, compare changes, and retrieve earlier material while the agent handles the commands.
 
 Each task is also independently available: ask only to assess an idea's impact, compare journals, check submission readiness, or compare two versions. The agent chooses the matching skill and reuses your current material; you do not need to complete a course or memorize skill names.
 
-See the [hands-on guide](docs/hands-on.md). These are design previews, not implemented skills. Journal prospects are discussed through evidence-based strengths and risks, with no promise of acceptance.
+See the [hands-on guide](docs/hands-on.md). Both guides are implemented as skills; no complete guided run with a researcher has been recorded yet. Journal prospects are discussed through evidence-based strengths and risks, with no promise of acceptance.
 
 ## Where your work belongs
 
@@ -75,7 +75,7 @@ See the [hands-on guide](docs/hands-on.md). These are design previews, not imple
 | Ideas | [`ideas/`](ideas/README.md) | Research directions and thoughts you choose to keep, including unfinished ones. |
 | Research records | [`research/`](research/README.md) | The research plan, important confirmed choices and their rationale, attributed feedback from co-researchers, collaborators, coauthors, supervisors, or other contributors and its follow-up, journal assessments, and the project's own results with their provenance. |
 | Reviews | [`reviews/`](reviews/README.md) | Editorial and reviewer correspondence, responses, and changes by submission round. |
-| Major revisions, proposed | [`revisions/`](revisions/README.md) | Recoverable starting versions or references, revision plans, changes, and current checks for substantial rewrites. |
+| Major revisions | [`revisions/`](revisions/README.md) | Recoverable starting versions or references, revision plans, changes, and current checks for substantial rewrites. |
 | Outputs | [`outputs/`](outputs/README.md) | Previews and preserved submission packages. |
 | Project state | [`state/`](state/README.md) | A short note of work in progress and the next step, kept by the agent between sessions. |
 | Scripts and optional research code | [`scripts/`](scripts/README.md), `code/` | Reusable automation and research implementation, managed with the agent. `code/` is created only when the research needs it. |

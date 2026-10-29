@@ -22,11 +22,11 @@ Its primary-source legwork is retained in [OpenAI scientific case notes](openai-
 
 The root [README](../README.md) explains the design philosophy and intended everyday experience for researchers. Keep technical specifications here rather than making them prerequisites for ordinary use.
 
-[Hands-on design](hands-on.md) organizes the planned paper and Git guided-practice skills. Technical project files and operations are maintained through the agent; researchers direct the work in ordinary language.
+[Hands-on design](hands-on.md) organizes the paper and Git guided-practice skills. Technical project files and operations are maintained through the agent; researchers direct the work in ordinary language.
 
 [Export trial](export-trial.md) records the 2026-10-28 trial of Pandoc with pandoc-crossref: native Word equations, citations, cross-references, a reference document, Mermaid rendering, and GitHub's rendering of the label syntax, with the decisions that followed.
 
-[MVP implementation guideline](mvp-implementation-guideline.md) divides the design into nine usable increments. It specifies dependencies, implementation deliverables, acceptance evidence, deferred scope, and the first implementation stage for all 33 proposed skills. All milestones remain planned until actual implementation and verification.
+[MVP implementation guideline](mvp-implementation-guideline.md) divides the design into nine usable increments. It specifies dependencies, implementation deliverables, acceptance evidence, deferred scope, and the first implementation stage for all 33 proposed skills. The [implementation status](implementation-status.md) records which increments are implemented, accepted by review, or verified, with the evidence observed.
 
 Design plan v0.9 includes flexible intake, existing-manuscript adoption, batch reference acquisition and ingestion, and review extraction. It defines research decision and research feedback records, whose locations were confirmed on 2026-10-26, plus a major-revision coordinator with recoverable baselines, old-to-new mappings, and checks tied to changed inputs. Research feedback includes co-researchers, collaborators, coauthors, supervisors, and other contributors, with each source retained. The record formats and the revision layout remain open for discussion. Framework architecture records, if needed later, are separate from decisions in a researcher's manuscript project.
 

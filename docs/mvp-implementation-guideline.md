@@ -1,6 +1,6 @@
 # MVP Implementation Guideline
 
-Status: proposed implementation roadmap v0.4 (execution order revised 2026-10-26). No MVP is verified yet. MVP 1 is implemented, and its four skills were accepted by review on 2026-10-28; MVP 2 was implemented on 2026-10-28, ahead of MVP 7 at the maintainer's request, and its two skills were accepted by review the same day. MVP 3 was accepted by the maintainer, and the MVP 4 skills were accepted by review, on 2026-10-28. Since 2026-10-28, a skill passes acceptance by a written review against its requirements (section 6), not by live agent runs.
+Status: proposed implementation roadmap v0.4 (execution order revised 2026-10-26). No MVP is verified yet; all nine are implemented, and every skill of the catalog passed written review by 2026-10-29. MVP 1 is implemented, and its four skills were accepted by review on 2026-10-28; MVP 2 was implemented on 2026-10-28, ahead of MVP 7 at the maintainer's request, and its two skills were accepted by review the same day. MVP 3 was accepted by the maintainer, and the MVP 4 skills were accepted by review, on 2026-10-28. Since 2026-10-28, a skill passes acceptance by a written review against its requirements (section 6), not by live agent runs.
 Updated: 2026-10-29.
 
 This is the agent-facing implementation guide for the [design plan v0.9](design-plan.md) and [hands-on design](hands-on.md). Researchers are not expected to edit this technical document.
@@ -52,7 +52,7 @@ Do not stop unrelated drafting because an optional provider, journal, architectu
 | 6 | Produce a manuscript/package checked against the selected journal's actual format requirements, and assess readiness. | MVP 5 conventions or an existing manuscript; source/citation integrity from MVP 3; the engine chosen in the export trial; a target from `journal-selection` (MVP 4) or the researcher. | Accepted by review on 2026-10-29; the Word route is observed on macOS with a synthetic journal profile |
 | 7 | Preserve, compare, recover, and explicitly back up versions through the agent. | MVP 1 only. Planned immediately after MVP 1; implemented after MVP 4 on 2026-10-28. | Accepted by review on 2026-10-28; no hosting service, Windows, or Codex verified |
 | 8 | Process review rounds and reconcile coauthor edits without losing the canonical manuscript. | MVP 5; MVP 2 for converted correspondence, MVP 6 for re-export, MVP 7 when version history is used. | Accepted by review on 2026-10-29; tested with synthetic material |
-| 9 | Follow or resume the complete paper hands-on using the same independent skills. | MVPs 1–6; MVP 7 for demonstrated Git handoff and MVP 8 for the revision extension. | Planned |
+| 9 | Follow or resume the complete paper hands-on using the same independent skills. | MVPs 1–6; MVP 7 for demonstrated Git handoff and MVP 8 for the revision extension. | Skill accepted by review on 2026-10-29; scripted complete-path pass done; guided run in fresh sessions not done |
 
 Recommended main sequence (revised 2026-10-26): 1 → 7 → 2 → 3 → 4 → 5 → 6 → 8 → 9, with the export trial running alongside MVP 7. The export trial ran on 2026-10-28, after MVP 4; see its [record](export-trial.md). These are development dependencies, not a requirement that every researcher complete all previous activities.
 

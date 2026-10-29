@@ -48,7 +48,7 @@ The only list of what works. `python scripts/check_capabilities.py` checks it ag
 | Inspect, set up, save, compare, and recover versions with Git; practice on a separate copy | `git-inspection`, `git-setup`, `git-save`, `git-compare`, `git-recovery`, `git-hands-on`, `scripts/versions.py` | Available now; tested with disposable repositories on macOS |
 | Back up saved versions to a destination the researcher confirmed | `git-backup` | Available now; the push and its check are tested only with a destination on this computer, and no hosting service is verified |
 | Respond to reviews point by point; reconcile a coauthor's Word edits with the manuscript | `review-response`, `scripts/review.py` | Available now; tested with synthetic records and Word files |
-| Guide the whole paper and resume it from the project's records | — | Not available yet |
+| Guide the whole paper and resume it from the project's records | `paper-hands-on`, `scripts/status.py` | Available now; no complete guided path has been run with a researcher |
 
 ## Decisions and questions
 

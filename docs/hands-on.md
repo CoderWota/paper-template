@@ -1,6 +1,6 @@
 # Agent-Led Research and Versioning Hands-On
 
-Status: design preview aligned with design plan v0.9. The availability table in [`AGENTS.md`](../AGENTS.md) lists which of these tasks are implemented; the guided paths themselves (`paper-hands-on` and `git-hands-on`) are not implemented yet.
+Status: implemented. Every task below and both guided paths (`paper-hands-on` and `git-hands-on`) exist as skills and passed written review by 2026-10-29; the availability table in [`AGENTS.md`](../AGENTS.md) states the verified limits of each. No complete guided run with a researcher has been recorded yet.
 
 This guide organizes the intended learning experience for researchers with ordinary computer literacy and no assumed coding or software-engineering knowledge. The [design plan](design-plan.md) defines the wider framework.
 
@@ -14,7 +14,7 @@ Your role is to direct the research, understand and assess the evidence and argu
 
 The guide is optional support for completing the work, not a compulsory training course. The agent carries routine production and handoffs within the approved scope; you need not operate each stage, copy intermediate results, or maintain the work plan. It should request your ideas, domain judgments, genuinely unavailable material/access, and major choices, then return concrete outputs for review.
 
-The agent must obtain your explicit confirmation before committing a major decision. It first prepares a concrete recommendation and explains the main effect, then asks one substantive question. Clear instructions you already gave apply within their scope; silence or a default option is not agreement. This also governs grilling and idea deepening. English questions use ASD-STE100; other languages retain natural expression and the same clarity principles, without claiming English-standard compliance. See the planned [interaction specification](agent-interaction.md).
+The agent must obtain your explicit confirmation before committing a major decision. It first prepares a concrete recommendation and explains the main effect, then asks one substantive question. Clear instructions you already gave apply within their scope; silence or a default option is not agreement. This also governs grilling and idea deepening. English questions use ASD-STE100; other languages retain natural expression and the same clarity principles, without claiming English-standard compliance. See the [interaction specification](agent-interaction.md).
 
 ## Use one task or follow a guided path
 
@@ -26,7 +26,7 @@ Every task below is an independently usable skill. Ask for just a literature sea
 
 Suggested entry request: “I have an area of interest but no organized project or paper yet. Guide me from collecting literature to developing and writing a paper for a suitable journal.”
 
-The planned `paper-hands-on` skill coordinates the following independently usable tasks. It does not duplicate their instructions or require you to repeat work you already have.
+The `paper-hands-on` skill coordinates the following independently usable tasks. It does not duplicate their instructions or require you to repeat work you already have.
 
 | Task | Independent skill | What the researcher and agent do | Visible outcome |
 | --- | --- | --- | --- |
@@ -49,7 +49,7 @@ Research planning and investigation are separate requests within task 9: a plan 
 
 ### Start with existing material or a specific import
 
-Use the planned `inbox/` area or point to the material where it already lives. The agent routes mixed files by the task and their content, without requiring presorting or restarting the paper path.
+Use the `inbox/` area or point to the material where it already lives. The agent routes mixed files by the task and their content, without requiring presorting or restarting the paper path.
 
 | Starting point | Independent skills | Visible outcome |
 | --- | --- | --- |
@@ -66,7 +66,7 @@ Revisit earlier stages when findings change the idea or target. Researchers who 
 
 Suggested request: “The central argument needs to change. Preserve the current version, help me reorganize the paper, and check the revised manuscript.”
 
-The proposed independent `manuscript-revision` skill coordinates existing research, outline, writing, audit, and assembly tasks. Start before submission, after research feedback, or during a review round. The agent identifies the actual starting version and scope, maps retained/moved/rewritten/removed material, works in recoverable steps, and resumes across sessions. It handles version mechanics; Git knowledge or installation is not a prerequisite.
+The independent `manuscript-revision` skill coordinates existing research, outline, writing, audit, and assembly tasks. Start before submission, after research feedback, or during a review round. The agent identifies the actual starting version and scope, maps retained/moved/rewritten/removed material, works in recoverable steps, and resumes across sessions. It handles version mechanics; Git knowledge or installation is not a prerequisite.
 
 Changed evidence or claims trigger renewed checks of their support and related passages, including summaries and conclusions. The agent preserves current author edits and earlier submission packages, keeps one active manuscript distinct from candidate drafts, and explains important differences and remaining work. Research still requiring evidence remains incomplete. Routine edits go directly to the writing skill without this extra record; formal responses can link to a major revision without duplicating its workflow.
 
@@ -82,7 +82,7 @@ The workflow can expose missing evidence, suggest how to obtain it, and support 
 
 Suggested entry request: “I do not know Git. Help me save versions of this paper, see what changed, and practice recovering an earlier version.”
 
-The planned `git-hands-on` skill teaches through the independent tasks below. The agent operates Git; you decide which work to preserve and understand the visible result. Reuse an existing history when appropriate rather than resetting it. A direct request to compare or save a version does not require a full Git lesson.
+The `git-hands-on` skill teaches through the independent tasks below. The agent operates Git; you decide which work to preserve and understand the visible result. Reuse an existing history when appropriate rather than resetting it. A direct request to compare or save a version does not require a full Git lesson.
 
 | Task | Independent skill | What happens | What the researcher learns |
 | --- | --- | --- | --- |
