@@ -35,7 +35,7 @@ python scripts/literature.py search-local --query "..." [--source-id src-...]
 
 ## Screen and report
 
-- Deduplicate exact source files by source ID/checksum. Keep preprints, accepted manuscripts, and published versions separate, with a relationship only when checked.
+- Deduplicate exact source files by source ID/checksum. If a result is an arXiv preprint, check whether a peer-reviewed published version exists before using it as a citation source. Prefer that version when its identity and support for the cited claim are verified. Keep preprints, accepted manuscripts, and published versions separate, and link versions only after checking their identity. If no published version is found in the checked sources, an arXiv preprint may be cited under `requirements/writing.md`; identify it in the bibliography entry or source record, never in manuscript body text. Do not claim that no version exists beyond the search scope.
 - For each lead, distinguish search snippet, abstract, metadata, extracted full text, and the original inspected. Report unknown, conflicting, or missing metadata without filling it from memory.
 - State the search dates, providers, main query concepts, known limits, screening scope, duplicates/versions, and which full texts could not be obtained. Do not claim coverage is complete, that no prior work exists, or that an idea is unprecedented.
 - Use `references/searches/<search-id>/README.md` as the durable search record. The host-search input must include its exact query and a non-empty `coverage_note` naming the gap or cross-check; the script rejects either omission and timestamps the provider route. Keep interpretation in per-source notes under `references/notes/`; do not paste whole private chats into persistent notes.
