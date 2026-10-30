@@ -1,6 +1,6 @@
 ---
 name: research-investigation
-description: Use when the researcher asks for a source-grounded investigation of a research question, mechanism, comparison, or contested claim, or for documentary, interpretive, or theoretical research work whose finding the paper will report. Searches and reads relevant sources, tests alternative explanations, reports supported conclusions, disagreements, and gaps without turning a literature search into a claim of novelty, and records a project result with its inputs and checks when the work produces one.
+description: Investigate a research question or contested claim from sources, examine alternatives, and record supported results and gaps.
 ---
 
 # Research investigation

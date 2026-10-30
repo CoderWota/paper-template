@@ -1,6 +1,6 @@
 ---
 name: git-compare
-description: Use when the researcher asks what changed, wants to compare the current text with an earlier version or two saved versions, or wants to see the differences before saving, recovering, or choosing a draft. Identifies the versions from dates, messages, or descriptions, summarizes the differences by area, shows the changed words for prose, and explains the research-relevant differences such as claims, sections, citations, and figures, without changing anything.
+description: Compare drafts or saved versions and explain changes in wording, claims, citations, and figures without editing.
 ---
 
 # Git compare

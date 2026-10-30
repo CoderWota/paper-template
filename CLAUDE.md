@@ -1,5 +1,5 @@
-# CLAUDE.md
-
-Claude Code entry point. The shared operating contract for every agent is in AGENTS.md, imported below; edit that file, not this one.
+# Claude Code
 
 @AGENTS.md
+
+The import above is the shared contract. Read task records and skill references only when needed; do not add startup imports of the library, requirements, or skill catalog.

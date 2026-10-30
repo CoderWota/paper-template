@@ -1,6 +1,6 @@
 ---
 name: constraint-maintenance
-description: Record, update, and reconcile the researcher's confirmed requirements so that every later session follows the same rules. Turns an explicit instruction into a scoped rule in requirements/, tells lasting rules apart from one-time edit requests, resolves conflicts with the researcher, replaces outdated rules instead of keeping contradictions, and never saves an inferred preference anywhere. Use when the researcher states or changes a writing rule, terminology, language, the research question or goal, or other lasting requirement, asks which rules apply, or makes a request that conflicts with a saved rule.
+description: Record or replace confirmed project and writing rules; resolve conflicts and distinguish lasting requirements from one-time edits.
 ---
 
 # Constraint maintenance
@@ -76,7 +76,7 @@ When there are several terms, keep terminology in a table with the preferred ter
 
 ## Step 6: Check what the change affects
 
-A confirmed change authorizes the change and its records. It does not authorize edits to manuscript text. Search `manuscript/` for passages that the change affects, such as an introduction that states the old research goal. List them in your report and ask one question about what to do with them. Offer only actions that the table under "Available now" in `AGENTS.md` lists. If revising manuscript text is not listed, say that it is not available yet, and offer exactly two choices: keep each passage as an open item, or the researcher revises it themselves. Recommend one choice. When revising is available, edit manuscript text only after the answer.
+A confirmed change authorizes the change and its records. It does not authorize edits to manuscript text. Search `manuscript/` for passages that the change affects, such as an introduction that states the old research goal. List them in your report and ask one question about what to do with them. Edit those passages only when the researcher authorizes that scope; reuse an explicit instruction that already covers it. If support for an action is uncertain, consult [capabilities and limits](../../../docs/capabilities.md) before offering it.
 
 ## Step 7: Report
 

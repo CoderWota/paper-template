@@ -1,6 +1,6 @@
 ---
 name: submission-readiness
-description: Use when the researcher asks whether the paper is ready to submit, what remains before submission, how reviewers might react, or what the chances are at a venue. Assesses the current manuscript and package against the selected venue in separate parts (scientific support, venue policies, document and format, package completeness, and facts only the authors can give), reusing only checks whose inputs have not changed, and reports evidence-based strengths, likely reviewer concerns, and remaining tasks without any acceptance probability and without submitting anything.
+description: Assess manuscript and package readiness for a venue, with supported strengths, concerns, and remaining work; no acceptance odds.
 ---
 
 # Submission readiness

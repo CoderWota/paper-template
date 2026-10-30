@@ -1,6 +1,6 @@
 ---
 name: research-feedback
-description: Use when the researcher shares advice from co-researchers, collaborators, coauthors, supervisors, or other contributors (documents with comments, a collaborator's outline, meeting notes, or what someone said) or asks what to do with such advice. Archives and extracts the material in research/feedback/, lists each suggestion with its author and kind, compares it with evidence and current requirements, surfaces conflicts for the researcher to resolve, and records adoption, decisions, and actual changes without turning advice into rules. Formal editor and reviewer letters go to review-ingestion.
+description: Organize attributed advice from collaborators or supervisors and track decisions; formal peer-review letters use review-ingestion.
 ---
 
 # Research feedback

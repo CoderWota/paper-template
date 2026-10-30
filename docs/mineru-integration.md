@@ -1,86 +1,39 @@
-# MinerU Integration
+# Document Processing with MinerU
 
-Status: integration decided by the template maintainer on 2026-10-28 and implemented in MVP 2. Both routes were observed working on macOS with synthetic files on 2026-10-28: the local route, and the mineru.net route with the maintainer's token. For what is verified, see [implementation status](implementation-status.md#mvp-2-flexible-intake-and-mineru-batch-ingestion).
+Use this guide for import setup or a conversion problem. Reference and review documents use MinerU locally or the official mineru.net precision API v4, as confirmed in `requirements/privacy.md`. The researcher's own editable Word, OpenDocument, or LaTeX manuscript uses local Pandoc instead. Markdown and plain text are read directly.
 
-This note records the read-only MinerU research that [design plan Section 5](design-plan.md#5-document-ingestion-mineru-decision-and-publishing-options) asked for, the integration decisions, and the behaviour observed in this workspace. Sources were read on 2026-10-28; versions and terms change, so check them again before relying on a detail.
+## Choose and prepare a route
 
-## Decisions (2026-10-28)
+Inspect the computer and run `python scripts/setup_mineru.py check` before recommending local setup. Previously observed local version: MinerU 4.0.12; supported installation range: 4.x, Python 3.10–3.14. Recheck current official requirements before installing. The scripts themselves need only Python 3.9 or later. [Quick start](https://opendatalab.github.io/MinerU/quick_start/).
 
-The maintainer answered three questions:
-
-1. **Routes.** The adapter supports both MinerU on this computer and the official cloud service, mineru.net (precision API v4). The token-free "Agent" API is not used: it accepts at most 10 MB and 20 pages and returns Markdown without images. Each researcher's confirmed processing choice selects one route; a failure is never retried on the other route.
-2. **Local test installation.** MinerU 4.0.12 was installed into the worktree's ignored `.tools/mineru/` and tested with the flash and basic tiers on synthetic fixtures. The standard tier was not tested: it needs a vision model of several gigabytes, and the vendor recommends at least 16 GB of memory, which is what the test computer has.
-3. **Citation metadata.** `references/bibliography.bib` (BibTeX) is the canonical citation metadata from now on, before the export trial. Pandoc and Quarto both read BibTeX, and the export trial was planned with BibTeX input. If the trial chooses another representation, the bibliography is migrated once.
-
-The planned order put MVP 7 (Git) and the export trial before MVP 2. The maintainer asked for MVP 2 first on 2026-10-28.
-
-## MinerU 4
-
-| Fact | Value | Source |
+| Local tier | Intended material | Additional setup |
 | --- | --- | --- |
-| Current version | 4.0.12 (`mineru>=4.0,<5`) | [PyPI](https://pypi.org/project/mineru/), [quick start](https://opendatalab.github.io/MinerU/quick_start/) |
-| Python | 3.10 to 3.14; the workspace scripts themselves need only 3.9 | quick start |
-| Package size observed | 1.06 GB in `.tools/mineru/` when installed with uv, and 1.37 GB with pip through `scripts/setup_mineru.py install`, on Apple Silicon, where it pulls in PyTorch | this workspace |
-| License | Apache 2.0 with additional terms: a separate license above 100 million monthly users or USD 20 million monthly revenue, and attribution for online services built on MinerU. Model weights are not mentioned. The template does not redistribute MinerU or its models. | [LICENSE.md](https://github.com/opendatalab/MinerU/blob/master/LICENSE.md) |
-| Entry point used | `mineru-kit parse`, which converts every PDF page by default. `mineru parse` stops after ten pages by default and is not used. | [quick start](https://opendatalab.github.io/MinerU/quick_start/) |
+| flash, `--ocr-mode txt` | Text-layer PDFs and editable office documents | No model download; scanned pages yield no text. |
+| flash with OCR, or basic | Scans; basic adds layout, table, and formula handling | Basic model bundle was about 0.9 GB; request consent before downloading. |
+| standard or advanced | Layouts that need a vision model | Several GB more; at least 16 GB memory recommended. These tiers remain unverified here. |
 
-### Tiers on this computer
+The parser environment was about 1.4 GB on Apple Silicon. Use `setup_mineru.py install` and `models --tier basic` only after consent. The adapter uses `mineru-kit parse` for the whole document and local model configuration; missing models stop a run rather than silently downloading more. Other documented formats can be attempted through the supported route but stay flagged until checked against originals.
 
-| Tier | What it does | Needs | Observed |
-| --- | --- | --- | --- |
-| flash, `--ocr-mode txt` | Reads the PDF text layer; converts Word, PowerPoint, Excel, OpenDocument, RTF, EPUB, HTML, and CSV as whole documents | No models | 12-page PDF in 15 s. A scanned page yields no text. Some lines at the top of a page were classified as headers and left out of the Markdown. Word tracked changes appear as accepted, and comments are lost. |
-| flash, `--ocr-mode auto` | Also OCRs pages without text | The small-model bundle for scanned pages | With the models, the scanned page was read. Without them, the scanned PDF failed with "Model repo MinerU-4_models_torch is not ready". |
-| basic | Layout, OCR, table, and formula models | Small-model bundle, 854 MB observed | 12-page PDF in 53 s including model loading. Headings and the table were structured; the scanned page was read; one printed formula was transcribed wrongly and a formula image was merged into it. |
-| standard, advanced | Add a vision-language model | Several GB more, 16 GB or more of memory recommended | Not tested |
+Cloud processing sends documents to mineru.net. Confirm the material scope before using `MINERU_API_TOKEN`, entered through the private credential page. The adapter refuses cloud processing unless the active privacy record names mineru.net; also inspect every batch against the human-readable scope. A scope for published papers does not cover an unpublished draft or reviewer letter.
 
-Models are downloaded only on request (`mineru-kit models download --tier basic`). `scripts/setup_mineru.py` keeps MinerU's configuration and models in the ignored `.cache/mineru/`, and the adapter sets `MINERU_MODEL_SOURCE=local` while parsing, so a missing model stops the run instead of starting a download that nobody agreed to.
+Service information last inspected on 2026-10-28: the precision API documents 200 MB and 200 pages per file, priority and daily limits, and token expiry. Read current [API documentation](https://mineru.net/apiManage/docs) and [limits](https://mineru.net/apiManage/limit) before relying on access or cost. Its legal pages did not establish training use or retention, and included a broad uploaded-material license. These remain unknown until current terms establish otherwise; see the [privacy source pointers](../.agents/skills/privacy-configuration/sources.md).
 
-### Output contract observed
+No failed route switches to another parser or destination. A changed processing route needs a new scoped decision.
 
-`mineru-kit parse --format zip` writes one archive per input with `markdown.md`, `middle_json.json` (schema `docvortex.middle` 2.0), `structured_content.json`, `model_output.json`, and `images/page_<page>_<type>_<n>.jpg`. The Markdown links images as `images/...`. Page indexes in the JSON count from 0. The middle JSON records each page's blocks with their types (`header`, `page_number`, `text`, `table`, `equation`, `image`, and others), the physical page count, and `is_full_document`. MinerU keeps a picture of every table and formula that it transcribes; these pictures are not linked from the Markdown. See the [output reference](https://opendatalab.github.io/MinerU/reference/output_files/).
+## Import and resume
 
-## mineru.net
+Use `scripts/ingest.py plan` before an import, `run` for the authorized route, `status` for progress, and `run --import-id ID` to continue interrupted or failed items. Reuse completed items. Changing conversion settings requires `--reconvert`; a hand-edited extraction is protected unless `--overwrite-edited` is explicitly used after preserving the correction in a source note.
 
-| Topic | Finding (2026-10-28) |
-| --- | --- |
-| API | Precision API v4 with a token: `POST /api/v4/file-urls/batch` returns a batch ID and one signed upload address per file; each file is uploaded with `PUT` and no content type; `GET /api/v4/extract-results/batch/{batch_id}` reports `waiting-file`, `pending`, `running`, `converting`, `done`, or `failed`, and a `full_zip_url` when done. The archive holds `full.md`, `layout.json` (middle JSON), `*_model.json`, `*_content_list.json`, and the images. Options used: `model_version` (`vlm`, which MinerU recommends, or `pipeline`), `language`, `enable_formula`, `enable_table`, and `is_ocr`. See the [API documentation](https://mineru.net/apiManage/docs). |
-| Limits | 200 MB and 200 pages a file; 1000 pages a day at full priority; 50 submitted files a minute and 5000 a day; no paid plan at present ([rate limits](https://mineru.net/apiManage/limit)). |
-| Errors | `A0202` token error and `A0211` expired token; `-60018` daily limit; `-60009` queue full; `-60005` and `-60006` file too large or too long; others in the documentation's table. |
-| Token | Created by the user on the [API management page](https://mineru.net/apiManage/token); tokens can expire. |
-| Data use | The legal pages linked from mineru.net are OpenDataLab's general privacy policy and service agreement of 2022. They do not name MinerU and do not say whether uploaded documents are used for training or how long they are kept, and the agreement grants the operator a perpetual license to uploaded material. Training use and retention are therefore **unknown**. Details are in [privacy-configuration/sources.md](../.agents/skills/privacy-configuration/sources.md). |
+The importer archives the original unchanged under a checksum-based source ID, verifies the copy, and stages derived output in `.tmp/` before publication. The extraction contains `document.md`, linked assets, provenance, and local parser-native data. Import records under `inbox/imports/` retain each item's outcome so the assistant can resume without starting over. Parser-native data is local and ignored; originals, notes, and metadata remain separate.
 
-How the adapter uses it:
+Cloud batches use source IDs rather than research file names, keep signed transfer addresses out of logs, and send the token only to the API origin. The adapter paces submissions and stops on account-wide failures, retaining open work for resumption. Do not upload research material solely to probe connectivity.
 
-- It runs only when `requirements/privacy.md` names mineru.net, which happens only after the researcher confirms the scope, and only with the `MINERU_API_TOKEN` credential from `.env.local` or the environment.
-- The token goes only to the API address. Uploads and downloads use the signed addresses without it, and redirects to another origin are refused.
-- The service receives the source ID as the file name and as `data_id`, not the researcher's file name.
-- Batches hold 20 files and start at most every 30 seconds. A rejected or expired token, the daily limit, or an unreachable service stops the run once, with the open items kept; uploaded items that are still processing are collected by a later run without a second upload.
-- Signed addresses and the token are removed from every record and log.
+## Check and report
 
-Observed with the live service on 2026-10-28, with the maintainer's token entered on the private page and synthetic files only (two PDFs of 12 and 2 pages, a Word source, a Word decision letter, and an annotated PDF report), model `vlm`:
+Check page coverage, pages without text, omitted prose, image links, formulas, and format/route limitations. A complete extraction is not a guarantee of faithful content. Compare consequential passages, tables, and formulas with the original or retained formula images. Keep corrections in source notes rather than editing generated text that a later conversion replaces.
 
-- Each archive held `full.md`, `layout.json`, `<task>_content_list.json`, `<task>_content_list_v2.json`, `<task>_model.json`, a copy of the original as `<task>_origin.<extension>`, and `images/` with files named by their SHA-256 hash. `layout.json` uses the older page layout (`pdf_info` with `para_blocks` and `discarded_blocks`) and states `_backend: hybrid` and `_version_name: 3.4.4`: the service ran MinerU 3.4.4, not 4.0.
-- Three files took about 12 seconds from upload to result. Coverage was 12 of 12 and 2 of 2 pages, the scanned page was read, the two columns came out in the right order, the running heads were recognized as such, and tables came out as HTML.
-- The printed formula was transcribed wrongly, as with the local basic tier, and the formula image was merged into it. In the annotated report, the model took the annotation icons and the text under them for images, so "Comment 1" became "mment 1". No automatic check detects either; the reviewer-item comparison of `review-ingestion` and the formula note exist for this.
-- No record, log, or output held the token or a signed address, and the service saw only source IDs as file names.
+Review letters retain Word comments, replies, insertions, and deletions separately. PDF annotation extraction is best effort; annotation page locators, Word footnotes/endnotes, and moved text can need manual comparison. Resolve comments and tracked changes before adopting an editable manuscript.
 
-The run found three gaps, now fixed: the copy of a Word original (`_origin.docx`) was kept in `native/`; the parser version that the service states was not recorded; and the links of a review document were checked in a stage laid out differently from `extracted/`, which reported a correct image link as broken. PDF with the `vlm` model is a verified cloud combination. Word conversion was observed, but the service output has no `is_full_document` marker, so completeness is unknown and the result stays flagged for review. Image inputs and the `pipeline` model are not verified.
+Use `ingest.py metadata` to record only title, author, year, DOI, and other metadata actually inspected in the source; leave unknown fields empty. `references/bibliography.bib` is the canonical bibliography. Matching a registry is not provided by this import route. Keep distinct source versions and relate them only after their identity is checked.
 
-## Integration contract as implemented
-
-- **Archive.** The original is copied unchanged into `references/originals/<source-id>/`, and the copy's checksum is verified. The source ID is `src-` plus the first 12 hexadecimal digits of the file's SHA-256, so the same file always gets the same ID and a different version gets another one.
-- **Extraction.** `references/extracted/<source-id>/` holds `document.md` with image links into `assets/`, the parser output in `native/` (without its copy of the original; kept on this computer only and ignored by Git, decided 2026-10-29), `provenance.json` with the parser version that the output states, and a README for each folder. The folder is built in `.tmp/` and published with one rename.
-- **Checks.** Page coverage against the parser's physical page count, cross-checked with a page count read from the PDF; pages without text; prose that the parser recorded but the Markdown lacks, apart from repeated or short running heads; broken links and unlinked images, apart from pictures of transcribed tables and formulas; math delimiters normalized to `$...$` and `$$` blocks without changing a formula, with unpaired `$` signs and commands that GitHub cannot render flagged; and a flag for format and route combinations not yet verified here. The result is complete, needs review, or partial.
-- **Records.** Each batch has `inbox/imports/<import-id>/import.json` and a README, saved after every change. Items are pending, converting, submitted, converted, needs review, partial, already imported, duplicate, unsupported, failed, or kept for later.
-- **Repeat and retry.** A file converted before with the same settings is reused. Other settings are reported and converted again only with `--reconvert`; a hand-edited `document.md` is never overwritten without `--overwrite-edited`. Continuing an import works on open, interrupted, and failed items only.
-- **Reviews.** `reviews/<venue>/<round>/` keeps originals, `extracted/markdown/<document>.md`, images named `<document>--<image>`, and `extracted/provenance.json`. Word comments, replies, insertions, and deletions are read from the file's XML with the standard library, and PDF comment annotations with a best-effort scan; both are listed in a separate section of the Markdown.
-- **Metadata.** `scripts/ingest.py metadata` writes BibTeX entries with `sourceid` and `metadatasource` fields, which citation processors ignore, and fills the title, authors, and year of the index row.
-
-## Open
-
-- The training use and retention of documents at mineru.net, which its terms do not state. A fresh read of the terms before each new scope of uploads.
-- The service's behaviour under its limits (the daily quota, the rate limit, an expired token) and with images and the `pipeline` model; these paths are tested only against the fake service.
-- Windows and Linux runs of both routes, and the standard tier.
-- Local formats other than PDF and Word (PowerPoint, Excel, OpenDocument, EPUB, HTML, images). They are converted but flagged as unverified.
-- Page numbers of PDF annotations, and Word footnotes, endnotes, and moved text.
-- Checking citation metadata against a registry, which belongs to MVP 3.
+Run `ingest.py verify` and explain every partial, failed, unsupported, or needs-review outcome. Local PDF/Word and cloud PDF with the `vlm` model have prior macOS observations; other combinations and platforms remain subject to the [capability limits](capabilities.md).

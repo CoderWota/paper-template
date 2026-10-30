@@ -1,7 +1,7 @@
 -- Attach an equation label written as its own paragraph ("{#eq:...}") to the display equation just
 -- before it, so that pandoc-crossref sees "$$...$$ {#eq:...}". The workspace writes the label after a
 -- blank line because GitHub does not render a display equation that has text on its closing line
--- (docs/export-trial.md). Run this filter before pandoc-crossref.
+-- (docs/markdown-and-export-conventions.md). Run this filter before pandoc-crossref.
 
 local function label_of(block)
   if block.t ~= "Para" or #block.content ~= 1 or block.content[1].t ~= "Str" then

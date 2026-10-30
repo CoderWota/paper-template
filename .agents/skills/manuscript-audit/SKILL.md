@@ -1,6 +1,6 @@
 ---
 name: manuscript-audit
-description: Use when the researcher asks to review, check, critique, or audit the manuscript or a section, to find unsupported claims, contradictions, weak arguments, inconsistent terms, citation problems, formulaic wording, or violations of their writing rules, or wants a final check before sharing or submitting, or a reviewer's view of the paper. Examines argument, evidence and claim support, results, terminology, confirmed rules, language, style patterns, conventions, and known venue limits as separate checks, and returns prioritized findings linked to exact passages and evidence, recorded with the inputs they examined, without a score and without editing the text unless asked.
+description: Audit manuscript arguments, evidence, citations, terminology, and writing rules; report located findings without editing.
 ---
 
 # Manuscript audit

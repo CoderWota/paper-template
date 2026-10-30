@@ -1,6 +1,6 @@
 ---
 name: submission-assembly
-description: Use when the researcher asks to format, export, or build the manuscript as a Word file, to apply a journal's or institution's author guidelines or template, to produce a preview or a PDF for checking, or to prepare the final package. Turns the supplied guidelines and templates into an output profile whose rules are each mapped to a source, an implementation, and a check, builds the DOCX with native Word equations, rendered diagrams, citations, and cross-references, inspects the rendered result against every rule, repairs the profile until the rules pass or a specific limitation is known, and freezes a release only on request.
+description: Format and inspect Word output against a journal or thesis profile; preserve editable equations and freeze releases on request.
 ---
 
 # Submission assembly

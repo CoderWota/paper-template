@@ -1,6 +1,6 @@
 ---
 name: git-inspection
-description: Use when the researcher asks what versions exist, whether their work is saved, what has changed since the last saved version, whether there is a backup, or what kind of history a copied workspace carries. Reads Git availability, the version history, unsaved changes by workspace area, external copies, unfinished operations, and secret risks without changing anything, and explains them in plain language with one useful next step.
+description: Inspect saved versions, unsaved work, unfinished operations, and backup status without changing files.
 ---
 
 # Git inspection

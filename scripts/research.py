@@ -320,7 +320,7 @@ def check_results(root: Path) -> tuple:
         where = f"research/results/{path.name}"
         stale_start = len(stale)
         if not SLUG_NAME.match(path.stem):
-            problems.append(f"{where}: name a result record with lowercase ASCII letters, digits, and hyphens, for example r001-smoke-test.md")
+            problems.append(f"{where}: name a result record with lowercase ASCII letters, digits, and hyphens, for example r001-analysis.md")
         names.append(path.name)
         fields = parse_fields(path.read_text(encoding="utf-8"), RESULT_LABELS)
         for key in ("status", "kind", "question", "method", "limitations"):

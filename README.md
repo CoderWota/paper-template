@@ -1,98 +1,60 @@
-# Agent-Assisted Paper Template
+# Research Writing Workspace
 
-An organized workspace for developing research ideas, reading literature, writing a manuscript, and preparing submission files with an AI agent.
+Develop one paper with an AI assistant in Codex or Claude Code. You direct the research question, scholarly judgments, final wording, and submission choices. The assistant helps examine evidence, write and revise the manuscript, and handle files and tools. You do not need programming knowledge.
 
-**Project status: implemented, not yet verified on Windows or in Codex.** Every workflow below is implemented as a skill and passed a documented review: setup (onboarding, environment and privacy checks, confirmed rules), document import with MinerU, literature search and evidence work, research development (ideas, impact, journal comparison, plans, collaborator feedback, and research code with recorded results), manuscript work (adopting an existing draft, outlining, drafting and translating, revising formulaic wording, auditing, scored mock reviews, and major revision), advice on which AI model to use in your application, formatting as a Word file with checked native equations and frozen release packages, readiness assessment, review responses with coauthor reconciliation, version control with Git, and the two guided paths. A review shows that the instructions meet the documented requirements; it does not show how a particular AI model follows them. The scripts were tested on macOS with synthetic files, including live document import, Word output rendered by Microsoft Word, and a scripted pass over the complete path; the guided path has not yet been run with a researcher. The [implementation status](docs/implementation-status.md) lists exactly what was observed and what remains unverified; the [design plan](docs/design-plan.md) explains the design.
+## Start with your situation
 
-For framework development, the [MVP implementation guideline](docs/mvp-implementation-guideline.md) organizes the work into nine increments with concrete deliverables and acceptance criteria.
+Open this folder in your AI application and describe what you need. For a new project, ask:
 
-The [workflow review and public knowledge transfer](docs/research-workflow-review.md) examines what is still needed to carry the researcher's ideas through actual results to a complete submission package. A bounded complete-path case is confirmed as a framework test only. It does not limit supported research or establish real publication readiness; detailed implementation proposals remain open.
+> Help me set up this research writing project. I do not have a programming background.
 
-## Why this workspace exists
+You can bring an existing draft, a research question, collected papers, or reviewer comments. Unknown choices can wait. Each additional paper uses a separate fresh copy of this workspace.
 
-Research work spans ideas, source documents, evidence notes, writing requirements, drafts, and reviewer comments. This template gives each of them a clear home so researchers do not have to design their own project structure or repeat confirmed requirements in every conversation.
+You can also request one task directly:
 
-The agent selects appropriate skills and handles routine technical work. It can help explore ideas, examine assumptions, retrieve and compare sources, draft with evidence, and assemble outputs. The researcher directs scholarly decisions and chooses what to retain.
-
-Your main contribution is the research idea, domain knowledge, scholarly judgment, and final author review. Within the scope you confirm, the agent should carry the routine production work and connect the stages itself. You should not need to shuttle text between tools, maintain progress records, or issue a separate instruction for every file and skill. The skills are written to work this way; a full guided run with a researcher has not been recorded yet.
-
-The intended researcher has ordinary computer skills and no coding or software-engineering background. Git operations, BibTeX records, YAML/JSON settings, and scripts are maintained through the agent. Describe the change you want and review the outcome; you do not need to edit those technical files. You can still write manuscript prose and ideas directly.
-
-The framework does not prescribe a discipline, article structure, or writing language. It targets ordinary Windows laptops, with macOS and Linux support to be verified progressively. Heavy local inference is optional.
-
-Markdown formulas use GitHub-renderable LaTeX, and agent-created explanation diagrams use Mermaid. Word exports must contain correct, native editable equations. The agent maintains the syntax and checks both previews and final outputs; scientific result plots retain suitable plotting formats. The workspace checks these conventions, and the Word export verifies each equation against its source.
-
-## Getting started: intended workflow
-
-1. Obtain a copy of this repository for your paper and open its folder with Codex or Claude Code. Each paper uses its own copy.
-2. Ask the agent: “Help me initialize this research writing project. I do not have a programming background.”
-3. The agent guides the few choices needed to begin, including writing language, research goals, privacy settings, and local or cloud document parsing. Unknown details can wait.
-4. If the selected service requires an API key, the agent explains where to obtain it and guides private entry on your computer. You do not paste it into the conversation or write setup code.
-5. Start with a document, an idea, or an existing draft. You do not need to memorize skill names or command-line options.
-
-## Everyday requests
-
-| What you want to do | What to ask the agent |
+| Your need | What to ask |
 | --- | --- |
-| Work through a paper from scratch | “Guide me from collecting literature and developing an idea to examining its impact, choosing a journal, and writing a manuscript in its required format.” |
-| Learn practical version control | “I do not know Git. Help me save this version, compare changes, and practice retrieving earlier content.” |
-| Import literature | “Import all PDFs from this folder into the reference library, including their images.” |
-| Adopt an existing paper | “Organize this Word manuscript into the workspace conventions, preserving its text, figures, and references, and show anything that could not be migrated.” |
-| Download and import references | “Download the available full text from this reference list, convert it to Markdown, and add it to the library. Tell me which items still need access.” |
-| Extract review documents | “Convert these Word reviewer comments to Markdown and archive them with this submission round, including comments and images where supported.” |
-| Work through research feedback | “Organize these comments from my co-researchers and collaborators, discuss their implications with me, and apply the changes I choose.” |
-| Continue an interrupted import | “Continue the import and retry only the failed documents.” |
-| Explore a direction | “Based on these readings and my interests, help me develop several distinct research ideas.” |
-| Deepen an idea | “Examine this idea with me, one question at a time. Check the closest prior work and help me identify a feasible contribution.” |
-| Investigate a question | “Compare what these sources actually support and explain where they disagree.” |
-| Work on the manuscript | “Revise this section using my confirmed writing requirements and identify claims that need evidence.” |
-| Make text read naturally | “This paragraph sounds machine-written. Make it read naturally without changing what it says.” |
-| Get a scored mock review | “Score my paper the way reviewers at this conference would, and tell me what would raise each score.” |
-| Choose an AI model | “Which model in my AI tool should I use for polishing the English, and which for routine edits?” |
-| Make a major revision | “Restructure this paper around the revised question. Preserve the current version, show what must change, and check the evidence and whole manuscript after rewriting.” |
-| Prepare a formatted output | “Format my manuscript using these journal instructions and this Word, LaTeX, or PDF reference template, then check the result against the requirements.” |
-| Handle peer review | “Organize this round of reviewer comments and help me respond point by point.” |
+| Bring in a draft | “Import my existing manuscript and show any conversion losses before we continue.” |
+| Organize reading | “Import these papers, keep their originals, and flag missing pages or uncertain formulas.” |
+| Find literature | “Find sources on this question and show the search scope and full-text gaps.” |
+| Examine an idea | “Challenge this explanation and compare the closest work.” |
+| Develop an argument | “Help me structure the paper around this question and the results we actually have.” |
+| Edit prose | “Shorten this paragraph without losing its conditions, citations, or meaning.” |
+| Check support | “Check which claims in this section are supported and which need more evidence.” |
+| Prepare output | “Format the manuscript using these journal instructions and check the Word output.” |
+| Handle reviews | “Organize this review round and help me respond point by point.” |
+| Preserve work | “Save this version locally so I can compare or recover it later.” |
 
-The agent should report what completed, link the results, and explain anything needing attention. For batch conversion, it manages archiving, Markdown, images, indexing, duplicates, and retries in the background. It uses MinerU in the processing mode you selected.
+The assistant selects the needed instructions and tools. You do not need to know skill names or run commands. For setup details or uncertain support, see [capabilities and limits](docs/capabilities.md).
 
-Put mixed material in the intake area, `inbox/`, or simply point the agent to its existing location. You do not need to sort it first. Downloading, conversion, manuscript adoption, and comment extraction can be requested separately or together. Unavailable full text and conversion gaps remain visible; received advice becomes a lasting requirement only when you adopt it.
+## Bring your material
 
-Major revision is also an independent task, before submission or after feedback. The agent preserves the starting version, explains affected work, coordinates the revision, and rechecks changed claims and related passages. You do not need to operate Git, and a small edit does not require a revision project. A changed manuscript needs current checks; an earlier successful export is not proof that the revision is ready.
+Put files in [`inbox/`](inbox/README.md), or point the assistant to their existing location. It identifies reference sources, manuscripts, feedback, reviewer letters, and format templates before organizing them. Original files stay unchanged.
 
-## Two guided hands-on paths
+Before parsing documents, choose local processing or the named MinerU service and the material that choice covers. Cloud processing sends documents to that service; the assistant explains relevant limits before asking. Credentials are entered on a private local page, never in chat. Checking the AI application's data-use settings is a separate, optional task.
 
-The **paper hands-on** coordinates literature collection, idea exploration, impact assessment, journal fit and readiness, necessary research, drafting, and format checks. Start from your current situation and resume across sessions. The **Git hands-on** uses practical examples to help you preserve versions, compare changes, and retrieve earlier material while the agent handles the commands.
+## Where your work lives
 
-Each task is also independently available: ask only to assess an idea's impact, compare journals, check submission readiness, or compare two versions. The agent chooses the matching skill and reuses your current material; you do not need to complete a course or memorize skill names.
+| Folder | Contents |
+| --- | --- |
+| [`requirements/`](requirements/README.md) | Your confirmed project, language, writing, privacy, and output requirements. |
+| [`manuscript/`](manuscript/README.md) | The outline, section files, figures, and assembly manifest. |
+| [`references/`](references/README.md) | Unchanged sources, readable extractions, bibliography, search records, and evidence notes. |
+| [`ideas/`](ideas/README.md) | Ideas you choose to keep, including exploratory ones. |
+| [`research/`](research/README.md) | Plans, decisions, collaborator feedback, venue assessments, and results with their provenance. |
+| [`reviews/`](reviews/README.md) | Editorial correspondence and responses by venue and submission round. |
+| [`revisions/`](revisions/README.md) | Recoverable baselines and change records for major revisions. |
+| [`outputs/`](outputs/README.md) | Rebuildable previews and preserved release packages. |
+| [`state/`](state/README.md) | A short handoff for the next session, maintained by the assistant. |
 
-See the [hands-on guide](docs/hands-on.md). Both guides are implemented as skills; no complete guided run with a researcher has been recorded yet. Journal prospects are discussed through evidence-based strengths and risks, with no promise of acceptance.
+The assistant maintains the supporting [`scripts/`](scripts/README.md) and agent configuration. Research code is created separately in `code/` only when a study needs computation.
 
-## Where your work belongs
+## Continue, review, and decide
 
-| Area | Folder | Purpose |
-| --- | --- | --- |
-| Intake | [`inbox/`](inbox/README.md) | An optional landing area for existing manuscripts, reference lists, comments, and other files awaiting organization. |
-| References | [`references/`](references/README.md) | Original documents, readable extractions, and evidence notes. |
-| Requirements | [`requirements/`](requirements/README.md) | Your confirmed project, writing, privacy, and submission requirements. |
-| Manuscript | [`manuscript/`](manuscript/README.md) | The working text and its figures and other assets. |
-| Ideas | [`ideas/`](ideas/README.md) | Research directions and thoughts you choose to keep, including unfinished ones. |
-| Research records | [`research/`](research/README.md) | The research plan, important confirmed choices and their rationale, attributed feedback from co-researchers, collaborators, coauthors, supervisors, or other contributors and its follow-up, journal assessments, and the project's own results with their provenance. |
-| Reviews | [`reviews/`](reviews/README.md) | Editorial and reviewer correspondence, responses, and changes by submission round. |
-| Major revisions | [`revisions/`](revisions/README.md) | Recoverable starting versions or references, revision plans, changes, and current checks for substantial rewrites. |
-| Outputs | [`outputs/`](outputs/README.md) | Previews and preserved submission packages. |
-| Project state | [`state/`](state/README.md) | A short note of work in progress and the next step, kept by the agent between sessions. |
-| Scripts and optional research code | [`scripts/`](scripts/README.md), `code/` | Reusable automation and research implementation, managed with the agent. `code/` is created only when the research needs it. |
+To resume, ask “Continue from the project records.” The assistant checks the current material and open work without making you reconstruct past sessions. You can also ask to compare versions, recover a passage, or inspect what remains before submission.
 
-The framework's design documents are in [`docs/`](docs/README.md), and agent instructions are in `AGENTS.md`, `.agents/`, and `.claude/`. You do not need to open them for ordinary work.
+Clear instructions authorize routine work within their scope. Changes to the research question, main claim, method, structure, venue, lasting rules, or external sharing need your decision. Suggestions and inferred preferences do not become requirements. A change to a rule does not silently rewrite your manuscript.
 
-Every designed project directory has its own short English `README.md`, and folders created later, such as each source, review round, revision, or skill, receive one when they are created. It explains the directory's purpose, contents, related records, and what the agent maintains. The agent writes and updates these descriptions; human-facing translations can be added when useful. Runtime caches and installed dependencies are outside this project-directory requirement.
+Converted text can contain errors. Search hits are leads rather than verified evidence, simulated review scores are not acceptance probabilities, and an exported file still needs inspection. The assistant reports what it actually checked and what remains unresolved. Local version history is separate from an external backup; nothing is pushed without your instruction for a destination.
 
-## Your choices stay explicit
-
-Only verified, researcher-confirmed writing rules become lasting instructions. An idea may remain exploratory; a converted document may still need checking. Neither becomes an established rule or verified evidence merely because it was saved.
-
-Before a major decision, the agent must show a concrete recommendation and obtain your explicit confirmation. This includes consequential changes to the research, manuscript structure, target venue, privacy, or external sharing. Clear instructions you already gave apply within their scope. Questions, including idea-deepening interviews, address one substantive choice at a time. English questions follow ASD-STE100; other languages use corresponding clarity principles without changing your chosen language or imposing a manuscript style.
-
-Choose whether your documents may be parsed locally or by a cloud service. Credentials stay in local, untracked storage. A privacy setup skill will help with supported training opt-outs and explain what was actually verified. Your choices about the AI application and the parsing service are checked separately.
-
-If something is missing or fails, ask the agent to help configure it or continue the task. The intended workflow does not require you to diagnose software tracebacks.
+Operational details are available in [the guides](docs/README.md), including [document conventions](docs/markdown-and-export-conventions.md) and [agent loading](docs/context-loading.md). They are reference material, not prerequisites for ordinary writing.

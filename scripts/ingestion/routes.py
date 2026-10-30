@@ -46,14 +46,13 @@ KINDS = {
 LOCAL_WHOLE_DOCUMENT = frozenset({"word", "slides", "spreadsheet", "opendocument", "rtf", "epub", "html", "table"})
 CLOUD_KINDS = frozenset({"pdf", "image", "word", "slides", "spreadsheet", "legacy-office"})
 DIRECT_KINDS = frozenset({"markdown", "text"})
-# The researcher's own editable manuscript is read by Pandoc on this computer (maintainer's decision of
-# 2026-10-29); references and review documents keep the MinerU routes.
+# The researcher's own editable manuscript is read locally by Pandoc;
+# references and review documents keep the confirmed MinerU routes.
 PANDOC_KINDS = {"word": "docx+citations", "opendocument": "odt", "latex": "latex"}
 PANDOC_OUTPUT = "markdown-simple_tables-multiline_tables-grid_tables"
 ADOPT_FILTER = Path(__file__).resolve().parent / "adopt-conventions.lua"
-# (route, kind, tier or cloud model) combinations observed to work in this template with synthetic
-# files; see docs/implementation-status.md. Others are documented by MinerU but unverified here, so
-# their results are flagged for review.
+# Previously observed (route, kind, tier or cloud model) combinations; see
+# docs/capabilities.md. Other documented combinations remain flagged for review.
 VERIFIED = frozenset({
     ("local", "pdf", "flash"), ("local", "pdf", "basic"), ("local", "word", "flash"),
     ("cloud", "pdf", "vlm"),
@@ -306,14 +305,10 @@ def origin(url: str) -> tuple:
     return parts.scheme, parts.hostname, parts.port or (443 if parts.scheme == "https" else 80)
 
 
-def loopback(url: str) -> bool:
-    return urllib.parse.urlsplit(url).hostname in ("127.0.0.1", "localhost", "::1")
-
-
 def check_transfer_url(url: str) -> None:
-    """Uploads and downloads use HTTPS; plain HTTP is accepted only on this computer, for tests."""
+    """Service uploads and downloads must use HTTPS."""
     scheme = urllib.parse.urlsplit(url).scheme
-    if scheme != "https" and not (scheme == "http" and loopback(url)):
+    if scheme != "https":
         raise ConversionError("the service returned an address that is not HTTPS", "unsafe-url")
 
 
@@ -323,15 +318,13 @@ class CloudRoute:
     name = "cloud"
 
     def __init__(self, token: str, model_version: str = "vlm", language: str = "ch", is_ocr: bool = False,
-                 enable_formula: bool = True, enable_table: bool = True, base_url: str | None = None,
+                 enable_formula: bool = True, enable_table: bool = True,
                  poll_interval: float = 10.0, poll_timeout: float = 3600.0, sleep=time.sleep,
                  redact: Redactor | None = None):
         if model_version not in ("pipeline", "vlm"):
             raise ValueError(f"unknown model version {model_version!r}")
         self.token = token
-        self.base = (base_url or OFFICIAL_API).rstrip("/")
-        if self.base != OFFICIAL_API and not (self.base.startswith("http://") and loopback(self.base)):
-            raise ValueError("only the official mineru.net address, or a test server on this computer, is allowed")
+        self.base = OFFICIAL_API
         self.model_version, self.language, self.is_ocr = model_version, language, is_ocr
         self.enable_formula, self.enable_table = enable_formula, enable_table
         self.poll_interval, self.poll_timeout, self.sleep = poll_interval, poll_timeout, sleep

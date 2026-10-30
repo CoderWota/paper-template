@@ -13,4 +13,4 @@ The internals of [`../ingest.py`](../ingest.py), which imports documents with Mi
 | [`records.py`](records.py) | The resumable import record in `inbox/imports/<import-id>/`. |
 | [`pipeline.py`](pipeline.py) | Runs an import item by item and saves the record after every change. |
 
-The behaviour is covered by [`../tests/test_ingest.py`](../tests/test_ingest.py) and [`../tests/test_ingest_cloud.py`](../tests/test_ingest_cloud.py). The integration decisions and the observed MinerU behaviour are in [`docs/mineru-integration.md`](../../docs/mineru-integration.md).
+See [document processing](../../docs/mineru-integration.md) for route selection, extraction checks, and operational limits. Use the command's plan and verification modes to inspect actual imports; extraction success does not establish faithful content.

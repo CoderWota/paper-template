@@ -1,6 +1,6 @@
 ---
 name: manuscript-import
-description: Use when the researcher wants to bring an existing manuscript or draft into the workspace, for example a Word, LaTeX, OpenDocument, Markdown, or PDF file, or asks to organize their draft into the workspace conventions. Keeps the original unchanged in its import record, converts editable formats with Pandoc on this computer and PDFs with the confirmed MinerU route, stops on tracked changes and comments until the researcher decides, splits the text into section files with its images, metadata, and citations, reports losses and unresolved references, and never replaces an existing manuscript.
+description: Adopt an existing draft into the workspace, preserving the original and reporting conversion losses and unresolved references.
 ---
 
 # Manuscript import

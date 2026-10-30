@@ -1,6 +1,6 @@
 ---
 name: manuscript-revision
-description: Use when the researcher wants a substantial change to an existing manuscript, such as a changed central argument, a restructured paper, sections split, merged, moved, or removed, genuinely new evidence or analyses, adaptation to a new venue, or major changes requested by reviewers or collaborators. Preserves a recoverable baseline, makes the change concrete in a confirmed plan and an old-to-new map, coordinates the research, outline, writing, and audit skills in resumable steps, reconciles intervening author edits, applies a staged candidate safely, and rechecks everything the change affected. Ordinary edits go to manuscript-writing.
+description: Coordinate a major change to argument, structure, evidence, or venue with a recoverable baseline and checked revision plan.
 ---
 
 # Manuscript revision

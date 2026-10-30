@@ -1,6 +1,6 @@
 ---
 name: natural-prose
-description: Use when the researcher says that text sounds AI-generated, machine-written, formulaic, inflated, or translated, asks to remove an AI tone or AI-style patterns from manuscript text, a response letter, or other prose in any language, or asks only to check text for such patterns. Marks the patterns with the lists for the text's language (English, Chinese, and Japanese, with general patterns for other languages), revises only what needs it while keeping every claim, number, citation, hedge, condition, and the author's own voice, compares the edit with the original, and never judges who wrote the text or promises that it will pass an AI detector.
+description: Check or revise formulaic, inflated, or translated prose while preserving claims, evidence, uncertainty, and author voice.
 ---
 
 # Natural prose

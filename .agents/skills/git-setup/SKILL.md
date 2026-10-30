@@ -1,6 +1,6 @@
 ---
 name: git-setup
-description: Use when the researcher wants version history for the workspace, when Git is missing, or when an existing history needs arranging or repair, for example an inherited template history, an origin that points to the template, another paper's history, a tracked secret, files that should not be tracked, or an unfinished merge. Inspects first, explains the choices in plain language, creates or repairs the local history only with the researcher's choice, keeps secrets out, and never rewrites shared history or pushes anything.
+description: Set up or repair local version history, inherited template history, tracked secrets, or unfinished operations.
 ---
 
 # Git setup

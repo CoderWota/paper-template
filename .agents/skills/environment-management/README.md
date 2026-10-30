@@ -9,3 +9,5 @@ Ask, for example: "Check whether this computer is ready to import PDFs." or "Som
 When a service that you chose needs a key, a one-time page opens in your browser on this computer. You type the key there, never in the conversation. The key is saved in `.env.local`, which Git ignores. The file is not encrypted, so do not share it.
 
 The agent instructions are in [SKILL.md](SKILL.md). The skill uses `scripts/inspect_environment.py` and `scripts/credentials.py`. Related skills: `project-onboarding` and `privacy-configuration`.
+
+The [private credential procedure](credential-entry.md) is loaded only when a supported, chosen service actually needs a key; it is not required for an ordinary readiness check.

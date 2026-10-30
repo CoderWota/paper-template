@@ -26,4 +26,4 @@ Starting points for the `model-selection` skill, checked on 2026-10-29 and 2026-
 
 ## Other applications
 
-For a chat application or another agent, read the provider's current help page on choosing a model, and record it here with its date when the template maintainer adopts it.
+For a chat application or another agent, read the provider's current help page on choosing a model, and record the consulted page and date in the task record.

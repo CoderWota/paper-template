@@ -1,6 +1,6 @@
 ---
 name: manuscript-outline
-description: Use when the researcher asks how to structure the paper, wants an outline or section plan, asks what each section should argue, or wants the argument reorganized around a question or a target venue. Builds the main claim and the supporting argument from the confirmed question, actual evidence and results, confirmed requirements, and the venue's article type and limits, maps sections, figures, and tables with their evidence and gaps, and proposes the structure for the researcher to confirm without forcing a fixed article structure.
+description: Propose an evidence-linked manuscript structure from the confirmed question, actual results, and venue requirements.
 ---
 
 # Manuscript outline

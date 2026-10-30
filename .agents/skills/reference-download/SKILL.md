@@ -1,6 +1,6 @@
 ---
 name: reference-download
-description: Use when the researcher asks to obtain full-text papers in a batch from DOI or URL lists, BibTeX, a reference export, or a bibliography. Resolves public PDF access, checks downloaded content and identity/version, records every outcome, deduplicates and resumes without rerunning completed items, and hands off conversion to source-ingestion.
+description: Obtain public full-text PDFs from DOI or URL lists, BibTeX, or a bibliography; record identity checks and unavailable items.
 ---
 
 # Reference download

@@ -1,6 +1,6 @@
 ---
 name: model-selection
-description: Use when the researcher asks which AI model to use, whether to switch models, which model suits drafting, polishing, translation, literature work, analysis code, or routine tasks, or how to change the model in their AI application. Identifies the actual application, plan, and provider route (for example Claude Code, Codex, or Cursor), reads that application's current official model documentation, recommends for each kind of work in the project a model that this application and plan actually offer, with the reason, the cost or limit trade-off, and how to switch, and changes no setting without the researcher's consent.
+description: Recommend models for research tasks from current official guidance for the researcher's actual application and plan.
 ---
 
 # Model selection

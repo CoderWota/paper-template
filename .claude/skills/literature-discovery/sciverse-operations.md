@@ -1,0 +1,42 @@
+# Sciverse Operations
+
+Read only the operation needed for the current search: scope recording and search first; structured pagination, relations, experimental schema, or bounded text only when requested or needed. All external requests remain subject to the active scope.
+
+If the researcher confirms a scope, record their exact confirmation and the scope in an interaction-language Markdown note under `.tmp/`, then run:
+
+```text
+python scripts/literature.py authorize-sciverse --record .tmp/sciverse-confirmation.md
+```
+
+The command records that choice in `requirements/privacy.md`. Do not run it for a wish, a suggestion, silence, or a default. The API key is optional. If the researcher chooses to use Sciverse and it is not set, first explain the account/key requirement, then direct them to the private entry flow:
+
+```text
+python scripts/credentials.py set SCIVERSE_API_KEY --label "Sciverse API key" --help-url "https://sciverse.opendatalab.org.cn/docs"
+```
+
+Never ask for, repeat, print, or store the key in a project record, shell argument, or conversation. Before each request, compare its actual query with the confirmed scope. If the scope does not cover the query, use the authorized fallback or obtain a newly confirmed scope. Quote the exact scope sentence that covers the query as `--scope-basis`; the script checks that the excerpt occurs in the active scope and records it with the query. This excerpt check supports review but does not replace the agent's scope judgment. To search:
+
+```text
+python scripts/literature.py search-sciverse --query "..." --scope-basis "exact confirmed scope sentence" --top-k 10
+```
+
+For a title or DOI lookup, use Sciverse metadata search. It returns bibliographic metadata, not evidence passages or proof of full-text access:
+
+```text
+python scripts/literature.py search-sciverse-metadata --query "10.1234/example" --scope-basis "exact confirmed scope sentence"
+```
+
+For structured metadata, `search-sciverse-metadata` also accepts `--filters` and `--sort` as JSON arrays and `--page`, `--page-size`, or `--cursor`. The adapter checks filters and sorting against the account's catalog. Continue an existing search with `resume-sciverse-metadata --search-id ID`: it retains each attempt in the same record and reuses the last successful page's parameters, next cursor and catalog snapshot. Request only pages needed for the question, record incomplete pagination, and stop on a repeated cursor. Resuming reuses the catalog snapshot to avoid a second catalog call; account permissions may change and service errors must be reported. Only use scope and screening constraints the researcher supplied or confirmed. A sorted search may no longer rank by relevance.
+
+For a selected metadata result, `sciverse-relations --search-id ID --unique-id UNIQUE_ID --relation CITATIONS` retrieves one page; `REFERENCES` and `RELATED_WORKS` are the other relation choices. Use `--page` and `--page-size` to continue. Record the reason for selecting seeds, screen the new leads, and do not treat citation relationships as evidence of support or opposition. Metadata `unique_id` and full-text `doc_id` are distinct. Catalog filters, cursor continuation, relations, resources, and Paper Schema operations remain unverified against the live service and this account.
+
+Paper Schema is experimental and currently centered on AI conference papers. Do not invoke it automatically. For an explicitly requested experimental comparison, `experimental-sciverse-schema-search --enable-experimental --search-id ID --unique-id UNIQUE_ID` looks up a recorded metadata result by DOI. `experimental-sciverse-schema-materials --enable-experimental --search-id ID --schema-id SCHEMA_ID --goal survey` requests a bounded pack for a returned ID. Each command makes a separate service request. Their live behavior remains unverified. Check paper identity and every consequential extracted claim against source text; retain and disclose any truncation or unresolved locator.
+
+If the researcher changes or withdraws the scope, use `constraint-maintenance` to record only the newly confirmed active requirement and any required decision record. Then use `authorize-sciverse --replace` with the new confirmed record, or `revoke-sciverse` after removing the requirement. Do not delete the API key unless the researcher asks for that separate action.
+
+The script stores provider, exact query, date, confirmed scope excerpt, returned identifiers and locators, account-limited fields, and service errors in `references/searches/<search-id>/`. It labels chunks as search snippets. Context retrieval checks that the requested `doc_id` belongs to the recorded Sciverse results and that its scope excerpt is still active. When a result has a `doc_id`, fetch a bounded text range only when needed to check a claim:
+
+```text
+python scripts/literature.py read-sciverse-context --search-id ID --doc-id DOC_ID --offset OFFSET --limit 2000
+```
+

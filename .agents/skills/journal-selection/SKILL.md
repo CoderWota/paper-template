@@ -1,6 +1,6 @@
 ---
 name: journal-selection
-description: Use when the researcher asks which journal or venue to target, wants to compare venues, or wants to examine a named venue's scope, article types, length and structure limits, AI-use policy, data or reporting policies, costs, or recent publications. Reads current official venue sources and relevant publications, records each fact with its source and date, keeps fit separate from impact and readiness, recommends a target or shortlist, and never estimates an acceptance probability.
+description: Compare target venues using current official scope, policies, format limits, costs, and relevant publications.
 ---
 
 # Journal selection

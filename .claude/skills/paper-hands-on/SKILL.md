@@ -1,6 +1,6 @@
 ---
 name: paper-hands-on
-description: Use when the researcher asks, in any language and without naming a task, to continue or resume previous work, asks what to do next, or wants guidance through research and manuscript development. Recognizes the current stage, helps the researcher examine evidence and choices, and connects authorized tasks toward the agreed goal using existing project records. A request for one named task goes to that task's skill instead.
+description: Resume research and manuscript work from project records, or guide next steps; use a specialist skill for a named task.
 ---
 
 # Paper hands-on

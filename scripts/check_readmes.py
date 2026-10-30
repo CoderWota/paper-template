@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 """Check that every project directory has a meaningful README.md.
 
-Implements the directory README contract in docs/design-plan.md, Section 4:
-every designed directory, including nested and newly created ones, needs a
+Each designed directory, including nested and newly created ones, needs a
 short, directory-specific English README. Runtime caches, environments, and
 received or generated content are excluded.
 

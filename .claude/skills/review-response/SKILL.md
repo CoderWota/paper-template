@@ -1,6 +1,6 @@
 ---
 name: review-response
-description: Use when the researcher asks to organize a review round, plan or draft a point-by-point response to editors and reviewers, track which comments are addressed, or incorporate a coauthor's Word edits or tracked changes into the manuscript. Builds per-round response and change records from the checked extraction, links each response to an actual change or a justified explanation, routes structural changes through manuscript-revision, compares coauthor Word files with the version sent and the current manuscript without importing them blindly, re-audits and rebuilds after agreed changes, and never sends anything.
+description: Plan and draft point-by-point review responses, track actual changes, and reconcile coauthor Word edits.
 ---
 
 # Review response

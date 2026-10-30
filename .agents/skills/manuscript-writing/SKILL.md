@@ -1,6 +1,6 @@
 ---
 name: manuscript-writing
-description: Use when the researcher asks to draft, write, translate into the manuscript language, rewrite, expand, shorten, polish, or revise manuscript text, a section, a paragraph, a sentence, a results passage, a caption, or a method diagram, or to insert recovered or supplied text. Writes in the manuscript language against the confirmed outline, the writing rules in force for that scope, and the actual evidence and results, follows the workspace's math, figure, citation, and cross-reference conventions, keeps the researcher's own edits, marks claims that still need evidence instead of inventing support, and checks the result against the original.
+description: Draft, translate, shorten, or revise manuscript passages, captions, and diagram briefs within the requested scope.
 ---
 
 # Manuscript writing
@@ -16,7 +16,7 @@ When `manuscript-revision` hands off a staged candidate, the text, assets, metad
 
 ## Step 2: Read before writing
 
-3. Read `requirements/project.md` (manuscript language and its exceptions), the rules in `requirements/writing.md` whose scope covers this text, `manuscript/outline.md`, the current text of the section file, and the evidence notes and result records the text will rely on. Always edit the current file as it is now: the researcher may have changed it since you last read it.
+3. Read `requirements/project.md` (manuscript language and its exceptions), the rules in `requirements/writing.md` whose scope covers this text, the current section text, and the evidence notes and result records the text will rely on. Read the relevant outline entries when the edit depends on the section's role or argument; a sentence-level wording edit does not require loading the whole outline. Always edit the current file as it is now: the researcher may have changed it since you last read it.
 4. When a target venue is set, read its AI policy in `research/venues/`. If the venue restricts drafting by an AI, say so before drafting and follow the researcher's decision about how you may help.
 
 Use the confirmed argument and existing evidence without repeating settled questions. Distinguish an observed result, its interpretation, and a hypothesis in the prose. When a reasoning step is missing or a conclusion exceeds the evidence, suggest a specific local repair or mark the evidence gap; bring a changed main claim or structure back for the researcher's judgment. A confirmed author statement establishes their intention, not empirical support for a factual claim.

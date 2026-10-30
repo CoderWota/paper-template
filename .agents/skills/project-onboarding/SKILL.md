@@ -1,6 +1,6 @@
 ---
 name: project-onboarding
-description: Set up this research writing workspace for a researcher who may have no programming background. Confirms the interaction language, research goal, manuscript language, and document-processing choice one question at a time, records only confirmed answers, and ends with one clear next action. Use when the researcher asks in any language to initialize, start, or set up the paper project, or when requirements/project.md says the project is not initialized.
+description: Initialize a paper project by recording confirmed languages, goal, and processing choices; resume incomplete setup.
 ---
 
 # Project onboarding

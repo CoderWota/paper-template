@@ -1,6 +1,6 @@
 ---
 name: review-ingestion
-description: Use when the researcher gives editor or reviewer documents to archive and convert, such as decision letters, reviewer reports, annotated PDFs, or Word files with comments or tracked changes, or asks what a review round contains. Files them by venue and submission round in reviews/, converts PDF and Word letters with MinerU as the researcher confirmed (Markdown and plain-text letters are filed as they are, with no converter), lists Word comments, tracked changes, and PDF annotations separately, keeps reviewer labels and numbering, and reports gaps. It drafts no response and sends nothing.
+description: Archive and convert editor or reviewer correspondence by venue and round, retaining comments and change markers.
 ---
 
 # Review ingestion
@@ -19,7 +19,7 @@ Outcome: `reviews/<venue-id>/<round-id>/` holds the received documents in `origi
 
 1. Look for the venue, the manuscript identifier, and the round in the documents and in `reviews/`: the journal or conference named in the letter, "first revision", a decision date. Reuse an existing venue folder for the same venue.
 2. Ask only when the venue or the round is missing or ambiguous.
-3. Identifiers use lowercase letters, digits, and hyphens, for example `journal-of-synthetic-tests` and `round-1`.
+3. Identifiers use lowercase letters, digits, and hyphens, for example `example-journal` and `round-1`.
 4. Comments from co-researchers, collaborators, coauthors, or supervisors are research feedback, not a review round, even when they look like a review. Do not file them under `reviews/`; they go to `research-feedback`, which files them in `research/feedback/`.
 
 ## Step 2: Prepare the route

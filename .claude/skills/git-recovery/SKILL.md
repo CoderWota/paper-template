@@ -1,6 +1,6 @@
 ---
 name: git-recovery
-description: Use when the researcher wants earlier content back, such as a deleted paragraph, an older section, a figure, or a whole earlier version of a file or folder, or wants to undo changes. Finds the right version, retrieves earlier content without touching current files, restores in place only with the researcher's explicit choice of scope after keeping a copy of the current content, and explains what changed and how to return, without rewriting history.
+description: Find and retrieve earlier content; restore only the chosen scope after preserving current work.
 ---
 
 # Git recovery

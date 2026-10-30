@@ -13,3 +13,5 @@ Ask, for example: "Import all PDFs in this folder, including the images." or "Co
 - Citation details come from the document itself and are marked as not yet checked against a registry.
 
 The agent instructions are in [SKILL.md](SKILL.md). The skill uses `scripts/ingest.py` and `scripts/setup_mineru.py`. Related skills: `review-ingestion`, `environment-management`, and `privacy-configuration`.
+
+Route setup, continuation, extraction review, and metadata commands are in [the import guide](import-guide.md), read only for the operation being performed.

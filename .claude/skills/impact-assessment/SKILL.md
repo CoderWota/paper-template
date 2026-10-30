@@ -1,6 +1,6 @@
 ---
 name: impact-assessment
-description: Use when the researcher asks why a contribution or paper matters, who would benefit from it, how significant or useful it is, or how to strengthen its value. Examines audiences, the kind of value, what supports it, and what limits it, from inspected sources, the project's results, and labeled assumptions, separately from novelty, venue fit, and submission readiness, and gives concrete ways to strengthen it without a score or a prediction of acceptance.
+description: Assess who benefits from a contribution, why it matters, its support and limits, and how to strengthen its value.
 ---
 
 # Impact assessment

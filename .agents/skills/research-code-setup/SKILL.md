@@ -1,6 +1,6 @@
 ---
 name: research-code-setup
-description: Use when the research needs code, data analysis, simulation, or other computation, when the researcher asks to set up an analysis environment or a code project, asks to run an analysis and record what it found, or asks which chart suits a result. Finds out the actual needs before creating code/, sets up a proportionate structure with its own environment, runs authorized analyses with recorded inputs, code version, parameters, and outputs, checks the results, and writes result records in research/results/ that keep proposed, observed, checked, and failed results distinct. Creates nothing for research that needs no code.
+description: Set up needed research code, run authorized analyses with provenance, record results, and recommend suitable charts.
 ---
 
 # Research code setup and runs

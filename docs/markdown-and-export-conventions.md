@@ -1,7 +1,5 @@
 # Markdown, Diagrams, and Native Word Equations
 
-Status: confirmed requirements with an implementation contract. GitHub-renderable mathematics, Mermaid explanation diagrams, and native Word equations are required. The publishing engine (Pandoc with pandoc-crossref and citeproc) and the citation and cross-reference syntax were decided on 2026-10-28 after the [export trial](export-trial.md).
-
 Apply this contract to maintained Markdown, adopted manuscripts, and derived document extractions. Preserve received originals and parser-native results. Normalize derived syntax only when its meaning is preserved; flag uncertain formulas instead of guessing them.
 
 ## Mathematics in Markdown
@@ -20,7 +18,7 @@ GitHub also documents alternative inline delimiters and `math` fences. The works
 
 ## Citations and cross-references
 
-Decided on 2026-10-28 after the [export trial](export-trial.md). Outputs are built with Pandoc, pandoc-crossref, and citeproc; the agent writes and maintains this syntax.
+Outputs are built with Pandoc, pandoc-crossref, and citeproc; the agent writes and maintains this syntax.
 
 - **Citations:** `[@key]` in parentheses, `@key` in running text, `[@key, p. 12]` with a locator, `[@key1; @key2]` for several, and `[-@key]` without the author name. Keys come from `references/bibliography.bib`. A key that does not resolve is a build failure, and a key that resolves is still not evidence of support.
 - **Figures:** `![Caption](assets/name.png){#fig:id}`; the text refers to `@fig:id`.
@@ -71,7 +69,7 @@ Authored manuscript formulas in DOCX must become native Office Math objects, sto
 
 Images, plain text, unconverted LaTeX strings, and legacy embedded equation objects do not satisfy this native-equation requirement. Putting an unparsed LaTeX string inside an OMML text node also does not pass. Preserve fractions, scripts, operators, limits, accents, matrices, alignment, and symbols. Handle numbering, captions, and cross-references through the adopted profile without changing mathematical meaning.
 
-The [Pandoc math documentation](https://pandoc.org/MANUAL.html#math) describes OMML output for DOCX. The export trial observed every fixture formula as a separate, correctly structured native equation that Word 16.114.2 rendered correctly; this does not prove that every formula converts correctly. Check the actual source-to-output mapping and the rendered result for each manuscript.
+The [Pandoc math documentation](https://pandoc.org/MANUAL.html#math) describes OMML output for DOCX. Check the actual source-to-output mapping and the rendered result for each manuscript.
 
 If a formula cannot be converted faithfully, identify its source location and the failed construct. Preserve the original and mark the affected output requirement unmet. Do not silently fall back to an image, plain text, or a changed formula and report success. An equation available only as an imported image needs checked transcription before it can satisfy native-equation export.
 
@@ -83,4 +81,4 @@ If a formula cannot be converted faithfully, identify its source location and th
 4. Inspect the actual Word layout and representative editing of native formulas where Word verification is available. Cover inline/display math, fractions, scripts, matrices, multiline alignment, tables/captions as used, numbering, and cross-references. Report the actual inspection application and scope; another viewer alone does not establish tested Word behavior.
 5. Rebuild after a formula or diagram changes and invalidate affected prior checks. Keep unsupported cases visible and preserve earlier releases. A generic successful export is not evidence that all equations and diagrams meet this contract.
 
-These checks are implemented in `scripts/manuscript.py check` (source conventions) and `scripts/export.py build` (native equations formula by formula, figures, references, citations, and layout expectations), with the rendered pages inspected through `submission-assembly`. GitHub rendering of the label syntax was checked with synthetic samples during the [export trial](export-trial.md). Implementation tests belong to ingestion/adoption, writing/audit, and submission assembly. Researchers request the outcome in natural language; agents maintain syntax, conversion tools, assets, and checks. Add no compulsory graphics runtime merely to initialize or read the workspace.
+Run `scripts/manuscript.py check` for source conventions and `scripts/export.py build` for source-to-output equations, figures, references, citations, and layout expectations. Inspect the actual rendered pages through the submission assembly task. Researchers request the outcome in natural language; the assistant maintains syntax, tools, assets, and checks. Add no compulsory graphics runtime merely to initialize or read the workspace.

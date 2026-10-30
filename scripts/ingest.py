@@ -75,7 +75,7 @@ def cloud_route(root: Path, options: dict) -> CloudRoute:
         raise Refused(f"the {TOKEN} credential is not set. The researcher enters it privately with "
                       f"python scripts/credentials.py set {TOKEN} (see the environment-management skill).")
     return CloudRoute(token, model_version=options.get("model_version", "vlm"), language=options.get("language", "ch"),
-                      is_ocr=options.get("is_ocr", False), base_url=os.environ.get("INGEST_MINERU_API_URL") or None,
+                      is_ocr=options.get("is_ocr", False),
                       poll_interval=float(os.environ.get("INGEST_POLL_INTERVAL", "10")),
                       poll_timeout=float(os.environ.get("INGEST_POLL_TIMEOUT", "3600")), redact=Redactor([token]))
 

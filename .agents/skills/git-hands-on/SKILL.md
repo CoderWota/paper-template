@@ -1,6 +1,6 @@
 ---
 name: git-hands-on
-description: Use when the researcher wants to learn or practice version control, says they do not know Git, or asks to be guided through saving, comparing, recovering, and backing up versions. Guides practical steps on a separate practice copy and on the researcher's real tasks, one action at a time, using the git-inspection, git-setup, git-save, git-compare, git-recovery, and git-backup skills, with the agent operating Git and no command memorization required.
+description: Guide practical version-control learning on a separate practice copy, with the agent operating Git.
 ---
 
 # Git hands-on

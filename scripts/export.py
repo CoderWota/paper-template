@@ -81,7 +81,7 @@ class Refused(Exception):
 
 def profile_folder(root: Path, profile_id: str) -> Path:
     if not re.match(r"^[a-z0-9]+(?:-[a-z0-9]+)*$", profile_id):
-        raise Refused("a profile ID uses lowercase ASCII letters, digits, and single hyphens, for example journal-of-tests")
+        raise Refused("a profile ID uses lowercase ASCII letters, digits, and single hyphens, for example example-journal")
     return root / "requirements" / "profiles" / profile_id
 
 

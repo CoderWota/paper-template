@@ -4,7 +4,7 @@
 Each skill is written once in .agents/skills/<skill-id>/, where Codex finds it.
 Claude Code reads project skills only from .claude/skills/, so this script copies
 every canonical package there and writes a README that names the source
-(AGENTS.md, "Skills"; docs/design-plan.md, Section 8).
+as described in docs/context-loading.md.
 
 Usage:
   python scripts/sync_skills.py [WORKSPACE_ROOT]          regenerate the copies
@@ -118,6 +118,22 @@ def copy_readme(skill_id: str) -> bytes:
     return text.encode("utf-8")
 
 
+def catalog_readme() -> bytes:
+    """Describe the adapter without duplicating the canonical task catalog."""
+    text = (
+        "# Claude Code Research Task Skills\n\n"
+        "Generated adapters for the canonical [research task skills](../../.agents/skills/README.md). "
+        "Claude Code discovers these real file copies without symlink setup. Select only the task "
+        "needed for the request and read its conditional references when needed.\n\n"
+        "Edit only `.agents/skills/`, then run `python scripts/sync_skills.py` and "
+        "`python scripts/sync_skills.py --check`. This directory's introduction and package copies "
+        "are generated together; do not edit them directly. See [loading guidance](../../docs/context-loading.md) "
+        "for client differences and [capabilities](../../docs/capabilities.md) for operational limits.\n\n"
+        f"{GENERATED_MARK}\n"
+    )
+    return text.encode("utf-8")
+
+
 def same(rel: str, current: bytes | None, wanted: bytes) -> bool:
     if current is None:
         return False
@@ -134,6 +150,10 @@ def compare(root: Path):
     removals: list[Path] = []
     managed: list[Path] = []
     canonical_root, copies_root = root / CANONICAL, root / COPIES
+    introduction = copies_root / "README.md"
+    current_intro = introduction.read_bytes() if introduction.is_file() else None
+    if not same("README.md", current_intro, catalog_readme()):
+        writes.append((introduction, catalog_readme()))
     packages = sorted(p for p in canonical_root.iterdir() if p.is_dir() and p.name not in JUNK) if canonical_root.is_dir() else []
     for package in packages:
         found = package_problems(package)

@@ -1,15 +1,11 @@
 # Research Writing Workspace
 
-Shared terminology for the reusable template and the research projects created from it.
+Shared terminology for the manuscript, sources, decisions, and outputs in this research workspace. Read entries only when a term needs clarification.
 
 ## Participants and artifacts
 
 **Researcher**:
 The author directing the research ideas, scholarly judgments, final expression, and submission choices, without any assumed programming or software-engineering expertise. The researcher reviews and confirms meaningful outcomes; routine research support, document production, and technical coordination are delegated to the agent where feasible and authorized.
-_Avoid_: User when it could mean the template maintainer instead.
-
-**Template maintainer**:
-The person developing the reusable framework rather than writing a particular manuscript with it.
 
 **Manuscript**:
 The paper being developed, including its sections, figures, tables, citations, and supplementary material.

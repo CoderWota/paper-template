@@ -1,6 +1,6 @@
 ---
 name: research-ideation
-description: Use when the researcher wants possible research directions or new ideas, has only an interest, a puzzle, observations, readings, or data, or asks for different angles on a topic. Organizes the starting thoughts, uses what the workspace already holds, proposes a few substantially different directions with their basis, main assumption, feasibility, and first check, keeps originality qualified, and saves only the directions the researcher asks to keep in ideas/.
+description: Explore distinct research directions from interests, observations, readings, or data; save only ideas the researcher chooses.
 ---
 
 # Research ideation

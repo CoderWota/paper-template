@@ -1,15 +1,5 @@
-# Claude Code Adapters
+# Claude Code Adapter
 
-Claude Code reads project skills from this directory. Its skill contents are generated from the canonical, application-independent packages in [`.agents/`](../.agents/README.md), so Claude Code and Codex follow the same instructions.
+Claude Code reads task packages from [skills/](skills/README.md). They are generated from the canonical packages in [`.agents/`](../.agents/README.md), so both applications receive the same task instructions without requiring symlinks.
 
-## Contents
-
-- [`skills/`](skills/README.md): generated skill mirrors. Do not edit them by hand.
-
-Claude Code also loads [`CLAUDE.md`](../CLAUDE.md) at the workspace root, which imports the shared contract in [`AGENTS.md`](../AGENTS.md).
-
-Personal Claude Code settings (`settings.local.json`) can appear here. They stay on this computer and are excluded from version history.
-
-## Who edits what
-
-The agent maintains this directory. Researchers do not need to open or edit it.
+The root [CLAUDE.md](../CLAUDE.md) imports the shared [contract](../AGENTS.md). Edit skills at their canonical source and regenerate the copies; never maintain independent versions here. Personal `settings.local.json` stays ignored on this computer. Researchers do not need to open or maintain these files.

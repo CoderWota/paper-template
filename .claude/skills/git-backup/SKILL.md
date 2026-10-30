@@ -1,6 +1,6 @@
 ---
 name: git-backup
-description: Use when the researcher asks to back up, copy, share, or publish the workspace's version history outside this computer, for example to GitHub, GitLab, an institutional server, or an external drive, or asks whether the work is backed up. Explains local history versus an external copy, establishes the destination, its visibility, access, and what would leave the computer, records the confirmed destination, pushes saved versions only there and never with force, and checks that the copy holds the latest version.
+description: Back up saved versions to an explicitly confirmed destination and verify the copy; never force-push.
 ---
 
 # Git backup

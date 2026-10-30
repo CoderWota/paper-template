@@ -1,6 +1,6 @@
 ---
 name: git-save
-description: Use when the researcher asks to save, keep, or mark the current version, a milestone, or the state before a big change. Reviews the intended changes by area, agrees on what the version includes, refuses secrets and oversized files, saves a local checkpoint with a meaningful message, and reports what was saved and what remains, without sending anything to an external copy.
+description: Save the requested work as a meaningful local version after checking scope, secrets, and file sizes.
 ---
 
 # Git save

@@ -1,6 +1,6 @@
 ---
 name: environment-management
-description: Use when the researcher asks whether this computer is ready for a task, such as importing PDFs, says that something is missing or does not work, or when onboarding or another task needs a tool, a Python environment, or a credential. Checks and prepares this computer for the workspace without requiring programming knowledge. Inspects the operating system, processor, memory, storage, and installed tools; reuses compatible tools; creates project environments only when a task needs them; guides private local entry of API keys; and repairs broken setups.
+description: Check computer readiness or repair missing tools and environments; guide private credential entry for a chosen service.
 ---
 
 # Environment management
@@ -47,31 +47,9 @@ Use the path notes from the report: spaces or non-ASCII characters, a long Windo
 - Put a heavy tool, such as a local document parser, in its own environment under `.tools/<tool>/`, so that it cannot break the workspace scripts or the research code.
 - If the workspace folder moved and `.venv/` no longer runs, delete it and create it again from the dependency file. Ask before you delete a tool environment that took a long time to install.
 
-## Step 5: Credentials
+## Step 5: Credentials, only when needed
 
-Do this only for a service that the researcher chose and that needs a credential. An AI application subscription does not mean that a separate API key is necessary.
-
-Before you look for a key page or start the entry, check the "Available now" table in `AGENTS.md`. If no listed capability uses the credential yet, the credential is not needed now. Say so plainly in the researcher's own terms, for example "that service is not available here yet, so you do not need a key now". Note the credential as deferred in `state/current.md`. Do not look up the key page or the variable name, and do not collect a value. The exception is a test value that the researcher asks for in order to try the private entry page: it needs no integration.
-
-The commands below use `python`. When it is not found, use `python3` (macOS and Linux) or `py -3` (Windows), as in step 1.
-
-1. Find the exact variable name and the official page where the researcher gets the value, from the integration's documentation.
-2. Explain what the credential allows and where it is stored: `.env.local`, which Git ignores but which is not encrypted.
-3. Start the private entry page in the background, so that it can wait for the researcher (up to 10 minutes by default). Write the page texts in the researcher's language:
-
-   ```text
-   python scripts/credentials.py set NAME --title "..." --label "..." --note "..." --help-url "https://..." --button "..." --done-message "..." --invalid-message "..."
-   ```
-
-   The page opens in the researcher's browser and works only on the computer that runs the command. If the browser does not open, give the researcher the printed address.
-4. Tell the researcher to enter the value on that page, not in the conversation. Wait until the command reports `Saved` or `Replaced`.
-5. Confirm with `python scripts/credentials.py status NAME`. It shows only whether the value is set and its length.
-
-A program receives the value through `python scripts/credentials.py run --only NAME -- <command>`, or a workspace script reads it with `load_env_local()` from `scripts/credentials.py`. Never put a value in a command argument.
-
-If the researcher pastes a credential into the conversation, do not repeat it and do not store it from the conversation. Recommend that they revoke it at the provider, create a new one, and enter the new one on the private page.
-
-If the command refuses because Git does not ignore `.env.local`, or already tracks it, fix that first. Never weaken this check.
+For a supported service that the researcher chose, follow [private credential entry](credential-entry.md). A subscription does not imply a separate API key is needed. Do not read local secret values or request them in conversation.
 
 ## Step 6: Verify and report
 

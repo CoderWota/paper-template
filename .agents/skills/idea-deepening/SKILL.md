@@ -1,6 +1,6 @@
 ---
 name: idea-deepening
-description: Use when the researcher wants to examine, sharpen, test, challenge, or "grill" an existing idea or research question, or asks what is weak or unclear about it. Works through one substantive question at a time with a recommendation, first answers what the workspace and authorized searches can answer, compares the nearest prior work, separates novelty, significance, feasibility, and support, and leaves a clearer question, contribution, assumptions, alternatives, and next check.
+description: Challenge an existing research idea or question against evidence, alternatives, nearest work, and feasibility.
 ---
 
 # Idea deepening

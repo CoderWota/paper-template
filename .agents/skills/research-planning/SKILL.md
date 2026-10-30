@@ -1,6 +1,6 @@
 ---
 name: research-planning
-description: Use when the researcher asks for a research plan, a study design, a choice of method or approach, milestones, or what work would establish or weaken a claim. Translates a selected question into methods or lines of argument suited to the discipline, the evidence each claim needs, available and missing resources, work items with owners, risks, and next actions, keeps available evidence apart from work still required, and records consequential choices only after the researcher confirms them.
+description: Plan methods, evidence, resources, work items, and milestones for a selected question; confirm consequential choices.
 ---
 
 # Research planning

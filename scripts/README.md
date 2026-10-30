@@ -1,6 +1,6 @@
 # Scripts
 
-Reusable automation for operating this workspace, such as checks, conversion adapters, and build steps. The agent writes and runs these scripts; researchers never need to run or edit them.
+Operational tools for document import, literature, manuscript checks, output, research records, and version history. The agent writes and runs these scripts; researchers never need to run or edit them.
 
 Research analysis code is kept separately in `code/`, which is created only when a project needs it (`research-code-setup`), so that workspace tools cannot destabilize an analysis environment.
 
@@ -8,8 +8,7 @@ Research analysis code is kept separately in `code/`, which is created only when
 
 | Script | Purpose |
 | --- | --- |
-| [`check_readmes.py`](check_readmes.py) | Checks that every project directory has a meaningful, directory-specific README, following the contract in [design plan Section 4](../docs/design-plan.md#directory-readme-contract). Run `python scripts/check_readmes.py`; it exits with status 1 and lists the problems when a check fails. |
-| [`check_capabilities.py`](check_capabilities.py) | Checks that the availability table in `AGENTS.md` matches the skills folder: every skill is represented, every named skill or script exists, and draft skills marked "Not available yet" are not advertised as working. Run `python scripts/check_capabilities.py`. |
+| [`check_readmes.py`](check_readmes.py) | Checks that every project directory has a meaningful, directory-specific README, for the workspace directory conventions. Run when creating or reorganizing project directories: `python scripts/check_readmes.py`; it exits with status 1 and lists the problems when a check fails. |
 | [`check_requirements.py`](check_requirements.py) | Checks the form of the writing rules in `requirements/writing.md`: each rule has a rule, a scope, and a confirmation that quotes the researcher; examples and exceptions appear only with a quotation. |
 | [`inspect_environment.py`](inspect_environment.py) | Reports the operating system, processor architecture (including emulation), memory, free storage, Python interpreters, optional tools (on PATH or in the workspace's `.tools/` folder), workspace path risks, and project-local setup, without changing anything. Add `--json` for a machine-readable report. |
 | [`credentials.py`](credentials.py) | Stores credentials in the ignored `.env.local` without showing them: `set` opens a one-time page on this computer for private entry, `status` shows only whether a name is set, `remove` deletes one value, and `run` passes values to another program. Saving or removing one name keeps every other line of the file, and writers take turns under a lock in `.tmp/`, so two saves at the same moment cannot lose each other's value. It refuses to store anything when Git could track `.env.local`. |
@@ -26,7 +25,10 @@ Research analysis code is kept separately in `code/`, which is created only when
 | [`versions.py`](versions.py) | Operates the workspace's Git history for the agent: read-only `inspect` and `scope`, `init` and `identity`, scoped `save` that refuses secrets and oversized files, `history` and `compare`, `retrieve` and `restore` (which keeps the current content first), `untrack`, a separate `practice` copy, `remotes`, and `backup`, which pushes only to a destination confirmed in `requirements/privacy.md` and checks the copy. |
 | [`setup_mineru.py`](setup_mineru.py) | Installs MinerU into `.tools/mineru/` and its models into `.cache/mineru/`, and reports the installation, the models, and the free disk space. Run `install` and `models` only with the researcher's consent. |
 
-Automated tests for these scripts are in [`tests/`](tests/README.md). Run them after changing a script.
+
+## When to run checks
+
+Use the check that matches the work: `check_requirements.py` after rule changes; `manuscript.py check` after manuscript changes; `check_edit.py` after rewriting; `ingest.py verify` after imports; `research.py check` and `review.py check` for their records. Run `check_readmes.py` when project directories change, and synchronize skill adapters only when a canonical skill changes. Do not run every checker after a sentence edit. These operations check the actual work and do not establish scientific correctness on their own.
 
 ## Conventions
 

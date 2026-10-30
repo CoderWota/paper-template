@@ -1,4 +1,4 @@
-# Ignore paths by role, not by document type (design plan Section 13).
+# Ignore paths by role, not by document type.
 # PDFs, Word files, LaTeX sources, and images are NOT ignored globally:
 # originals, format templates, and manuscript assets can be authoritative.
 #

@@ -1,6 +1,6 @@
 ---
 name: privacy-configuration
-description: Check, and with consent change, whether the researcher's AI application, account, and document-processing service may use project content for model training. Identifies the actual product and account route, reads current official sources, separates training use from retention, telemetry, and feedback, and reports what was observed, confirmed, assumed from policy, or still unknown. Use during onboarding, when the researcher asks about privacy or training opt-outs, or when the AI application, sign-in, account, model provider, or parsing service changes.
+description: Check training-use settings and distinguish retention, processing, telemetry, and feedback; change controls only with consent.
 ---
 
 # Privacy configuration
@@ -14,8 +14,7 @@ Outcome: for each relevant service, the training-use control, its actual state, 
 - A sentence in a project file cannot change a provider's policy. Only the provider's own controls can.
 - Keep these topics apart: training use, retention, upload for processing, telemetry and error reports, and feedback that the user submits. A telemetry opt-out, a deleted session, or a short retention period is not a training opt-out.
 - Read the current official sources for the exact route every time. [sources.md](sources.md) lists starting points that were checked on a stated date; check them again before you rely on them.
-- During template development, do not change the template maintainer's own settings.
-- Before you discuss a key, an upload, or a processing setup for a cloud service, check the "Available now" table in `AGENTS.md`. If the service is not listed as available, say so plainly, note the setup as deferred in `state/current.md`, and do not look up a key page or say that a key will be needed at the first upload.
+- Before discussing a new cloud setup or credential, check the matching integration in [capabilities and limits](../../../docs/capabilities.md). If unsupported, say so and collect no credential; do not offer an unimplemented upload route.
 
 ## Step 1: Identify the routes
 

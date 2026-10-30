@@ -1,6 +1,6 @@
 ---
 name: literature-and-evidence
-description: Use when the researcher asks what selected literature supports, where a claim is supported, how sources agree or conflict, or whether a passage needs evidence. Retrieves a small set of matching passages, checks locators against available originals, and records interpretations separately from source text.
+description: Retrieve and compare passages in selected sources to check claim support, disagreement, and citation locators.
 ---
 
 # Literature and evidence
