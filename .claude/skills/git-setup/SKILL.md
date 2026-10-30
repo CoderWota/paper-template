@@ -25,7 +25,7 @@ Outcome: a usable local version history whose tracked scope the researcher under
 
 ## Step 4: Arrange an inherited history
 
-8. **Template history and an `origin` that is the template.** Explain that the template's development versions came with the copy, and that sending the paper to `origin` would publish it in the template's repository. Recommend keeping the history and renaming that remote, so that no backup can reach it by accident: `git remote rename origin template`. Removing it (`git remote remove origin`) is the alternative. Do it only after the researcher chooses.
+8. **Template history and a remote to the original template.** Keep the local development history if it came with the copy; it does not itself send work anywhere. Run `python scripts/versions.py detach-template` to inspect all fetch and push addresses, regardless of the remote's name. For confirmed research-project initialization, explain the local disconnection and run it with `--apply` when the template remote is unambiguous. If the client blocks writing `.git/config`, request narrow local filesystem approval when available; if unavailable, leave setup incomplete and explain the blocker without handing the researcher a Git command. A remote with mixed or uncertain addresses or shared Git worktrees needs the researcher's choice before a change. Renaming a remote does not prevent pushing to it.
 9. **Another paper's history or material.** Never delete or rewrite it. Ask whether this workspace continues that paper (keep everything) or whether the new paper should start from a fresh copy of the template, as `project-onboarding` describes. A new paper uses that separate copy; change nothing in this folder for it. A separate explicit request to start fresh history for the same paper is a risky recovery: show the scope and obtain the researcher's choice, keeping the old `.git` folder renamed into `.local/`, never deleted.
 
 ## Step 5: Repair
@@ -42,4 +42,4 @@ Outcome: a usable local version history whose tracked scope the researcher under
 
 - The history was created or changed only after the researcher's choice, and inspection preceded every change.
 - `.env.local` and other credentials are excluded and untracked; no ignore rule excludes documents by type.
-- No history was rewritten, nothing was deleted, and nothing was pushed.
+- No local history or research file was deleted or rewritten, and nothing was pushed. Removing an original-template remote removes only its connection and remote-tracking references.

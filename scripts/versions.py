@@ -18,6 +18,7 @@ Usage:
   python scripts/versions.py untrack --path PATH
   python scripts/versions.py practice [--reset]
   python scripts/versions.py remotes
+  python scripts/versions.py detach-template [--apply]
   python scripts/versions.py backup --remote NAME [--branch BRANCH]
 All commands take --root WORKSPACE (default: the parent of the scripts folder).
 Exit status: 0 done; 1 a check failed or a backup could not be verified; 3 refused. Uses only the Python standard library.
@@ -33,9 +34,11 @@ import subprocess
 import sys
 from datetime import datetime
 from pathlib import Path
+from urllib.parse import urlsplit
 
 ROOT = Path(__file__).resolve().parent.parent
 TEMPLATE_ROOT_COMMIT = "4c89942ae14b3e2cfa42ba2a6bc19b8bf2978a1a"
+TEMPLATE_REPOSITORY = ("github.com", "coderwota", "paper-template")
 WARN_BYTES, LIMIT_BYTES = 50 * 1024 * 1024, 100 * 1024 * 1024
 SECRET_NAME = re.compile(r"(^|/)(\.env(\.(?!example$)[^/]+)?|[^/]+\.(pem|p12|pfx)|id_(rsa|ed25519|ecdsa)[^/]*)$", re.I)
 SECRET_LINE = re.compile(r"^\s*(export\s+)?[A-Z][A-Z0-9_]*(TOKEN|KEY|SECRET|PASSWORD)[A-Z0-9_]*\s*=\s*['\"]?[^\s'\"#]{12,}"
@@ -559,6 +562,119 @@ def confirmed_destinations(root: Path) -> str:
     return privacy.read_text(encoding="utf-8") if privacy.is_file() else ""
 
 
+def destination_confirmed(url: str, record: str) -> bool:
+    """Only a dedicated marker confirms an exact backup destination."""
+    if not url:
+        return False
+    prefix = "<!-- confirmed-backup-destination: "
+    return any(line.strip() == f"{prefix}{url} -->" for line in record.splitlines())
+
+
+def repository_address(url: str) -> str:
+    """Classify a resolved Git address as template, other, or uncertain."""
+    url = url.strip()
+    if not url:
+        return "uncertain"
+    if "://" in url:
+        parsed = urlsplit(url)
+        if parsed.scheme.lower() == "file":
+            return "other" if parsed.path and not parsed.query and not parsed.fragment else "uncertain"
+        if parsed.scheme.lower() not in {"https", "http", "ssh", "git"} or not parsed.hostname or parsed.query or parsed.fragment:
+            return "uncertain"
+        host, path = parsed.hostname.lower().rstrip("."), parsed.path
+    elif re.match(r"^[^/\s]+@?[^/\s]*:[^/].*$", url) and not re.match(r"^[A-Za-z]:[\\/]", url):
+        host_part, path = url.split(":", 1)
+        host = host_part.rsplit("@", 1)[-1].lower().rstrip(".")
+    elif url.startswith(("/", "./", "../")) or re.match(r"^[A-Za-z]:[\\/]", url):
+        return "other"
+    elif ":" not in url and "@" not in url and not any(char.isspace() for char in url):
+        return "other"  # a relative local repository path
+    else:
+        return "uncertain"
+    if host.endswith(".github.com"):
+        # A GitHub subdomain may redirect or proxy to the canonical host.
+        return "uncertain"
+    if host != TEMPLATE_REPOSITORY[0]:
+        # An SSH host alias could resolve to GitHub, so do not infer its target.
+        return "uncertain" if "@" in url or url.startswith("ssh://") else "other"
+    parts = path.strip("/").removesuffix(".git").lower().split("/")
+    if len(parts) != 2 or not all(parts):
+        return "uncertain"
+    return "template" if tuple(parts) == TEMPLATE_REPOSITORY[1:] else "other"
+
+
+def remote_urls(root: Path, name: str, *, push: bool = False) -> list[str]:
+    args = ("remote", "get-url", "--push", "--all", name) if push else ("remote", "get-url", "--all", name)
+    result = git(root, *args, check=False)
+    return result.stdout.splitlines() if result.returncode == 0 else []
+
+
+def shared_remote_config(root: Path) -> bool:
+    """Remote configuration is shared by all worktrees of one repository."""
+    paths = git(root, "rev-parse", "--git-dir", "--git-common-dir").stdout.splitlines()
+    if len(paths) != 2:
+        return True
+    resolved = [(root / value).resolve() for value in paths]
+    if resolved[0] != resolved[1]:
+        return True
+    return sum(line.startswith("worktree ") for line in git(root, "worktree", "list", "--porcelain").stdout.splitlines()) > 1
+
+
+def clear_removed_remote_defaults(root: Path, name: str) -> None:
+    """Clear local default-push pointers that Git may leave after remote removal."""
+    pattern = r"^(remote\.pushDefault|branch\..*\.(pushRemote|remote))$"
+    entries = git(root, "config", "--local", "--null", "--get-regexp", pattern, check=False).stdout
+    for item in entries.split("\0"):
+        if not item or "\n" not in item:
+            continue
+        key, value = item.split("\n", 1)
+        if value == name:
+            git(root, "config", "--local", "--unset-all", key)
+
+
+def command_detach_template(args, root: Path) -> int:
+    if not shutil.which("git"):
+        if (root / ".git").exists():
+            raise Refused("Git is unavailable but this workspace has Git configuration; install Git before completing the template-remote check")
+        print("Git is unavailable and this folder has no Git configuration; nothing needs disconnecting.")
+        return 0
+    if not is_repository(root):
+        if (root / ".git").exists():
+            raise Refused("this workspace has Git configuration that could not be inspected safely; do not mark setup complete")
+        print("This folder has no Git repository of its own; no template remote was changed.")
+        return 0
+    names = git(root, "remote").stdout.splitlines()
+    if not names:
+        print("No remote is configured; nothing needs disconnecting.")
+        return 0
+    matches, blocked = [], []
+    for name in names:
+        fetch, push = remote_urls(root, name), remote_urls(root, name, push=True)
+        kinds = {repository_address(url) for url in fetch + push} if fetch and push else {"uncertain"}
+        if "uncertain" in kinds:
+            blocked.append(f"{name}: an address could not be identified; inspect its fetch and push URLs")
+        elif "template" in kinds and "other" in kinds:
+            blocked.append(f"{name}: template and other destinations are mixed; choose how to separate them")
+        elif kinds == {"template"}:
+            matches.append(name)
+    if args.apply and matches and shared_remote_config(root):
+        blocked.append("remote configuration is shared with another Git worktree; choose a safe workspace-specific action")
+        matches = []
+    if matches:
+        if args.apply:
+            for name in matches:
+                git(root, "remote", "remove", name)
+                clear_removed_remote_defaults(root, name)
+            print("Disconnected template remote(s): " + ", ".join(matches) + ". Local files, branches, and commits remain.")
+        else:
+            print("Template remote(s) to disconnect: " + ", ".join(matches) + ". Run with --apply during confirmed project setup.")
+    else:
+        print("No unambiguous template remote needs disconnecting.")
+    for item in blocked:
+        print("Needs a researcher decision: " + item + ".")
+    return 3 if blocked else 0
+
+
 def command_remotes(args, root: Path) -> int:
     require_repository(root)
     names = git(root, "remote").stdout.split()
@@ -568,7 +684,7 @@ def command_remotes(args, root: Path) -> int:
     confirmed = confirmed_destinations(root)
     for name in names:
         url = git(root, "remote", "get-url", name).stdout.strip()
-        status = "confirmed in requirements/privacy.md" if url and url in confirmed else "not confirmed as a backup destination"
+        status = "confirmed in requirements/privacy.md" if destination_confirmed(url, confirmed) else "not confirmed as a backup destination"
         print(f"{name}: {redact(url)} ({status})")
     return 0
 
@@ -579,10 +695,21 @@ def command_backup(args, root: Path) -> int:
         raise Refused("there is no saved version to back up")
     if args.remote not in git(root, "remote").stdout.split():
         raise Refused(f"there is no external copy called {args.remote}; set it up with the researcher's confirmed destination first")
-    url = git(root, "remote", "get-url", args.remote).stdout.strip()
-    if not url or url not in confirmed_destinations(root):
-        raise Refused(f"{redact(url)} is not named as a confirmed destination for external copies in requirements/privacy.md; "
-                      "record the researcher's confirmation of the destination, its visibility, and what may leave this computer first")
+    fetch_urls = remote_urls(root, args.remote)
+    push_urls = remote_urls(root, args.remote, push=True)
+    if not fetch_urls or not push_urls:
+        raise Refused("the remote's fetch or push destination cannot be identified; nothing was sent")
+    if any(repository_address(url) == "template" for url in fetch_urls + push_urls):
+        raise Refused("this remote reaches the template repository; it cannot be a research backup destination")
+    if any(repository_address(url) == "uncertain" for url in fetch_urls + push_urls):
+        raise Refused("a remote address cannot be identified safely; resolve its fetch and push destinations first")
+    confirmed = confirmed_destinations(root)
+    if any(not destination_confirmed(url, confirmed) for url in fetch_urls + push_urls):
+        raise Refused("every actual fetch and push address must be recorded as a confirmed destination in requirements/privacy.md; "
+                      "confirm visibility and what may leave this computer first")
+    if len(fetch_urls) != 1 or len(push_urls) != 1 or fetch_urls[0] != push_urls[0]:
+        raise Refused("this remote has different or multiple fetch and push addresses; a verified backup needs one identical confirmed address")
+    url = push_urls[0]
     branch = args.branch or git(root, "branch", "--show-current").stdout.strip()
     if not branch:
         raise Refused("no branch is checked out; name the branch to back up with --branch")
@@ -645,6 +772,8 @@ def main(argv: list | None = None) -> int:
     practice = commands.add_parser("practice", help="create a disposable practice copy with its own history")
     practice.add_argument("--reset", action="store_true")
     commands.add_parser("remotes", help="list external copies and whether each is a confirmed destination")
+    detach = commands.add_parser("detach-template", help="inspect or disconnect remotes to the original template repository")
+    detach.add_argument("--apply", action="store_true", help="remove unambiguous template remotes from this local repository")
     backup = commands.add_parser("backup", help="copy saved versions to a confirmed external destination and check the copy")
     backup.add_argument("--remote", required=True)
     backup.add_argument("--branch")
@@ -653,7 +782,7 @@ def main(argv: list | None = None) -> int:
     handlers = {"inspect": command_inspect, "scope": command_scope, "init": command_init, "identity": command_identity,
                 "save": command_save, "history": command_history, "compare": command_compare, "retrieve": command_retrieve,
                 "restore": command_restore, "untrack": command_untrack, "practice": command_practice,
-                "remotes": command_remotes, "backup": command_backup}
+                "remotes": command_remotes, "detach-template": command_detach_template, "backup": command_backup}
     try:
         return handlers[args.command](args, root)
     except Refused as error:

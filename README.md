@@ -2,6 +2,8 @@
 
 Develop one paper with an AI assistant in Codex or Claude Code. You direct the research question, scholarly judgments, final wording, and submission choices. The assistant helps examine evidence, write and revise the manuscript, and handle files and tools. You do not need programming knowledge.
 
+For a fresh paper, GitHub's [Use this template](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template) creates an independent repository under your account. A ZIP download or a direct clone also works. Open your copy in your AI application. When you ask to initialize it for research, the assistant checks for and disconnects any clear link back to this template's repository. Your local files and saved versions stay in place; your own remote is left alone. Local saving does not send anything to GitHub. An external backup requires your separate choice of destination and what it may contain.
+
 ## Start with your situation
 
 Open this folder in your AI application and start a conversation. If you do not know what to do, simply say:

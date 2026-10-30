@@ -8,10 +8,11 @@ Ask, for example: "Help me initialize this research writing project. I do not ha
 
 - `requirements/project.md` and `requirements/privacy.md` with your confirmed answers, written in your language.
 - An updated `state/current.md` with one clear next step.
+- A check for a link back to the original template repository. A clear link is disconnected before setup finishes, while local saved versions remain.
 
 ## What it never does
 
-- It never deletes, moves, or overwrites existing material. A workspace that already holds another paper stays unchanged; a new paper starts from a fresh copy of the template instead.
+- It never deletes, moves, or overwrites research material. A workspace that already holds another paper stays unchanged; a new paper starts from a fresh copy of the template instead.
 - It never asks for a password or an API key in the conversation.
 
 The agent instructions are in [SKILL.md](SKILL.md). Related skills: `environment-management`, `privacy-configuration`, and `constraint-maintenance`.

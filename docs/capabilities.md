@@ -24,8 +24,8 @@ Consult this guide when support, setup, or access is uncertain. It is not startu
 | Simulate peer review | `mock-review` | Scores tied to a stated form and evidence through several perspectives; no prediction of real scores or acceptance. |
 | Choose AI models | `model-selection` | Uses current official information for the actual application, plan, and provider route; no setting changes without consent. |
 | Format and assess a package | `submission-assembly`, `submission-readiness` | DOCX with output profile, editable equations, and rendered inspection. PDF is a rendering of checked DOCX; no independent PDF publishing route or automatic submission. |
-| Preserve and compare versions | `git-inspection`, `git-setup`, `git-save`, `git-compare`, `git-recovery`, `git-hands-on` | Local history, scoped saves and recovery; practice uses a separate copy. |
-| Make an external backup | `git-backup` | Only to the explicitly confirmed destination; verify the copy and never force-push. |
+| Preserve and compare versions | `git-inspection`, `git-setup`, `git-save`, `git-compare`, `git-recovery`, `git-hands-on` | Local history, scoped saves and recovery; practice uses a separate copy. Research-project setup disconnects a clear link to the original template repository without deleting local history. |
+| Make an external backup | `git-backup` | Only to explicitly confirmed fetch and push addresses; refuse the original template repository, verify the copy, and never force-push. |
 | Respond to reviews | `review-response` | Point-by-point records tied to actual changes; compare coauthor Word edits with both sent and current versions. Sends nothing. |
 
 ## Supporting tools

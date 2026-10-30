@@ -22,7 +22,9 @@ Outcome: the few confirmed settings needed to begin, an accurate `state/current.
 
 Start with `state/current.md` and `requirements/project.md`, then inspect `manuscript/manifest.yaml` and directory names in `inbox/`, `references/originals/`, `ideas/`, `research/`, and `reviews/` to distinguish a fresh workspace from existing research. Template READMEs and empty indexes are not research material. Read relevant requirement entries to reuse confirmed answers; open an index or record only when needed to resolve the current paper or task. Do not read the full library or every requirements file by default.
 
-Inspect version history with `python scripts/versions.py inspect` only when setup includes a history question or the current material leaves a history or recovery ambiguity. If it reveals a relevant inherited history, external copy, or missing research version, explain that issue and offer the matching version task without changing history. Do not make a history discussion a prerequisite for a beginner's first task.
+For a confirmed request to initialize this paper, run `python scripts/versions.py detach-template` before marking setup complete. Tell the researcher in one sentence that project setup will disconnect a link to the original template repository if one exists; their local versions and any personal remote remain. Run `python scripts/versions.py detach-template --apply` for an unambiguous ordinary copy, then check again. If the client restricts writing `.git/config`, request its narrow local filesystem approval when available and retry; if approval is unavailable or denied, report setup incomplete without asking the researcher to run a command. If the tool reports a mixed or uncertain address or shared Git worktrees, explain the specific issue and leave setup incomplete until the researcher chooses how to handle it. A folder without Git configuration or without remotes needs no action. Do not do this for a directory tour, a bounded first task, or template maintenance.
+
+Inspect other version-history details with `python scripts/versions.py inspect` only when setup includes a history question or the current material leaves a history or recovery ambiguity. If it reveals relevant inherited history, an external copy, or a missing research version, explain that issue and offer the matching version task without changing history. Do not make a history discussion a prerequisite for a beginner's first task.
 
 Research material means sources in the library, manuscript sections in the manifest, retained ideas, research records, or review rounds. Files in `inbox/` are intake material, not another paper.
 
@@ -77,7 +79,7 @@ Offer the optional check when the researcher asks about privacy or the selected 
 
 ## Step 8: Finish
 
-1. Once the agreed setup is complete, mark the project initialized with the date and keep unneeded choices explicitly open. If setup stops before that point, retain its incomplete status and the confirmed answers. Rewrite `state/current.md` in the interaction language: what is set up, what is open, and the next action. No record is written merely to log a tour.
+1. Once the agreed setup and the template-remote check are complete, mark the project initialized with the date and keep unneeded choices explicitly open. If setup stops before that point, retain its incomplete status and the confirmed answers. Rewrite `state/current.md` in the interaction language: what is set up, what is open, and the next action. No record is written merely to log a tour.
 2. Report the recorded settings with links, open items relevant to the task, and one feasible next action. Continue a first task already requested once its prerequisites are settled; do not stop solely to ask for the same authorization again. For documents, give the actual clickable location of optional `inbox/` or use their current location; the researcher need not sort or move files. `inbox/imports/` holds import records, not incoming files.
 
 ## A workspace that already holds work
@@ -99,3 +101,4 @@ Do not delete, move, or overwrite anything in this case. This folder can be the 
 - `state/current.md` names the next action, in the interaction language.
 - A declined or postponed offer appears only in `state/current.md`, not in `requirements/`.
 - No existing material was deleted, moved, or overwritten.
+- No original-template remote remains on an initialized project; ambiguous or shared Git configuration remains for a researcher decision.
