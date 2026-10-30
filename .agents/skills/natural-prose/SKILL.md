@@ -45,7 +45,7 @@ Skip this step for a check.
 ## Completion check
 
 - The task (check or revise) and the scope of the text are stated, and confirmed rules took precedence over the pattern lists.
-- Every claim, number, citation, cross-reference, hedge, condition, and attribution of the original is still present, and nothing was added; every difference that `check_edit.py` reported is accounted for.
+- Preserve the claims, numbers, citations, cross-references, hedges, conditions, and attributions unless the requested edit explicitly changes them. Review each reported difference from `check_edit.py` for meaning; explain any intentional change and report anything unresolved. The script reports counts and differences without deciding what should be restored.
 - Sound text was left unchanged, and the researcher's voice was kept.
 - No statement about who wrote the text and no promise about AI detectors was made.
 - No rule was recorded without the researcher's confirmation.

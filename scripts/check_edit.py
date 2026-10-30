@@ -229,7 +229,7 @@ def main(argv: list[str] | None = None) -> int:
             texts.append(path.read_text(encoding="utf-8-sig"))
         except (OSError, UnicodeDecodeError) as error:
             print(f"Cannot read {path}: {error}")
-            return 2
+            return 1
     report, warnings, notes = compare(texts[0], texts[1], args.translation)
     print(f"Compared {args.original} with {args.revised}{' as a translation' if args.translation else ''}.")
     if report:
@@ -242,10 +242,7 @@ def main(argv: list[str] | None = None) -> int:
         print("\n".join(warnings))
     for note in notes:
         print(note)
-    if report:
-        print("Result: restore each lost item, or tell the researcher why the difference is intended.")
-        return 1
-    print("Result: every protected item is kept." + (" Read the sentences that the warnings name." if warnings else ""))
+    print(f"Result: {len(report)} protected difference(s) and {len(warnings)} wording warning(s) reported.")
     return 0
 
 

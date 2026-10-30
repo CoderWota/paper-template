@@ -19,7 +19,7 @@ Attributed advice about the research or the manuscript from co-researchers, coll
 
 ## Layout of actions.md
 
-One section per suggestion. The values are in your interaction language; the labels and the kind and status words stay as shown (Chinese equivalents such as `原话`, `研究者回忆`, `智能体摘要`, `已收到`, `讨论中`, `已采纳`, `部分采纳`, `未采纳`, and `已实施` are accepted), because `python scripts/research.py check` reads them.
+One section per suggestion is a suggested layout. `python scripts/research.py check` follows recognized status and `Change` fields to check links for suggestions marked implemented. Other or unfamiliar labels and status words are not rejected. Chinese equivalents such as `原话`, `研究者回忆`, `智能体摘要`, `已收到`, `讨论中`, `已采纳`, `部分采纳`, `未采纳`, and `已实施` are also understood.
 
 ```text
 ## F1 <short title>

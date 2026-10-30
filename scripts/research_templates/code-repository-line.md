@@ -1,1 +1,0 @@
-- [`${name}/`](${name}/): remote ${remote}; commit when attached ${commit}; environment files ${environment}; output folders ${output_folders}; data files not copied ${data_left}. Source: ${source}.

@@ -20,7 +20,7 @@ Make these checks separately from the audit's checks, and report the result of e
 
 ## Report
 
-Write the report in the interaction language, with these parts:
+Write the report in English, with these parts:
 
 1. **Summary.** One sentence on what the paper claims and where it sits in its field, taken from the text.
 2. **Strengths.** One to three. For each, say why it matters to the field and where its evidence is.

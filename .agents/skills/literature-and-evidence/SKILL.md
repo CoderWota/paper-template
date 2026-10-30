@@ -18,7 +18,7 @@ When an inspected context names a needed figure or attachment, `read-sciverse-re
 
 ## Record evidence without altering the source
 
-Create or update `references/notes/<source-id>.md` in the interaction language. Preserve existing researcher-authored content. Keep quotations verbatim and attributed, and do not edit the archived original or generated `document.md`.
+Create or update `references/notes/<source-id>.md` in English. Preserve existing researcher-authored content. Keep quotations verbatim and attributed, and do not edit the archived original or generated `document.md`.
 
 For a service-only source without an archived original, keep retrieved text and its locator in the existing search record and make the access limitation explicit in the answer. Create a source note only after there is a real archived source ID. Distinguish a paper's preprint, accepted manuscript and published version; link versions only when their relationship has been checked. Check correction, retraction or other status against a trustworthy source when available and permitted within the active external-query scope; otherwise label that status unchecked. A missing warning is not proof of a clean status.
 
@@ -42,7 +42,7 @@ Never convert an absent page number, printed label, DOI, quote, or result into a
 - Separate exact source statements, your synthesis, and unverified interpretations. An abstract-only record cannot support a claim about uninspected full-text results.
 - State the search/read scope and gaps. “No support found in the inspected sources” does not mean “no evidence exists.”
 - Use `python scripts/literature.py audit-bibliography` when checking that BibTeX entries resolve to archived sources. Report this separately from whether the sources support a manuscript claim.
-- Do not write to `manuscript/` unless the researcher asked for a manuscript edit. If they did, follow the manuscript-writing capability status in `AGENTS.md`.
+- Do not write to `manuscript/` unless the researcher asked for a manuscript edit. If they did, follow `manuscript-writing`.
 
 ## Completion check
 

@@ -5,7 +5,7 @@ description: Adopt an existing draft into the workspace, preserving the original
 
 # Manuscript import
 
-Outcome: the researcher's existing manuscript adopted into `manuscript/` (or staged beside the current one for comparison), in the workspace conventions, with the original kept unchanged and a mapping of sections, images, tables, formulas, footnotes, and citations that names everything lost, uncertain, or unresolved. The conversion does not rewrite the science and does not accept tracked changes on the researcher's behalf.
+Outcome: the researcher's existing draft adopted into `manuscript/` (or staged beside the current one for comparison), in the workspace conventions, with the original kept unchanged and conversion losses named. Import preserves the draft's language even when the target paper language differs; it does not translate, rewrite the science, or accept tracked changes on the researcher's behalf.
 
 ## Step 1: Identify the material and the target
 
@@ -24,7 +24,7 @@ Outcome: the researcher's existing manuscript adopted into `manuscript/` (or sta
    | Old Word `.doc` | Ask the researcher to save a copy as `.docx`. |
 
    When Pandoc is missing, explain it and install it only with consent: `python scripts/export.py install --component pandoc`.
-4. The import keeps the original unchanged in `inbox/imports/<import-id>/originals/` and the converted text in `extracted/markdown/`, with its images in `extracted/assets/`. Word citation fields from Zotero, Mendeley, and EndNote become citations; LaTeX labels, references, and citations become the workspace syntax; formulas become `$...$` and `$$` with label paragraphs.
+4. The import keeps the original unchanged in `inbox/imports/<import-id>/originals/` and the converted text in `extracted/markdown/`, with its images in `extracted/assets/`. Word citation fields from Zotero, Mendeley, and EndNote become citations; LaTeX labels, references, and citations become the workspace syntax; formulas become `$...$` and `$$` with label paragraphs. Write or update the import folder's English README from `import.json` and the observed conversion results.
 
 ## Step 3: Tracked changes and comments
 
@@ -46,7 +46,7 @@ Outcome: the researcher's existing manuscript adopted into `manuscript/` (or sta
 
 9. **Citations.** Map the citation keys to `references/bibliography.bib`. LaTeX keys usually match the supplied `.bib` file: add its entries, linking each to its library source ID when the source is in the library. Keys from Word citation fields are the reference manager's identifiers: the import keeps the document's own citation metadata in `references.bib` in the import record; add those entries, or match them to existing entries and change the keys in the text. Never invent a match, and never claim that a cited work's full text is in the library because its entry exists; keys that stay unresolved remain visible in the check.
 10. **Conversion details.** A typed number inside a formula, such as `(1)`, is removed and replaced by a label paragraph when the formula is referred to; a hand-written "Figure 1" becomes an `@fig:` reference with a label on the figure; an image in Windows metafile format is often an equation from an old equation editor and needs transcription by the researcher or a checked conversion, never a guess; unconverted LaTeX lines and missing images are reported. These are format repairs: report each one, and change no wording or claim.
-11. Run `python scripts/manuscript.py check` and compare the important parts with the original file or its rendered pages: formulas, tables, figures, and the section order. The imported claims are the researcher's text, not verified findings.
+11. Run `python scripts/manuscript.py check` and compare the important parts with the original file or its rendered pages: formulas, tables, figures, and the section order. The imported claims are the researcher's text, not verified findings. If the draft language differs from the target paper language, identify translation as remaining work; do not translate during import.
 
 ## Step 6: Report
 
@@ -58,4 +58,4 @@ Outcome: the researcher's existing manuscript adopted into `manuscript/` (or sta
 - No tracked change was accepted or rejected without the researcher's decision, and comments were not applied.
 - An existing manuscript was not replaced; a second version was staged for comparison.
 - Every loss, unresolved citation, and uncertain formula or image is named in `mapping.md` and in the report; nothing was invented to fill a gap.
-- `python scripts/manuscript.py check` reports no problem, or each remaining problem is reported as an open item.
+- Review `python scripts/manuscript.py check`: resolve actual loss or meaning risks, and report other findings as open items when relevant. The command reports findings; a nonzero exit is not a writing judgment.

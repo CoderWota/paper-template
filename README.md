@@ -57,7 +57,7 @@ Before parsing documents, choose local processing or the named MinerU service an
 
 Ask “Explain the project folders” for a guided tour of these and the supporting folders.
 
-The assistant maintains the supporting [`scripts/`](scripts/README.md) and agent configuration. Research code is created separately in `code/` only when a study needs computation.
+The assistant handles document processing, evidence checks, version history, and output. You do not need to run commands. Research code is created separately in `code/` only when a study needs computation.
 
 ## Continue, review, and decide
 
@@ -67,4 +67,4 @@ Clear instructions authorize routine work within their scope. Changes to the res
 
 Converted text can contain errors. Search hits are leads rather than verified evidence, simulated review scores are not acceptance probabilities, and an exported file still needs inspection. The assistant reports what it actually checked and what remains unresolved. Local version history is separate from an external backup; nothing is pushed without your instruction for a destination.
 
-Operational details are available in [the guides](docs/README.md), including [document conventions](docs/markdown-and-export-conventions.md) and [agent loading](docs/context-loading.md). They are reference material, not prerequisites for ordinary writing.
+Optional operational guides are listed in [the documentation index](docs/README.md). They cover document processing, literature search, manuscript conventions, and the researcher-led work loop; ordinary writing can begin without reading them.

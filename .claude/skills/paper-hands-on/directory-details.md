@@ -17,9 +17,9 @@ Read only when the researcher requests more detail about a folder or workflow. U
 | [outputs/](../../../outputs/README.md) | Generated previews, checks, and preserved release packages after formatting. | Inspect the output and ask for corrections or a final package. | Build from the working manuscript, inspect the result, and preserve releases. |
 | [state/](../../../state/README.md) | A short note of actual work in progress and its next step. | Ask to continue later without reconstructing the previous session. | Maintain the handoff and inspect current work before resuming; do not log a tour. |
 | [docs/](../../../docs/README.md) | Optional guides to supported operations, limits, and conventions. | Ask for an explanation when needed; reading them is not an entry requirement. | Consult only the operational guide needed for the task. |
-| [scripts/](../../../scripts/README.md) | Tools for importing, checking, formatting, and version history. | Ask for the outcome in ordinary language. | Run and maintain the tools; do not hand the researcher commands to memorize. |
-| [.agents/](../../../.agents/README.md) | Canonical task instructions used by Codex and shared with the other adapter. | Describe a task; no manual skill selection is required. | Select relevant instructions and maintain their single editable source. |
-| [.claude/](../../../.claude/README.md) | Generated task copies and the Claude Code adapter. | Use the same conversational requests in Claude Code. | Keep generated copies synchronized; the researcher does not maintain two versions. |
+| [scripts/](../../../scripts/) | Tools for importing, checking, formatting, and version history. | Ask for the outcome in ordinary language. | Run the relevant tool; do not hand the researcher commands to memorize. |
+| [.agents/](../../../.agents/) | Skills available to Codex. | Describe a task; no manual skill selection is required. | Select relevant instructions. |
+| [.claude/](../../../.claude/) | Skills available to Claude Code. | Use the same conversational requests in Claude Code. | Select relevant instructions. |
 
 ## Common child folders
 

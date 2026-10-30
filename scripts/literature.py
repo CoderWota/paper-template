@@ -208,7 +208,7 @@ def main(argv: list[str] | None = None) -> int:
     commands = parser.add_subparsers(dest="command", required=True)
 
     authorize = commands.add_parser("authorize-sciverse", help="record a confirmed query-sharing scope")
-    authorize.add_argument("--record", type=Path, required=True, help="interaction-language Markdown record with the confirmed scope and exact researcher confirmation")
+    authorize.add_argument("--record", type=Path, required=True, help="English Markdown record with the confirmed scope and researcher confirmation")
     authorize.add_argument("--replace", action="store_true", help="replace the active scope after the researcher confirms the change")
     commands.add_parser("revoke-sciverse", help="remove the active query-sharing scope after it has been changed")
 

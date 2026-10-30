@@ -29,13 +29,13 @@ Outcome: `research/plan.md`, a current plan that connects the question and the i
 
 ## Step 4: Record
 
-10. Write `research/plan.md` in the interaction language with these sections: question and contribution (quoted from `requirements/project.md`, with the idea link), claims and evidence (a table: claim, evidence needed, available now, still required), methods or lines of argument (each marked proposed or confirmed), resources, work items (a table: ID, work, owner, status, produces), risks, limitations, and alternatives, and the next action. Keep text that the researcher wrote.
+10. Write `research/plan.md` in English with these sections: question and contribution (quoted from `requirements/project.md`, with the idea link), claims and evidence (a table: claim, evidence needed, available now, still required), methods or lines of argument (each marked proposed or confirmed), resources, work items (a table: ID, work, owner, status, produces), risks, limitations, and alternatives, and the next action. Keep text that the researcher wrote.
 11. Keep the plan current: replace outdated parts instead of appending history. Confirmed choices keep their history in decision records.
 12. Update `state/current.md` with the next action.
 
 ## Hand off
 
-- Literature: `literature-discovery`, `reference-download`, `source-ingestion`. Source-based inquiry: `research-investigation`. Computation and analysis: `research-code-setup`, which runs the work and writes result records. Structuring the paper: `manuscript-outline`, as the availability table in `AGENTS.md` allows.
+- Literature: `literature-discovery`, `reference-download`, `source-ingestion`. Source-based inquiry: `research-investigation`. Computation and analysis: `research-code-setup`, which runs the work and writes result records. Structuring the paper: `manuscript-outline`, when within the confirmed task scope.
 
 ## Completion check
 

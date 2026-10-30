@@ -1,0 +1,1 @@
+Readable versions of the review documents of {{name}}: Markdown in [`markdown/`](markdown/README.md), images in [`assets/`](assets/README.md), and each document's checksum, converter, settings, coverage, and gaps in [`provenance.json`](provenance.json). Extraction can contain errors; the originals are authoritative.

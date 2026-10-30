@@ -25,7 +25,7 @@ Do not add a second map, a recap of the same paths, an FAQ, a technical-file lec
 | --- | --- | --- |
 | [inbox/](../../../inbox/README.md) | Optional unsorted incoming material; `imports/` contains import records. | Put files here if convenient, or give their existing location; the assistant classifies an authorized import. |
 | [requirements/](../../../requirements/README.md) | Confirmed goals and rules; `profiles/` holds output requirements. | State your requirements in chat; the assistant records only confirmed choices. |
-| [manuscript/](../../../manuscript/README.md) | Working outline and text; `assets/` holds figures. | Read or edit the working text, or ask the assistant to change it. |
+| [manuscript/](../../../manuscript/README.md) | Working outline and text; `assets/` holds figures. Your notes and drafts may use your own language; publication text and figure and table captions use the chosen paper language. | Read or edit the working text, or ask the assistant to change it. |
 | [references/](../../../references/README.md) | `originals/` source files, `extracted/` readable copies, `notes/` interpretation, `searches/` searches, and the bibliography. | Supply papers or ask for evidence checks; the assistant keeps originals separate from derived text and notes. |
 | [ideas/](../../../ideas/README.md) | Exploratory directions chosen for retention. | Discuss possibilities and choose what to keep; the assistant does not present ideas as results. |
 | [research/](../../../research/README.md) | Plans, `decisions/` choices, `feedback/` advice, `results/` findings, and `venues/` journal information. | You decide and review; the assistant records what was planned, confirmed, or actually found. |
@@ -34,9 +34,9 @@ Do not add a second map, a recap of the same paths, an FAQ, a technical-file lec
 | [outputs/](../../../outputs/README.md) | `preview/` regenerable outputs; `releases/` preserved packages. | Inspect output; ask to correct the working text and rebuild, or preserve a final package. |
 | [state/](../../../state/README.md) | Short handoff of actual work in progress. | Ask to continue later; the assistant keeps the handoff, not a log of this tour. |
 | [docs/](../../../docs/README.md) | Optional operating guides. | Ask when needed; the assistant reads the relevant guide. |
-| [scripts/](../../../scripts/README.md) | Workspace tools. | Describe the outcome; the assistant runs and maintains tools. |
-| [.agents/](../../../.agents/README.md) | Canonical task instructions. | Describe a task; the assistant selects the instructions. |
-| [.claude/](../../../.claude/README.md) | Generated Claude Code task adapters. | Use ordinary requests; the assistant keeps the adapters synchronized. |
+| [scripts/](../../../scripts/) | Tools for importing, checking, formatting, and version history. | Describe the outcome; the assistant runs the relevant tool. |
+| [.agents/](../../../.agents/) | Skills available to Codex. | Describe a task; the assistant selects the relevant instructions. |
+| [.claude/](../../../.claude/) | Skills available to Claude Code. | Use ordinary requests; the assistant selects the relevant instructions. |
 
 ## Optional support: one short paragraph
 

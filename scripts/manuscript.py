@@ -41,12 +41,11 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from ingestion.common import checksum, sha256_file, slug, update_readme, write_json_atomic, write_text_atomic  # noqa: E402
+from ingestion.common import checksum, sha256_file, slug, write_json_atomic, write_text_atomic  # noqa: E402
 from text_rules import (CJK, WORD, citation_keys, doubled_reference, halfwidth_punctuation, hand_numbered, normalize_reference,
                         open_marker, raw_latex, signature_problems)  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
-OWNER = "scripts/manuscript.py"
 NOT_SECTIONS = {"README.md", "outline.md", "manifest.yaml"}
 CROSSREF = ("fig", "tbl", "eq", "sec", "lst")
 FENCE = re.compile(r"^(\s{0,3})(`{3,}|~{3,})\s*([^\s`{]*)")
@@ -279,7 +278,7 @@ def scan_file(path: Path, display: str, scan: Scan, folder: Path) -> None:
             if "\\label{" in body or "\\tag{" in body:
                 scan.problems.append(f"{where}: \\label or \\tag inside a formula is not workspace syntax; write {{#eq:...}} after the formula")
             if any(not line.strip() for line in lines[1:-1]):
-                scan.problems.append(f"{where}: a display formula contains a blank line, which ends it on GitHub")
+                scan.warnings.append(f"{where}: a display formula contains a blank line; GitHub may end it there")
             if following and following[0] == "para" and len(following[2]) == 1 and EQ_LABEL.match(following[2][0].strip()):
                 scan.define(EQ_LABEL.match(following[2][0].strip()).group(1), f"{display}:{following[3]}")
             continue
@@ -683,14 +682,6 @@ def load_checks(root: Path) -> dict:
     return {"schema": "paper-template.checks/1", "checks": []}
 
 
-CHECKS_README = (
-    "Records of checks made on the manuscript and its outputs: audits, evidence checks, format checks, and readiness "
-    "assessments. Each record in `checks.json` names the files it examined with their checksums, so that "
-    "`python scripts/manuscript.py checks` can tell whether a result still applies. A result whose inputs changed is "
-    "stale and is never carried forward as proof. The findings of a check are kept in a Markdown report next to it, "
-    "in the interaction language.")
-
-
 def command_record_check(args, root: Path) -> int:
     inputs = []
     for value in args.input:
@@ -700,7 +691,6 @@ def command_record_check(args, root: Path) -> int:
         inputs.append({"path": Path(value).as_posix(), "sha256": checksum(path)})
     if args.report and not (root / args.report).is_file():
         raise Refused(f"the report {args.report} does not exist")
-    update_readme(root / "outputs" / "checks" / "README.md", "Check Records", CHECKS_README, OWNER)
     data = load_checks(root)
     base = f"{datetime.now():%Y-%m-%d}-{slug(args.name, limit=40, fallback='check')}"
     check_id, number = base, 2
@@ -808,19 +798,6 @@ def command_revision_start(args, root: Path) -> int:
               "created": datetime.now().isoformat(timespec="seconds"), "git": git_state(root),
               "included": list(SNAPSHOT_ROOTS) + list(args.include or []), "files": inventory}
     write_json_atomic(folder / "baseline.json", record)
-    update_readme(folder / "README.md", f"Revision {args.id}", (
-        f"Major revision `{args.id}`. [`baseline/`](baseline/README.md) holds the starting version, copied on "
-        f"{record['created'][:10]} with checksums in `baseline.json`, so it can be recovered with or without Git. `plan.md` "
-        "states the goal, scope, affected material, ordered work, and next action; `changes.md` maps old to new sections, "
-        "claims, figures, and citations; `checks.md` records which inputs were checked with what result. A staged manuscript, "
-        "when one is used, is in `candidate/` and is never assembled until it is applied. Use `set-sections --revision-id "
-        f"{args.id}` and `check --revision-id {args.id}` to update and check only that candidate, using the workspace bibliography. "
-        "`closed.json` appears when the "
-        "revision is completed or abandoned; until then the project status reports the revision as open."), OWNER)
-    update_readme(baseline / "README.md", f"Baseline of {args.id}", (
-        f"The starting version of revision `{args.id}`: the manuscript, the requirements, the bibliography, the research plan, "
-        "and any other included files, exactly as they were when the revision began. Nothing here is edited; "
-        "`python scripts/manuscript.py revision-restore` copies it back if the revision is abandoned."), OWNER)
     git = record["git"]
     where = f" Git version {git['version'][:7]}" + (" plus unsaved changes" if git.get("unsaved_changes") else "") if git.get("version") else ""
     print(f"Revision {args.id}: baseline of {len(files)} file(s) kept in revisions/{args.id}/baseline/.{where}")
@@ -878,13 +855,6 @@ def command_revision_status(args, root: Path) -> int:
     return 0
 
 
-def describe_replaced(folder: Path) -> None:
-    update_readme(folder / "replaced" / "README.md", "Replaced manuscript versions", (
-        "Copies of manuscript or other workspace files kept before a revision candidate was applied or a baseline "
-        "was restored. The dated folders preserve the previous contents so changes can be inspected and recovered; "
-        "the application log identifies the saved files when a candidate was applied."), OWNER)
-
-
 def command_revision_apply(args, root: Path) -> int:
     folder = revision_folder(root, args.id)
     baseline = load_baseline(folder)
@@ -918,7 +888,6 @@ def command_revision_apply(args, root: Path) -> int:
             if target.is_file():
                 keep = f"replaced/{stamp}/manuscript/{name}"
                 (folder / keep).parent.mkdir(parents=True, exist_ok=True)
-                describe_replaced(folder)
                 shutil.copy2(target, folder / keep)
             operations.append({"path": f"manuscript/{name}", "from": f"candidate/{name}", "kept_previous": keep,
                                "new_sha256": sha256_file(folder / "candidate" / name), "done": False})
@@ -998,7 +967,6 @@ def command_revision_restore(args, root: Path) -> int:
     for name in changed:
         keep = folder / "replaced" / stamp / name
         keep.parent.mkdir(parents=True, exist_ok=True)
-        describe_replaced(folder)
         shutil.copy2(root / name, keep)
     for name in changed + removed:
         target = root / name

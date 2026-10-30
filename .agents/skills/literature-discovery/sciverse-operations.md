@@ -2,7 +2,7 @@
 
 Read only the operation needed for the current search: scope recording and search first; structured pagination, relations, experimental schema, or bounded text only when requested or needed. All external requests remain subject to the active scope.
 
-If the researcher confirms a scope, record their exact confirmation and the scope in an interaction-language Markdown note under `.tmp/`, then run:
+If the researcher confirms a scope, record a faithful English rendering of their confirmation and the scope in an English Markdown note under `.tmp/`, then run:
 
 ```text
 python scripts/literature.py authorize-sciverse --record .tmp/sciverse-confirmation.md

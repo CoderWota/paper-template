@@ -1,0 +1,1 @@
+One Markdown file per converted manuscript document, in the workspace conventions. Word comments and tracked changes, when present, are listed in `<document>.annotations.md`, so they do not enter the body.

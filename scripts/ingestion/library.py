@@ -13,7 +13,7 @@ import unicodedata
 import uuid
 from pathlib import Path
 
-from .common import read_json, safe_filename, sha256_file, update_readme, write_text_atomic
+from .common import read_json, readme_template, safe_filename, sha256_file, update_directory_template, write_text_atomic
 
 INDEX_HEADER = "| Source | Title | Authors | Year | Reading status | Extraction | Files |"
 INDEX_RULE = "| --- | --- | --- | --- | --- | --- | --- |"
@@ -83,13 +83,8 @@ def archive(root: Path, path: Path, sha: str, received: str, today: str) -> tupl
         raise OSError(f"the copy of {path.name} does not match the original")
     target = folder / safe_filename(path.name)
     os.replace(temporary, target)
-    update_readme(folder / "README.md", f"Original: {source_id}", (
-        f"The original file of source `{source_id}`, archived unchanged as `{target.name}`. "
-        f"It was received from `{received}` on {today}. SHA-256: `{sha}`.\n\n"
-        f"The readable extraction is in [`../../extracted/{source_id}/`](../../extracted/{source_id}/README.md), "
-        f"and the source is listed in the [reference index](../../index.md). Never edit or replace this file; "
-        f"corrections and interpretation belong in [`../../notes/{source_id}.md`](../../notes/README.md)."
-    ))
+    update_directory_template(folder / "README.md", f"Original: {source_id}", readme_template(
+        "reference-original.md", source_id=source_id, filename=target.name, received=received, date=today, sha256=sha))
     return source_id, target, True
 
 
@@ -115,68 +110,15 @@ def carry_readmes(root: Path, source_id: str, stage: Path) -> None:
             shutil.copy2(current / relative, stage / relative)
 
 
-def describe_conversion(conversion: dict) -> str:
-    if conversion.get("route") == "local":
-        return f"MinerU {conversion.get('version')} on this computer ({conversion.get('tier')} tier)"
-    if conversion.get("route") == "cloud":
-        return f"the mineru.net service ({conversion.get('model_version')} model)"
-    return "direct reading, without a parser"
-
-
 def write_readmes(stage: Path, record: dict) -> None:
-    """READMEs of an extraction folder and its assets/ and native/ folders, kept with any text added outside the block."""
+    """Install fixed operational descriptions for an extraction and its generated subfolders."""
     source_id = record["source_id"]
-    name = record["original"]["received_as"]
-    coverage = record.get("coverage") or {}
-    status = {"complete": "complete", "needs-review": "needs review", "partial": "partial"}.get(record["status"], record["status"])
-    if coverage.get("unit") == "page" and coverage.get("expected"):
-        extent = f"{coverage.get('processed')} of {coverage['expected']} pages (PDF page order, counted from 1)"
-    elif coverage.get("unit") == "page":
-        extent = "unknown: the total page count could not be read"
-    else:
-        extent = "the whole document" if coverage.get("status") == "complete" else "unknown"
-    problems = [warning["message"] for warning in record.get("warnings") or [] if warning["level"] != "info"]
-    notes = [warning["message"] for warning in record.get("warnings") or [] if warning["level"] == "info"]
-    lines = [
-        f"The readable extraction of source `{source_id}` (original file `{name}`), revision {record['revision']}, made on "
-        f"{record['conversion']['finished_at'][:10]} with {describe_conversion(record['conversion'])}. Status: {status}.",
-        "",
-        f"- Coverage: {extent}.",
-    ]
-    if problems:
-        lines += ["- Problems found by the automatic checks:"] + [f"  - {problem}" for problem in problems]
-    else:
-        lines.append("- The automatic checks found no problem. They do not prove that the text, tables, or formulas are correct.")
-    lines += [f"- {note[0].upper()}{note[1:]}." for note in notes]
-    native_role = ("stays empty because no parser was used" if record["conversion"].get("route") == "direct"
-                   else "keeps the parser's own output (on this computer only, not in version history)")
-    lines += [
-        "",
-        f"[`document.md`](document.md) is the readable text with working image links. [`assets/`](assets/README.md) holds its images, "
-        f"[`native/`](native/README.md) {native_role}, and [`provenance.json`](provenance.json) records the checksum, "
-        f"converter, settings, time, coverage, and warnings. The original is in [`../../originals/{source_id}/`](../../originals/{source_id}/README.md). "
-        f"Report errors to the agent instead of editing `document.md`: corrections are kept in the source note, so they survive a new conversion.",
-    ]
-    update_readme(stage / "README.md", f"Extraction: {source_id}", "\n".join(lines))
-    assets = record["outputs"]["assets"]
+    update_directory_template(stage / "README.md", f"Extraction: {source_id}",
+                  readme_template("reference-extraction.md", source_id=source_id))
     (stage / "assets").mkdir(parents=True, exist_ok=True)
-    update_readme(stage / "assets" / "README.md", f"Images: {source_id}", (
-        f"Images extracted from `{name}` (source `{source_id}`): {len(assets)} file(s), linked from `../document.md`. "
-        "They are derived copies; the original document stays authoritative, and a figure that matters for a claim is checked there."
-    ))
-    native = record["outputs"]["native"]
+    update_directory_template(stage / "assets" / "README.md", f"Images: {source_id}", readme_template("reference-assets.md"))
     (stage / "native").mkdir(parents=True, exist_ok=True)
-    if record["conversion"].get("route") == "direct":
-        text = (f"No parser output exists for source `{source_id}`: `{name}` was read directly. This folder stays empty "
-                "so that every extraction has the same layout.")
-    else:
-        text = (f"The parser's own output for source `{source_id}` (`{name}`): "
-                + ", ".join(f"`{path}`" for path in native) + ". These files stay on this computer. They are not saved in version "
-                "history or in Git backups, because the paper does not need them and nothing in the workspace reads them. If they "
-                "are missing, import the document again to get new ones. The text to read is `../document.md`, and "
-                "`../provenance.json` records which parser and settings made it. The parser's Markdown links images under "
-                "`images/`; those images are in `../assets/` with the same names. Page numbers inside these files count from 0.")
-    update_readme(stage / "native" / "README.md", f"Parser output: {source_id}", text)
+    update_directory_template(stage / "native" / "README.md", f"Parser output: {source_id}", readme_template("reference-native.md"))
 
 
 def publish(root: Path, source_id: str, stage: Path, overwrite_edited: bool = False) -> Path:

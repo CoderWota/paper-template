@@ -1,11 +1,9 @@
 #!/usr/bin/env python3
-"""Check research records, set up a research code folder, import code repositories, and run research code with recorded provenance.
+"""Check record links and run integrity, set up code folders, import repositories, and record research runs.
 
-Research records are files that the researcher reads and confirms, written in the interaction language:
-decision records (research/decisions/), feedback actions (research/feedback/<feedback-id>/actions.md),
-retained ideas (ideas/), venue notes (research/venues/), and result records (research/results/). Their
-labels and status words stay as the README of each folder lists them, so that this check can read them;
-the Chinese labels and status words listed in this file are accepted as well.
+The check reports broken local links, missing or changed checksummed files, and unreadable or inconsistent run
+records. It does not validate the wording or form of researcher-written records. Unknown labels and statuses are
+ignored; new records should use the suggested layouts in the relevant directory README.
 
 Usage:
   python scripts/research.py check
@@ -18,7 +16,7 @@ Usage:
   python scripts/research.py runs
 Paths are relative to the workspace root. A run's command starts in the workspace root, or in --cwd; the
 command's arguments are passed unchanged, so they are relative to that directory.
-Exit status: 0 done; 1 problems found, or the run failed; 2 the records are valid but a result is stale
+Exit status: 0 done (reported record facts do not fail the command); 1 the run failed; 2 a result is stale
 (an input, output, or recorded code version changed); 3 refused. Uses only the Python standard library.
 """
 
@@ -43,19 +41,15 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from ingestion.common import (checksum, read_json, relative, sha256_file, slug, update_readme,  # noqa: E402
+from ingestion.common import (checksum, read_json, relative, sha256_file, slug,  # noqa: E402
                               write_json_atomic, write_text_atomic)
 
 ROOT = Path(__file__).resolve().parent.parent
 FIELD = re.compile(r"^[-*] ([^:：\[\]`]{1,40}?)\s*[:：]\s*(.*)$")
 NESTED = re.compile(r"^\s{2,}[-*] (.*)$")
-QUOTE = re.compile(r"[\"“「『][^\"”」』]{2,}[\"”」』]")
-DATE = re.compile(r"\b\d{4}-\d{2}-\d{2}\b")
 LINK = re.compile(r"\]\(([^)\s]+)\)")
 TICKED = re.compile(r"`([^`]+)`")
 CHECKSUM = re.compile(r"`([^`]+)`[^`]*?sha256:([0-9a-f]{64})")
-URL = re.compile(r"https?://\S+")
-SLUG_NAME = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 SKIP = ("README.md", "index.md")
 NONE_WORDS = ("none", "not yet", "n/a", "no check", "无", "尚无", "暂无", "未检查")
 
@@ -72,7 +66,7 @@ def render(template: str, /, **values) -> str:
     return string.Template((TEMPLATES / template).read_text(encoding="utf-8")).substitute(values).rstrip("\n")
 
 
-# Labels and status words. Values are written in the interaction language; these words stay fixed.
+# Recognized labels let this check follow links and provenance; unknown labels and statuses are ignored.
 
 DECISION_LABELS = {"date": ("date", "日期"), "status": ("status", "状态"), "choice": ("choice", "选择", "决定"),
                    "scope": ("scope", "适用范围", "范围"), "confirmed": ("confirmed", "确认"),
@@ -88,20 +82,12 @@ FEEDBACK_KIND = {"exact statement": ("exact statement", "原话"),
 FEEDBACK_STATUS = {"received": ("received", "已收到"), "under discussion": ("under discussion", "讨论中"),
                    "adopted in part": ("adopted in part", "部分采纳"), "adopted": ("adopted", "已采纳"),
                    "declined": ("declined", "未采纳", "已拒绝"), "implemented": ("implemented", "已实施", "已落实")}
-DECIDED = ("adopted in part", "adopted", "declined", "implemented")
-
 IDEA_STATUS = {"exploratory": ("exploratory", "探索中"), "developed": ("developed", "已发展", "已深化"),
                "incorporated": ("incorporated", "已纳入"), "abandoned": ("abandoned", "已放弃")}
 
-RESULT_LABELS = {"status": ("status", "状态"), "kind": ("kind", "类型"), "question": ("question", "问题"),
-                 "method": ("method", "方法"), "inputs": ("inputs", "输入"), "parameters": ("parameters", "参数"),
-                 "run": ("run", "运行"), "outputs": ("outputs", "输出"), "checks": ("checks", "检查"),
-                 "limitations": ("limitations", "局限"), "used_by": ("used by", "用于"),
-                 "review": ("researcher review", "研究者审阅")}
-RESULT_STATUS = {"proposed": ("proposed", "已提议"), "attempted": ("attempted", "已尝试"), "observed": ("observed", "已观察"),
-                 "checked": ("checked", "已检查"), "failed": ("failed", "失败")}
-
-VENUE_LABELS = {"checked": ("checked", "核查日期", "查阅日期"), "sources": ("sources", "来源", "官方来源")}
+RESULT_LABELS = {"status": ("status", "状态"), "inputs": ("inputs", "输入"), "outputs": ("outputs", "输出"), "run": ("run", "运行"),
+                 "used_by": ("used by", "用于")}
+RESULT_STATUS = {"observed": ("observed", "已观察"), "checked": ("checked", "已检查")}
 
 
 # Reading records
@@ -150,10 +136,6 @@ def status_of(value: str | None, statuses: dict) -> str | None:
     return best[0] if best else None
 
 
-def words_of(statuses: dict) -> str:
-    return ", ".join(statuses)
-
-
 def sections(text: str) -> list:
     """(heading, body) for each "## " section."""
     return [(block.partition("\n")[0].strip(), block.partition("\n")[2]) for block in re.split(r"^## ", text, flags=re.M)[1:]]
@@ -171,69 +153,34 @@ def is_empty(value: str | None) -> bool:
 # Checks by record type
 
 def check_decisions(root: Path) -> list:
+    """Check only relationships between recorded choices, not their writing format."""
     folder = root / "research" / "decisions"
     if not folder.is_dir():
         return []
-    problems, records, numbers = [], {}, {}
+    problems, records = [], {}
     for path in sorted(folder.glob("*.md")):
-        if path.name in SKIP:
-            continue
-        match = re.match(r"^(\d{4})-[a-z0-9]+(?:-[a-z0-9]+)*\.md$", path.name)
-        if not match:
-            problems.append(f"research/decisions/{path.name}: name a decision record NNNN-short-title.md, in lowercase ASCII letters, digits, and hyphens")
-            continue
-        if match.group(1) in numbers:
-            problems.append(f"research/decisions/{path.name}: number {match.group(1)} is also used by {numbers[match.group(1)]}")
-        numbers[match.group(1)] = path.name
-        records[path.name] = parse_fields(path.read_text(encoding="utf-8"), DECISION_LABELS)
-    statuses = {}
-    for name, fields in records.items():
-        where = f"research/decisions/{name}"
-        for key in ("date", "status", "choice", "scope", "confirmed"):
-            if one(fields, key) is None:
-                problems.append(f"{where}: expected one {DECISION_LABELS[key][0].capitalize()} line (accepted labels: {', '.join(DECISION_LABELS[key])})")
-        if one(fields, "date") and not DATE.search(one(fields, "date")):
-            problems.append(f"{where}: the Date line needs a date such as 2026-10-28")
-        if one(fields, "confirmed") and not QUOTE.search(one(fields, "confirmed")):
-            problems.append(f"{where}: the Confirmed line must quote the researcher's words")
-        status = status_of(one(fields, "status"), DECISION_STATUS)
-        statuses[name] = status
-        if one(fields, "status") and status is None:
-            problems.append(f"{where}: unknown status; use one of: {words_of(DECISION_STATUS)}")
+        if path.name not in SKIP:
+            records[path.name] = parse_fields(path.read_text(encoding="utf-8"), DECISION_LABELS)
+            problems.extend(f"{path.relative_to(root).as_posix()}: links to {target}, which does not exist"
+                            for target in broken_links(path, root))
+    statuses = {name: status_of(one(fields, "status"), DECISION_STATUS) for name, fields in records.items()}
+    index = folder / "index.md"
+    if index.is_file():
+        problems.extend(f"research/decisions/index.md: links to {target}, which does not exist" for target in broken_links(index, root))
     for name, fields in records.items():
         where = f"research/decisions/{name}"
         replaced_by = [Path(t).name for t in link_targets(full_text(fields, "replaced_by") + full_text(fields, "status")) if t.endswith(".md")]
         replaces = [Path(t).name for t in link_targets(full_text(fields, "replaces")) if t.endswith(".md")]
-        if statuses[name] == "replaced":
-            if not replaced_by:
-                problems.append(f"{where}: a replaced decision links to the decision that replaces it (Replaced by: [NNNN](NNNN-....md))")
-            for target in replaced_by:
-                if target not in records:
-                    problems.append(f"{where}: links to {target}, which does not exist")
-                elif name not in [Path(t).name for t in link_targets(full_text(records[target], "replaces"))]:
-                    problems.append(f"{where}: {target} does not name it in its Replaces line")
-        for target in replaces:
+        for target in replaced_by + replaces:
             if target not in records:
-                problems.append(f"{where}: replaces {target}, which does not exist")
-            elif statuses.get(target) != "replaced":
-                problems.append(f"{where}: replaces {target}, but {target} is not marked as replaced")
-    index = folder / "index.md"
-    text = index.read_text(encoding="utf-8") if index.is_file() else ""
-    if records and not index.is_file():
-        problems.append("research/decisions/index.md is missing")
-    lines = text.splitlines()
-    listed = {Path(t).name for t in link_targets(text) if t.endswith(".md")}
-    for target in sorted(listed):
-        if not (folder / target).is_file():
-            problems.append(f"research/decisions/index.md: links to {target}, which does not exist")
-    for name in records:
-        if name not in listed:
-            problems.append(f"research/decisions/index.md: {name} is not listed")
-        elif statuses[name] == "replaced":
-            replacement = [Path(t).name for t in link_targets(full_text(records[name], "replaced_by") + full_text(records[name], "status"))]
-            row = next((line for line in lines if f"({name})" in line or f"/{name})" in line), "")
-            if replacement and not any(r in row for r in replacement):
-                problems.append(f"research/decisions/index.md: the line for {name} must link to the decision that replaces it")
+                problems.append(f"{where}: links to {target}, which does not exist")
+        if statuses[name] == "replaced":
+            for target in replaced_by:
+                if target in records and name not in [Path(t).name for t in link_targets(full_text(records[target], "replaces"))]:
+                    problems.append(f"{where}: {target} does not link back in its Replaces field")
+        for target in replaces:
+            if target in records and statuses.get(target) not in ("replaced", None):
+                problems.append(f"{where}: links to {target}, which is not marked replaced")
     return problems
 
 
@@ -242,87 +189,50 @@ def local_link_exists(target: str, base: Path, root: Path) -> bool:
     return candidate.exists() or (root / target).exists()
 
 
+def broken_links(path: Path, root: Path) -> list[str]:
+    """Return missing local Markdown link targets in one file."""
+    return [target for target in link_targets(path.read_text(encoding="utf-8"))
+            if not local_link_exists(target, path.parent, root)]
+
+
 def check_feedback(root: Path) -> list:
+    """Check links behind implemented feedback claims without enforcing a record template."""
     base = root / "research" / "feedback"
     if not base.is_dir():
         return []
     problems = []
     for event in sorted(p for p in base.iterdir() if p.is_dir()):
-        where = f"research/feedback/{event.name}"
-        if not SLUG_NAME.match(event.name):
-            problems.append(f"{where}: name a feedback folder <YYYY-MM-DD>-<short-title>, in lowercase ASCII letters, digits, and hyphens")
         actions = event / "actions.md"
         if not actions.is_file():
-            problems.append(f"{where}: actions.md is missing; list each suggestion with its attribution (research-feedback)")
             continue
-        seen = set()
+        problems.extend(f"research/feedback/{event.name}/actions.md: links to {target}, which does not exist"
+                        for target in broken_links(actions, root))
         for heading, body in sections(actions.read_text(encoding="utf-8")):
-            match = re.match(r"^(F\d+)\b", heading)
-            if not match:
-                problems.append(f"{where}/actions.md: the heading {heading!r} must start with a suggestion ID such as F1")
-                continue
-            item = f"{where}/actions.md {match.group(1)}"
-            if match.group(1) in seen:
-                problems.append(f"{item}: the ID is used twice")
-            seen.add(match.group(1))
             fields = parse_fields(body, FEEDBACK_LABELS)
-            for key in ("from", "source", "kind", "status"):
-                if one(fields, key) is None:
-                    problems.append(f"{item}: expected one {FEEDBACK_LABELS[key][0].capitalize()} line (accepted labels: {', '.join(FEEDBACK_LABELS[key])})")
-            for key in ("from", "source", "suggestion"):
-                if fields.get(key) and not full_text(fields, key).strip():
-                    problems.append(f"{item}: the {FEEDBACK_LABELS[key][0].capitalize()} line is empty")
-            if not fields.get("suggestion"):
-                problems.append(f"{item}: expected a Suggestion line (accepted labels: {', '.join(FEEDBACK_LABELS['suggestion'])})")
-            if one(fields, "kind") and status_of(one(fields, "kind"), FEEDBACK_KIND) is None:
-                problems.append(f"{item}: unknown kind; use one of: {words_of(FEEDBACK_KIND)}")
             status = status_of(one(fields, "status"), FEEDBACK_STATUS)
-            if one(fields, "status") and status is None:
-                problems.append(f"{item}: unknown status; use one of: {words_of(FEEDBACK_STATUS)}")
-            if status in DECIDED:
-                decision = full_text(fields, "decision")
-                linked = [t for t in link_targets(decision) if "decisions/" in t or "requirements/" in t]
-                if not (QUOTE.search(decision) or linked):
-                    problems.append(f"{item}: the suggestion is {status}, so it needs a Decision line that quotes the researcher or links the decision record or requirement")
-            if status == "implemented":
-                change = full_text(fields, "change")
-                targets = link_targets(change) + [t for t in TICKED.findall(change) if "/" in t or t.endswith(".md")]
-                if not targets:
-                    problems.append(f"{item}: the suggestion is implemented, so it needs a Change line that links the actual change")
-                for target in targets:
-                    if not local_link_exists(target, event, root):
-                        problems.append(f"{item}: the change {target} does not exist")
+            if status != "implemented":
+                continue
+            change = full_text(fields, "change")
+            targets = link_targets(change) + [t for t in TICKED.findall(change) if "/" in t or t.endswith(".md")]
+            if not targets:
+                problems.append(f"research/feedback/{event.name}/actions.md {heading}: marked implemented but no change location is given")
+            for target in dict.fromkeys(targets):
+                if not local_link_exists(target, event, root):
+                    problems.append(f"research/feedback/{event.name}/actions.md {heading}: the change location {target} does not exist")
     return problems
 
 
 def check_ideas(root: Path) -> list:
+    """Check links in the optional ideas index; omit naming, status, and registration rules."""
     folder = root / "ideas"
+    index = folder / "index.md"
     if not folder.is_dir():
         return []
     problems = []
-    notes = {p.name for p in folder.glob("*.md") if p.name not in SKIP}
-    index = folder / "index.md"
-    if not index.is_file():
-        return ["ideas/index.md is missing"] if notes else []
-    linked = set()
-    for line in index.read_text(encoding="utf-8").splitlines():
-        if not re.match(r"^[-*] ", line):
-            continue
-        lowered = line.lower()
-        if not any(word in lowered for words in IDEA_STATUS.values() for word in words):
-            problems.append(f"ideas/index.md: the line {line.strip()!r} names no status ({words_of(IDEA_STATUS)})")
-        for target in link_targets(line):
-            if target.endswith(".md"):
-                if not (folder / target).is_file():
-                    problems.append(f"ideas/index.md: links to {target}, which does not exist")
-                linked.add(Path(target).name)
-    for note in sorted(notes):
-        if note not in linked:
-            problems.append(f"ideas/{note}: not listed in ideas/index.md")
-        fields = parse_fields((folder / note).read_text(encoding="utf-8"), {"status": ("status", "状态")})
-        value = one(fields, "status")
-        if value and status_of(value, IDEA_STATUS) is None:
-            problems.append(f"ideas/{note}: unknown status; use one of: {words_of(IDEA_STATUS)}")
+    files = [p for p in folder.glob("*.md") if p.name not in SKIP]
+    for path in files + ([index] if index.is_file() else []):
+        problems.extend(f"{path.relative_to(root).as_posix()}: links to {target}, which does not exist"
+                        for target in broken_links(path, root))
     return problems
 
 
@@ -331,28 +241,14 @@ def check_results(root: Path) -> tuple:
     if not folder.is_dir():
         return [], []
     problems, stale = [], []
-    names = []
     for path in sorted(folder.glob("*.md")):
         if path.name in SKIP:
             continue
         where = f"research/results/{path.name}"
         stale_start = len(stale)
-        if not SLUG_NAME.match(path.stem):
-            problems.append(f"{where}: name a result record with lowercase ASCII letters, digits, and hyphens, for example r001-analysis.md")
-        names.append(path.name)
+        problems.extend(f"{where}: links to {target}, which does not exist" for target in broken_links(path, root))
         fields = parse_fields(path.read_text(encoding="utf-8"), RESULT_LABELS)
-        for key in ("status", "kind", "question", "method", "limitations"):
-            if one(fields, key) is None:
-                problems.append(f"{where}: expected one {RESULT_LABELS[key][0].capitalize()} line (accepted labels: {', '.join(RESULT_LABELS[key])})")
         status = status_of(one(fields, "status"), RESULT_STATUS)
-        if one(fields, "status") and status is None:
-            problems.append(f"{where}: unknown status; use one of: {words_of(RESULT_STATUS)}")
-        if status in ("observed", "checked") and not CHECKSUM.search(full_text(fields, "outputs")):
-            problems.append(f"{where}: an {status} result lists its outputs with checksums (`path` sha256:...)")
-        if status in ("observed", "checked", "failed") and not fields.get("inputs"):
-            problems.append(f"{where}: an {status} result lists its inputs")
-        if status == "checked" and is_empty(full_text(fields, "checks").strip()):
-            problems.append(f"{where}: a checked result says which checks were made and what they found")
         for key in ("inputs", "outputs"):
             for target, expected in CHECKSUM.findall(full_text(fields, key)):
                 file = root / target
@@ -404,40 +300,22 @@ def check_results(root: Path) -> tuple:
                       else "; dependent passages and exhibits are not recorded; inspect the manuscript before reuse")
             stale[stale_start:] = [item + suffix for item in stale[stale_start:]]
     index = folder / "index.md"
-    listed = {Path(t).name for t in link_targets(index.read_text(encoding="utf-8"))} if index.is_file() else set()
-    if names and not index.is_file():
-        problems.append("research/results/index.md is missing")
-    for name in names:
-        if index.is_file() and name not in listed:
-            problems.append(f"research/results/index.md: {name} is not listed")
-    for target in sorted(listed):
-        if target.endswith(".md") and not (folder / target).is_file():
-            problems.append(f"research/results/index.md: links to {target}, which does not exist")
+    if index.is_file():
+        problems.extend(f"research/results/index.md: links to {target}, which does not exist" for target in broken_links(index, root))
     return problems, stale
 
 
 def check_venues(root: Path) -> list:
+    """Check local links in venue notes and their optional index."""
     folder = root / "research" / "venues"
     if not folder.is_dir():
         return []
-    problems, names = [], []
-    for path in sorted(folder.glob("*.md")):
-        if path.name in SKIP:
-            continue
-        where = f"research/venues/{path.name}"
-        names.append(path.name)
-        if not SLUG_NAME.match(path.stem):
-            problems.append(f"{where}: name a venue note with lowercase ASCII letters, digits, and hyphens")
-        fields = parse_fields(path.read_text(encoding="utf-8"), VENUE_LABELS)
-        if not one(fields, "checked") or not DATE.search(one(fields, "checked") or ""):
-            problems.append(f"{where}: the Checked line needs the date on which the official sources were read")
-        if not URL.search(full_text(fields, "sources")):
-            problems.append(f"{where}: the Sources line lists the official pages read, with their addresses")
+    problems = []
+    files = [p for p in folder.glob("*.md") if p.name not in SKIP]
     index = folder / "index.md"
-    listed = {Path(t).name for t in link_targets(index.read_text(encoding="utf-8"))} if index.is_file() else set()
-    for name in names:
-        if name not in listed:
-            problems.append(f"research/venues/index.md: {name} is not listed")
+    for path in files + ([index] if index.is_file() else []):
+        problems.extend(f"{path.relative_to(root).as_posix()}: links to {target}, which does not exist"
+                        for target in broken_links(path, root))
     return problems
 
 
@@ -449,75 +327,36 @@ def command_check(args, root: Path) -> int:
         print(problem)
     for item in stale:
         print(f"stale: {item}")
-    if problems:
-        print(f"Research records: {len(problems)} problem(s)" + (f" and {len(stale)} stale result input(s) or output(s)." if stale else "."))
-        return 1
     if stale:
-        print(f"Research records have the required form, but {len(stale)} result input(s), output(s), or recorded code version(s) changed; run and check the affected work again before reuse.")
+        print(f"Stale evidence: {len(stale)} input(s), output(s), or recorded code version(s) changed; these results cannot be treated as current.")
         return 2
-    print("Research records have the required form.")
+    if problems:
+        print(f"Research record facts: {len(problems)} issue(s) reported.")
+    else:
+        print("No broken research-record links or run-integrity issues were found.")
     return 0
 
 
 # The research code folder
 
-CODE_README = (
-    "Research code for this project: analyses, simulations, data processing, and figure generation. It is kept apart "
-    "from [`scripts/`](../scripts/README.md), which holds workspace tools, so that research dependencies and workspace "
-    "tools never break each other. The research environment, when one is needed, is `code/.venv/` (ignored by Git); "
-    "the exact package versions are listed in `requirements.txt` here.\n\n"
-    "Every analysis whose output may support a result is run through `python scripts/research.py run`, which records "
-    "the command, the code version, the inputs, and the outputs in [`runs/`](runs/README.md) when that folder exists. "
-    "Results and what they support are recorded in [`research/results/`](../research/results/README.md).\n\n"
-    "An existing analysis is brought in with `python scripts/research.py code-import` as a separate Git repository that "
-    "keeps its own history and instructions. Repositories that were brought in are listed under Code repositories when there are any.")
-OWNER = "scripts/research.py"
-PARTS = {
-    "src": ("Research Source Code", "the analysis code", "The code of the analyses, simulations, or data processing. The agent writes and maintains it on "
-            "request; you can read or edit it. A run records a checksum of this code, so every result can be traced to the "
-            "exact version that produced it."),
-    "data": ("Research Data", "raw and derived data", "Data used by the research code. Inputs that must stay unchanged are in [`raw/`](raw/README.md); data "
-             "that the code produces from them are in [`derived/`](derived/README.md). Whether data may be kept in version "
-             "history is decided with you; large or sensitive data can stay outside the workspace and be referenced by path "
-             "and checksum."),
-    "runs": ("Research Runs", "the recorded runs", "One folder per recorded run of the research code: the exact command, the code checksum, the "
-             "interpreter, the inputs and outputs with their checksums, the logs, the exit status, and, when asked for, the versions of the installed packages (`environment.txt`). Runs are written by "
-             "`python scripts/research.py run` and are never edited; a new run gets a new folder."),
-    "outputs": ("Research Outputs", "figures, tables, and other run outputs", "Figures, tables, and other files produced by recorded runs. A file here is a result only "
-                "after its result record in `research/results/` says what it shows and how it was checked."),
-    "notebooks": ("Research Notebooks", "exploratory notebooks", "Exploratory notebooks. A notebook result is not a recorded result until the analysis "
-                  "is run through `python scripts/research.py run` and its result record is written."),
-}
-DATA_PARTS = {
-    "raw": ("Raw Research Data", "Input data exactly as received or collected, never edited. Record where each file came from, "
-            "its license or permission, and any sensitivity; derived versions go to [`../derived/`](../derived/README.md)."),
-    "derived": ("Derived Research Data", "Data produced by the research code from the raw data. Everything here can be rebuilt "
-                "by a recorded run; the run record in `code/runs/` names the inputs and the command."),
-}
-
-
-def write_code_readme(code: Path, parts: list) -> bool:
-    """Write the maintained block of code/README.md, listing the parts that exist or are being created."""
-    present = [name for name in PARTS if (code / name).is_dir() or name in parts]
-    listing = "\n".join(f"- [`{name}/`]({name}/README.md): {PARTS[name][1]}." for name in present)
-    return update_readme(code / "README.md", "Research Code", CODE_README + ("\n\n## Contents\n\n" + listing if listing else ""), OWNER)
+PARTS = ("src", "data", "runs", "outputs", "notebooks")
 
 
 def command_code_init(args, root: Path) -> int:
     code = root / "code"
     parts = list(dict.fromkeys(args.part or []))
     created = []
-    code.mkdir(exist_ok=True)
-    if write_code_readme(code, parts):
-        created.append("code/README.md")
     for name in parts:
-        title, _, body = PARTS[name]
-        if update_readme(code / name / "README.md", title, body, OWNER):
-            created.append(f"code/{name}/README.md")
+        folder = code / name
+        if not folder.is_dir():
+            folder.mkdir(parents=True, exist_ok=True)
+            created.append(folder.relative_to(root).as_posix())
         if name == "data":
-            for sub, (sub_title, sub_body) in DATA_PARTS.items():
-                if update_readme(code / "data" / sub / "README.md", sub_title, sub_body, OWNER):
-                    created.append(f"code/data/{sub}/README.md")
+            for sub in ("raw", "derived"):
+                path = folder / sub
+                if not path.is_dir():
+                    path.mkdir(parents=True, exist_ok=True)
+                    created.append(path.relative_to(root).as_posix())
     if args.venv:
         venv = code / ".venv"
         if venv.exists():
@@ -529,14 +368,13 @@ def command_code_init(args, root: Path) -> int:
                 print(f"Creating code/.venv failed: {completed.stderr.strip()[-400:]}")
                 return 1
             created.append("code/.venv (research environment, ignored by Git)")
-    print("Created or updated: " + (", ".join(created) if created else "nothing; the folders already exist."))
+    print("Created: " + (", ".join(created) if created else "no new directories."))
     return 0
 
 
 # Code repositories: a separate Git repository under code/, imported or attached. Its .git folder is the boundary
-# that keeps sessions started inside it apart from this workspace's instructions and skills.
+# that separates Codex sessions. Claude sessions must start at the repository root for the verified exclusions to keep paper instructions out.
 
-REPOSITORY_OWNER = "scripts/research.py code-attach"
 REPOSITORY_NAME = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]*$")
 REMOTE_ADDRESS = re.compile(r"^(?:[A-Za-z][A-Za-z0-9+.-]*://|[\w.-]+@[\w.-]+:)")
 ARCHIVE_SUFFIXES = (".zip", ".tar", ".tar.gz", ".tgz", ".tar.bz2", ".tar.xz")
@@ -684,20 +522,9 @@ def write_claude_exclusions(root: Path, repository: Path) -> str:
             + bridge + "; neither is part of the repository's history. They hold absolute paths, so run code-attach again after moving the workspace")
 
 
-def repository_line(name: str, entry: dict) -> str:
-    def listed(items, none: str) -> str:
-        return ", ".join(f"`{item}`" for item in items or []) or none
-
-    left = entry.get("data_left_behind")
-    return render("code-repository-line.md", name=name, remote=f"`{entry['remote']}`" if entry.get("remote") else "none",
-                  commit=f"`{entry['commit']}`" if entry.get("commit") else "none yet",
-                  environment=listed(entry.get("environment"), "none found"),
-                  output_folders=listed(entry.get("output_folders"), "none declared"),
-                  data_left=str(left) if isinstance(left, int) else "unknown", source=entry.get("source") or "not recorded")
-
 
 def update_registry(root: Path, name: str, entry: dict) -> None:
-    """Record the repository in code/repositories.json and show the list in code/README.md."""
+    """Record repository facts in code/repositories.json."""
     registry = root / "code" / "repositories.json"
     data = read_json(registry, None)
     if not isinstance(data, dict) or not isinstance(data.get("repositories"), dict):
@@ -710,8 +537,6 @@ def update_registry(root: Path, name: str, entry: dict) -> None:
         entry["output_folders"] = []
     data["repositories"][name] = {key: value for key, value in entry.items() if value is not None}
     write_json_atomic(registry, data)
-    lines = [repository_line(key, data["repositories"][key]) for key in sorted(data["repositories"])]
-    update_readme(root / "code" / "README.md", "Research Code", render("code-registry.md", repositories="\n".join(lines)), REPOSITORY_OWNER)
 
 
 def attach_repository(root: Path, repository: Path, source: str | None, declared: list | None, data_left: int | None = None) -> list:
@@ -729,7 +554,6 @@ def attach_repository(root: Path, repository: Path, source: str | None, declared
                      ".gitignore in a session opened there, so that a commit cannot include it")
     if ensure_block(root / ".gitignore", render("workspace-gitignore.txt", name=name)):
         notes.append(f"added code/{name}/ to .gitignore")
-    write_code_readme(root / "code", [])
     remotes = (git_text(repository, "remote") or "").split()
     remote = "origin" if "origin" in remotes else (remotes[0] if remotes else None)
     address = git_text(repository, "remote", "get-url", remote) if remote else None
@@ -739,7 +563,7 @@ def attach_repository(root: Path, repository: Path, source: str | None, declared
         "commit": git_text(repository, "rev-parse", "--short=12", "HEAD"),
         "environment": [item for item in ENVIRONMENT_FILES if (repository / item).is_file()],
         "output_folders": folders, "data_left_behind": data_left, "attached": datetime.now().strftime("%Y-%m-%d")})
-    notes.append("listed it in code/README.md and code/repositories.json")
+    notes.append("recorded its repository facts in code/repositories.json")
     notes.append(write_claude_exclusions(root, repository))
     if not remotes:
         notes.append("Warning: the repository has no remote, so its only copy is this folder; ask the researcher where it should be backed up")
@@ -918,8 +742,10 @@ def commit_options(repository: Path, root: Path) -> list:
     return options
 
 
-def import_folder(root: Path, source: Path, target: Path, outputs: list, keep_data: bool, limit: int, name: str) -> tuple:
+def import_folder(root: Path, source: Path, target: Path, outputs: list, keep_data: bool, limit: int, name: str, commit_message: str | None) -> tuple:
     """Copy a folder that has no Git history into target as a new repository with one initial commit. Returns notes and the data files left behind."""
+    if not commit_message or not commit_message.strip():
+        raise Refused("a plain-folder import needs an initial commit message supplied by the agent")
     kept, left, data_left = collect_files(source, outputs, keep_data)
     if not kept:
         raise Refused("that folder holds no files to import once local history, caches, secrets, and data files are left out")
@@ -940,7 +766,7 @@ def import_folder(root: Path, source: Path, target: Path, outputs: list, keep_da
         shutil.copy2(source / rel, destination)
     options = commit_options(target, root)
     added = run_git(["add", "-A"], target)
-    message = render("import-commit-message.txt", name=name)
+    message = commit_message.strip()
     committed = run_git(["-c", "commit.gpgsign=false", *options, "commit", "--quiet", "--no-verify", "-m", message], target) \
         if added.returncode == 0 else added
     if committed.returncode != 0:
@@ -962,21 +788,20 @@ def command_code_import(args, root: Path) -> int:
     kind, local = classify_source(args.source, root)
     declared = normalize_folders(args.output_dir)
     limit = int(args.max_size_mb * 1024 * 1024)
-    stamp = datetime.now().strftime("%Y-%m-%d")
     temporary = None
     (root / "code").mkdir(exist_ok=True)
     try:
         if kind == "archive":
-            label = render("import-source-archive.md", archive=local.name, digest=sha256_file(local)[:12], date=stamp)
+            label = f"{local.name} sha256:{sha256_file(local)[:12]}"
             temporary = root / ".tmp" / f"code-import-{name}-{datetime.now():%Y%m%d%H%M%S}"
             local = extract_archive(local, temporary, limit)
             kind = "git" if is_git_root(local) else "folder"
         elif kind == "remote":
-            label = render("import-source-remote.md", address=public_remote(args.source), date=stamp)
+            label = public_remote(args.source)
         elif kind == "git":
-            label = render("import-source-git.md", folder=local.name, date=stamp)
+            label = local.name
         else:
-            label = render("import-source-folder.md", folder=local.name, date=stamp)
+            label = local.name
         notes, data_left = [], None
         if kind == "remote":
             clone_repository(args.source, target, args.timeout)
@@ -995,7 +820,7 @@ def command_code_import(args, root: Path) -> int:
                 notes.append(render("import-data-left-behind-git.txt", count=len(leftover), files=listed_files(leftover)))
         else:
             outputs = declared if declared is not None else [folder for folder in OUTPUT_FOLDERS if (local / folder).is_dir()]
-            copied, leftover = import_folder(root, local, target, outputs, args.data == "include", limit, name)
+            copied, leftover = import_folder(root, local, target, outputs, args.data == "include", limit, name, args.commit_message)
             notes += copied
             data_left = len(leftover)
             if leftover:
@@ -1180,8 +1005,6 @@ def command_run(args, root: Path) -> int:
         raise Refused(f"the working directory does not exist: {args.cwd}")
     code_paths = args.code or (["code/src"] if (root / "code" / "src").is_dir() else [])
     runs = root / "code" / "runs"
-    if not runs.is_dir():
-        update_readme(runs / "README.md", PARTS["runs"][0], PARTS["runs"][2], OWNER)
     run_id = f"{datetime.now(timezone.utc):%Y%m%d-%H%M%S}-{name}"
     number = 2
     while (runs / run_id).exists():
@@ -1230,16 +1053,6 @@ def command_run(args, root: Path) -> int:
         record["error"] = "declared outputs are missing: " + ", ".join(absent)
     record["status"] = "complete" if record.get("exit_code") == 0 and not absent else "failed"
     write_json_atomic(folder / "run.json", record)
-    versions = "; the versions of the installed packages are in `environment.txt`" if record.get("environment") else ""
-    where = "the workspace root" if record["working_directory"] == "." else f"`{record['working_directory']}`"
-    lines = [f"Recorded run of `{args.name}`" + (f": {args.note}" if args.note else "") + ". The record is "
-             "[`run.json`](run.json); the program's output is in `stdout.txt` and `stderr.txt`" + versions + ". Runs are never edited; "
-             "repeat the command below to reproduce it, and compare the checksums.",
-             "", f"- Status: {record['status']}" + (f" ({record['error']})" if record.get("error") else ""),
-             f"- Command: `{' '.join(command)}` (started in {where})"]
-    lines += [f"- Input: `{e['path']}`" + (f" sha256:{e['sha256']}" if e.get("sha256") else " (missing)") for e in record["inputs"]]
-    lines += [f"- Output: `{e['path']}`" + (f" sha256:{e['sha256']}" if e.get("sha256") else " (missing)") for e in record["outputs"]]
-    update_readme(folder / "README.md", f"Run {run_id}", "\n".join(lines), OWNER)
     print(f"Run {run_id}: {record['status']}" + (f" ({record['error']})" if record.get("error") else "") +
           f". Record: code/runs/{run_id}/run.json")
     if record["status"] == "complete":
@@ -1279,10 +1092,10 @@ def main(argv: list | None = None) -> int:
     for stream in (sys.stdout, sys.stderr):
         if hasattr(stream, "reconfigure"):
             stream.reconfigure(errors="backslashreplace")
-    parser = argparse.ArgumentParser(description="Check research records and record research runs.")
+    parser = argparse.ArgumentParser(description="Report record links and run integrity, manage code folders, and record research runs.")
     parser.add_argument("--root", type=Path, default=ROOT, help="workspace root (default: the parent of the scripts folder)")
     commands = parser.add_subparsers(dest="name_of_command", required=True)
-    commands.add_parser("check", help="check the form of the research records and find stale results")
+    commands.add_parser("check", help="report broken links, run-integrity facts, and stale results")
     init = commands.add_parser("code-init", help="create the research code folder with the parts that the research needs")
     init.add_argument("--part", action="append", choices=sorted(PARTS))
     init.add_argument("--venv", action="store_true", help="create the research environment code/.venv")
@@ -1306,6 +1119,7 @@ def main(argv: list | None = None) -> int:
     imported.add_argument("--output-dir", action="append", help="repository folder that holds outputs (default: output and outputs when present)")
     imported.add_argument("--max-size-mb", type=float, default=100, help="refuse to copy more than this many MB (default: 100)")
     imported.add_argument("--timeout", type=float, help="seconds allowed for cloning (default: 900)")
+    imported.add_argument("--commit-message", help="agent-written initial commit message for a folder without Git history")
     attached = commands.add_parser("code-attach", help="register a Git repository that already sits in code/NAME")
     attached.add_argument("--path", required=True, help="the repository folder, for example code/analysis")
     attached.add_argument("--output-dir", action="append", help="repository folder that holds outputs (default: keep or detect output and outputs)")

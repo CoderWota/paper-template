@@ -1,0 +1,1 @@
+Documents and notes of {{name}}, exactly as received or as the researcher provided them. They are never edited or replaced; readable copies are in [`../extracted/markdown/`](../extracted/markdown/README.md).

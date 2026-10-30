@@ -27,7 +27,7 @@ Outcome: a prioritized list of findings, each tied to an exact passage and to th
 
 11. For each finding give: its priority (blocking, important, or minor), the location (file and line, with a short quotation), what is wrong, the evidence or rule behind the finding (with locators), and a suggested remedy. A missing source or result is reported as a research gap; never repair it with an invented citation or number.
 12. When the researcher asks for a reviewer's view, follow [the reviewer's view](reviewer-view.md): its inputs, its checks (including the optional reader check), and its report. The report gives no score, rating, or chance of acceptance.
-13. Write the report in the interaction language to `outputs/checks/<date>-audit-<scope>.md`, then record it:
+13. Write the report in English to `outputs/checks/<date>-audit-<scope>.md`, then record it:
 
     ```text
     python scripts/manuscript.py record-check --name "Audit of <scope>" --kind audit --input <each audited section> --input references/bibliography.bib [--input <evidence notes and result records used>] --result passed|findings|failed --summary "..." --scope "<checks made>" --report outputs/checks/<file>.md

@@ -29,9 +29,9 @@ Outcome: three to five research directions that differ in kind, each grounded in
 
 ## Step 3: Keep what the researcher chooses
 
-8. Save a direction only when the researcher asks to keep it. Write `ideas/<idea-id>.md` with the layout in `ideas/README.md`, in the interaction language, with the researcher's request quoted in the `Retained` line. Add one line to `ideas/index.md` with the link and the status `exploratory`. Several related directions can share one note when the researcher keeps them together.
+8. Save a direction only when the researcher asks to keep it. Write `ideas/<idea-id>.md` with the layout in `ideas/README.md`, in English, with a faithful English rendering of the researcher's request quoted in the `Retained` line. Add one line to `ideas/index.md` with the link and the status `exploratory`. Several related directions can share one note when the researcher keeps them together.
 9. A kept idea is not a requirement, a decision, a claim, or evidence. Do not copy it into `requirements/` or `manuscript/`. Mark a retained hypothesis as unverified.
-10. Run `python scripts/research.py check` (use `python3` or `py -3` when `python` is not found) and fix every problem that it reports in the files you wrote.
+10. Review any broken links reported by `python scripts/research.py check` (use `python3` or `py -3` when `python` is not found). Repair a broken link when it is within scope; the command does not validate the form or quality of idea records.
 
 ## Hand off
 
@@ -43,4 +43,4 @@ Outcome: three to five research directions that differ in kind, each grounded in
 - The directions differ in kind, and each states its question, contribution, basis, assumption, feasibility, and first check.
 - Originality is stated as not compared or preliminary, with the scope of any search; nothing was invented.
 - Only the directions that the researcher asked to keep are in `ideas/`, each with the researcher's words, and the index lists them.
-- `python scripts/research.py check` reports no problem in the files you wrote.
+- Any reported broken link in the records you wrote was reviewed and resolved or disclosed.

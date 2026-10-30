@@ -10,7 +10,7 @@ import os
 from collections import Counter
 from pathlib import Path
 
-from .common import now, read_json, slug, today, update_readme, write_json_atomic
+from .common import now, read_json, slug, today, write_json_atomic
 
 SCHEMA = "paper-template.import/1"
 # Items in these states are worked on again when the import continues.
@@ -99,40 +99,3 @@ class ImportRecord:
     def save(self) -> None:
         self.data["updated_at"] = now()
         write_json_atomic(self.folder / "import.json", self.data)
-        update_readme(self.folder / "README.md", f"Import {self.id}", self.readme())
-
-    def readme(self) -> str:
-        destination = self.data["destination"]
-        if destination == "references":
-            where = "the reference library (`references/`)"
-        elif destination == "manuscript":
-            where = "this import's own [`originals/`](originals/README.md) and [`extracted/`](extracted/README.md), for adoption into `manuscript/`"
-        elif destination.startswith("research/feedback/"):
-            where = f"the feedback event `{destination}/`"
-        else:
-            where = f"the review round `{destination}/`"
-        route = {"local": "MinerU on this computer", "cloud": "the mineru.net service",
-                 "pandoc": "Pandoc on this computer"}.get(self.data.get("route") or "", "direct reading only")
-        counts = ", ".join(f"{count} {LABELS.get(status, status)}" for status, count in sorted(self.counts().items())) or "no items yet"
-        lines = [
-            f"Import `{self.id}`, started {self.data['created_at']} and last updated {self.data['updated_at']}. "
-            f"Material from {', '.join(f'`{value}`' for value in self.data['inputs'])} went to {where}, converted with {route}. "
-            f"State: {counts}.",
-            "",
-            "| Input | Role | Status | Result | Notes |",
-            "| --- | --- | --- | --- | --- |",
-        ]
-        for item in self.items:
-            result = item.get("result")
-            link = f"[{item.get('target', 'result')}](../../../{result})" if result else ""
-            notes = "; ".join(item.get("notes") or [])
-            if item.get("error"):
-                notes = "; ".join(filter(None, [item["error"], notes]))
-            cells = [item["input"], item.get("role", ""), LABELS.get(item["status"], item["status"]), link, notes]
-            lines.append("| " + " | ".join(cell.replace("|", "\\|").replace("\n", " ") for cell in cells) + " |")
-        stopped = self.data.get("stopped")
-        if stopped:
-            lines += ["", f"The run stopped before finishing: {stopped['message']} ({stopped['at']}). Continuing this import picks up the open items."]
-        lines += ["", "The machine-readable record is [`import.json`](import.json). Input files were not changed; originals are archived "
-                  "with their destination, and an adopted manuscript would be kept here."]
-        return "\n".join(lines)

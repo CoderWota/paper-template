@@ -24,8 +24,9 @@ Outcome: `research/feedback/<feedback-id>/` with the received material, a readab
    ```
 
    Settle the route as `source-ingestion` describes in its steps 2 and 3. Feedback can contain unpublished work: upload it to mineru.net only when the confirmed scope in `requirements/privacy.md` covers this material. Markdown and text need no route. Word comments, replies, tracked changes, and PDF annotations are listed at the end of each Markdown file with the author that the file names.
+   After import, write or update `inbox/imports/<import-id>/README.md` from its `import.json` facts and observed results.
 3. A meeting or a conversation: write the researcher's notes or account to a Markdown file in `.tmp/` exactly as given, then import that file the same way, so that it is kept unchanged in `originals/`.
-4. Add to the event's `README.md`, outside its maintained block, one or two English sentences: who gave the feedback, when, and which manuscript version, idea, or plan it concerns.
+4. Write or update the event's `README.md` in English with who gave the feedback, when, which manuscript version, idea, or plan it concerns, and links to the archived material and `actions.md`. Use only details in the source or confirmed by the researcher; preserve other useful content.
 
 ## Step 2: List each suggestion
 
@@ -46,12 +47,12 @@ Outcome: `research/feedback/<feedback-id>/` with the received material, a readab
 
 9. Record each answer: `adopted`, `adopted in part` (say which part), or `declined`, with a `Decision` line that quotes the researcher's words with the date, or links the decision record or requirement.
 10. A lasting writing rule goes through `constraint-maintenance`. A consequential research choice gets a decision record, whose `Evidence and feedback` section links the suggestion. Never turn declined or undecided advice into a rule.
-11. Adopted is not implemented. Set `implemented` only when the change exists, with a `Change` line that links it: the manuscript section, the requirement, the plan item, the result record, or the decision. Change the manuscript only as the availability table in `AGENTS.md` allows.
+11. Adopted is not implemented. Set `implemented` only when the change exists, with a `Change` line that links it: the manuscript section, the requirement, the plan item, the result record, or the decision. Change the manuscript only when the researcher requested the edit; follow `manuscript-writing` or `manuscript-revision` as appropriate.
 12. Declined and replaced advice stays in the record as history. A later session takes its rules from `requirements/`, never from feedback records.
 
 ## Step 5: Check and report
 
-13. Run `python scripts/research.py check` and `python scripts/check_readmes.py`, and fix every problem in the files you wrote.
+13. Review facts reported by `python scripts/research.py check`. Inspect the affected records for missing or broken links within scope; the command does not validate prose form.
 14. Report by contributor: the suggestions, the conflicts, the researcher's decisions, what changed, and what remains open. Update `state/current.md` when work remains.
 
 ## Completion check
@@ -59,4 +60,4 @@ Outcome: `research/feedback/<feedback-id>/` with the received material, a readab
 - Every received document or note is kept unchanged in `originals/`, with a readable extraction.
 - Every suggestion has its own author, source location, kind, and status; summaries are labeled as summaries.
 - No suggestion became a rule, a decision, or a change without the researcher's recorded words, and conflicts were put to the researcher.
-- Every implemented suggestion links an actual change, and the checks pass.
+- Every suggestion marked implemented links to an actual change. Review and resolve or disclose any broken link or missing description reported by the scripts.

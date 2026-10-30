@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
-"""Check review-round response records, and reconcile a coauthor's edited Word file with the manuscript.
+"""Report missing change targets and inconsistent completion claims, and reconcile a coauthor's Word edits.
 
-`check` reads reviews/<venue-id>/<round-id>/response.md and changes.md: every reviewer item has its reviewer, source
-location, the comment, a status, and a response; an addressed item links a change in the same round that is done and
-whose location exists; a declined item gives its justification; every change names existing items.
+`check` reports only concrete link and status inconsistencies. It does not require headings, IDs, labels, or a fixed
+record form; unknown labels and statuses are left for the agent to interpret.
 
 `reconcile` compares a Word file that a coauthor edited with the version they received (its tracked-change view, or
 a separate file) and with the current manuscript. It lists each edited paragraph with its changed words, where the
@@ -13,7 +12,7 @@ Word comments with their authors. It never changes the manuscript.
 Usage:
   python scripts/review.py check [--round reviews/<venue-id>/<round-id>]
   python scripts/review.py reconcile --docx FILE [--base FILE] [--to REPORT.md]
-All commands take --root WORKSPACE. Exit status: 0 done; 1 problems found; 3 refused. Uses only the Python standard library.
+All commands take --root WORKSPACE. Exit status: 0 done (reported facts do not fail the command); 3 refused. Uses only the Python standard library.
 """
 
 from __future__ import annotations
@@ -31,7 +30,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import manuscript  # noqa: E402
 from ingestion import reviews  # noqa: E402
 from ingestion.common import write_text_atomic  # noqa: E402
-from research import QUOTE, full_text, link_targets, one, parse_fields, sections, status_of  # noqa: E402
+from research import full_text, link_targets, one, parse_fields, sections, status_of  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 W = "{http://schemas.openxmlformats.org/wordprocessingml/2006/main}"
@@ -52,70 +51,40 @@ class Refused(Exception):
 # Response records
 
 def check_round(root: Path, folder: Path) -> list:
+    """Report missing linked files and reviewer items marked complete before their change."""
     where = folder.relative_to(root).as_posix()
-    problems = []
     response, changes = folder / "response.md", folder / "changes.md"
     if not response.is_file():
-        return problems
-    change_ids, change_fields = {}, {}
+        return []
+    problems = []
+    change_fields = {}
     if changes.is_file():
         for heading, body in sections(changes.read_text(encoding="utf-8")):
+            fields = parse_fields(body, CHANGE_LABELS)
+            change_fields[heading] = fields
             match = re.match(r"^(C\d+)\b", heading)
-            if not match:
-                problems.append(f"{where}/changes.md: the heading {heading!r} must start with a change ID such as C1")
-                continue
-            if match.group(1) in change_ids:
-                problems.append(f"{where}/changes.md {match.group(1)}: the ID is used twice")
-            change_ids[match.group(1)] = heading
-            change_fields[match.group(1)] = parse_fields(body, CHANGE_LABELS)
-    items = {}
+            if match:
+                change_fields[match.group(1)] = fields
+            for target in link_targets(full_text(fields, "location")) + re.findall(r"`([^`]+\.md)`", full_text(fields, "location")):
+                path = (folder / target) if not target.startswith(("manuscript/", "revisions/")) else root / target
+                if not path.exists() and not (root / target).exists():
+                    problems.append(f"{where}/changes.md {heading}: the linked location {target} does not exist")
+                resolved = path.resolve()
+                if target.startswith("../") and "reviews/" in resolved.as_posix() and folder.resolve() not in resolved.parents:
+                    problems.append(f"{where}/changes.md {heading}: the location {target} points into another review round")
     for heading, body in sections(response.read_text(encoding="utf-8")):
-        match = re.match(r"^(R\d+(?:\.\d+)*|E\d+(?:\.\d+)*)\b", heading)
-        if not match:
-            problems.append(f"{where}/response.md: the heading {heading!r} must start with an item ID such as R1.2 (reviewer) or E1 (editor)")
-            continue
-        item = f"{where}/response.md {match.group(1)}"
-        if match.group(1) in items:
-            problems.append(f"{item}: the ID is used twice")
         fields = parse_fields(body, ITEM_LABELS)
-        items[match.group(1)] = fields
-        for key in ("reviewer", "source", "status"):
-            if one(fields, key) is None:
-                problems.append(f"{item}: expected one {ITEM_LABELS[key][0].capitalize()} line (accepted labels: {', '.join(ITEM_LABELS[key])})")
-        if not fields.get("comment") or not full_text(fields, "comment").strip():
-            problems.append(f"{item}: the Comment line gives the reviewer's words or a labeled summary")
         status = status_of(one(fields, "status"), ITEM_STATUS)
-        if one(fields, "status") and status is None:
-            problems.append(f"{item}: unknown status; use one of: {', '.join(ITEM_STATUS)}")
-        response_text = full_text(fields, "response").strip()
-        if status in ("addressed", "partly addressed", "declined") and not response_text:
-            problems.append(f"{item}: a {status} item needs the Response to the reviewer" + (" with its justification" if status == "declined" else ""))
-        linked = re.findall(r"\bC\d+\b", full_text(fields, "change"))
-        if status in ("addressed", "partly addressed"):
-            if not linked:
-                problems.append(f"{item}: an {status} item links the change that addresses it (Change: C1)")
-            for change in linked:
-                if change not in change_ids:
-                    problems.append(f"{item}: the change {change} is not in {where}/changes.md. Add it there, also when a revision "
-                                    "made the change (with a Revision: line); the changes.md inside a revision folder does not count")
-                elif status_of(one(change_fields[change], "status"), CHANGE_STATUS) != "done":
-                    problems.append(f"{item}: is marked {status}, but {change} is not done")
-    for change, fields in change_fields.items():
-        entry = f"{where}/changes.md {change}"
-        named = re.findall(r"\b(?:R\d+(?:\.\d+)*|E\d+(?:\.\d+)*)\b", full_text(fields, "items"))
-        if not named:
-            problems.append(f"{entry}: the Items line names the reviewer items it answers")
-        for item in named:
-            if item not in items:
-                problems.append(f"{entry}: names {item}, which is not in response.md")
-        if one(fields, "status") and status_of(one(fields, "status"), CHANGE_STATUS) is None:
-            problems.append(f"{entry}: unknown status; use done or planned")
-        for target in link_targets(full_text(fields, "location")) + re.findall(r"`([^`]+\.md)`", full_text(fields, "location")):
-            path = (folder / target) if not target.startswith(("manuscript/", "revisions/")) else root / target
-            if not path.exists() and not (root / target).exists():
-                problems.append(f"{entry}: the location {target} does not exist")
-            if target.startswith("../") and "reviews/" in (folder / target).resolve().as_posix() and folder.resolve() not in (folder / target).resolve().parents:
-                problems.append(f"{entry}: links into another round ({target}); each round keeps its own records")
+        if status not in ("addressed", "partly addressed"):
+            continue
+        for change in dict.fromkeys(re.findall(r"\bC\d+\b", full_text(fields, "change"))):
+            target = change_fields.get(change)
+            if target is None:
+                problems.append(f"{where}/response.md {heading}: the referenced change {change} is not in changes.md")
+                continue
+            target_status = status_of(one(target, "status"), CHANGE_STATUS)
+            if target_status == "planned":
+                problems.append(f"{where}/response.md {heading}: marked {status}, but change {change} is still planned")
     return problems
 
 
@@ -131,8 +100,8 @@ def command_check(args, root: Path) -> int:
         problems += check_round(root, folder)
     for problem in problems:
         print(problem)
-    print(f"Checked the response records of {len(folders)} round(s): " + ("no problems." if not problems else f"{len(problems)} problem(s)."))
-    return 1 if problems else 0
+    print(f"Checked the response records of {len(folders)} round(s): " + ("no linked-target issues found." if not problems else f"{len(problems)} fact(s) reported."))
+    return 0
 
 
 # Reconciling a coauthor's Word file

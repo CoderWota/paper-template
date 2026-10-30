@@ -9,12 +9,12 @@ Outcome: `requirements/` states exactly the rules that the researcher confirmed,
 
 ## Rules for this skill
 
-- Follow `AGENTS.md`, "Confirmed requirements only".
+- Follow the research-choice and record rules in `AGENTS.md`.
 - An explicit, clear instruction is confirmation. Record it without asking for approval again.
 - Never save an inferred preference. This applies to `requirements/`, notes, `state/`, skills, feedback records, idea notes, and the agent application's own memory feature. If you notice a pattern, you can ask about it once in the conversation; without a clear yes, keep nothing.
 - Keep only active rules in `requirements/`. Remove a rule when it is replaced or withdrawn.
-- A consequential research choice also gets a decision record, whether or not it replaces a rule. Follow "Decisions" in `AGENTS.md`. Write the record and its index entry in the interaction language with the layout in `research/decisions/README.md`, name the old and the new choice, and state the reason as the researcher gave it, or say that none was given. When the new decision replaces an earlier one, link both records to each other and mark the earlier one as replaced; never delete a record. Run `python scripts/research.py check` afterwards.
-- Write rules in the interaction language. Capture the intent in the researcher's words, and put their exact words in quotation marks; never call a paraphrase their words. Add an example or an exception only when the researcher gave it or confirms it; never add one that you inferred. Avoid broad bans on words, which damage meaning and natural expression.
+- A consequential research choice also gets a decision record, whether or not it replaces a rule. Follow the research-choice and record rules in `AGENTS.md`. Write the record and its index entry in English with the layout in `research/decisions/README.md`, name the old and the new choice, and state the reason as the researcher gave it, or say that none was given. When the new decision replaces an earlier one, link both records to each other and mark the earlier one as replaced; never delete a record. Run `python scripts/research.py check` afterwards.
+- Write rules in English. Capture the researcher's confirmed intent faithfully. Quote an English rendering of their instruction; do not add a translation label or claim that a translation is verbatim. Add an example or an exception only when the researcher gave it or confirms it; never add one that you inferred. Avoid broad bans on words, which damage meaning and natural expression.
 - A rule governs writing and behavior. It is not evidence for a scientific claim, and an idea or a hypothesis is not a rule.
 
 ## Step 1: Decide whether the statement is a lasting rule
@@ -50,7 +50,7 @@ Read the active rules in the target file before you write.
 
 ## Step 4: Write the rule
 
-Use this layout in `requirements/writing.md`. Keep the English labels exactly as written, because the check reads them; write the values in the interaction language:
+Use this suggested layout in `requirements/writing.md`. Write the values in English. The label examples help the agent find rules, but no script checks their wording or format:
 
 ```text
 ## <short name>
@@ -59,12 +59,12 @@ Use this layout in `requirements/writing.md`. Keep the English labels exactly as
 - Scope: <whole manuscript | section: <name> | output profile: <id>>
 - Examples: <only if the researcher gave them>
 - Exceptions: <only if the researcher gave or confirmed them>
-- Confirmed: <date>; <the researcher's exact words in quotation marks, or the adopted feedback record or decision record that confirmed it>
+- Confirmed: <date>; <an English rendering of the researcher's confirming words in quotation marks, or the adopted feedback or decision record>
 ```
 
 Leave out the `Examples` and `Exceptions` lines unless the researcher gave or confirmed them. If an exception seems necessary, ask one question; do not write it first.
 
-After you write a rule, run `python scripts/check_requirements.py` from the workspace root (use `python3` or `py -3` when `python` is not found). It names each missing line and the labels it accepts. Fix every problem before you report.
+After you write a rule, read it back against the confirmed scope and wording. The workspace has no automatic form checker for requirements. `python scripts/research.py check` can report broken links in related decision records; review those facts and repair an actual broken link when appropriate.
 
 When there are several terms, keep terminology in a table with the preferred term, the terms to avoid, and the scope. Keep any text that the researcher wrote in the file.
 
@@ -87,7 +87,6 @@ Tell the researcher, in their language, what you recorded, changed, or removed, 
 - Every rule in `requirements/` came from an explicit instruction or a confirmed answer, and has a scope and a date.
 - No inferred preference appears in any file or in the agent application's memory.
 - No two active rules contradict each other.
-- A replaced rule is gone from `requirements/`, and a consequential change has a decision record in the interaction language; `python scripts/research.py check` reports no problem in it.
+- A replaced rule is gone from `requirements/`, and a consequential change has a decision record in English. Consider any broken links reported by `python scripts/research.py check`; the command does not assess the record's form or meaning.
 - Every example and exception in `requirements/` came from the researcher.
-- `python scripts/check_requirements.py` reports no problem.
 - No manuscript text was edited without the researcher's answer.

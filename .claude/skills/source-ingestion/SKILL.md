@@ -44,11 +44,11 @@ Read the applicable choice in `requirements/privacy.md`. Markdown and text are r
 
 ## Step 3: Import, review, and record metadata
 
-Follow the run section of [the import guide](import-guide.md): use `run --import-id ID` for continuation and retain completed items. Read its review section for partial or needs-review output, and its metadata section when recording bibliographic fields. Preserve author corrections in notes before any explicitly authorized overwrite. Conversion alone does not verify a formula or source claim.
+Follow the run section of [the import guide](import-guide.md): use `run --import-id ID` for continuation and retain completed items. Read its review section for partial or needs-review output, and its metadata section when recording bibliographic fields. Preserve author corrections in notes before any explicitly authorized overwrite. Conversion alone does not verify a formula or source claim. After the batch, write or update `inbox/imports/<import-id>/README.md` in English from `import.json` and the observed results; preserve prior notes and do not invent details.
 
 ## Step 4: Report
 
-- Report how many documents were converted, were already imported, need a check, failed, or are not supported, with links to the import record and to the extraction README of each item that needs attention. Say plainly that a converted document can still contain errors, and name the one useful next step.
+- Report how many documents were converted, were already imported, need a check, failed, or are not supported, with links to the agent-written import README and to the extraction README of each item that needs attention. Say plainly that a converted document can still contain errors, and name the one useful next step.
 - If work remains, such as failed items, a deferred token, or files kept for a capability that is not available yet, update `state/current.md`.
 
 ## Completion check
@@ -57,4 +57,4 @@ Follow the run section of [the import guide](import-guide.md): use `run --import
 - The originals are unchanged, and the input folders hold exactly what they held before.
 - No route or parser was switched. Cloud uploads stayed inside the confirmed scope, and nothing was uploaded as a test.
 - Citation metadata comes from the document and is marked as such.
-- `python scripts/ingest.py verify` passes; check directory READMEs when new project folders were created.
+- Review facts from `python scripts/ingest.py verify`. Inspect created directory descriptions for missing or broken material links and disclose other findings.

@@ -28,7 +28,7 @@ Outcome: a reasoned assessment of why the contribution matters, to whom, what su
 
 ## Step 4: Record when asked
 
-10. Keep the assessment only when the researcher asks. Add a dated section to `research/impact.md` in the interaction language: the contribution assessed (with a link), audiences, kind of value, support with links, limits, improvements, and which statements are assumptions. Link the section from the idea note when there is one. Keep earlier sections unless the researcher asks to replace them.
+10. Keep the assessment only when the researcher asks. Add a dated section to `research/impact.md` in English: the contribution assessed (with a link), audiences, kind of value, support with links, limits, improvements, and which statements are assumptions. Link the section from the idea note when there is one. Keep earlier sections unless the researcher asks to replace them.
 11. An assessment is neither evidence nor a requirement. Do not copy its conclusions into the manuscript as findings.
 
 ## Completion check

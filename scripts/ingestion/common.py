@@ -132,11 +132,21 @@ def relative(path: Path, root: Path) -> str:
         return str(path)
 
 
-def update_readme(path: Path, title: str, body: str, owner: str = "scripts/ingest.py") -> bool:
-    """Create or update a README whose maintained block holds body. Text outside the block is kept.
+def readme_template(name: str, **values: str) -> str:
+    """Render a fixed operational folder description, keeping its prose outside Python code."""
+    template = (Path(__file__).resolve().parent / "templates" / name).read_text(encoding="utf-8")
+    unresolved = template
+    for key in values:
+        unresolved = unresolved.replace("{{" + key + "}}", "")
+    if "{{" in unresolved or "}}" in unresolved:
+        raise ValueError(f"the fixed directory template {name} has an unresolved placeholder")
+    for key, value in values.items():
+        template = template.replace("{{" + key + "}}", value)
+    return template.strip()
 
-    The block is marked with the script that owns it. Returns True when the file changed.
-    """
+
+def update_directory_template(path: Path, title: str, body: str, owner: str = "scripts/ingest.py") -> bool:
+    """Apply a fixed operational folder-description template while preserving text outside its managed block."""
     begin, end_marker = (marker.format(owner=owner) for marker in MANAGED_MARKERS)
     block = f"{begin}\n{body.strip()}\n{end_marker}"
     if path.is_file():

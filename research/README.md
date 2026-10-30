@@ -15,7 +15,7 @@ Records of how the research is directed and what it has produced: the plan, cons
 
 Feedback records what was advised. Decisions record what you chose and why. [`requirements/`](../requirements/README.md) states what currently governs the work. Receiving advice is not adopting it, and adopting a change is not implementing it. A plan states proposed work; a result record states what was actually done and found. Agents read these records when a task needs them, not in every session.
 
-The records are written in your interaction language. Their labels, such as `Status:` or `Confirmed:`, stay as each folder's README shows them, because `python scripts/research.py check` reads them.
+The records are written in English. The labels in each folder's README are suggested layouts. `python scripts/research.py check` follows recognized fields when it checks links and provenance; unfamiliar labels or status words are left uninterpreted, not rejected.
 
 Formal editor and reviewer correspondence is kept separately in [`reviews/`](../reviews/README.md).
 

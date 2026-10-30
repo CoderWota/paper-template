@@ -1,6 +1,6 @@
 # Privacy Check
 
-<!-- Write the report in the researcher's language: translate every heading and sentence, and keep the table columns. -->
+<!-- Write this project report in English. Preserve source names as needed. -->
 
 Checked on: <date>
 

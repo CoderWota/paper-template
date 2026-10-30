@@ -1,0 +1,1 @@
+One Markdown file per review document of {{name}}. Reviewer labels, item numbers, and page or line references are kept as extracted. Word comments, tracked changes, and PDF annotations are listed separately when detected.

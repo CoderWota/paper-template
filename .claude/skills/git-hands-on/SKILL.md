@@ -19,8 +19,8 @@ Outcome: the researcher understands, through their own tasks, how versions are i
 
 ## Step 2: Practice safely
 
-2. Create the practice copy: `python scripts/versions.py practice`. It is a separate folder (`.tmp/git-practice/`) with its own short history of a practice note, so nothing that happens there touches the paper.
-3. Practice there with the same commands and `--root .tmp/git-practice`: list the versions (`history`), compare two of them (`compare --words`), retrieve the first paragraph from the oldest version (`retrieve`), and restore the note to an earlier version (`restore`), showing where the current content was kept. Then save the practice result (`save`). `--reset` starts the practice copy again.
+2. Create the empty practice copy: `python scripts/versions.py practice`. In `.tmp/git-practice/`, write an English README explaining that this is a disposable lesson copy and a short neutral `practice-note.md` that is not research material. Save the first version with `python scripts/versions.py --root .tmp/git-practice save --path README.md --path practice-note.md --message "Start the practice note"`.
+3. Make one small change to the practice note and save a second version with an agent-written message. Practice listing the versions (`history`), comparing them (`compare --words`), retrieving the first paragraph from the oldest version (`retrieve`), and restoring the note to an earlier version (`restore`), showing where the current content was kept. Then change the note once more and save the practice result. `--reset` starts the practice copy again.
 
 ## Step 3: Apply to the paper
 

@@ -41,6 +41,7 @@ python scripts/ingest.py run --to reviews/<venue-id>/<round-id> PATH...
 ```
 
 The script archives the files, converts them, adds a section to each Markdown file for what the main conversion does not show, and keeps a resumable record in `inbox/imports/<import-id>/`. Continue a stopped import with `python scripts/ingest.py run --import-id ID`.
+Write or update that import folder's English README from `import.json` and observed conversion results. The script creates the machine-readable record; the README is agent-authored.
 
 ## Step 4: Check what was captured
 
@@ -51,7 +52,7 @@ The script archives the files, converts them, adds a section to each Markdown fi
 
 ## Step 5: Describe the round
 
-The round's README lists the documents and what was found in each. When the letters state them, add below the maintained block, in English, the manuscript identifier and version that the round concerns and the decision date, with the document that states them. Add nothing that the documents do not state.
+Write or update the round's README in English from the documents and `extracted/provenance.json`: identify the venue, round, received documents, what the conversion found, and any capture limits. Include the manuscript identifier, version, and decision date only when the letters state them, and link to the document that states each fact. Preserve useful existing text; add nothing that the documents do not state.
 
 ## Step 6: Report
 
@@ -62,4 +63,4 @@ Report the venue and round, each document with its reviewers, items, comments, t
 - Each supplied file is archived once in this round, and every item, comment, and change that the script found is in the Markdown.
 - Anything that could not be captured is reported, not hidden.
 - No response was drafted or sent, and the manuscript is unchanged.
-- `python scripts/check_readmes.py` passes.
+- The round README accurately reflects the source documents and extraction record.

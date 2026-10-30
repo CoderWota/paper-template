@@ -104,7 +104,7 @@ def summary(record: ImportRecord) -> str:
              "pending", "converting", "not-routed")
     parts = [f"{counts[status]} {LABELS[status]}" for status in order if counts.get(status)]
     lines = [f"Import {record.id}: " + (", ".join(parts) or "nothing to import") + ".",
-             f"Record: inbox/imports/{record.id}/README.md"]
+             f"Machine-readable record: inbox/imports/{record.id}/import.json"]
     attention = [item for item in record.items if item["status"] in ("needs-review", "partial", "failed", "unsupported", "submitted", "pending")]
     if attention:
         lines.append("Needs attention:")

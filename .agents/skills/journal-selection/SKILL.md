@@ -28,9 +28,9 @@ Outcome: an examination of a named venue, or a comparison of several, in `resear
 
 ## Step 4: Record
 
-11. Write or update `research/venues/<venue-id>.md` with the layout in `research/venues/README.md`, and update `research/venues/index.md`. Use the interaction language; quotations keep their original language.
-12. Choosing or changing the target venue is a major decision. After a clear yes, record it with `constraint-maintenance`: the target in `requirements/project.md` and a decision record. The venue's formatting rules become an output profile through `submission-assembly`; follow the availability table in `AGENTS.md`.
-13. Run `python scripts/research.py check` and fix every problem in the files you wrote.
+11. Write or update `research/venues/<venue-id>.md` with the layout in `research/venues/README.md`, and update `research/venues/index.md`. Use English for the record; source quotations keep their original language.
+12. Choosing or changing the target venue is a major decision. After a clear yes, record it with `constraint-maintenance`: the target in `requirements/project.md` and a decision record. The venue's formatting rules become an output profile through `submission-assembly`; follow `submission-assembly` when within the confirmed scope.
+13. Review broken links reported by `python scripts/research.py check`; fix an actual broken link when it is within scope. The command does not validate venue-note prose or the underlying venue facts.
 
 ## Completion check
 
@@ -38,4 +38,4 @@ Outcome: an examination of a named venue, or a comparison of several, in `resear
 - Fit, impact, and readiness are kept apart, and no acceptance probability appears.
 - The AI-use policy of each examined venue is recorded, with its consequence for drafting.
 - The target is recorded only after the researcher's clear confirmation.
-- The check reports no problem in the venue notes.
+- Venue-note links and source records were reviewed; any missing target or unresolved source fact is disclosed.

@@ -5,7 +5,7 @@ description: Set up needed research code, run authorized analyses (also in impor
 
 # Research code setup and runs
 
-Outcome: when the research needs computation, a proportionate `code/` folder with its own environment and READMEs; each authorized analysis run with recorded provenance in `code/runs/<run-id>/`; and a result record in `research/results/` that links the inputs, method, parameters, run, outputs, checks, limitations, and the claims that use it.
+Outcome: when the research needs computation, a proportionate `code/` folder with its own environment and agent-written directory descriptions; each authorized analysis run with recorded provenance in `code/runs/<run-id>/`; and a result record in `research/results/` that links the inputs, method, parameters, run, outputs, checks, limitations, and the claims that use it.
 
 ## Step 1: Find out the needs before creating anything
 
@@ -22,7 +22,7 @@ Outcome: when the research needs computation, a proportionate `code/` folder wit
    python scripts/research.py code-init --part src [--part data] [--part runs] [--part outputs] [--part notebooks] [--venv]
    ```
 
-   It writes the README of each folder and keeps text that someone added outside its maintained block.
+   It creates only the requested directories and optional environment. Write `code/README.md` if absent, then a short English README in each created directory, based on its actual purpose and the actual folders present.
 6. Research code gets its own environment, separate from `scripts/` and `.tools/`. `--venv` creates `code/.venv` with the current Python; use `environment-management` when a different interpreter or a consented installation is needed. Install packages with the research interpreter (`code/.venv/bin/python -m pip ...`, or `code\.venv\Scripts\python.exe` on Windows) and record the exact versions in `code/requirements.txt`. For R, Julia, or other tools, record the interpreter and package versions in `code/README.md`. Never install research packages into `.tools/` or the scripts' environment, and never change the document-conversion tools to suit research code.
 7. Keep raw inputs unchanged in `code/data/raw/`, or reference data where it lives by path and checksum. Put generated data in `code/data/derived/`. For large or sensitive data, ask whether it may be kept in version history; add an ignore rule only after the answer.
 
@@ -61,5 +61,5 @@ Outcome: when the research needs computation, a proportionate `code/` folder wit
 - The research environment is separate from the workspace tools, and its package versions are recorded.
 - Every reported result has a run record or a described procedure, inputs and outputs with checksums, the checks made, and its limitations.
 - Statuses match what was actually done, failed and negative results that matter are kept, and nothing was invented.
-- `python scripts/research.py check` reports no problem and no stale result for the results you report.
+- Review any broken links, changed checksummed inputs or outputs, stale code versions, or incomplete run records reported by `python scripts/research.py check`. The command does not validate record wording. Resolve a real integrity issue before relying on a result; report anything outside the authorized scope.
 - Code in an imported repository is named by commit in the result's Method line, and it ran from committed files unless the record says otherwise.

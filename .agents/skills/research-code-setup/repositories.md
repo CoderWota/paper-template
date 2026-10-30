@@ -51,5 +51,5 @@ Do not edit the code in a paper session. When the code looks wrong or does not m
 
 1. Report the evidence: the manuscript statement, the code lines (file:line and commit), the mismatch, and why it matters.
 2. Record the blocker in `state/current.md` and in the affected result record, for example "code change requested".
-3. Tell the researcher to open a session in `code/<name>/` for the change. Fill in the [request template](code-change-request.md) and give it to them in chat, to paste there.
+3. Tell the researcher to open a session at the `code/<name>/` root for the change. In Claude Code, a deeper start folder has not been verified to exclude this paper workspace's instructions. Fill in the [request template](code-change-request.md) and give it to them in chat, to paste there.
 4. After the researcher commits, record a new run. `python scripts/research.py check` then lists the results that used the old code, with their dependents. Change the manuscript only through the usual writing steps.

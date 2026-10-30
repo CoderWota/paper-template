@@ -1,0 +1,1 @@
+Manuscript text converted for adoption: Markdown is in [`markdown/`](markdown/README.md), extracted images are in [`assets/`](assets/README.md), and the converter, settings, and gaps are in [`provenance.json`](provenance.json). Nothing here is assembled; `python scripts/manuscript.py adopt` moves reviewed text into `manuscript/`.

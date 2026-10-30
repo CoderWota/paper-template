@@ -42,6 +42,5 @@ DOCX output uses Pandoc, pandoc-crossref, citeproc, and Mermaid rendering when n
 - MinerU can omit text, misread formulas, or lose annotation details. Local formats beyond PDF/Word, larger model tiers, cloud images, and cloud pipeline output remain unverified here. Check the actual original-to-extraction mapping.
 - Sciverse agentic search, query-only metadata, and bounded text returned responses for one configured account. Search relevance, filters, cursor continuation, relations, resources, experimental Paper Schema, and account limits remain unverified against a research corpus or live account. See [search guide](sciverse-integration.md).
 - Training settings, service access, cost, retention, and provider offers can change. Read current official sources for the actual route. Do not describe unknown retention or training use as disabled.
-- Generated adapters and documentation do not prove client loading or model compliance. Ordinary archive downloads are supported by real file copies; Windows operation still needs direct observation.
 
 When support is absent, say so plainly and do not collect a key, promise an output, or create records for an unimplemented route. A missing optional tool must not block independent authorized work.

@@ -9,7 +9,7 @@ Notes on journals or other venues that were examined for this paper: what their 
 
 ## Note layout
 
-The values are in your interaction language; the `Checked` and `Sources` labels stay as shown, because `python scripts/research.py check` reads them.
+The fields below are a suggested layout for venue notes. `python scripts/research.py check` checks local links in these notes and their optional index; it does not validate field labels, headings, or wording.
 
 ```text
 # <Venue name>

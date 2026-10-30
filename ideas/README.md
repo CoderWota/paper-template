@@ -11,7 +11,7 @@ Status values: **exploratory**, **developed** (question, contribution, and next 
 
 ## Note layout
 
-Notes written by the agent use these labels, with values in your interaction language. Leave out a line that has nothing to say yet. Notes you write yourself can take any form; the agent adds them to the index.
+Notes written by the agent use these labels, with values in English. Leave out a line that has nothing to say yet. Notes you write yourself can take any form; the agent adds them to the index.
 
 ```text
 # <idea name>

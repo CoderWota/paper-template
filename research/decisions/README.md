@@ -9,7 +9,7 @@ Short records of consequential research choices you have confirmed, for example 
 
 ## Record layout
 
-The values are written in your interaction language; the labels stay as shown, because `python scripts/research.py check` reads them (Chinese labels such as `日期`, `状态`, `选择`, `适用范围`, `确认`, `取代`, and `被取代` are accepted too).
+The layout and labels below are suggestions. `python scripts/research.py check` follows recognized fields to check links between replaced decisions; unfamiliar labels and status words are ignored rather than rejected. Chinese equivalents such as `日期`, `状态`, `选择`, `适用范围`, `确认`, `取代`, and `被取代` are also understood.
 
 ```text
 # 0002 <short title>

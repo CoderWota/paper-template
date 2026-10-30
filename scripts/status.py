@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Report where the research project stands, read from its records, without changing anything.
+"""Report facts about the research project from its records, without changing anything.
 
 Reads the project requirements, the reference library and searches, evidence notes, ideas, the research plan, result
 records, venue notes, the outline and manuscript, output profiles and builds, releases, review rounds, revisions,
-research feedback, and the version history, and lists the gaps that suggest a next task. The paper-hands-on skill
+research feedback, and the version history. The paper-hands-on skill
 uses it to recognize the stage of a project in a fresh session; the researcher's own account and state/current.md
 take precedence over these signals.
 
@@ -156,49 +156,6 @@ def facts(root: Path) -> dict:
     return data
 
 
-def next_steps(data: dict) -> list:
-    """Gaps that suggest a next task, in the usual order of a paper; the researcher decides."""
-    steps = []
-    manuscript_facts = data["manuscript"]
-    if not data["initialized"]:
-        steps.append("set up the project (project-onboarding)")
-    if any(r.endswith("in progress") for r in data["revisions"]):
-        steps.append("continue the open major revision (manuscript-revision)")
-    if any(not r["response"] or r["answered"] < r["items"] for r in data["review_rounds"]):
-        steps.append("answer the open review items (review-response)")
-    if data["feedback_open"]:
-        steps.append(f"decide on {data['feedback_open']} open feedback suggestion(s) (research-feedback)")
-    if data["stale_results"]:
-        steps.append("rerun the results whose inputs changed (research-code-setup or research-investigation)")
-    if not data["sources"] and not data["searches"]:
-        steps.append("find and import literature (literature-discovery, source-ingestion)")
-    if not data["ideas"] and not data["plan"] and not manuscript_facts["sections"]:
-        steps.append("develop research directions (research-ideation)")
-    elif not data["plan"] and not manuscript_facts["sections"]:
-        steps.append("plan the research (research-planning)")
-    if data["plan"] and not data["results"] and not manuscript_facts["sections"]:
-        steps.append("carry out the planned work and record results (research-code-setup, research-investigation)")
-    if not data["venues"] and not data["target_venue_recorded"]:
-        steps.append("compare possible venues (journal-selection)")
-    if not data["outline"] and (data["results"] or data["plan"]):
-        steps.append("outline the paper (manuscript-outline)")
-    if data["outline"] and not manuscript_facts["sections"]:
-        steps.append("draft the sections (manuscript-writing)")
-    if manuscript_facts["problems"]:
-        steps.append(f"fix {manuscript_facts['problems']} manuscript problem(s) (manuscript-writing)")
-    if manuscript_facts["sections"] and (not data["checks"]["recorded"] or data["checks"]["stale"]):
-        steps.append("audit the current manuscript (manuscript-audit)")
-    if manuscript_facts["sections"] and not data["builds"]:
-        steps.append("build a formatted preview (submission-assembly)")
-    elif any("out of date" in b or b.startswith("failed") for b in data["builds"].values()):
-        steps.append("rebuild the formatted output (submission-assembly)")
-    if data["builds"] and manuscript_facts["sections"]:
-        steps.append("assess readiness for the target venue (submission-readiness)")
-    if data["unsaved_files"]:
-        steps.append("save the current state as a version (git-save)")
-    return steps
-
-
 def main(argv: list | None = None) -> int:
     for stream in (sys.stdout, sys.stderr):
         if hasattr(stream, "reconfigure"):
@@ -209,7 +166,6 @@ def main(argv: list | None = None) -> int:
     args = parser.parse_args(argv)
     root = args.root.resolve()
     data = facts(root)
-    data["next_steps"] = next_steps(data)
     if args.json:
         print(json.dumps(data, indent=2, ensure_ascii=False))
         return 0
@@ -231,10 +187,6 @@ def main(argv: list | None = None) -> int:
         f"Unsaved files in the version history: {data['unsaved_files'] if data['unsaved_files'] is not None else 'no version history'}.",
     ]
     print("\n".join(lines))
-    if data["next_steps"]:
-        print("Gaps that suggest a next task:")
-        for step in data["next_steps"]:
-            print(f"  - {step}")
     return 0
 
 

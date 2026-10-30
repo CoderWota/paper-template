@@ -9,7 +9,7 @@ Result records for the project's own results: what was done, with which inputs a
 
 ## Record layout
 
-The values are in your interaction language; the labels and status words stay as shown (Chinese equivalents such as `已提议`, `已尝试`, `已观察`, `已检查`, and `失败` are accepted), because `python scripts/research.py check` reads them.
+The layout and status words below are suggestions. `python scripts/research.py check` follows recognized fields to inspect linked inputs, outputs, and run records for integrity and freshness. Unfamiliar labels or status words are ignored rather than rejected; a stale input or output is reported because it changes whether the result is current. Chinese status equivalents such as `已提议`, `已尝试`, `已观察`, `已检查`, and `失败` are also understood.
 
 ```text
 # r001 <short title>

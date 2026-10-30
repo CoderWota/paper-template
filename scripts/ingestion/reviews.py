@@ -18,7 +18,7 @@ import zipfile
 from pathlib import Path
 
 from . import pdf
-from .common import read_json, safe_filename, sha256_file, slug, update_readme, write_json_atomic
+from .common import read_json, readme_template, safe_filename, sha256_file, slug, update_directory_template, write_json_atomic
 
 W = "{http://schemas.openxmlformats.org/wordprocessingml/2006/main}"
 W14 = "{http://schemas.microsoft.com/office/word/2010/wordml}"
@@ -71,51 +71,17 @@ class Round:
         for folder in (self.originals, self.markdown, self.assets):
             folder.mkdir(parents=True, exist_ok=True)
         name = f"`{self.venue}`, round `{self.round}`"
-        update_readme(self.root / "reviews" / self.venue / "README.md", f"Venue: {self.venue}", (
-            f"Editorial and review correspondence from the venue `{self.venue}`, one folder per submission or revision round. "
-            "Each round keeps its received originals, the readable extraction, and later the response and the change map, "
-            "so that numbering and manuscript versions of different rounds never mix."
-        ))
-        self.update_round_readme()
-        update_readme(self.originals / "README.md", f"Originals: {self.venue} {self.round}", (
-            f"Decision letters and reviewer files of {name}, exactly as received. They are never edited or replaced; "
-            "readable copies are in [`../extracted/markdown/`](../extracted/markdown/README.md)."
-        ))
-        update_readme(self.folder / "extracted" / "README.md", f"Extraction: {self.venue} {self.round}", (
-            f"Readable versions of the review documents of {name}: Markdown in [`markdown/`](markdown/README.md), images in "
-            "[`assets/`](assets/README.md), and the checksum, converter, settings, coverage, and gaps of each document in "
-            "[`provenance.json`](provenance.json). Extraction can contain errors; the originals are authoritative."
-        ))
-        update_readme(self.markdown / "README.md", f"Review Markdown: {self.venue} {self.round}", (
-            f"One Markdown file per review document of {name}. Reviewer labels, item numbers, and page or line references are "
-            "kept as the parser found them. Word comments, tracked changes, and PDF annotations are listed in a separate section "
-            "at the end of each file, because the main conversion does not capture them."
-        ))
-        update_readme(self.assets / "README.md", f"Review images: {self.venue} {self.round}", (
-            f"Images and table pictures extracted from the review documents of {name}. Each file name starts with the "
-            "identifier of its document and two hyphens, and the Markdown files link to them."
-        ))
+        update_directory_template(self.root / "reviews" / self.venue / "README.md", f"Venue: {self.venue}", readme_template("review-venue.md"))
+        update_directory_template(self.originals / "README.md", f"Originals: {self.venue} {self.round}", readme_template("review-originals.md", name=name))
+        update_directory_template(self.folder / "extracted" / "README.md", f"Extraction: {self.venue} {self.round}", readme_template("review-extraction.md", name=name))
+        update_directory_template(self.markdown / "README.md", f"Review Markdown: {self.venue} {self.round}", readme_template("review-markdown.md", name=name))
+        update_directory_template(self.assets / "README.md", f"Review images: {self.venue} {self.round}", readme_template("review-assets.md", name=name))
 
     def record(self) -> dict:
         data = read_json(self.record_path)
         if not isinstance(data, dict) or data.get("schema") != SCHEMA:
             data = {"schema": SCHEMA, "venue": self.venue, "round": self.round, "documents": {}}
         return data
-
-    def update_round_readme(self) -> None:
-        documents = self.record().get("documents", {}) if self.record_path.is_file() else {}
-        lines = [f"Submission or revision round `{self.round}` at the venue `{self.venue}`. Received documents are in "
-                 "[`originals/`](originals/README.md) and their readable versions in [`extracted/`](extracted/README.md). "
-                 "A point-by-point response and the change map are added here only when the researcher asks for them."]
-        if documents:
-            lines += ["", "| Document | Extraction | Comments, changes, annotations |", "| --- | --- | --- |"]
-            names = {"comments": "comment(s)", "insertions": "insertion(s)", "deletions": "deletion(s)", "pdf_annotations": "PDF annotation(s)"}
-            for document_id, entry in sorted(documents.items()):
-                structures = entry.get("structures") or {}
-                found = ", ".join(f"{value} {names.get(name, name)}" for name, value in structures.items() if isinstance(value, int)) or "none found"
-                status = {"needs-review": "needs review"}.get(entry.get("status"), entry.get("status"))
-                lines.append(f"| [{entry.get('original_name', document_id)}](extracted/markdown/{document_id}.md) | {status} | {found} |")
-        update_readme(self.folder / "README.md", f"Round: {self.venue} {self.round}", "\n".join(lines))
 
     def archive(self, path: Path, sha: str) -> tuple:
         """Copy the file into originals/ unless the same content is already there. Returns (document id, file, new)."""
@@ -168,48 +134,16 @@ class FeedbackEvent(Round):
         for folder in (self.originals, self.markdown, self.assets):
             folder.mkdir(parents=True, exist_ok=True)
         name = f"the feedback event `{self.round}`"
-        self.update_round_readme()
-        update_readme(self.originals / "README.md", f"Originals: feedback {self.round}", (
-            f"Documents and notes of {name}, exactly as received or as the researcher gave them. They are never edited or "
-            "replaced; readable copies are in [`../extracted/markdown/`](../extracted/markdown/README.md)."
-        ))
-        update_readme(self.folder / "extracted" / "README.md", f"Extraction: feedback {self.round}", (
-            f"Readable versions of the documents of {name}: Markdown in [`markdown/`](markdown/README.md), images in "
-            "[`assets/`](assets/README.md), and the checksum, converter, settings, coverage, and gaps of each document in "
-            "[`provenance.json`](provenance.json). Extraction can contain errors; the originals are authoritative."
-        ))
-        update_readme(self.markdown / "README.md", f"Feedback Markdown: {self.round}", (
-            f"One Markdown file per document of {name}. Word comments, replies, tracked changes, and PDF annotations are "
-            "listed in a separate section at the end of each file with the author that the file names, so that each "
-            "suggestion keeps its own attribution."
-        ))
-        update_readme(self.assets / "README.md", f"Feedback images: {self.round}", (
-            f"Images and table pictures extracted from the documents of {name}. Each file name starts with the identifier "
-            "of its document and two hyphens, and the Markdown files link to them."
-        ))
+        update_directory_template(self.originals / "README.md", f"Originals: feedback {self.round}", readme_template("feedback-originals.md", name=name))
+        update_directory_template(self.folder / "extracted" / "README.md", f"Extraction: feedback {self.round}", readme_template("feedback-extraction.md", name=name))
+        update_directory_template(self.markdown / "README.md", f"Feedback Markdown: {self.round}", readme_template("feedback-markdown.md", name=name))
+        update_directory_template(self.assets / "README.md", f"Feedback images: {self.round}", readme_template("feedback-assets.md", name=name))
 
     def record(self) -> dict:
         data = read_json(self.record_path)
         if not isinstance(data, dict) or data.get("schema") != SCHEMA:
             data = {"schema": SCHEMA, "feedback": self.round, "documents": {}}
         return data
-
-    def update_round_readme(self) -> None:
-        documents = self.record().get("documents", {}) if self.record_path.is_file() else {}
-        lines = [f"Research feedback event `{self.round}`: advice from co-researchers, collaborators, coauthors, supervisors, "
-                 "or other contributors. Received documents and notes are in [`originals/`](originals/README.md) and their "
-                 "readable versions in [`extracted/`](extracted/README.md). `actions.md` lists each suggestion with its "
-                 "author, its source location, the researcher's decision, and the actual change. Advice here is not a "
-                 "requirement or a decision until the researcher adopts it."]
-        if documents:
-            lines += ["", "| Document | Extraction | Comments, changes, annotations |", "| --- | --- | --- |"]
-            names = {"comments": "comment(s)", "insertions": "insertion(s)", "deletions": "deletion(s)", "pdf_annotations": "PDF annotation(s)"}
-            for document_id, entry in sorted(documents.items()):
-                structures = entry.get("structures") or {}
-                found = ", ".join(f"{value} {names.get(name, name)}" for name, value in structures.items() if isinstance(value, int)) or "none found"
-                status = {"needs-review": "needs review"}.get(entry.get("status"), entry.get("status"))
-                lines.append(f"| [{entry.get('original_name', document_id)}](extracted/markdown/{document_id}.md) | {status} | {found} |")
-        update_readme(self.folder / "README.md", f"Feedback: {self.round}", "\n".join(lines))
 
 
 class ManuscriptStage(Round):
@@ -232,29 +166,16 @@ class ManuscriptStage(Round):
     def ensure(self) -> None:
         for folder in (self.originals, self.markdown, self.assets):
             folder.mkdir(parents=True, exist_ok=True)
-        update_readme(self.originals / "README.md", f"Manuscript originals: {self.round}", (
-            "The researcher's manuscript files of this import, exactly as received. They are never edited or replaced; "
-            "the converted text is in [`../extracted/markdown/`](../extracted/markdown/README.md)."))
-        update_readme(self.folder / "extracted" / "README.md", f"Manuscript extraction: {self.round}", (
-            "The manuscript converted for adoption: Markdown in [`markdown/`](markdown/README.md), its images in "
-            "[`assets/`](assets/README.md), and the converter, settings, and gaps of each document in "
-            "[`provenance.json`](provenance.json). Nothing here is assembled; `python scripts/manuscript.py adopt` moves the "
-            "reviewed text into the manuscript."))
-        update_readme(self.markdown / "README.md", f"Manuscript Markdown: {self.round}", (
-            "One Markdown file per converted manuscript document, in the workspace conventions. Word comments and tracked "
-            "changes, when the file had them, are listed in `<document>.annotations.md`, so that they never enter the body."))
-        update_readme(self.assets / "README.md", f"Manuscript images: {self.round}", (
-            "Images extracted from the converted manuscript documents. Each file name starts with the identifier of its "
-            "document and two hyphens; adoption copies the images that the text uses into `manuscript/assets/`."))
+        update_directory_template(self.originals / "README.md", f"Manuscript originals: {self.round}", readme_template("manuscript-originals.md"))
+        update_directory_template(self.folder / "extracted" / "README.md", f"Manuscript extraction: {self.round}", readme_template("manuscript-extraction.md"))
+        update_directory_template(self.markdown / "README.md", f"Manuscript Markdown: {self.round}", readme_template("manuscript-markdown.md"))
+        update_directory_template(self.assets / "README.md", f"Manuscript images: {self.round}", readme_template("manuscript-assets.md"))
 
     def record(self) -> dict:
         data = read_json(self.record_path)
         if not isinstance(data, dict) or data.get("schema") != SCHEMA:
             data = {"schema": SCHEMA, "manuscript_import": self.round, "documents": {}}
         return data
-
-    def update_round_readme(self) -> None:
-        """The import record's own README is maintained by the import; nothing more is added here."""
 
 def text_of(element) -> str:
     return "".join(node.text or "" for node in element.iter(W + "t"))
@@ -384,7 +305,6 @@ def store(round_: Round, document_id: str, entry: dict) -> None:
     record = round_.record()
     record["documents"][document_id] = entry
     write_json_atomic(round_.record_path, record)
-    round_.update_round_readme()
 
 
 def edited(round_: Round, document_id: str) -> bool:

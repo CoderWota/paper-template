@@ -32,7 +32,7 @@ Outcome: a clearer idea: its question, intended contribution, assumptions, neare
 
 11. When the idea is retained, update its note with the layout in `ideas/README.md`: settled points with the researcher's words, compared prior work with links and the search scope, assumptions, open questions, and the next check. Keep text that the researcher wrote. Set the status to `developed` when the question, the contribution, and the next check are clear. When the idea is not retained, offer once to keep it; save nothing without a clear yes.
 12. A choice that changes the research question, the main claim, the method, or the material scope is a major decision: ask the confirmation question, then record it with `constraint-maintenance`, which writes the requirement and the decision record. An answer to a deepening question is not a decision record by itself.
-13. Run `python scripts/research.py check` and fix every problem in the files you wrote.
+13. Review facts reported by `python scripts/research.py check`, such as broken links. Repair a broken link when it is within scope; the command does not validate the form or quality of the idea note.
 
 ## Completion check
 
@@ -40,4 +40,4 @@ Outcome: a clearer idea: its question, intended contribution, assumptions, neare
 - Facts that the workspace or an authorized search could supply were looked up, not asked for.
 - Novelty, significance, feasibility, and support are stated separately; originality is qualified by the actual search scope.
 - No source, gap, or finding was invented, and no answer was turned into a rule or a decision without confirmation.
-- The idea note, if any, holds the settled points in the researcher's words, and the check passes.
+- The idea note, if any, holds the settled points in the researcher's words. Any reported link issue was reviewed and resolved or disclosed.

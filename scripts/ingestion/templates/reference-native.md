@@ -1,0 +1,1 @@
+Parser output, when a parser was used, is kept here for local troubleshooting. Direct-reading imports may leave this folder empty. The extracted text is in `../document.md`; provenance and processing limits are in `../provenance.json`. Parser output is not a substitute for checking the original.

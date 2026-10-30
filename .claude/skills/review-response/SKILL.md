@@ -18,7 +18,7 @@ Outcome: for one venue and round, `response.md` with every editor and reviewer i
 
 1. Use the round in `reviews/<venue-id>/<round-id>/`. If the documents are not filed yet, use `review-ingestion` first. Read the round's README, the extracted Markdown (with the listed Word comments, tracked changes, and PDF annotations), and the original where the extraction is uncertain.
 2. Note the manuscript version the reviewers saw (the release in `outputs/releases/` or the version history), so that locations in their comments can be mapped to the current text.
-3. Write `response.md` in the interaction language, with the reviewers' words quoted in their original language. One section per item, keeping the reviewers' labels and numbering: `R<reviewer>.<item>` for reviewers, `E<item>` for the editor.
+3. Write `response.md` in English, with the reviewers' words quoted in their original language. One section per item, keeping the reviewers' labels and numbering: `R<reviewer>.<item>` for reviewers, `E<item>` for the editor.
 
    ```text
    ## R1.2 <short title>
@@ -51,7 +51,7 @@ Outcome: for one venue and round, `response.md` with every editor and reviewer i
    ```
 
 7. Write each response to describe the actual change and its location in the revised manuscript, or the reason for not changing. Never claim a change that does not exist.
-8. Run `python scripts/review.py check --round reviews/<venue-id>/<round-id>` and fix every problem.
+8. Review facts from `python scripts/review.py check --round reviews/<venue-id>/<round-id>`. Correct an actual missing target or a response marked complete while its linked change is still planned; report uncertain or out-of-scope findings without editing them.
 
 ## Step 4: Recheck and rebuild
 
@@ -68,4 +68,4 @@ Outcome: for one venue and round, `response.md` with every editor and reviewer i
 - Every item of the round has a status; addressed items link a done change in this round's `changes.md` whose location exists; declined items have a justification; nothing was claimed that was not done.
 - Structural changes went through `manuscript-revision`, and the changed parts were rechecked.
 - Coauthor edits were compared, not imported; only the researcher's chosen edits were applied, and conflicts were decided by the researcher.
-- `python scripts/review.py check` reports no problem, and nothing was sent to the venue or anyone else.
+- Review-check findings were resolved or disclosed, and nothing was sent to the venue or anyone else.

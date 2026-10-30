@@ -11,5 +11,11 @@ Status: not initialized. The research goal, manuscript language, and interaction
 ## English project documents
 
 - Rule: Write project documents, records, and quoted researcher instructions in English, without translation labels.
-- Scope: Requirements, state, and other project documents and records, in both clients. Conversation and manuscript languages are separate settings.
+- Scope: Requirements, state, and other project documents and records, in both clients. Conversation and manuscript languages are separate settings. Manuscript text intended for publication is excluded.
 - Confirmed: 2026-10-30; "Do not write documents in Chinese." "Write the quoted words in English too." "You do not need to label them as translations."
+
+## Working drafts and publication language
+
+- Rule: Preserve researcher-authored notes and working drafts in their own language, which may differ from the target paper language. Write text prepared for publication, including body, headings, abstract, figure and table captions and descriptions, and publication metadata, in the language the researcher specifies for the paper. Do not translate working material without a request.
+- Scope: Researcher-authored raw material and manuscript work; target publication content in both clients. Agent-written project records remain in English.
+- Confirmed: 2026-10-30; "Use the language the user specifies for the paper text. Use English for project records. The manuscript can be in any language." "The paper text and working manuscript may be in different languages. For example, a student may have to publish in English but still record ideas in Chinese." "Figure and table descriptions follow the paper text language."

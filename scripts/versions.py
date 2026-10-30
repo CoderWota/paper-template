@@ -522,13 +522,6 @@ def command_untrack(args, root: Path) -> int:
     return 0
 
 
-PRACTICE_STEPS = (
-    ("Start the practice note", "# Practice note\n\nThe first paragraph of a practice text.\n"),
-    ("Add a second paragraph", "# Practice note\n\nThe first paragraph of a practice text.\n\nA second paragraph, added later.\n"),
-    ("Rewrite the first paragraph", "# Practice note\n\nThe first paragraph, rewritten in the third version.\n\nA second paragraph, added later.\n"),
-)
-
-
 def command_practice(args, root: Path) -> int:
     folder = root / ".tmp" / "git-practice"
     marker = folder / ".practice"
@@ -541,19 +534,13 @@ def command_practice(args, root: Path) -> int:
         shutil.rmtree(folder)
     folder.mkdir(parents=True)
     marker.write_text("practice repository created by scripts/versions.py\n", encoding="utf-8")
-    (folder / "README.md").write_text(
-        "# Git Practice\n\nA disposable practice copy with its own version history, separate from the paper. "
-        "Saving, comparing, and restoring here never touches the workspace or its history.\n", encoding="utf-8")
     practice = ["git", "-C", str(folder)]
     subprocess.run(practice + ["init", "-q", "-b", "main"], check=True)
     subprocess.run(practice + ["config", "--local", "user.name", "Practice"], check=True)
     subprocess.run(practice + ["config", "--local", "user.email", "practice@localhost"], check=True)
-    for message, text in PRACTICE_STEPS:
-        (folder / "practice-note.md").write_text(text, encoding="utf-8")
-        subprocess.run(practice + ["add", "-A"], check=True)
-        subprocess.run(practice + ["commit", "-q", "-m", message], check=True)
-    print(f"Created a practice copy with three saved versions at {folder.relative_to(root).as_posix()}/. "
-          f"Run the commands with --root {folder.relative_to(root).as_posix()} to practice.")
+    (folder / ".git" / "info" / "exclude").write_text(".practice\n", encoding="utf-8")
+    print(f"Created an empty practice repository at {folder.relative_to(root).as_posix()}/. "
+          f"Write a short README and practice note there, then save versions with --root {folder.relative_to(root).as_posix()}.")
     return 0
 
 

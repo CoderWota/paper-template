@@ -1,6 +1,6 @@
 # Manuscript Assets
 
-Figures, tables, and other non-text material used in the manuscript, with their captions, stable identifiers, and source or permission notes where relevant.
+Figures, tables, and other non-text material used in the manuscript, with their captions, stable identifiers, and source or permission notes where relevant. Captions and descriptions prepared for publication follow the paper's target language; working notes and draft labels may use another language until the figure is prepared for release.
 
 ## Rules
 

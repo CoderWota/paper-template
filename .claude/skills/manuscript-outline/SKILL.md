@@ -31,7 +31,7 @@ Outcome: `manuscript/outline.md`, a researcher-reviewable plan of the argument a
 
 ## Step 5: Write the outline
 
-10. Write `manuscript/outline.md` in the interaction language, with planned section titles in the manuscript language: the main claim and its support, the supporting claims with evidence status, the section map, the figure and table plan, the constraints with their sources, the gaps, and open questions. Keep text that the researcher wrote. Replace outdated parts; the outline states the current plan.
+10. Write `manuscript/outline.md` in English, with planned section titles in the manuscript language: the main claim and its support, the supporting claims with evidence status, the section map, the figure and table plan, the constraints with their sources, the gaps, and open questions. Keep text that the researcher wrote. Replace outdated parts; the outline states the current plan.
 11. The outline does not create or change section files. Drafting starts with `manuscript-writing`, which creates the files and lists them in the manifest.
 
 ## Completion check

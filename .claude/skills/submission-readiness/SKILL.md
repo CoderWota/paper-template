@@ -10,7 +10,7 @@ Outcome: an assessment of the current manuscript and package against the selecte
 ## Step 1: Gather the current state
 
 1. Read `requirements/project.md` (target venue), the venue note in `research/venues/` (scope, article types, requirements, AI policy, data, code, and reporting policies, required files and declarations), the profile's `requirements.md`, `manuscript/outline.md`, and `state/current.md`.
-2. Run the state checks: `python scripts/manuscript.py check` (problems and open `[TODO: ...]` markers), `python scripts/manuscript.py checks` (audits and evidence checks, current or stale), `python scripts/research.py check` (stale results), `python scripts/export.py verify --profile <id>` (the latest build and whether it is still current), and `python scripts/literature.py audit-bibliography`.
+2. Run the state checks: `python scripts/manuscript.py check` (problems and open `[TODO: ...]` markers), `python scripts/manuscript.py checks` (audits and evidence checks, current or stale), `python scripts/research.py check` (stale results), `python scripts/export.py verify --profile <id>` (the latest build and whether it is still current), and `python scripts/literature.py audit-bibliography`. Inspect publication text and figure and table captions against the confirmed target paper language; the format checks do not prove language readiness.
 3. A check whose inputs changed is stale: run it again (`manuscript-audit`, `submission-assembly`) or report that part as not checked. Never carry an old pass forward as evidence for the changed manuscript.
 
 ## Step 2: Assess each part separately

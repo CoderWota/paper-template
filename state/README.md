@@ -10,6 +10,7 @@ A concise handoff between sessions: what is in progress, what is blocked, and th
 
 - Keep it short and current. Replace outdated entries instead of appending history.
 - For an ongoing goal, name its authorized scope, link completed artifacts and checks, state the precise pending question or blocker, and name the next action. Detailed evidence and work items stay in their existing source, plan, result, audit, or revision records. Resume by checking those artifacts and their input versions; a state note alone does not prove completion or consent.
+- For a broad paper goal, use the [researcher-led work loop](../docs/researcher-led-loop.md) to connect specialist work through its existing records. Keep this state file a short handoff, not a second workflow or task database.
 - A directory tour does not create a progress record or initialize the project. Keep this note unchanged until actual project work needs a handoff.
 - It is not a chat transcript, a rule book, or a place for preferences the agent has inferred. Confirmed rules go in [`requirements/`](../requirements/README.md).
 

@@ -15,7 +15,7 @@ Outcome: a recognizable local version with a meaningful message, containing exac
 ## Step 2: Agree on the scope
 
 3. The request sets the scope. "Save this version" or "save everything" means all current changes; "save the revised introduction" means that file or section. When unrelated changes are present, such as files from an unfinished task, name them and ask whether to include them. A routine save inside a clear request needs no further approval.
-4. Write the message in the interaction language: what changed in research terms, for example "Introduction rewritten around the narrowed question", not "update files".
+4. Write the message in English: what changed in research terms, for example "Introduction rewritten around the narrowed question", not "update files".
 
 ## Step 3: Save
 

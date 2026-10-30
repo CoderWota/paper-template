@@ -1,6 +1,6 @@
 # Manuscript
 
-The working text of the paper and its figures, tables, and other assets. Write in the language chosen for the manuscript. Nothing here assumes a discipline, an article structure, or a citation style.
+The working text of the paper and its figures, tables, and other assets. The researcher may keep notes and drafts in any language, even when the intended paper is in another language. Preserve that material as written. Text prepared for publication, including figure and table captions and descriptions, uses the chosen paper language. Nothing here assumes a discipline, an article structure, or a citation style.
 
 ## Contents
 
@@ -12,7 +12,7 @@ The working text of the paper and its figures, tables, and other assets. Write i
 | Section files, for example `01-introduction.md` | Body text: at most one Markdown file per chapter or major section. A single-file manuscript is also fine. |
 | [`assets/`](assets/README.md) | Figures, tables, captions, and their sources. |
 
-Only files listed in `manifest.yaml` are assembled into outputs. This README, the outline, notes, and unselected drafts are never included.
+Only files listed in `manifest.yaml` are assembled into outputs. A listed working draft may still be in its original language; a preview is not evidence that it is ready to submit. Check the language of every publication component before a release. This README, the outline, notes, and unselected drafts are never included.
 
 ## Writing conventions
 

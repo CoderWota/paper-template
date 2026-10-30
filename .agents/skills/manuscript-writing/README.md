@@ -1,6 +1,6 @@
 # Manuscript Writing
 
-Drafts or revises manuscript text on request: a new section, a rewritten paragraph, a shortened abstract, a translation of your draft into the manuscript language, a results passage, a caption, or a single sentence. The agent writes in your manuscript language, follows your confirmed writing rules and the outline, and relies only on actual evidence and results.
+Drafts or revises manuscript text on request: a new section, a rewritten paragraph, a shortened abstract, a translation of your draft into the target paper language, a results passage, a caption, or a single sentence. Your notes and working drafts may use any language; the agent preserves that language for an ordinary edit. Text prepared for publication and its figure and table captions use your chosen paper language. The agent follows your confirmed writing rules and relies on actual evidence and results.
 
 Ask, for example: "Draft the methods section from the plan and the results," "Translate my Chinese notes for the introduction into English," or "Shorten this paragraph."
 

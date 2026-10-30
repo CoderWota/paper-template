@@ -5,9 +5,9 @@ description: Import an external code repository, with or without Git, into code/
 
 # Code import
 
-Outcome: an external code repository (a Git address, a folder with or without Git, or an archive) in `code/<name>/` as its own Git repository. The original is unchanged, secrets and data stay out of its history, it is registered in `code/README.md`, and the researcher knows what was not copied and how to work on the code.
+Outcome: an external code repository (a Git address, a folder with or without Git, or an archive) in `code/<name>/` as its own Git repository. The original is unchanged, secrets and data stay out of its history, machine-readable repository facts are recorded, and the researcher knows what was not copied and how to work on the code.
 
-The repository's own `.git` folder keeps a session opened inside it apart from this workspace's instructions and skills. A folder without Git would inherit them, so every import ends with a repository of its own. Nothing from `.agents/` goes into it.
+The repository's own `.git` folder sets a project boundary for Codex. In the verified Claude Code setup, isolation requires starting the new session at the imported repository root; a deeper start folder can still load the paper workspace's instructions. Every import ends with a repository of its own. Nothing from `.agents/` goes into it.
 
 ## Step 1: Prepare
 
@@ -21,7 +21,7 @@ The repository's own `.git` folder keeps a session opened inside it apart from t
 5. From the workspace root:
 
    ```text
-   python scripts/research.py code-import --source <address-or-path> --name <name> [--output-dir <folder> ...] [--data include]
+   python scripts/research.py code-import --source <address-or-path> --name <name> [--output-dir <folder> ...] [--data include] [--commit-message "<agent-written message>"]
    ```
 
    | Source | What happens |
@@ -37,13 +37,13 @@ The repository's own `.git` folder keeps a session opened inside it apart from t
 
 ## Step 3: Register and describe
 
-8. The command ignores the folder in this workspace's Git and lists the repository in `code/README.md` and `code/repositories.json`. Inside the repository it writes only the Claude Code exclusions (`.claude/settings.local.json`) and, when there is an `AGENTS.md` but no `CLAUDE.md`, a local `CLAUDE.md` that imports it. Neither enters the repository's history.
-9. Read the repository's README as material. Below the maintained block of `code/README.md`, describe its role, entry scripts, and environment (for R, `renv.lock`; the researcher restores packages in the code session).
+8. For a plain folder without Git, write a short, accurate initial commit message and pass it with `--commit-message`. The command ignores the folder in this workspace's Git and records repository facts in `code/repositories.json`. Inside the repository it writes only the Claude Code exclusions (`.claude/settings.local.json`) and, when there is an `AGENTS.md` but no `CLAUDE.md`, a local `CLAUDE.md` that imports it. Neither enters the repository's history.
+9. Read the repository's README as material. Write or update `code/README.md` in English with its role, entry scripts, environment (for R, `renv.lock`; the researcher restores packages in the code session), source, and data decision. Preserve existing descriptions and write from observed files and `code/repositories.json`; do not invent missing details.
 10. Confirm the repository, the data decision, and the output folders with the researcher, and record them in `research/decisions/` (they change the material scope).
 
 ## Step 4: Hand off
 
-11. Tell the researcher to work on the code in a new session opened in `code/<name>/` itself. That session does not load this workspace's rules or skills. Record analysis runs here with `research-code-setup`; [repositories](../research-code-setup/repositories.md) covers runs, reading code, and handing a change to the code session.
+11. Tell the researcher to open the code session at the `code/<name>/` root, not a subfolder. In the verified setup, that start folder keeps the paper workspace's rules and skills out of the code session. Record analysis runs here with `research-code-setup`; [repositories](../research-code-setup/repositories.md) covers runs, reading code, and handing a change to the code session.
 
 ## Completion check
 
@@ -51,4 +51,4 @@ The repository's own `.git` folder keeps a session opened inside it apart from t
 - The original is unchanged, and an archive left nothing in `.tmp/`.
 - The researcher was told which data was not copied, and that code reading it fails until it is in place.
 - The repository is registered, described, and recorded as a decision.
-- `python scripts/research.py check` and `python scripts/check_readmes.py` report no problem.
+- Review facts reported by `python scripts/research.py check`. Inspect the repository record and its description for broken links or incorrect facts; the command does not validate prose form. Leave uncertain details unstated.

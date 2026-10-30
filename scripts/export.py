@@ -6,10 +6,10 @@ checkable expectations, templates/ holds the Word reference document and an opti
 supplied guidelines, and requirements.md maps each adopted rule to its source, implementation, and check. A build
 assembles the files that manuscript/manifest.yaml lists with Pandoc, pandoc-crossref, citeproc, and the workspace's
 Lua filters, renders Mermaid diagrams as figures, and checks the DOCX: one native Word equation per source formula
-with matching structure, figures, references, citations, the title, authors, and keywords that manuscript/metadata.yaml
-declares, layout expectations, word limits, and anonymization.
-Previews go to outputs/preview/<profile-id>/; a release copies a passing, current build into outputs/releases/<id>/
-and is never overwritten.
+with matching structure, figures, references, citations, required declared front matter, and anonymization. Layout
+expectations, word limits, and open markers are also reported; these notes do not block a preview on their own.
+Previews go to outputs/preview/<profile-id>/; a release copies a current build whose blocking checks passed into
+outputs/releases/<id>/ and is never overwritten.
 
 Usage:
   python scripts/export.py tools
@@ -25,8 +25,8 @@ Profile keys: output, reference_doc, csl, number_sections, figure_prefix[_plural
   expect_line_spacing, expect_line_numbers, expect_max_words, expect_anonymized.
   python scripts/export.py verify --profile ID
   python scripts/export.py render --docx PATH
-  python scripts/export.py release --profile ID --id RELEASE_ID [--allow-open-items]
-All commands take --root WORKSPACE. Exit status: 0 done and checks passed; 1 a check failed; 3 refused.
+  python scripts/export.py release --profile ID --id RELEASE_ID --readme PATH [--allow-open-items]
+All commands take --root WORKSPACE. Exit status: 0 done and blocking checks passed; notes may remain; 1 a blocking check or application failed; 3 refused.
 Uses only the Python standard library; Pandoc, pandoc-crossref, and mermaid-cli are external tools.
 """
 
@@ -50,10 +50,9 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import manuscript  # noqa: E402
 from text_rules import AI_AUTHOR, open_marker, signature_problems  # noqa: E402
 from export import docx, tools  # noqa: E402
-from ingestion.common import sha256_file, update_readme, write_json_atomic, write_text_atomic  # noqa: E402
+from ingestion.common import sha256_file, write_json_atomic, write_text_atomic  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
-OWNER = "scripts/export.py"
 FILTERS = Path(__file__).resolve().parent / "export"
 DOC_SETTINGS = ("page", "margins_cm", "font", "east_asian_font", "size_pt", "line_spacing", "space_after_pt",
                 "table_line_spacing", "heading_font", "heading_color", "line_numbers")
@@ -134,20 +133,6 @@ def command_profile_init(args, root: Path) -> int:
                                capture_output=True, text=True)
     if completed.returncode != 0:
         raise Refused(f"Pandoc could not write its default reference document: {completed.stderr.strip()[:300]}")
-    update_readme(folder / "README.md", f"Output profile: {args.name}", (
-        f"The output profile `{args.id}` ({args.name}): the requirements for this output and the resources that produce it. "
-        "`requirements.md` lists each adopted rule with its source, implementation, and check result; `profile.yaml` holds the "
-        "export settings and the checkable expectations; [`originals/`](originals/README.md) keeps the supplied guidelines and "
-        "examples unchanged; [`templates/`](templates/README.md) holds the Word reference document and any citation style. "
-        "Builds go to `outputs/preview/` and releases to `outputs/releases/`."), OWNER)
-    update_readme(folder / "originals" / "README.md", f"Originals: {args.id}", (
-        f"Author guidelines, journal instructions, templates, and example articles supplied for the profile `{args.id}`, "
-        "exactly as received. They are the sources of the rules in `../requirements.md`; nothing here is edited."), OWNER)
-    update_readme(folder / "templates" / "README.md", f"Templates: {args.id}", (
-        f"Format resources used by the build of `{args.id}`: `reference.docx` provides Word styles and page setup "
-        "(rebuilt by `python scripts/export.py reference-doc` from the settings in `../profile.yaml`), and a `.csl` file, when "
-        "present, sets the citation style. A supplied journal template is kept in `../originals/`; what is adapted from it "
-        "is recorded in `../requirements.md`."), OWNER)
     print(f"Created the profile {args.id} with Pandoc's default Word styles. Record the adopted rules in requirements.md.")
     return 0
 
@@ -365,18 +350,24 @@ def command_build(args, root: Path) -> int:
     checks = verify(root, profile, output, facts, warnings, sections)
     for problem in diagram_problems:
         checks.append(("diagrams", False, problem))
-    passed = all(ok for name, ok, _ in checks if name != "open items")
+    blocking_checks = {"AI signatures", "native equations", "figures", "cross-references", "citations",
+                       "front matter", "resources", "anonymization", "diagrams"}
+    passed = all(ok for name, ok, _ in checks if name in blocking_checks)
     record = {"schema": "paper-template.build/1", "profile": args.profile, "built": datetime.now().isoformat(timespec="seconds"),
               "status": "passed" if passed else "failed", "inputs": build_inputs(root, folder, profile, sections),
               "tools": {"pandoc": info["pandoc_version"], "pandoc-crossref": info["crossref_version"],
                         "mermaid-cli": tools.MERMAID_CLI_VERSION if info["mmdc"] and blocks else None, "python": tools.python_info()},
               "command": [Path(c).name if os.path.isabs(c) else c for c in command] + ["-o", "manuscript.docx"],
-              "warnings": warnings, "checks": [{"name": n, "passed": ok, "detail": d} for n, ok, d in checks],
+              "warnings": warnings, "writing_notes": analysis["warnings"],
+              "checks": [{"name": n, "passed": ok, "blocking": n in blocking_checks, "detail": d} for n, ok, d in checks],
               "output": {"file": "manuscript.docx", "sha256": sha256_file(output)}}
     write_json_atomic(out / "build.json", record)
     print(f"Built outputs/preview/{args.profile}/manuscript.docx with the profile {args.profile}: {record['status']}.")
     for name, ok, detail in checks:
-        print(f"  [{'pass' if ok else 'FAIL' if name != 'open items' else 'open'}] {name}: {detail}")
+        level = "pass" if ok else "FAIL" if name in blocking_checks else "open" if name == "open items" else "note"
+        print(f"  [{level}] {name}: {detail}")
+    for note in analysis["warnings"]:
+        print(f"  [note] {note}")
     if args.render and passed:
         render(root, output)
     return 0 if passed else 1
@@ -398,7 +389,8 @@ def command_verify(args, root: Path) -> int:
     print(f"Build of {record['built'][:16]} with {args.profile}: {record['status']}" +
           (f"; out of date because these changed: {', '.join(changed)}" if changed else "; still current."))
     for check in record["checks"]:
-        print(f"  [{'pass' if check['passed'] else 'FAIL'}] {check['name']}: {check['detail']}")
+        level = "pass" if check["passed"] else "FAIL" if check.get("blocking", True) else "open" if check["name"] == "open items" else "note"
+        print(f"  [{level}] {check['name']}: {check['detail']}")
     return 0 if record["status"] == "passed" and not changed else 1
 
 
@@ -470,33 +462,32 @@ def command_release(args, root: Path) -> int:
     open_items = next((c for c in record["checks"] if c["name"] == "open items" and not c["passed"]), None)
     if open_items and not args.allow_open_items:
         raise Refused(f"{open_items['detail']}; resolve them or confirm a release with open items")
+    readme = Path(args.readme)
+    readme = readme if readme.is_absolute() else root / readme
+    if not readme.is_file():
+        raise Refused(f"release description {args.readme} does not exist")
+    try:
+        readme.resolve().relative_to(root.resolve())
+    except ValueError:
+        raise Refused("the release description must be inside the workspace") from None
     staging = root / "outputs" / "releases" / f".{args.id}.part"
     shutil.rmtree(staging, ignore_errors=True)
     staging.mkdir(parents=True)
     files = [output] + [p for p in (output.with_suffix(".pdf"),) if p.is_file() and p.stat().st_mtime >= output.stat().st_mtime]
     for file in files:
         shutil.copy2(file, staging / file.name)
+    shutil.copy2(readme, staging / "README.md")
     if (preview / "figures").is_dir():
         shutil.copytree(preview / "figures", staging / "figures")
     release = {"schema": "paper-template.release/1", "release": args.id, "profile": args.profile,
                "created": datetime.now().isoformat(timespec="seconds"), "build": record,
                "files": [{"file": p.relative_to(staging).as_posix(), "sha256": sha256_file(p)} for p in sorted(staging.rglob("*")) if p.is_file()]}
     write_json_atomic(staging / "release.json", release)
-    update_readme(staging / "README.md", f"Release {args.id}", (
-        f"A frozen package made on {release['created'][:10]} from the build of {record['built'][:16]} with the output profile "
-        f"`{args.profile}`. `release.json` records the checksums of every file, of the manuscript and profile inputs, the tool "
-        "versions, the build command, and the check results. This folder is never edited or rebuilt; a later version is a new "
-        "release. A release is not a submission: submitting it is the researcher's separate decision." +
-        (f" It was released with open items: {open_items['detail']}." if open_items else "")), OWNER)
-    if (staging / "figures").is_dir():
-        update_readme(staging / "figures" / "README.md", f"Figures of {args.id}", (
-            "The diagram figures rendered for this release, named by the checksum of their Mermaid source. They are embedded in "
-            "the Word file as well; venues that ask for separate figure files can take them from here."), OWNER)
     staging.rename(target)
     for file in target.rglob("*"):
         if file.is_file():
             os.chmod(file, stat.S_IREAD | stat.S_IRGRP | stat.S_IROTH)
-    print(f"Released outputs/releases/{args.id}/ ({len(files)} file(s) and the build record). It will not be overwritten.")
+    print(f"Released outputs/releases/{args.id}/ with a README and {len(files)} manuscript file(s). It will not be overwritten.")
     return 0
 
 
@@ -557,6 +548,7 @@ def main(argv: list | None = None) -> int:
     release = commands.add_parser("release", help="freeze the latest passing, current build into outputs/releases/")
     release.add_argument("--profile", required=True)
     release.add_argument("--id", required=True)
+    release.add_argument("--readme", required=True, help="agent-written release description to include in the frozen package")
     release.add_argument("--allow-open-items", action="store_true")
     args = parser.parse_args(argv)
     root = args.root.resolve()
