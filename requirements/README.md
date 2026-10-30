@@ -19,7 +19,7 @@ The researcher's confirmed requirements: what currently governs work on this pro
 - When a new rule conflicts with an existing one, the agent asks you to resolve the conflict. Only active rules stay here: a replaced rule is removed, and an important change also gets a decision record in [`research/decisions/`](../research/decisions/README.md).
 - Anything undecided, such as the research direction or the target venue, stays open rather than guessed.
 
-The requirement files are written in your interaction language; this README stays in English.
+Write requirements and quoted researcher instructions in English without translation labels; see [`project.md`](project.md).
 
 ## Processing and credentials
 

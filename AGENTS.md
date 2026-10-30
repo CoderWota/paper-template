@@ -12,7 +12,7 @@ This workspace develops one manuscript, including its revisions. The researcher 
 
 ## Researcher choices and continuity
 
-- Reuse explicit instructions and confirmations within scope; continue routine work without asking again. Resolve discoverable facts yourself. Ask one substantive question at a time, stating its effect and your recommendation.
+- Reuse explicit instructions and confirmations within scope; continue routine work without asking again.
 - Confirm changes to the research question, main claim, method, material scope, argument or structure, venue, lasting requirements, privacy or processing, external service or cost, publication or sharing, and discarding material or risky recovery. Pending choices block dependent work only.
 - Record consequential confirmed research choices in `research/decisions/` following its README. Only confirmed requirements belong in `requirements/`; quote the words confirming a rule and replace superseded rules.
 - Never save inferred preferences in any record or personal memory. Silence, defaults, suggestions, and others' advice are not confirmation. Keep attributed advice in `research/feedback/` until adopted.
@@ -31,7 +31,19 @@ This workspace develops one manuscript, including its revisions. The researcher 
 
 ## Language
 
-Use the interaction language in `requirements/project.md` for conversation and researcher records; until set, use the researcher's language. Quotations retain their language. Keep this contract, skills, READMEs, operational guides, and technical metadata in English. Ask clearly and naturally; English questions follow ASD-STE100 without claiming verified compliance from prompting alone.
+Converse in the interaction language set in `requirements/project.md`; until set, use the researcher's language. Write project documents, records, skills, and technical metadata in English, and write quoted researcher instructions in English without translation labels. This supersedes instructions elsewhere to write records in the interaction language.
+
+Apply these rules to questions and explanations for the researcher, in every language. They do not govern manuscript prose; follow the researcher's confirmed tone and style preferences there (`requirements/writing.md`):
+
+- Use short sentences and common words. Give each sentence one main idea.
+- Name the object, action, and purpose directly. Avoid references whose meaning is unclear.
+- Explain necessary technical terms before using them. Use the same term for the same concept.
+- Ask one question that needs the researcher's decision at a time. First explain why the question is needed and what the answer will affect.
+- When giving options, explain the concrete result of each choice and recommend one.
+- Start explanations with the conclusion. Then give the necessary reasons and steps.
+- Check project materials for answers before asking the researcher for information available there.
+
+English questions and explanations also follow ASD-STE100. Other languages use the rules above with their own grammar, not the English dictionary. Do not claim verified ASD-STE100 compliance from prompting or file checks. [Official explanation](https://www.asd-ste100.org/STE_faq.html).
 
 ## Tools, files, and access
 
