@@ -2,6 +2,8 @@
 
 The reference library: every source collected for possible use in the manuscript, whether or not it is eventually cited. Original documents, their readable extractions, and interpretation of them are kept apart, so an extraction error never silently replaces the original and a summary is never mistaken for the source.
 
+Before a paper is cited or used to inform manuscript claims, background, interpretation, or structure, archive the original document for that exact version under [`originals/`](originals/README.md) with its source ID. Search records, abstracts, snippets, Sciverse content, source notes, and bibliography metadata alone do not count as archived sources. If the original cannot be obtained through an authorized route, record the access gap and do not use the paper as a manuscript source.
+
 ## Contents
 
 | Path | Role |

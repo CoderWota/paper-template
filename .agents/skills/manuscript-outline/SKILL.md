@@ -17,6 +17,7 @@ Outcome: `manuscript/outline.md`, a researcher-reviewable plan of the argument a
 3. State the main claim in one or two sentences, with its support: the result records and evidence notes behind it, and their status (checked, observed, or still missing).
 4. List the supporting claims in the order the argument needs them. For each: the evidence it needs, what exists (with links), and what is missing. A claim whose support is missing stays in the outline as a gap; it is never presented as a finding.
    Identify the step from observation to interpretation, alternatives that the evidence has not excluded, and any conclusion stronger than its support. Offer a concrete repair to the argument or a check to obtain support; a different main claim remains a proposal for the researcher.
+   Every paper used to support a claim or shape the manuscript's background, interpretation, or structure, including a paper underlying a linked result record, must link through its source ID to the original for that exact version in `references/originals/`. Unarchived search records can identify leads or evidence gaps, but abstracts, snippets, and service-only text do not support the outline.
 5. Fit the structure to the discipline, the article type, and the venue: use a fixed structure such as IMRaD only when the article type or the venue requires it or the researcher asks. Respect the venue's limits (length, required sections, abstract form) as recorded in its venue note, and name the source.
 
 ## Step 3: Map the sections
@@ -37,6 +38,7 @@ Outcome: `manuscript/outline.md`, a researcher-reviewable plan of the argument a
 ## Completion check
 
 - Every claim in the outline has its evidence status, and missing support is a visible gap, not a finding.
+- Every paper used as manuscript evidence or writing input has an archived original for its exact version; unarchived papers remain leads or gaps.
 - The structure fits the discipline, article type, and venue limits, each with its source; no structure was forced.
 - The structure was confirmed by the researcher before the outline was written as the plan.
 - The outline holds no body text and is not listed in the manifest.
