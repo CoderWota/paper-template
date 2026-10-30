@@ -8,7 +8,7 @@ The researcher's confirmed requirements: what currently governs work on this pro
 | --- | --- |
 | [`project.md`](project.md) | Purpose, intended contribution, audience, article type, and languages. |
 | [`writing.md`](writing.md) | Active writing rules and terminology, each with its scope. |
-| [`research-assessment.md`](research-assessment.md) | Confirmed guidance for idea development, originality checks, and impact assessment. Load for those tasks only. |
+| [`research-assessment.md`](research-assessment.md) | Confirmed guidance for idea development, originality checks, impact assessment, and mock review. Load for those tasks only. |
 | [`privacy.md`](privacy.md) | Confirmed document-processing choices, external query-sharing scopes, and data-use requirements. |
 | [`profiles/`](profiles/README.md) | Output profiles: journal or thesis requirements and their format resources. |
 

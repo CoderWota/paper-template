@@ -22,4 +22,4 @@ Status: not initialized. The research goal, manuscript language, and interaction
 
 ## Task-specific assessment guidance
 
-Read [research assessment requirements](research-assessment.md) for idea development, originality checks, or impact assessment. Other tasks do not need this guidance.
+Read [research assessment requirements](research-assessment.md) for idea development, originality checks, impact assessment, or mock review. Other tasks do not need this guidance.

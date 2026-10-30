@@ -21,6 +21,10 @@ Separate a **documented omission** from **the reviewer's access limit**. Missing
 
 Before the overall recommendation, answer: **After the identified corrections, what credible and useful contribution remains?** Explain what survives and what remains unsupported. If a new central argument or evidence base is needed, say so; rejection does not require misconduct or a fatal calculation error. Do not count findings, average dimension scores, or let one low dimension decide the verdict. Reviewers repeating a concern do not establish its truth.
 
+## Literature basis in every discipline
+
+Ground originality and academic and societal significance in relevant field literature. Use the paper's references as search leads, inspect decisive passages, and follow useful backward and forward citation leads. Check close, contrary, omitted, or newer work beyond its bibliography where needed. Sciverse or authorized Agent web search may fill gaps without a fixed source count or an exhaustive systematic review. Report provider, search date and queries or concepts, inspected sources with locators and reading depth, and their effect on the contribution judgments. Distinguish search snippets and abstracts from full text. Reuse adequate inspected comparisons; unavailable decisive literature leaves the affected judgment not assessed, not low by default. Apply read-only constraints to all handoffs.
+
 ## Written fields
 
 1. **Summary.** Question, main claims, design or synthesis, and contribution, in the reviewer's words.
@@ -28,11 +32,16 @@ Before the overall recommendation, answer: **After the identified corrections, w
 3. **Weaknesses.** Most consequential first, each with a location and the finding assessment above. Do not inflate the list with unpromised tasks or style preferences.
 4. **Questions.** Answers that would change a score or recommendation and the checks needed to resolve them.
 5. **Limitations and ethics.** Consequences for claims and uses; distinguish established issues from questions.
-6. **Contribution retained and use.** What remains credible after correction, what readers may use or cite, and what they should not yet rely on. State overall quality separately from treatment; use "not yet assessable" when needed.
+6. **Academic and societal contribution.** State the added knowledge against inspected prior work and the theoretical or interpretive contribution where relevant. Separately state the social problem, affected people, pathway, evidence, and limits. Link relevant field literature to both academic and societal judgments; report source-access limits rather than treating the paper's claims or bibliography alone as verification. For humanities and social sciences, use the evidence states and required threshold in [discipline-specific guidance](humanities-social-sciences.md); report it separately from any official venue assessment.
+7. **Contribution retained and use.** What remains credible after correction, what readers may use or cite, and what they should not yet rely on. State overall quality separately from treatment; use "not yet assessable" when needed.
+
+Use the academic and societal contribution field as a separate supplement when an official venue form lacks it; do not add or alter official fields or anchors.
 
 ## Criterion scores (1 to 4)
 
 Choose an anchor supported by evidence, not a preset high, middle, or low score. A provisional score needs its evidence and confidence limit. Use **not assessed** instead of a number when a decisive part cannot be judged. A low score must identify its specific shortcoming; at the highest score, explain what sustains it rather than inventing an improvement tier.
+
+An "unresolved substantive distinction" in the originality scale means a contribution limitation identified through inspected comparisons, not a comparison left undone because of limited access or search coverage.
 
 | Score | Soundness | Clarity | Significance | Originality |
 | --- | --- | --- | --- | --- |
