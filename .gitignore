@@ -58,3 +58,7 @@ desktop.ini
 *~
 ~$*
 .~lock.*#
+
+# Generated machine-specific MCP client configurations
+/.mcp.json
+/.codex/config.toml

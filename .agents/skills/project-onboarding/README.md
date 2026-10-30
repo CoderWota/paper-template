@@ -18,3 +18,5 @@ Ask, for example: "Help me initialize this research writing project. I do not ha
 The agent instructions are in [SKILL.md](SKILL.md). Related skills: `environment-management`, `privacy-configuration`, and `constraint-maintenance`.
 
 After a directory tour, the assistant reuses what you already told it and asks only for missing information needed for the first task. Processing choices, software setup, and the optional account privacy check are introduced when relevant, rather than required to understand the workspace.
+
+Initialization also installs the official Sciverse and MinerU cloud MCP tools inside this workspace, configures Codex and Claude Code, and checks their tool lists. No research query or document is sent. Keys can wait until the first authorized service use. Installation failures remain recorded for retry.

@@ -2,6 +2,12 @@
 
 Status: not initialized. The research goal, manuscript language, and interaction language are unconfirmed.
 
+## Standard MCP installation during initialization
+
+- Rule: Workspace initialization includes installing the pinned official Sciverse and MinerU cloud MCP packages inside the repository, configuring Codex and Claude Code, and checking MCP protocol and tool discovery. Provide installation, checking, and launch scripts. Missing credentials do not block installation; installation does not authorize research queries or document uploads.
+- Scope: This template's initialization workflow, in both clients.
+- Confirmed: 2026-10-30; "The repository initialization should include MCP installation." The researcher explicitly requested implementation of the plan for both official MCP servers and both clients.
+
 ## Clear communication in all languages
 
 - Rule: Questions and explanations to the researcher use short sentences, common words, one question at a time, and the conclusion first. Details are in `AGENTS.md` (Language). English also follows ASD-STE100.

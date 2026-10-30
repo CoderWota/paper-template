@@ -10,6 +10,7 @@ Outcome: a working setup for the task at hand, or one exact, plain next step. Se
 ## Rules for this skill
 
 - Follow `AGENTS.md`. Installing, upgrading, or removing software and changing a system setting are decisions: explain the effect, recommend one option, and wait for explicit consent.
+- A request to initialize this workspace already authorizes the pinned Sciverse and MinerU MCP installation in `.tools/mcp/`, configuration, and protocol checks. Follow `project-onboarding` without another installation question. This does not authorize base-runtime installation, upgrades, credentials, queries, or uploads.
 - Inspect before you change anything. Reuse a compatible installed tool. Never upgrade or replace a working global installation to suit this workspace.
 - Prefer per-user installations that need no administrator rights. Basic work never needs Docker, WSL, a GPU, or a local model.
 - A missing tool must not block unrelated work. Reading and writing Markdown never needs a tool.
@@ -29,6 +30,7 @@ State only what the current task needs:
 
 - Reading and writing Markdown: nothing.
 - Workspace scripts: Python 3.9 or later (the tested versions are 3.9 and 3.12).
+- Standard MCP tools: `python scripts/setup_mcp.py check` reports pinned packages, protocol discovery, client configurations, and credential presence. Setup needs Python 3.11+ and Node.js 18+ with npm; it does not need local MinerU models.
 - Document parsing, export, or research code: the requirements of that integration, from its current official documentation. For MinerU on this computer, `python scripts/setup_mineru.py check` reports the installation, the models, and the free disk space; `source-ingestion` describes the routes and tiers. Check the processor architecture: an x64 package can fail, or run slowly under emulation, on ARM64 Windows.
 
 Use the path notes from the report: spaces or non-ASCII characters, a long Windows path, or a cloud-synced folder such as OneDrive, where `.venv/` and caches cause sync conflicts. Mention a risk only when it affects the task.

@@ -2,6 +2,8 @@
 
 Keeps this computer ready for the work you ask for, with no programming on your part. The agent checks the operating system, processor, memory, storage, and installed tools; reuses what already works; sets up project environments only when a task needs them; and helps you enter API keys privately. It installs or changes nothing without your consent.
 
+A request to initialize this workspace includes the standard local installation and checks for the official Sciverse and MinerU cloud MCP tools. The assistant does not ask for the same installation consent again. Base-runtime changes and sending queries or documents remain separate choices.
+
 Ask, for example: "Check whether this computer is ready to import PDFs." or "Something is missing. Please fix the setup."
 
 ## Private API keys

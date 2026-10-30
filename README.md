@@ -16,6 +16,8 @@ When you want to set up a new paper, you can ask:
 
 > Help me set up this research writing project. I do not have a programming background.
 
+Initialization includes local installation of the official Sciverse and MinerU cloud MCP tools, configuration for Codex and Claude Code, and a connection check. It sends no research queries or documents. API keys can be configured later, when an authorized task needs them. See [MCP setup](mcp/README.md).
+
 You can bring an existing draft, a research question, collected papers, or reviewer comments. Unknown choices can wait. Each additional paper uses a separate fresh copy of this workspace.
 
 You can also request one task directly:

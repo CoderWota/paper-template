@@ -21,6 +21,20 @@ Read `state/current.md` and `requirements/project.md`. Inspect `manuscript/manif
 
 For a setup request, say briefly what will be recorded and that unknown choices can wait. After a tour, go straight to the next missing choice.
 
+## Install the standard MCP tools
+
+A request to initialize this workspace includes installation of the two pinned official MCP packages. Explain that Sciverse provides literature tools and MinerU provides cloud parsing; installation itself sends no research queries or documents. Do not ask again whether to install these two components.
+
+Use `environment-management` to run `python scripts/inspect_environment.py`. The MCP setup entry needs Python 3.11 or later and Node.js 18 or later with npm. Reuse compatible runtimes; ask before installing or replacing a missing base runtime. Then run, with that Python:
+
+1. `python scripts/setup_mcp.py install`
+2. `python scripts/setup_mcp.py configure`
+3. `python scripts/setup_mcp.py check`
+
+Run these as part of initialization, not as instructions for the researcher to execute. Preserve completed steps and retry failures. Record separate installation, client configuration, protocol-discovery, and credential statuses; the local machine report is `.local/mcp/status.json`. Missing credentials mean installed with service calls pending, not a failed installation. If installation fails, record MCP setup as incomplete and continue independent work. Reopen the project when needed to load new client tools; do not claim client discovery solely from a valid configuration file.
+
+Do not request keys during installation, select a document-processing route, authorize queries or uploads, or test a service by sending research material. Existing scope rules and archive procedures still apply. Read [MCP setup](../../../mcp/README.md) for configuration repair and output handling. Template maintenance must not mark a paper initialized or disconnect its remote.
+
 ## Disconnect the template remote
 
 Once the researcher has asked to initialize this paper, tell them in one sentence that setup disconnects any link to the original template repository, while local versions and personal remotes remain. Run `python scripts/versions.py detach-template` before marking setup complete. For an unambiguous ordinary copy, run it with `--apply` and check again. A folder with no Git or no remote needs no change. If the result has mixed or uncertain addresses or shared worktrees, explain the issue and leave setup incomplete until the researcher decides. If `.git/config` access needs narrow local approval, request it when available; if not granted, leave setup incomplete. Do not disconnect during a tour, a bounded task, or template maintenance. Run `versions.py inspect` only for a history question or a real history ambiguity.
@@ -37,6 +51,6 @@ Write each confirmed answer as soon as it arrives. Put status, goal, languages, 
 
 ## Finish
 
-After the agreed setup and template-remote check, mark the project initialized with the date. If interrupted, retain incomplete status and recorded answers. Write `state/current.md` in English with what is set, open, and next. Report the settings with links and continue an already requested first task once its prerequisites are met. The optional `inbox/` is an intake place; the researcher can give an accessible existing file path instead.
+After the agreed setup, MCP status report, and template-remote check, mark the project initialized with the date. If interrupted, retain incomplete status and recorded answers. Write `state/current.md` in English with what is set, open, and next. Report the settings with links and continue an already requested first task once its prerequisites are met. The optional `inbox/` is an intake place; the researcher can give an accessible existing file path instead.
 
 Check that every recorded item came from a clear instruction, nothing was inferred or overwritten, the state names the next action, and no template remote remains on an initialized paper. A mixed or shared remote remains open for the researcher's decision.
