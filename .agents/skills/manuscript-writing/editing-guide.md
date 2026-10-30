@@ -54,10 +54,20 @@ When the researcher asks what a passage says in their language, give a literal t
 - When nothing needs to change, return the text unchanged, and say so.
 - Report the kinds of changes with a few examples, and run `check_edit.py`.
 
+## Calibrating claims and limitations
+
+Use this section for drafting from checked evidence or a request to correct overstatement or excessive caution. Translation, shortening, and ordinary polishing preserve meaning; they do not silently become claim-strength revisions. Read [argument and impact guidance](argument-and-impact.md).
+
+- Inspect the source passage or result record and its status. State a checked finding directly within its measured conditions; an unchecked observation remains preliminary. Keep findings, interpretations, and prospects distinct.
+- Make the contribution and its value clear. Improve the explanation, comparison, or argument when this can make the case more persuasive without changing facts. Do not turn an untested use, unperformed comparison, or potential effect into an established result.
+- Tie each limitation to the claim, use, or venue requirement it affects. Explain its consequence and what remains supported. Do not invent mitigation or append routine disclaimers.
+- Preserve unfavorable primary outcomes, null results, and inconsistency as directly as favorable findings. Follow required venue placement and repetition.
+- Preserve an original copy and explain intended changes against inspected support when reviewing `check_edit.py` output. Propose consequential changes to the main claim for the researcher's decision; ordinary style edits preserve the author's meaning and uncertainty.
+
 ## Results passages
 
 - Write only from result records in `research/results/`. A checked result may be stated as a finding. An observed but unchecked result must be called preliminary. Cite the record as step 6 of the skill requires.
-- Structure each paragraph: one sentence that states the finding; then the numbers that show it, with units and conditions; then the comparison and what it means; then the limits that the record states. Use no headings or bold labels inside the paragraph, and separate findings with a blank line.
+- Lead with the finding, followed by the numbers, units, conditions, and relevant comparison that support it. Add interpretation only where the record supports it. Include a recorded limitation here only when it changes how this finding should be read; a limitation is not a required paragraph ending. Use no headings or bold labels inside the paragraph, and separate findings with a blank line.
 - Discuss only the analysis dimensions that the record supports: comparison with the strongest baseline under the same settings; sensitivity to a key parameter or seed; the trade-off between performance and cost; the contribution of each component in an ablation; and the spread across runs.
 - When a difference is small, absent, or inconsistent across runs, say so. Never select favorable numbers.
 - When "significant" asserts statistical significance, use only the test that the record reports, and name it. Qualitative importance and descriptions of the measured magnitude do not automatically assert a statistical test.

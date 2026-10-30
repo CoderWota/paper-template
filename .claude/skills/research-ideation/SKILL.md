@@ -9,7 +9,7 @@ Outcome: three to five research directions that differ in kind, each grounded in
 
 ## Step 1: Gather the starting point
 
-1. Read `state/current.md`, `requirements/project.md`, `ideas/index.md`, and the notes of related ideas. Read `references/index.md`, and only the source notes, search records, and result records that bear on the interest.
+1. Read `state/current.md`, `requirements/project.md`, `requirements/research-assessment.md`, `ideas/index.md`, and the notes of related ideas. Read `references/index.md`, and only the source notes, search records, and result records that bear on the interest.
 2. Restate the starting point in a few lines: the interest or puzzle, the material available (sources, data, observations, the researcher's earlier work), and the constraints the researcher stated, such as time, access, method, or language. Quote the researcher's own words where they matter.
 3. Help an undeveloped thought take shape before you examine it. Ask only for missing context that would change the directions, one question at a time; first look in the workspace for the answer.
 

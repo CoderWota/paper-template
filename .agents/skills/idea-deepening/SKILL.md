@@ -9,7 +9,7 @@ Outcome: a clearer idea: its question, intended contribution, assumptions, neare
 
 ## Step 1: Prepare before you ask
 
-1. Identify the idea: the researcher's words, or a note in `ideas/`. Read that note, its linked source notes, search records, and result records, `requirements/project.md`, and `state/current.md`.
+1. Identify the idea: the researcher's words, or a note in `ideas/`. Read that note, its linked source notes, search records, and result records, `requirements/project.md`, `requirements/research-assessment.md`, and `state/current.md`.
 2. List the open points in dependency order: question, contribution, assumptions, nearest prior work, alternatives, feasibility, route to evidence or argument, next check. Resolve first the points that the others depend on.
 3. Before each question, check whether the workspace or an authorized search can answer it. Do that retrieval yourself with `literature-and-evidence`, `research-investigation`, or `literature-discovery` within its confirmed scope. Ask the researcher only for judgments, intentions, and facts that only they have.
 

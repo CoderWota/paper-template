@@ -82,6 +82,13 @@ Most of these patterns share one cause: wording chosen because it would fit almo
 - **Do.** Lead with the action and its location in the revised manuscript. Include just enough reasoning for the reviewer to accept the change.
 - **Keep.** The courtesy conventions of the field and the venue, including a short thank-you.
 
+## 11. Excessive caution and understatement (context-dependent)
+
+- **Signals.** A checked result described as a mere possibility; several qualifiers attached to the same inference; generic warnings repeated across sections; an unpromised task framed as a failure; a conclusion that lists absences without stating the supported contribution.
+- **Why it weakens the text.** It can misrepresent the evidence in the weaker direction and hide what readers can use or cite. A hedge count does not establish the problem.
+- **Do.** Check inspected evidence before changing strength. Keep uncertainty and scope in a style edit. State checked findings directly and explain the contribution and its value. For a requested claim-strength or venue-impact assessment, follow [argument and impact guidance](../manuscript-writing/argument-and-impact.md). Keep empirical, causal, novelty, generalization, and validation claims supported; connect material limitations to the claims they affect.
+- **Keep.** Genuine uncertainty, unfavorable or null results, limits that affect a claim or reasonable use, venue-required sections, and researcher-authored wording unless the request authorizes the change. Ambitious prospects can stay as prospects.
+
 ## When not to act
 
 - Quotations, titles of works, proper names, and defined terms stay as they are, even when they contain a listed word.

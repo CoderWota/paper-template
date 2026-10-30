@@ -9,7 +9,7 @@ Outcome: a reasoned assessment of why the contribution matters, to whom, what su
 
 ## Step 1: Establish the contribution
 
-1. Identify what is assessed: an idea note, the research question in `requirements/project.md`, a result record in `research/results/`, or the manuscript's main claim. Read these, their linked evidence notes, and `research/impact.md` if it exists.
+1. Identify what is assessed: an idea note, the research question in `requirements/project.md`, a result record in `research/results/`, or the manuscript's main claim. Read these, their linked evidence notes, `requirements/research-assessment.md`, and `research/impact.md` if it exists. For manuscript wording or venue fit, also read [argument and impact guidance](../manuscript-writing/argument-and-impact.md).
 2. State the contribution in one or two sentences and name where it comes from: the researcher's words or a file. If the contribution is unclear, say so and offer `idea-deepening`. Never assess a contribution that you had to invent.
 
 ## Step 2: Examine the value
@@ -23,7 +23,7 @@ Outcome: a reasoned assessment of why the contribution matters, to whom, what su
 ## Step 3: Strengthen
 
 8. Give concrete improvements, for example a comparison to add, a boundary to state, an audience to address, evidence to obtain, or a claim to narrow. For each, say what it needs: new research, new sources, or only writing.
-   Help express the contribution persuasively. Emphatic value judgments and ambitious statements of potential are allowed; do not flatten them into cautious prose merely because they are promotional. Judge whether the wording implies a new factual result, an unperformed comparison, a broader validated scope, or an already-demonstrated practical effect. Bring such substantive changes back to the researcher with the specific evidence issue; ordinary impact rhetoric remains an authorial choice.
+   Make the impact case persuasive by connecting the contribution to a relevant audience, need, and evidence-backed path to value. Distinguish plausible potential from demonstrated effects. Recommend wording or evidence that makes the case clearer; do not inflate empirical results, novelty, validated scope, or practical impact. Bring changes to the main claim back to the researcher.
 9. Recommend one improvement and ask what the researcher wants to do. A change to the research question or the main claim is a major decision; after a clear yes, record it with `constraint-maintenance`.
 
 ## Step 4: Record when asked

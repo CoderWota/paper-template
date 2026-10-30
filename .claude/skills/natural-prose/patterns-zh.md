@@ -1,6 +1,6 @@
 # Chinese Patterns
 
-Concrete signals of the [pattern families](patterns.md) in Chinese academic prose. The examples are invented; every revision uses only the information in its original. Chinese academic writing is formal by nature: passives, four-character phrases, and nominal style are often correct, so judge each signal in context.
+Concrete signals of the [pattern families](patterns.md) in Chinese academic prose. The examples are invented; ordinary style revisions use only the information in their originals. Family 11 states separate evidence assumptions for an authorized recalibration. Chinese academic writing is formal by nature: passives, four-character phrases, and nominal style are often correct, so judge each signal in context.
 
 ## 1. Emphasis without content
 
@@ -102,3 +102,16 @@ The agent comes from “本文中”; without it, the passive would stay, becaus
 > Before: 非常感谢审稿人提出的宝贵意见，这一意见对提升本文质量具有重要意义。我们完全同意基线选择是实证研究的重要方面，并对此进行了认真的思考。根据审稿人的建议，我们在第 4.2 节增加了与两种最新方法的比较。
 >
 > After: 感谢审稿人的意见，这一意见对提升本文质量具有重要意义。根据您的建议，我们在第 4.2 节增加了与两种最新方法的比较。我们完全同意基线选择是实证研究的重要方面，并已认真考虑这一点。
+
+## 11. Excessive caution and understatement
+
+- Signals: “结果需谨慎解读” without a specific consequence; “可能在一定程度上或许” for a checked finding; repeated apologies for tasks the paper never promised.
+- The invented example assumes a checked result, an untested clinical use raised in the discussion, and no video claim. This is an authorized recalibration, not a translation or ordinary polish.
+
+> Before: 尽管本研究存在一定局限性，本文方法可能将三个留出数据集上的误差降低 12%。本文方法无法处理视频，也未在临床图像上测试，而临床图像的对比度不同。未来仍需进一步研究。
+>
+> After: 本文方法将三个留出数据集上的误差降低了 12%。临床图像的对比度不同且尚未测试，因此该结果暂不能外推到临床。
+
+The checked finding is direct; the clinical limit and its effect stay. The video boundary stays in the result record. Preserve meaningful uncertainty such as “可能” when it marks an inference rather than weakening a checked observation. Without the evidence or authorization, flag the proposed change.
+
+The example states a checked result directly while retaining its conditions and relevant limit. Claims about novelty, causality, generalization, or impact also need support. For a requested change to claim strength, read [argument and impact guidance](../manuscript-writing/argument-and-impact.md).

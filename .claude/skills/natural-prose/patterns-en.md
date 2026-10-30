@@ -1,6 +1,6 @@
 # English Patterns
 
-Concrete signals of the [pattern families](patterns.md) in English scholarly prose. The examples are invented; every revision uses only the information in its original.
+Concrete signals of the [pattern families](patterns.md) in English scholarly prose. The examples are invented; ordinary style revisions use only the information in their originals. Family 11 states separate evidence assumptions for an authorized recalibration.
 
 ## 1. Emphasis without content
 
@@ -105,3 +105,16 @@ Both claims stay, marked for the evidence they need; nothing is supplied from me
 > Before: We sincerely thank the reviewer for this insightful and valuable comment. We fully agree that the choice of baselines is an important aspect of any empirical study, and we have carefully considered this point. Following the reviewer's suggestion, we have added a comparison with two recent methods in Section 4.2.
 >
 > After: Thank you. Following your suggestion, we added a comparison with two recent methods in Section 4.2. We fully agree that baseline selection is important in any empirical study and have carefully considered it.
+
+## 11. Excessive caution and understatement
+
+- Signals: "results should be interpreted with caution" without a specific consequence; "may possibly reduce" for a checked reduction; repeated apologies for tasks the paper never promised.
+- Check the evidence and requested edit before changing strength. The invented example below assumes a checked result on three held-out datasets, an untested clinical use raised in the discussion, and no claim about video. It illustrates an authorized recalibration, not a meaning-preserving translation or polish.
+
+> Before: Despite several limitations, the method may reduce error by 12% on three held-out datasets. It cannot process video, and clinical images, whose contrast differs, were not tested. Further research is needed.
+>
+> After: The method reduces error by 12% on three held-out datasets. Clinical images have different contrast and were not tested, so this result does not yet support clinical use.
+
+The checked reduction is direct. The clinical limit stays with its consequence. The irrelevant video boundary leaves the passage but stays in the result record. If those evidence assumptions or editing authorization do not hold, flag the proposed change instead. Keep a genuine "may" for an uncertain inference.
+
+The example makes a checked result direct while retaining its conditions and the relevant limit. Claims about novelty, causality, generalization, or impact also need support. For a requested change to claim strength, read [argument and impact guidance](../manuscript-writing/argument-and-impact.md).

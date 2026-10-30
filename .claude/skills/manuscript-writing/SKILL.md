@@ -21,7 +21,7 @@ When `manuscript-revision` hands off a staged candidate, the text, assets, metad
 
 When a result relies on code in an imported repository (`code/<name>/`), read [repositories](../research-code-setup/repositories.md) first. Check the method you describe against the code at the recorded commit, and report a mismatch instead of smoothing it over.
 
-Use the confirmed argument and existing evidence without repeating settled questions. Distinguish an observed result, its interpretation, and a hypothesis in the prose. When a reasoning step is missing or a conclusion exceeds the evidence, suggest a specific local repair or mark the evidence gap; bring a changed main claim or structure back for the researcher's judgment. A confirmed author statement establishes their intention, not empirical support for a factual claim.
+Use the researcher's confirmed argument and evidence. When contribution, claim strength, limitations, or venue impact is in scope, read [argument and impact guidance](argument-and-impact.md). Make the argument persuasive by stating the contribution and why it matters; keep empirical, causal, novelty, generalization, and validation claims supported. A request to strengthen the presentation can improve the explanation of value without inflating findings. Explain specific evidence gaps and useful ways to address them. A changed main claim or structure remains the researcher's decision.
 
 ## Step 3: Write
 

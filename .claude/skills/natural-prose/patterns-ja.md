@@ -1,6 +1,6 @@
 # Japanese Patterns
 
-Concrete signals of the [pattern families](patterns.md) in Japanese academic prose. The examples are invented; every revision uses only the information in its original. Articles keep the である style throughout; letters keep です・ます. Do not mix in noun-ending sentences (体言止め), colloquial endings, or personal asides to make a paper sound human: the cure for monotony is varied sentence structure and length, not a change of register.
+Concrete signals of the [pattern families](patterns.md) in Japanese academic prose. The examples are invented; ordinary style revisions use only the information in their originals. Family 11 states separate evidence assumptions for an authorized recalibration. Articles keep the である style throughout; letters keep です・ます. Do not mix in noun-ending sentences (体言止め), colloquial endings, or personal asides to make a paper sound human: the cure for monotony is varied sentence structure and length, not a change of register.
 
 ## 1. Emphasis without content
 
@@ -91,3 +91,16 @@ Watch these, especially in groups: 「多角的」「包括的」「網羅的」
 > Before: 査読者の大変貴重なご指摘に心より感謝申し上げます。ベースラインの選定は実証研究の要となる点であり、ご指摘を踏まえて慎重に検討いたしました。その結果、4.2 節に最新の 2 手法との比較を追加いたしました。
 >
 > After: ご指摘ありがとうございます。ご指摘を踏まえ、4.2 節に最新の 2 手法との比較を追加しました。ベースラインの選定は実証研究の要であると認識し、慎重に検討しました。
+
+## 11. Excessive caution and understatement
+
+- Signals: 「慎重に解釈する必要がある」 without a specific consequence; 「可能性があると考えられる」 for a checked result; repeated apologies for tasks the paper never promised.
+- The invented example assumes a checked result, an untested clinical use raised in the discussion, and no video claim. This is an authorized recalibration, not a translation or ordinary polish.
+
+> Before: 本研究には限界があるものの、提案手法は三つのホールドアウトデータセットで誤差を 12% 低減する可能性がある。動画は処理できず、コントラストが異なる臨床画像では未検証である。さらなる研究が必要である。
+>
+> After: 提案手法は三つのホールドアウトデータセットで誤差を 12% 低減した。臨床画像はコントラストが異なり、未検証であるため、この結果は現時点では臨床利用を裏付けない。
+
+The checked finding is direct; the clinical limit and its effect stay. The video boundary stays in the result record. Keep 「可能性がある」 when it marks a genuinely uncertain inference. Without the evidence or authorization, flag the proposed change.
+
+The example states a checked result directly while retaining its conditions and relevant limit. Claims about novelty, causality, generalization, or impact also need support. For a requested change to claim strength, read [argument and impact guidance](../manuscript-writing/argument-and-impact.md).
