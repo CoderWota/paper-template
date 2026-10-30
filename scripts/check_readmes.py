@@ -2,8 +2,9 @@
 """Check that every project directory has a meaningful README.md.
 
 Each designed directory, including nested and newly created ones, needs a
-short, directory-specific English README. Runtime caches, environments, and
-received or generated content are excluded.
+short, directory-specific English README. Runtime caches, environments,
+separate Git repositories (a directory that holds its own .git), and received
+or generated content are excluded.
 
 Usage: python scripts/check_readmes.py [WORKSPACE_ROOT]
 Exit status: 0 when every check passes, 1 when problems are found.
@@ -77,6 +78,8 @@ def project_directories(root: Path):
             if not child.is_dir() or child.is_symlink():
                 continue
             if child.name in SKIPPED_NAMES:
+                continue
+            if (child / ".git").exists():  # a separate Git repository keeps its own documentation
                 continue
             if designed is not None and child.name not in designed:
                 continue

@@ -17,7 +17,7 @@ The values are in your interaction language; the labels and status words stay as
 - Status: proposed | attempted | observed | checked | failed
 - Kind: computational | documentary | theoretical | qualitative | other
 - Question: <what the result answers; a link to the plan item>
-- Method: <code path, or the procedure or argument>
+- Method: <code path (for code in a repository, the path and its commit), or the procedure or argument>
 - Inputs:
   - `code/data/raw/survey.csv` sha256:<checksum>     or source IDs with locators
 - Parameters: <settings, seeds, inclusion rules>
@@ -35,7 +35,7 @@ Status words: **proposed** (planned, not run), **attempted** (started, no usable
 ## Rules
 
 - A result is recorded only from work that was actually done. Anticipated findings belong in the plan, not here; nothing is invented or selected silently.
-- When an input, output, or code version in a linked run changes, `python scripts/research.py check` reports the result as stale and names its recorded dependents. A stale result supports no claim until the work is run and checked again. The check does not infer unrecorded dependencies or validate the scientific argument.
+- When an input, output, or code version in a linked run changes, `python scripts/research.py check` reports the result as stale and names its recorded dependents. A stale result supports no claim until the work is run and checked again. For code in a separate repository, the code version is its commit and any uncommitted change under the named path: a commit elsewhere in the repository does not make a result stale. The check does not infer unrecorded dependencies or validate the scientific argument.
 - Failed or negative results that matter to a conclusion are kept.
 - In the existing result narrative, separate observations, interpretations, and open hypotheses, with evidence and limits. `Used by` names dependent manuscript passages, figures, tables, and checks; keep it current when writing uses the result. If the list is incomplete, say which area needs inspection. Do not silently rewrite author text or update hashes to hide an upstream change.
 

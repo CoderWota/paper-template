@@ -40,7 +40,7 @@ Do not add a second map, a recap of the same paths, an FAQ, a technical-file lec
 
 ## Optional support: one short paragraph
 
-Mention `code/` for research analysis when needed; `.git/` for local saved versions (not an external backup); `.venv/` and `.tools/` for tool environments; `.cache/` for rebuildable caches; `.tmp/` for temporary work; `.local/` for local logs; and `.env.local` as a private credential file. The assistant maintains these, some may not exist yet, and no setup or secret entry is needed for a tour. Do not open, create, or link to credential contents.
+Mention `code/` for research analysis, including an imported analysis repository, when needed; `.git/` for local saved versions (not an external backup); `.venv/` and `.tools/` for tool environments; `.cache/` for rebuildable caches; `.tmp/` for temporary work; `.local/` for local logs; and `.env.local` as a private credential file. The assistant maintains these, some may not exist yet, and no setup or secret entry is needed for a tour. Do not open, create, or link to credential contents.
 
 ## Three flows: one sentence each
 

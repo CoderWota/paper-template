@@ -1,0 +1,12 @@
+# Added by scripts/research.py code-import: secrets, local R history, and research data stay out of the history
+.Renviron
+.env
+.env.*
+!.env.example
+.Rhistory
+.RData
+.Rproj.user/
+renv/library/
+renv/staging/
+${data_patterns}
+${output_patterns}

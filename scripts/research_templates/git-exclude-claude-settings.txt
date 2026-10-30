@@ -1,0 +1,2 @@
+# Local Claude Code settings, written by scripts/research.py code-attach
+/.claude/settings.local.json

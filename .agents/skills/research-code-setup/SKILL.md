@@ -1,6 +1,6 @@
 ---
 name: research-code-setup
-description: Set up needed research code, run authorized analyses with provenance, record results, and recommend suitable charts.
+description: Set up needed research code, run authorized analyses (also in imported repositories) with provenance, record results, and recommend suitable charts.
 ---
 
 # Research code setup and runs
@@ -10,7 +10,7 @@ Outcome: when the research needs computation, a proportionate `code/` folder wit
 ## Step 1: Find out the needs before creating anything
 
 1. Read `requirements/project.md`, `research/plan.md`, the active decisions in `research/decisions/index.md`, `research/results/index.md`, and `code/README.md` if it exists.
-2. From the plan and the researcher, establish: the computation (analysis, simulation, data processing, or figures); the language and tools that the researcher uses or prefers; the data (where it is, its size, sensitivity, license, and whether it may be copied into the workspace or kept in version history); compute needs; existing code (reuse it where it lives; do not copy a large external repository); and reproducibility needs such as seeds and versions. Ask one question at a time, only for what the plan and the workspace do not answer.
+2. From the plan and the researcher, establish: the computation (analysis, simulation, data processing, or figures); the language and tools that the researcher uses or prefers; the data (where it is, its size, sensitivity, license, and whether it may be copied into the workspace or kept in version history); compute needs; existing code (reuse it where it lives; to bring in an external repository, use `code-import`); and reproducibility needs such as seeds and versions. Ask one question at a time, only for what the plan and the workspace do not answer.
 3. If the research needs no code, create nothing and say so.
 4. A data or material scope, sensitive data, a new external service, or a new cost is a major decision: ask first. Never upload research data to a service as part of this skill.
 
@@ -32,10 +32,10 @@ Outcome: when the research needs computation, a proportionate `code/` folder wit
 9. Run every analysis whose output may support a result through the recorder, from the workspace root:
 
    ```text
-   python scripts/research.py run --name <short name> --note "<purpose>" --input <path> ... --output <path> ... [--code <path>] [--freeze] -- <command> <arguments>
+   python scripts/research.py run --name <short name> --note "<purpose>" --input <path> ... --output <path> ... [--code <path>] [--cwd <path>] [--freeze] -- <command> <arguments>
    ```
 
-   It records the command, a checksum of the code (by default `code/src`), the Git commit when there is one, the interpreter, the inputs and outputs with their checksums, the logs, and the exit status in `code/runs/<run-id>/`, and prints the input and output lines for the result record.
+   It records the command, a checksum of the code (by default `code/src`), the Git commit when there is one, the interpreter, the inputs and outputs with their checksums, the logs, and the exit status in `code/runs/<run-id>/`, and prints the input and output lines for the result record. For code in an imported repository, add `--cwd code/<name>` and `--code code/<name>/<folder>`; see [repositories](repositories.md).
 10. A chart of results is an output of a recorded run: choose its form with the [figure guide](figure-guide.md), keep the plotting code in `code/src`, and list the figure as an output of the run.
 11. Investigate routine failures yourself: errors, missing packages, data problems. Ask the researcher only for what you cannot resolve, and say exactly what is needed.
     Keep the original run and logs. Try at most two repairs of a failing technical action within the confirmed method and permissions, stopping earlier when the same failure repeats without progress. Record the attempts and remaining blocker in the existing work item or result record. Use `--timeout` when a run needs a duration bound. A valid negative result is not a technical failure; do not alter parameters or select runs to obtain a preferred conclusion.
@@ -62,3 +62,4 @@ Outcome: when the research needs computation, a proportionate `code/` folder wit
 - Every reported result has a run record or a described procedure, inputs and outputs with checksums, the checks made, and its limitations.
 - Statuses match what was actually done, failed and negative results that matter are kept, and nothing was invented.
 - `python scripts/research.py check` reports no problem and no stale result for the results you report.
+- Code in an imported repository is named by commit in the result's Method line, and it ran from committed files unless the record says otherwise.

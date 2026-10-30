@@ -82,5 +82,15 @@ A researcher contribution that may be exploratory, developed, incorporated, or a
 A record of one of the project's own results: its inputs, method or code version, parameters, run, outputs, checks, limitations, and the claims that use it. Its status distinguishes proposed, attempted, observed, checked, and failed work; a result whose inputs changed is stale until the work is repeated.
 _Avoid_: Finding, for work that has not been checked.
 
+**Code repository**:
+A separate Git repository under `code/<name>/`, with its own history and instructions, brought in with the `code-import` skill. The workspace ignores its files and records which commit each run used.
+_Avoid_: Project folder, when it could mean the whole workspace.
+
+**Paper session**:
+A session opened in the workspace root. It loads the workspace instructions and skills, reads code repositories as material, and records runs and results.
+
+**Code session**:
+A session opened inside a code repository. It does not load the workspace instructions or skills. It edits and tests the code and makes commits.
+
 **Venue assessment**:
 An examination of a journal or other venue from its current official sources, assessing the manuscript's fit separately from its impact and its readiness.

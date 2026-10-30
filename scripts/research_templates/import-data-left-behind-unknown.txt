@@ -1,0 +1,1 @@
+A clone holds only the files that the repository tracks. Data kept outside Git is missing, and code that reads it fails until the data is in place. Ask the researcher where the data is; the researcher can put it in the repository's data folder.

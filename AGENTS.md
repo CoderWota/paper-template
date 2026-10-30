@@ -45,6 +45,13 @@ Apply these rules to questions and explanations for the researcher, in every lan
 
 English questions and explanations also follow ASD-STE100. Other languages use the rules above with their own grammar, not the English dictionary. Do not claim verified ASD-STE100 compliance from prompting or file checks. [Official explanation](https://www.asd-ste100.org/STE_faq.html).
 
+## Code repositories
+
+- A code repository in `code/<name>/` is a separate project with its own Git history and instructions. Bring one in with `code-import`. A session opened inside it does not load this workspace's skills or records.
+- Read its code as material, at the commit named in the run or result record. Do not edit it or add files to it.
+- By default, do not read its data files (CSV and other formats); read its declared output folders. To learn about the data, run an analysis that writes an aggregate there. Read a data file only when the researcher asks and names the purpose.
+- When the code looks wrong, report the evidence with file and line, and record the blocker in `state/current.md`. Tell the researcher to open a session in `code/<name>/` for the change, with a request they can paste (`research-code-setup`). Then record a new run.
+
 ## Tools, files, and access
 
 - Operate tools and maintain technical files yourself. Use existing scripts and relevant quality checks. Read [capabilities and limits](docs/capabilities.md) only for uncertain support or setup; tool presence does not establish readiness.

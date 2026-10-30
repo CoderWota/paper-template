@@ -42,7 +42,7 @@ If asked about the main files, briefly explain: `README.md` is the human introdu
 
 Explain the purpose without opening private files, creating these locations, or teaching their internals. They may not exist yet and are often hidden in a file manager.
 
-- `code/` appears only when the study needs computation. It holds research analysis and its runs, separate from the workspace tools in `scripts/`. The researcher supplies the research question and data; the assistant sets up and records the authorized analysis.
+- `code/` appears only when the study needs computation. It holds research analysis and its runs, separate from the workspace tools in `scripts/`. The researcher supplies the research question and data; the assistant sets up and records the authorized analysis. An existing analysis repository can live there as its own Git repository: the researcher develops it in a separate session opened in its folder, and the paper session only reads it and records runs.
 - `.git/` holds local saved versions. Ask the assistant to save, compare, or recover work. Local history is not an external backup.
 - `.venv/` holds an environment for tools that need extra packages; `.tools/` keeps separate tool installations. The assistant prepares these only when needed and authorized.
 - `.cache/` holds rebuildable caches; `.tmp/` holds temporary work; `.local/` holds machine-specific reports and logs. These are assistant-maintained support locations, not places to keep the only copy of research material.

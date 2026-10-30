@@ -1,0 +1,2 @@
+# Code repositories (each keeps its own Git history), attached with scripts/research.py
+code/${name}/

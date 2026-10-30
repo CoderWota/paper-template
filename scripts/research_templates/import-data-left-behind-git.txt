@@ -1,0 +1,1 @@
+${count} untracked or ignored data file(s) in the source were not cloned: ${files}. Code that reads them fails until the data is in place. The researcher can put the data in the repository's data folder; it stays out of the repository's history.

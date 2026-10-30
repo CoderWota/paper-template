@@ -1,0 +1,2 @@
+To work on the code, open a new session in code/${name} itself, not in a subfolder. It does not load this workspace's instructions or skills (Claude Code reads its exclusions only at the top folder). Record each analysis run here: python scripts/research.py run --cwd code/${name} ... --code code/${name}.
+Describe the role and entry scripts of code/${name} in code/README.md, below the maintained block, then run python scripts/research.py check.

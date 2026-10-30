@@ -12,4 +12,6 @@ Ask, for example: "Set up an analysis environment for this survey data and run t
 - When an input changes later, the result is reported as stale until the work is run again.
 - Charts of results are chosen for the statement they must support, show the spread of repeated runs honestly, and are made by recorded code; the choices are explained in the [figure guide](figure-guide.md).
 
-The agent instructions are in [SKILL.md](SKILL.md). Related skills: `research-planning`, `environment-management`, `research-investigation`.
+An existing analysis repository is brought in with `code-import` and stays a separate project. You develop it in its own session; the paper session reads it and records its runs by commit. See [repositories](repositories.md).
+
+The agent instructions are in [SKILL.md](SKILL.md). Related skills: `code-import`, `research-planning`, `environment-management`, `research-investigation`.

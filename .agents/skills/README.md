@@ -1,6 +1,6 @@
 # Research Task Skills
 
-These 36 packages provide independent tasks that a researcher can request in ordinary language. Each directory contains a `SKILL.md` with its name, concise trigger description, essential procedure, and completion criteria. Read only the matching task and the references needed for that request.
+These 37 packages provide independent tasks that a researcher can request in ordinary language. Each directory contains a `SKILL.md` with its name, concise trigger description, essential procedure, and completion criteria. Read only the matching task and the references needed for that request.
 
 ## Maintain one source
 

@@ -1,0 +1,2 @@
+# Local CLAUDE.md that imports the repository's AGENTS.md, written by scripts/research.py code-attach
+/CLAUDE.md
