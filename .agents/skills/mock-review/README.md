@@ -1,6 +1,6 @@
 # Mock Review
 
-Gives your paper a simulated peer review with scores, on the review form of your target venue, before you submit it. Three independent reviewers (methods, field, and a skeptic) each write a review and score every criterion, and a meta-review summarizes where they agree and disagree.
+Gives your paper a simulated peer review with scores, on the review form of your target venue, before you submit it. Three reviewer perspectives (methods, field, and a skeptic) each produce a review and scores, and a meta-review summarizes where they agree and disagree. The agent uses isolated sessions when the application supports them; otherwise it makes three passes with shared context and reports that limit.
 
 Ask, for example: "Score my paper the way reviewers at this conference would, and tell me what would raise the scores."
 

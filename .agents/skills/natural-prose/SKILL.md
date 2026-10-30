@@ -17,7 +17,7 @@ Outcome: the requested text revised so that it reads like careful human writing 
 ## Step 2: Mark the patterns
 
 5. Read [the pattern families](patterns.md) and the list for the text's language: [English](patterns-en.md), [Chinese](patterns-zh.md), or [Japanese](patterns-ja.md). For another language, apply the families with that language's own norms, and tell the researcher that no tailored list exists.
-6. Go through the entire text before changing anything. Mark each pattern with its family and strength, at the level where it occurs: a phrase, a sentence, a paragraph, or the same move repeated across sections. A strong pattern warrants a change on its own; a weak one only when several patterns cluster in the same passage.
+6. Go through the entire text before changing anything. Mark each pattern with its family and strength, at the level where it occurs: a phrase, a sentence, a paragraph, or the same move repeated across sections. A strong pattern warrants attention on its own; revise only when the edit preserves meaning. A substantive claim problem is flagged for the researcher. Act on a weak pattern only when several cluster or repeat. Persuasive contribution language, emphatic evaluation, and ambitious outlook are allowed; intensity alone is no reason to cut or mark a claim as unsupported.
 7. Patterns are editing signals. Never state or imply that a passage was or was not written by AI, never estimate a detector's score, and never promise that the result will pass a detector.
 
 ## Step 3: Revise

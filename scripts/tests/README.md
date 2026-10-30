@@ -27,3 +27,5 @@ python -m unittest discover -s scripts/tests -v
 - `test_literature.py` covers Sciverse privacy and scope gates, provider-specific search records, snippets versus metadata and content, local extraction locators, bibliography links, 429 handling, and resumable public-PDF retrieval against synthetic responses and a local HTTP fixture. `test_sciverse_extensions.py` covers metadata filters, sorting, cursor resumption and recovery, relation provenance, duplicate-version handling, bounded resources, opt-in Paper Schema materials, and scope checks with synthetic responses. Live endpoint observations are recorded separately in the implementation status.
 
 The agent and the template maintainer run these tests after changing a script. Researchers do not need to run them.
+
+`CandidateEditingTests` in `test_manuscript.py` also verifies candidate-only edits and checks: candidate text and missing assets are checked with the shared bibliography, the active manuscript stays byte-for-byte unchanged, a reordered candidate can be applied and checked, escaped manifest paths are reported, and missing, closed, or already-applying candidates are refused.

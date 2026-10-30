@@ -10,22 +10,22 @@ Concrete signals of the [pattern families](patterns.md) in English scholarly pro
 - Announcements: "In this section, we delve into ..."; "It is worth noting that"; "It is important to note that"; "Notably," or "Importantly," before a routine statement.
 - Unraised objections: "This is not to say that ..."; "One might argue that ..., but ..." when nobody has argued it.
 
-> Before: Our method is not merely an incremental improvement; it represents a fundamental rethinking of sparse attention, computing it in a single pass rather than two. This underscores the importance of efficient attention in modern architectures.
+> Before: In this section, we delve into our method, which computes sparse attention in a single pass instead of two. In other words, it uses one pass rather than two.
 >
 > After: Our method computes sparse attention in a single pass instead of two.
 
-## 2. Inflated significance and promotion
+## 2. Impact language and overstatement
 
 - Significance: "plays a pivotal (crucial, vital) role", "a cornerstone of", "a testament to", "paves the way for", "opens new avenues", "sheds light on", "holds great promise", "far-reaching implications".
 - Promotion: "groundbreaking", "revolutionary", "unprecedented", "remarkable", "superior", "novel" on every page, "state-of-the-art" without the comparison that shows it.
 - Novelty: "To the best of our knowledge, this is the first ..." or "fills a critical gap" without a recorded search.
-- Statistics words: "significantly", "dramatically", "substantially", "markedly" for a difference without a test, or without the numbers.
+- Statistical or magnitude language: check what "significantly" means in context. "Dramatically", "substantially", and "markedly" can describe magnitude without asserting a statistical test. Impact rhetoric is allowed; flag the concrete unsupported assertion, not the adjective alone.
 
 > Before: These remarkable results, a mean IoU of 74.0 against 71.2 for the strongest baseline, demonstrate that our framework significantly outperforms existing approaches and paves the way for a new generation of segmentation models.
 >
-> After: Our framework reaches a mean IoU of 74.0, against 71.2 for the strongest baseline.
+> After: Our framework significantly outperforms existing approaches, with a mean IoU of 74.0 against 71.2 for the strongest baseline. These remarkable results pave the way for a new generation of segmentation models.
 
-"Significantly" returns only when the result record reports a test.
+The comparison, numbers, emphasis, and outlook remain. This style example does not establish their scientific support: check a statistical reading of "significantly" against the analysis and the comparison scope against the evidence. "Pave the way" is an evaluative outlook here, not a claim that downstream applications were already tested; it needs no automatic deletion or marker.
 
 ## 3. Unsourced authority and vague relations
 
@@ -34,7 +34,7 @@ Concrete signals of the [pattern families](patterns.md) in English scholarly pro
 
 > Before: Numerous studies have shown that sleep deprivation is closely linked to impaired working memory.
 >
-> After: Sleep deprivation is associated with impaired working memory [TODO: cite the studies and state whether they show a causal effect].
+> After: Numerous studies show a close link between sleep deprivation and impaired working memory [TODO: cite the studies and verify the stated strength and nature of the link].
 
 ## 4. Template rhythm
 
@@ -46,9 +46,9 @@ Concrete signals of the [pattern families](patterns.md) in English scholarly pro
 
 > Before: Moreover, the model is lightweight, fast, and efficient. Furthermore, it trains on a single GPU. Additionally, it converges within a few hours — far faster than the baselines — and may potentially transfer to other domains.
 >
-> After: The model trains on a single GPU and converges within a few hours, faster than the baselines. It may transfer to other domains.
+> After: The model is lightweight, fast, and efficient. It trains on a single GPU and converges within a few hours, far faster than the baselines. It may transfer to other domains.
 
-The triad only repeated what the concrete sentences show, so it goes; the single hedge "may" keeps the original uncertainty.
+The three properties remain: a single GPU and short training time do not establish all of them. The comparison retains "far", and the single hedge "may" keeps the original uncertainty.
 
 ## 5. Wordy constructions
 
@@ -93,7 +93,7 @@ Frequent in English drafted from Chinese or Japanese:
 
 > Before: With the rapid development of deep learning, image segmentation has attracted more and more attention and has been widely used in many fields.
 >
-> After: Image segmentation has received growing attention as deep learning developed rapidly, and it is used in many fields [TODO: name the fields and cite evidence for both claims].
+> After: Image segmentation has received growing attention as deep learning developed rapidly, and it is widely used in many fields [TODO: name the fields and cite evidence for both claims].
 
 Both claims stay, marked for the evidence they need; nothing is supplied from memory.
 
@@ -104,4 +104,4 @@ Both claims stay, marked for the evidence they need; nothing is supplied from me
 
 > Before: We sincerely thank the reviewer for this insightful and valuable comment. We fully agree that the choice of baselines is an important aspect of any empirical study, and we have carefully considered this point. Following the reviewer's suggestion, we have added a comparison with two recent methods in Section 4.2.
 >
-> After: Thank you. We added a comparison with two recent methods in Section 4.2.
+> After: Thank you. Following your suggestion, we added a comparison with two recent methods in Section 4.2. We fully agree that baseline selection is important in any empirical study and have carefully considered it.

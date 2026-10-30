@@ -23,6 +23,7 @@ Outcome: a reasoned assessment of why the contribution matters, to whom, what su
 ## Step 3: Strengthen
 
 8. Give concrete improvements, for example a comparison to add, a boundary to state, an audience to address, evidence to obtain, or a claim to narrow. For each, say what it needs: new research, new sources, or only writing.
+   Help express the contribution persuasively. Emphatic value judgments and ambitious statements of potential are allowed; do not flatten them into cautious prose merely because they are promotional. Judge whether the wording implies a new factual result, an unperformed comparison, a broader validated scope, or an already-demonstrated practical effect. Bring such substantive changes back to the researcher with the specific evidence issue; ordinary impact rhetoric remains an authorial choice.
 9. Recommend one improvement and ask what the researcher wants to do. A change to the research question or the main claim is a major decision; after a clear yes, record it with `constraint-maintenance`.
 
 ## Step 4: Record when asked

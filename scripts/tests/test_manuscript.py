@@ -259,6 +259,75 @@ class CheckTests(ManuscriptTestCase):
         self.assertIn("the metadata file manuscript/front.yaml does not exist", self.run_script("check").stdout)
 
 
+class CandidateEditingTests(ManuscriptTestCase):
+    def setUp(self) -> None:
+        super().setUp()
+        started = self.run_script("revision-start", "--id", "candidate-check")
+        self.assertEqual(started.returncode, 0, started.stdout)
+        self.candidate = self.root / "revisions" / "candidate-check" / "candidate"
+        shutil.copytree(self.root / "manuscript", self.candidate)
+        self.live_before = self.live_files()
+
+    def live_files(self) -> dict:
+        return {path.relative_to(self.root / "manuscript").as_posix(): path.read_bytes()
+                for path in (self.root / "manuscript").rglob("*") if path.is_file()}
+
+    def test_candidate_check_uses_candidate_text_assets_and_workspace_bibliography(self) -> None:
+        passed = self.run_script("check", "--revision-id", "candidate-check")
+        self.assertEqual(passed.returncode, 0, passed.stdout)
+        self.assertIn("Citation keys resolve", passed.stdout)
+        (self.candidate / "assets" / "gradient.png").unlink()
+        with (self.candidate / "01-introduction.md").open("a", encoding="utf-8") as stream:
+            stream.write("\nUnresolved citation [@missing-candidate-source] and @fig:missing-candidate.\n")
+        failed = self.run_script("check", "--revision-id", "candidate-check")
+        self.assertEqual(failed.returncode, 1, failed.stdout)
+        for problem in ("image assets/gradient.png does not exist", "@missing-candidate-source", "@fig:missing-candidate"):
+            self.assertIn(problem, failed.stdout)
+        self.assertIn("revisions/candidate-check/candidate/01-introduction.md", failed.stdout)
+        self.assertEqual(self.live_files(), self.live_before)
+        self.assertEqual(self.run_script("check").returncode, 0)
+
+    def test_candidate_section_list_changes_only_candidate_and_can_be_applied(self) -> None:
+        result = self.run_script("set-sections", "--revision-id", "candidate-check", "02-methods.md", "01-introduction.md")
+        self.assertEqual(result.returncode, 0, result.stdout)
+        self.assertEqual(manuscript.read_manifest(self.root, self.candidate)["sections"],
+                         ["02-methods.md", "01-introduction.md"])
+        self.assertEqual(self.live_files(), self.live_before)
+        self.assertEqual(self.run_script("check", "--revision-id", "candidate-check").returncode, 0)
+        applied = self.run_script("revision-apply", "--id", "candidate-check")
+        self.assertEqual(applied.returncode, 0, applied.stdout)
+        self.assertEqual(manuscript.read_manifest(self.root)["sections"], ["02-methods.md", "01-introduction.md"])
+        self.assertEqual(self.run_script("check").returncode, 0)
+        refused = self.run_script("set-sections", "--revision-id", "candidate-check", "01-introduction.md")
+        self.assertEqual(refused.returncode, 3, refused.stdout)
+
+    def test_candidate_manifest_cannot_select_files_outside_candidate(self) -> None:
+        manifest = self.candidate / "manifest.yaml"
+        manifest.write_text("sections:\n  - ../../../manuscript/01-introduction.md\n", encoding="utf-8")
+        check = self.run_script("check", "--revision-id", "candidate-check")
+        self.assertEqual(check.returncode, 1, check.stdout)
+        self.assertIn("outside revisions/candidate-check/candidate/", check.stdout)
+        manifest.write_text("metadata: ../../../manuscript/metadata.yaml\nsections: []\n", encoding="utf-8")
+        check = self.run_script("check", "--revision-id", "candidate-check")
+        self.assertEqual(check.returncode, 1, check.stdout)
+        self.assertIn("metadata file is outside", check.stdout)
+        self.assertEqual(self.live_files(), self.live_before)
+
+    def test_candidate_selection_requires_an_open_revision_and_existing_candidate(self) -> None:
+        for revision_id in ("not-started", "../manuscript"):
+            refused = self.run_script("check", "--revision-id", revision_id)
+            self.assertEqual(refused.returncode, 3, refused.stdout)
+        shutil.rmtree(self.candidate)
+        refused = self.run_script("set-sections", "--revision-id", "candidate-check")
+        self.assertEqual(refused.returncode, 3, refused.stdout)
+        self.assertFalse(self.candidate.exists())
+        (self.candidate).mkdir()
+        self.write("revisions/candidate-check/closed.json", '{"outcome": "completed"}\n')
+        refused = self.run_script("check", "--revision-id", "candidate-check")
+        self.assertEqual(refused.returncode, 3, refused.stdout)
+        self.assertEqual(self.live_files(), self.live_before)
+
+
 class CheckRecordTests(ManuscriptTestCase):
     def test_a_changed_input_makes_a_recorded_check_stale(self) -> None:
         self.write("outputs/checks/audit-1.md", "# 审查\n\n无问题。\n")

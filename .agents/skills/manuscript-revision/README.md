@@ -9,6 +9,7 @@ Ask, for example: "Restructure the paper around the revised question. Preserve t
 - The current version is preserved first in `revisions/<revision-id>/baseline/`, with or without Git, and earlier submitted packages are never touched.
 - You confirm a plan and a map of what is kept, moved, merged, rewritten, or removed before the work starts. The work proceeds in steps that a later session can resume.
 - Your own or a coauthor's edits made during the revision are merged, not overwritten. Changed claims are rechecked, and missing research is reported as missing.
+- A staged candidate has its own text, assets, metadata, and section list. Writing and convention checks target that candidate until it is applied, while the current manuscript stays active.
 - Small edits do not create revision records.
 
 The agent instructions are in [SKILL.md](SKILL.md). Related skills: `manuscript-outline`, `manuscript-writing`, `manuscript-audit`, `git-save`.

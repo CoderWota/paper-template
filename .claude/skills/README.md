@@ -10,4 +10,4 @@ Generated copies of the canonical skill packages in [`.agents/skills/`](../../.a
 
 ## Current status
 
-The mirrors of the four MVP 1 skills are generated here: `project-onboarding`, `environment-management`, `privacy-configuration`, and `constraint-maintenance`. All four were accepted by review on 2026-10-28; none is verified on Windows or in Codex. See the [implementation status](../../docs/implementation-status.md).
+The package mirrors are generated from the [canonical skill directory](../../.agents/skills/README.md). `python scripts/sync_skills.py --check` reports the package count and any differences. The availability table in [AGENTS.md](../../AGENTS.md) defines which capabilities are available and their verified limits; [implementation status](../../docs/implementation-status.md) records the evidence. This overview keeps no separate capability list.

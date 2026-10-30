@@ -26,7 +26,7 @@ Outcome: a usable local version history whose tracked scope the researcher under
 ## Step 4: Arrange an inherited history
 
 8. **Template history and an `origin` that is the template.** Explain that the template's development versions came with the copy, and that sending the paper to `origin` would publish it in the template's repository. Recommend keeping the history and renaming that remote, so that no backup can reach it by accident: `git remote rename origin template`. Removing it (`git remote remove origin`) is the alternative. Do it only after the researcher chooses.
-9. **Another paper's history or material.** Never delete or rewrite it. Ask whether this workspace continues that paper (keep everything) or whether the new paper should start from a fresh copy of the template, as `project-onboarding` describes. Starting a fresh history inside this folder is a risky recovery: it needs the researcher's explicit choice, and the old `.git` folder is kept, renamed into `.local/`, never deleted.
+9. **Another paper's history or material.** Never delete or rewrite it. Ask whether this workspace continues that paper (keep everything) or whether the new paper should start from a fresh copy of the template, as `project-onboarding` describes. A new paper uses that separate copy; change nothing in this folder for it. A separate explicit request to start fresh history for the same paper is a risky recovery: show the scope and obtain the researcher's choice, keeping the old `.git` folder renamed into `.local/`, never deleted.
 
 ## Step 5: Repair
 

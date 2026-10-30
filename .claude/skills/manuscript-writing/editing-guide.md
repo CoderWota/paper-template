@@ -2,6 +2,8 @@
 
 How to carry out particular kinds of edits within `manuscript-writing`. Each part says what may change, what must stay, and what to report. Confirmed rules in `requirements/writing.md`, the venue's output profile, and any [style preset](style-presets.md) the researcher has chosen take precedence over these defaults. Every part keeps the rules of the skill: no invented support, the researcher's own text kept, and the workspace conventions followed.
 
+For a staged revision, paths under `manuscript/` below mean the selected `revisions/<revision-id>/candidate/` folder, as `manuscript-writing` specifies. Use its candidate check instead of assembling a preview; shared requirements and research results remain workspace records.
+
 ## Writing from notes or fragments
 
 - Find the main line before writing: the one point each paragraph makes, and the order the points need. Use general to specific, cause to effect, or time order, whichever the content needs. Do not apply a fixed template.
@@ -33,7 +35,7 @@ When the researcher asks what a passage says in their language, give a literal t
 - Keep every parameter, number, condition, qualifier, hedge, citation, and result.
 - Do not reduce a paragraph to a sentence on your own. If the target cannot be met without losing content, name what would have to go, and let the researcher choose.
 - Keep a modification log: one line per change, stating what was cut or merged, and why nothing essential was lost.
-- Confirm with `check_edit.py`, and check the length with `python scripts/manuscript.py assemble`.
+- Confirm with `check_edit.py`, and check manuscript-wide length with `python scripts/manuscript.py assemble`, or `check --revision-id <revision-id>` for a candidate. Count the requested passage separately when its own length is the target.
 
 ## Expanding
 
@@ -58,7 +60,7 @@ When the researcher asks what a passage says in their language, give a literal t
 - Structure each paragraph: one sentence that states the finding; then the numbers that show it, with units and conditions; then the comparison and what it means; then the limits that the record states. Use no headings or bold labels inside the paragraph, and separate findings with a blank line.
 - Discuss only the analysis dimensions that the record supports: comparison with the strongest baseline under the same settings; sensitivity to a key parameter or seed; the trade-off between performance and cost; the contribution of each component in an ablation; and the spread across runs.
 - When a difference is small, absent, or inconsistent across runs, say so. Never select favorable numbers.
-- Use "significant" only for a statistical test that the record reports, and name the test.
+- When "significant" asserts statistical significance, use only the test that the record reports, and name it. Qualitative importance and descriptions of the measured magnitude do not automatically assert a statistical test.
 - Copy every number exactly, with its unit and the precision of the record.
 - Report which result records the passage uses and their status, and which claims wait for a result that does not exist yet.
 

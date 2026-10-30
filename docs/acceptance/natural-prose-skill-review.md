@@ -1,5 +1,7 @@
 # Natural Prose Skill Review
 
+Follow-up (2026-10-30): the [cross-skill consistency review](skill-consistency-review.md) found semantic omissions in examples that the original protected-item comparison did not detect. Its repaired examples and proposition-level review supersede the original claim-preservation conclusion for those examples. The follow-up also implements the maintainer's clarification that persuasive impact language and ambitious outlook are allowed; tone alone does not imply a factual defect.
+
 Status: `natural-prose`, added after MVPs 1–9, passed written review on 2026-10-29 under the gate used since MVP 2. The skills that it extends (`manuscript-writing`, `manuscript-audit`, `submission-readiness`, `research-code-setup`, and `manuscript-outline`) passed a second look on the same day. `scripts/check_edit.py` passes 11 tests, and the whole script suite passes 192 tests. Live behavior of a model, Codex, and Windows are not covered; see section 6.
 
 ## 1. Rule and pass criteria

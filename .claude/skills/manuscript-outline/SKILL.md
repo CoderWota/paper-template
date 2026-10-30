@@ -27,7 +27,7 @@ Outcome: `manuscript/outline.md`, a researcher-reviewable plan of the argument a
 ## Step 4: Confirm
 
 8. The overall argument and structure is a major decision. Present the proposed structure with your recommendation and, when they help, one or two alternatives with their trade-offs; ask one question and wait. A clear instruction with a structure ("use the structure my coauthor suggested") confirms it within its scope.
-9. After a clear yes, write the outline. When the choice was consequential, for example between two argument structures or a structure that departs from the venue's usual form, record a decision with `constraint-maintenance`. A collaborator's suggested structure is adopted only through `research-feedback`.
+9. After confirmation of the overall argument and structure, record that major decision with `constraint-maintenance`, then write the outline. Reuse a decision record that already confirms this structure and scope. When the structure came from a collaborator, record its adoption through `research-feedback`; the researcher's explicit instruction in step 8 is already confirmation and needs no second question.
 
 ## Step 5: Write the outline
 

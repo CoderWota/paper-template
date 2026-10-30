@@ -6,10 +6,11 @@ Language-independent patterns that make prose read as formulaic, inflated, or ma
 
 Most of these patterns share one cause: wording chosen because it would fit almost any text, not because it fits this one. Each family gives the signals, why they weaken scholarly prose, what to do, and when to leave the text alone.
 
-- A **strong** pattern warrants a change even when it occurs only once.
+- A **strong** pattern warrants attention even when it occurs only once; a style revision must still preserve meaning, and a substantive claim problem goes to the researcher.
 - A **weak** pattern is common in careful human writing too. Act on it only when several patterns cluster in one passage, or when the same one repeats through the text.
 - A confirmed writing rule, a venue requirement, or the researcher's own habit outranks every pattern.
 - A pattern is a reason to look, never evidence about who wrote the text.
+- Apply the skill's content-preservation rule to every family and example. Removing repetition or conversational framing must keep every distinct claim, comparison, degree, attribution, and limit. When a concrete factual claim has no support, retain it visibly in a `[TODO: ...]` marker for verification or the researcher's decision. Conventional emphasis, evaluative contribution statements, and future prospects do not need a marker merely because they are ambitious; inspect what the wording actually asserts.
 
 ## 1. Emphasis without content (strong)
 
@@ -18,25 +19,25 @@ Most of these patterns share one cause: wording chosen because it would fit almo
 - **Do.** State the point directly. Cut the repetition. Swap the saying for the concrete claim that the text can support.
 - **Keep.** A contrast that corrects a view the reader or the cited literature actually holds. A final sentence that adds a consequence. A short roadmap at the end of an introduction when the field or the venue expects one.
 
-## 2. Inflated significance and promotion (strong)
+## 2. Impact language and overstatement (context-dependent)
 
-- **Signals.** Ordinary results called pivotal, transformative, or groundbreaking. A claim to be the first, or to fill a gap, without a search that shows it. Promises about the future ("paves the way", "holds great promise"). Words of statistics without statistics ("significantly" for an untested difference).
-- **Why it weakens the text.** Inflated claims invite objections and can misstate the evidence. Readers take "significant" to mean a statistical test.
-- **Do.** Keep the fact and its measured size. Say what the result shows and in which setting. Use "significant" only for a test that the result record reports. Turn an unsupported claim of novelty into a scoped statement, or keep it with a `[TODO: ...]` marker for the evidence.
-- **Keep.** A contribution statement in the strength that the evidence allows.
+- **Signals.** Pivotal, transformative, groundbreaking, "paves the way", and "holds great promise" invite a context check, not an automatic objection. A claim to be the first, universal superiority, a demonstrated practical benefit, or a statistically significant difference asserts something more concrete.
+- **Why it can weaken the text.** Repeated generic praise can obscure the contribution. An assertion that changes the findings, comparison scope, validation status, or demonstrated effect can misstate the evidence. The strength of the adjective alone does not establish that problem.
+- **Do.** Preserve the author's intended emphasis and make the contribution concrete where the original permits. Separate an evaluative judgment or outlook from a claim of an observed benefit. Flag a specific factual mismatch with its evidence; do not demand a citation or statistical test merely for promotional tone. Interpret "significant" in context: statistical significance needs the reported analysis, while qualitative importance or a large measured difference does not automatically assert a statistical test. Narrowing or dropping a substantive claim requires the researcher's decision.
+- **Keep.** Author-chosen emphasis, a persuasive contribution statement, and an ambitious outlook, including conventional impact rhetoric, when they do not turn an unperformed comparison, unobserved result, or untested application into an established fact.
 
 ## 3. Unsourced authority and vague relations (strong when uncited)
 
 - **Signals.** "Studies show", "experts agree", "it is widely accepted" without a citation. "Associated with", "linked to", or "related to" where the text knows the actual relation.
 - **Why it weakens the text.** In scholarly writing such a claim needs its source. A vague relation can hide a causal claim that the evidence cannot carry, or understate one that it can.
-- **Do.** Cite the source whose support was checked; otherwise keep the claim with a `[TODO: ...]` marker. Name the relation that the evidence gives: a correlation, a cause, a role. When the evidence gives none, the vague word stays.
+- **Do.** Cite the source whose support was checked; otherwise keep the claim, including its attribution and stated strength, with a `[TODO: ...]` marker. Make a relation more specific only when the original already states or directly entails it. New evidence that would change the relation is a substantive issue for the researcher, not a style repair.
 - **Keep.** "Associated with" when an association is exactly what was measured.
 
 ## 4. Template rhythm (weak)
 
 - **Signals.** Items in threes whatever their real number. A connective at the start of nearly every sentence. Consecutive sentences with the same opening. Sentences of uniform length. Dashes as the default joint between clauses. Several hedges on one claim.
 - **Why it weakens the text.** Rhythm applied by rule hides the logic. Stacked hedges blur the actual degree of certainty.
-- **Do.** List as many items as exist. Let sentence order carry the logic, and keep the connectives that state a real relation (contrast, cause, sequence). Merge or vary repeated openings. Choose the punctuation that says how two clauses relate. Keep one hedge, at the strength the evidence supports.
+- **Do.** List as many items as exist. Let sentence order carry the logic, and keep the connectives that state a real relation (contrast, cause, sequence). Merge or vary repeated openings. Choose the punctuation that says how two clauses relate. Reduce stacked hedges only when the remaining wording preserves the original uncertainty and every separate scope or degree limit.
 - **Keep.** A real three-part structure, deliberate parallelism, a connective that marks a real turn, and dashes that the researcher uses or the venue's style requires.
 
 ## 5. Wordy constructions (weak)

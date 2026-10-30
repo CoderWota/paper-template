@@ -34,6 +34,8 @@ The manuscript check reports explicit AI sign-offs and AI names in author metada
 
 Research result freshness includes code checksums from linked run records, as well as the result's recorded inputs and outputs. `research.py check` prints existing `Used by` references when it finds stale evidence, or asks for dependency inspection when none are recorded. It reports unreadable or incomplete runs used as observed/checked results. It does not infer unrecorded claim relationships or validate scientific reasoning; the agent must inspect those. `research.py runs` also reports recorded code changes.
 
+For an open revision's staged manuscript, `manuscript.py check --revision-id ID` and `set-sections --revision-id ID FILE ...` select `revisions/ID/candidate/` while keeping the workspace bibliography. The complete section list replaces only the candidate manifest. The commands refuse a missing candidate, a closed revision, or an application already begun; ordinary commands continue to use `manuscript/`. Candidate assembly and export are not exposed.
+
 Tool discovery uses numeric release ordering in `.tools/`. The environment report and export route both prefer workspace Pandoc over PATH. Browser discovery accepts `PUPPETEER_EXECUTABLE_PATH`, uses Windows installation roots from the environment, and checks per-user macOS Applications as well as system Applications. Release pins and published archive digests remain deliberate reproducibility data.
 
 - Prefer the Python standard library. When a script needs packages, use the project-local `.venv` and call its interpreter directly instead of relying on an activated shell.

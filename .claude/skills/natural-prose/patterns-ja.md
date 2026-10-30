@@ -9,20 +9,22 @@ Concrete signals of the [pattern families](patterns.md) in Japanese academic pro
 - Sayings: 「〜の本質は〜にある」「〜こそが鍵である」.
 - Announcements: 「ここで重要なのは〜という点である」「注目すべきは」「以下で詳しく見ていく」「言うまでもなく」 before a routine statement.
 
-> Before: 提案手法は単なる既存手法の改良ではなく、スパース注意の計算方法を根本から見直すものであり、1 回の走査で計算を完了する。このことは効率的な注意機構の重要性を如実に示している。
+> Before: ここでは提案手法について詳しく述べる。提案手法は 1 回の走査でスパース注意の計算を完了する。言い換えれば、必要な走査は 1 回である。
 >
 > After: 提案手法は 1 回の走査でスパース注意の計算を完了する。
 
-## 2. Inflated significance and promotion
+## 2. Impact language and overstatement
 
 - Significance: 「重要な役割を果たす」「極めて重要である」「計り知れない意義」「〜の礎となる」「今後のさらなる発展が期待される」「大いに期待される」.
 - Promotion: 「画期的」「革新的」「飛躍的に向上」「圧倒的」.
 - Novelty: 「世界で初めて」「従来にない」 without a recorded search.
-- Statistics words: 「有意に」「顕著に」 need a test in the result record.
+- Statistical or magnitude language: 「有意に」 in a statistical claim needs a reported test. 「顕著に」「大幅に」 can describe magnitude without asserting statistical significance. Strong impact language alone is not an error.
 
 > Before: 提案手法は既存手法を大幅に上回り（平均 IoU 74.0、最良のベースラインは 71.2）、今後のさらなる発展が大いに期待される。
 >
-> After: 提案手法の平均 IoU は 74.0 であり、最良のベースラインは 71.2 であった。
+> After: 提案手法は既存手法を大幅に上回る（平均 IoU 74.0、最良のベースラインは 71.2）。今後のさらなる発展が大いに期待される。
+
+The comparison's degree and ambitious outlook remain. Check the actual comparison scope; 「大幅に」 does not by itself assert a statistical test, and the outlook does not say that future developments have already occurred.
 
 ## 3. Unsourced authority and vague relations
 
@@ -31,7 +33,7 @@ Concrete signals of the [pattern families](patterns.md) in Japanese academic pro
 
 > Before: 多くの研究で示されているように、睡眠不足は作業記憶の低下と密接に関連している。
 >
-> After: 睡眠不足は作業記憶の低下と関連する [TODO: 引用を追加し、因果関係を示す証拠かどうかを記す]。
+> After: 多くの研究で、睡眠不足は作業記憶の低下と密接に関連していることが示されている [TODO: これらの研究を引用し、関連の強さと性質を確認する]。
 
 ## 4. Template rhythm
 
@@ -44,7 +46,7 @@ Concrete signals of the [pattern families](patterns.md) in Japanese academic pro
 
 > Before: さらに、本モデルは軽量かつ高速、そして高効率である。また、本モデルは単一の GPU で学習できる。加えて、本モデルは数時間で収束し——ベースラインよりも速く——他分野へ転用できる可能性があると考えられる。
 >
-> After: 本モデルは単一の GPU で学習でき、数時間で収束する。収束はベースラインよりも速く、他分野へ転用できる可能性がある。
+> After: 本モデルは軽量、高速、高効率であり、単一の GPU で学習できる。数時間で収束し、ベースラインよりも速い。他分野へ転用できる可能性があると考えられる。
 
 ## 5. Wordy constructions
 
@@ -77,7 +79,7 @@ Watch these, especially in groups: 「多角的」「包括的」「網羅的」
 
 > Before: 本手法は軽量である。本手法はエッジ端末において実時間で動作することが可能である。本手法の有効性は実験により示された。
 >
-> After: 本手法は軽量で、エッジ端末で実時間に動作できる。その有効性は実験で示した [TODO: 該当する実験結果を明記する]。
+> After: 本手法は軽量で、エッジ端末で実時間に動作できる。その有効性は実験で示された [TODO: 該当する実験結果を明記する]。
 
 「可能である」 becomes 「できる」, not 「動作する」: the revision keeps the modality of the original.
 
@@ -88,4 +90,4 @@ Watch these, especially in groups: 「多角的」「包括的」「網羅的」
 
 > Before: 査読者の大変貴重なご指摘に心より感謝申し上げます。ベースラインの選定は実証研究の要となる点であり、ご指摘を踏まえて慎重に検討いたしました。その結果、4.2 節に最新の 2 手法との比較を追加いたしました。
 >
-> After: ご指摘ありがとうございます。4.2 節に最新の 2 手法との比較を追加しました。
+> After: ご指摘ありがとうございます。ご指摘を踏まえ、4.2 節に最新の 2 手法との比較を追加しました。ベースラインの選定は実証研究の要であると認識し、慎重に検討しました。

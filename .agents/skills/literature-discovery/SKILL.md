@@ -15,7 +15,7 @@ Outcome: a bounded, reviewable set of literature leads with a record of where an
 
 ## External search and provider order
 
-Use OpenDataLab Sciverse as the first external literature-search provider. The query and any supplied identifiers sent to Sciverse leave this computer and go to its API. Before its first request, explain this in the interaction language and ask one scope question. The public API pages reviewed here do not establish query retention or training use; say those points are unknown. State that Sciverse search may require an account or API key and that access or cost depends on the account; do not enroll the researcher or incur a charge without explicit confirmation.
+Use OpenDataLab Sciverse as the first external literature-search provider. The query and any supplied identifiers sent to Sciverse leave this computer and go to its API. First check the active confirmed query-sharing scope in `requirements/privacy.md`: reuse it without another question when it covers the request. If no active scope covers the query, explain the transfer in the interaction language and ask one scope question before sending it. The public API pages reviewed here do not establish query retention or training use; say those points are unknown. State that Sciverse search may require an account or API key and that access or cost depends on the account; do not enroll the researcher or incur a charge without explicit confirmation.
 
 If the researcher confirms a scope, record their exact confirmation and the scope in an interaction-language Markdown note under `.tmp/`, then run:
 

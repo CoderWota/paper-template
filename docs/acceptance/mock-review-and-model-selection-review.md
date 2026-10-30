@@ -1,5 +1,7 @@
 # Mock Review and Model Selection Review
 
+Follow-up (2026-10-30): the [cross-skill consistency review](skill-consistency-review.md) defines a shared-context fallback when isolated reviewer sessions are unavailable. Such passes are disclosed as perspectives from one session and are not called independent reviewers. The original review below remains the record of the text reviewed at that time.
+
 Status: `mock-review` and `model-selection`, added at the maintainer's instruction, passed written review on 2026-10-30 under the gate used since MVP 2. The reviewer's view of `manuscript-audit` and step 10 of `submission-readiness` passed a second look. No script changed. Live behavior of a model, Codex, and Windows are not covered; see section 6.
 
 ## 1. Rule and pass criteria

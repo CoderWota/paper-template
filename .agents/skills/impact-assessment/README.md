@@ -9,5 +9,6 @@ Ask, for example: "Who would benefit from this study, and how can I make its con
 - Audiences and value are grounded in inspected sources or the project's results; anything else is labeled as an assumption.
 - Impact is kept apart from novelty, from how well a journal fits, and from submission readiness. There is no score and no prediction of acceptance.
 - The assessment is saved in `research/impact.md` only when you ask.
+- The agent can help make the contribution persuasive, with emphatic value judgments and ambitious prospects. It checks whether wording changes a factual claim or validation status, rather than treating promotional language itself as an error.
 
 The agent instructions are in [SKILL.md](SKILL.md). Related skills: `idea-deepening`, `journal-selection`, `literature-and-evidence`.

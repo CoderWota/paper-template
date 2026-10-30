@@ -65,4 +65,4 @@ Decide the statement first, then choose the form.
 
 ## Hand-off
 
-Place the figure that the manuscript uses in `manuscript/assets/`, and write its caption under the [editing guide](../manuscript-writing/editing-guide.md#captions-and-table-titles) and the workspace conventions.
+Place the figure that the manuscript uses in `manuscript/assets/`, or in the candidate's `assets/` when `manuscript-revision` supplied that target; a staged figure must not replace an active manuscript asset before application. Write its caption under the [editing guide](../manuscript-writing/editing-guide.md#captions-and-table-titles) and the workspace conventions.

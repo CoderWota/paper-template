@@ -10,5 +10,6 @@ Ask, for example: "Draft the methods section from the plan and the results," "Tr
 - Formulas, figures, tables, citations, and cross-references follow the workspace conventions, so they render on GitHub and export correctly later.
 - A polish changes only what needs it, and says so when nothing does. After a translation or a rewrite, a script compares the new text with the original so that no number, citation, or condition is lost, and, when your manuscript is in another language, you receive a literal rendering in your own language to check the meaning.
 - Your own edits are kept. A one-time request does not become a rule.
+- When a major revision supplies a staged candidate, the agent edits and checks that candidate with the project's requirements and bibliography, then returns it to the revision coordinator for application.
 
 The agent instructions are in [SKILL.md](SKILL.md), and the details of each kind of edit are in the [editing guide](editing-guide.md). Related skills: `manuscript-audit`, `manuscript-revision`, `natural-prose`, `literature-and-evidence`, `constraint-maintenance`.

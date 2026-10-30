@@ -24,6 +24,8 @@ One subdirectory per major revision, created only when the scale warrants it: `<
 
 The agent creates each of these folders with its own README.
 
+For a staged candidate, `python scripts/manuscript.py set-sections --revision-id <id> FILE ...` replaces only the candidate's ordered section list; include the complete list of sections to keep. `python scripts/manuscript.py check --revision-id <id>` checks its own manifest, metadata, text, labels, and assets against the workspace bibliography. Neither command changes the active manuscript. They require an existing candidate and baseline and refuse a closed revision or one whose application has begun. Check the active manuscript again after `revision-apply`; candidate checks do not establish that intervening edits were reconciled or that the science is supported.
+
 ## Rules
 
 - The starting version is preserved and recoverable before any change, with or without Git.

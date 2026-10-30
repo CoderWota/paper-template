@@ -12,8 +12,8 @@ baseline snapshot in revisions/<revision-id>/baseline/, apply a staged candidate
 closing record (closed.json) when the revision is completed, in place or after the candidate, or abandoned.
 
 Usage:
-  python scripts/manuscript.py check
-  python scripts/manuscript.py set-sections FILE ...
+  python scripts/manuscript.py check [--revision-id ID]
+  python scripts/manuscript.py set-sections [--revision-id ID] FILE ...
   python scripts/manuscript.py assemble [--to PATH]
   python scripts/manuscript.py record-check --name NAME --kind audit|evidence|format|readiness|other --input PATH ...
       --result passed|findings|failed --summary TEXT [--scope TEXT] [--report PATH]
@@ -66,10 +66,12 @@ class Refused(Exception):
 
 # The manifest
 
-def read_manifest(root: Path) -> dict:
-    path = root / "manuscript" / "manifest.yaml"
+def read_manifest(root: Path, folder: Path | None = None) -> dict:
+    folder = folder if folder is not None else root / "manuscript"
+    path = folder / "manifest.yaml"
+    display = path.relative_to(root).as_posix()
     if not path.is_file():
-        raise Refused("manuscript/manifest.yaml is missing")
+        raise Refused(f"{display} is missing")
     data: dict = {"sections": []}
     current = None
     for number, raw in enumerate(path.read_text(encoding="utf-8").splitlines(), start=1):
@@ -88,7 +90,7 @@ def read_manifest(root: Path) -> dict:
         elif line.lstrip().startswith("- ") and current == "sections":
             data["sections"].append(unquote(line.lstrip()[2:]))
         else:
-            raise Refused(f"manuscript/manifest.yaml line {number} cannot be read: {raw.strip()!r}")
+            raise Refused(f"{display} line {number} cannot be read: {raw.strip()!r}")
     return data
 
 
@@ -102,27 +104,50 @@ def unquote(value: str) -> str:
 METADATA = "metadata.yaml"
 
 
-def metadata_name(root: Path, manifest: dict) -> str | None:
+def metadata_name(root: Path, manifest: dict, folder: Path | None = None) -> str | None:
     """The Pandoc metadata file (title, authors, abstract, keywords): the file the manifest names, else manuscript/metadata.yaml."""
     named = manifest.get("metadata")
     if named:
         return named
-    return METADATA if (root / "manuscript" / METADATA).is_file() else None
+    folder = folder if folder is not None else root / "manuscript"
+    return METADATA if (folder / METADATA).is_file() else None
+
+
+def editing_folder(args, root: Path) -> Path:
+    """Select a live manuscript or an open, unapplied candidate without changing the workspace root."""
+    revision_id = getattr(args, "revision_id", None)
+    if not revision_id:
+        return root / "manuscript"
+    revision = revision_folder(root, revision_id)
+    if root not in revision.resolve().parents:
+        raise Refused("the revision must stay inside the workspace")
+    load_baseline(revision)
+    if load_closure(revision) or (revision / "apply.json").exists():
+        raise Refused("the candidate is closed or its application has begun; use the active manuscript or finish the application")
+    folder = revision / "candidate"
+    if not folder.is_dir() or revision.resolve() not in folder.resolve().parents:
+        raise Refused(f"revisions/{revision_id}/candidate/ must be an existing folder inside this revision")
+    return folder
 
 
 def command_set_sections(args, root: Path) -> int:
-    path = root / "manuscript" / "manifest.yaml"
+    folder = editing_folder(args, root)
+    display = folder.relative_to(root).as_posix()
+    path = folder / "manifest.yaml"
     old = path.read_text(encoding="utf-8") if path.is_file() else ""
     header = [line for line in old.splitlines() if line.startswith("#")] or [
         "# Manuscript assembly manifest, maintained by the agent.",
         "# Lists the section files (paths relative to this directory) in reading order.",
         "# Only listed files are assembled; README.md, outline.md, notes, and drafts never are."]
-    data = read_manifest(root) if path.is_file() else {"version": "1", "sections": []}
+    data = read_manifest(root, folder) if path.is_file() else {"version": "1", "sections": []}
     for name in args.files:
         if name in NOT_SECTIONS or not name.endswith(".md") or name.startswith(("/", "..")):
             raise Refused(f"{name} cannot be a manuscript section")
-        if not (root / "manuscript" / name).is_file():
-            raise Refused(f"manuscript/{name} does not exist")
+        target = (folder / name).resolve()
+        if folder.resolve() not in target.parents:
+            raise Refused(f"{name} is outside {display}/")
+        if not target.is_file():
+            raise Refused(f"{display}/{name} does not exist")
     lines = header + [f"version: {data.get('version', '1')}"]
     for key, value in data.items():
         if key not in ("version", "sections"):
@@ -130,7 +155,7 @@ def command_set_sections(args, root: Path) -> int:
     lines.append("sections:" + ("" if args.files else " []"))
     lines += [f"  - {name}" for name in args.files]
     write_text_atomic(path, "\n".join(lines) + "\n")
-    print(f"The manuscript now consists of {len(args.files)} section file(s): " + ", ".join(args.files))
+    print(f"{display}/ now consists of {len(args.files)} section file(s): " + ", ".join(args.files))
     return 0
 
 
@@ -315,43 +340,48 @@ def bibliography_keys(root: Path) -> set | None:
     return {key for kind, key in re.findall(r"@(\w+)\s*\{\s*([^,\s]+)\s*,", text) if kind.lower() not in ("comment", "string", "preamble")}
 
 
-def section_paths(root: Path, manifest: dict) -> tuple:
-    folder = root / "manuscript"
+def section_paths(root: Path, manifest: dict, folder: Path | None = None) -> tuple:
+    folder = folder if folder is not None else root / "manuscript"
+    display = folder.relative_to(root).as_posix()
     paths, problems, seen = [], [], set()
     for name in manifest["sections"]:
         if name in seen:
-            problems.append(f"manuscript/manifest.yaml: {name} is listed twice")
+            problems.append(f"{display}/manifest.yaml: {name} is listed twice")
         seen.add(name)
         path = (folder / name).resolve()
         if name in NOT_SECTIONS or Path(name).name in NOT_SECTIONS or not name.endswith(".md"):
-            problems.append(f"manuscript/manifest.yaml: {name} is not a section file and must not be assembled")
+            problems.append(f"{display}/manifest.yaml: {name} is not a section file and must not be assembled")
         elif folder.resolve() not in path.parents:
-            problems.append(f"manuscript/manifest.yaml: {name} is outside manuscript/")
+            problems.append(f"{display}/manifest.yaml: {name} is outside {display}/")
         elif not path.is_file():
-            problems.append(f"manuscript/manifest.yaml: manuscript/{name} does not exist")
+            problems.append(f"{display}/manifest.yaml: {display}/{name} does not exist")
         else:
             paths.append((name, path))
     return paths, problems
 
 
-def analyse(root: Path) -> dict:
+def analyse(root: Path, folder: Path | None = None) -> dict:
     """Everything the check reports: problems, warnings, open items, unlisted drafts, and counts."""
-    manifest = read_manifest(root)
-    paths, problems = section_paths(root, manifest)
+    folder = folder if folder is not None else root / "manuscript"
+    display = folder.relative_to(root).as_posix()
+    manifest = read_manifest(root, folder)
+    paths, problems = section_paths(root, manifest, folder)
     scan = Scan()
-    metadata = metadata_name(root, manifest)
+    metadata = metadata_name(root, manifest, folder)
     if metadata:
-        meta = root / "manuscript" / metadata
-        if not meta.is_file():
-            problems.append(f"manuscript/manifest.yaml: the metadata file manuscript/{metadata} does not exist")
+        meta = folder / metadata
+        if folder.resolve() not in meta.resolve().parents:
+            problems.append(f"{display}/manifest.yaml: the metadata file is outside {display}/")
+        elif not meta.is_file():
+            problems.append(f"{display}/manifest.yaml: the metadata file {display}/{metadata} does not exist")
         else:
             text = meta.read_text(encoding="utf-8")
-            scan.problems.extend(signature_problems(text, f"manuscript/{metadata}", metadata=True))
+            scan.problems.extend(signature_problems(text, f"{display}/{metadata}", metadata=True))
             if not re.search(r"^title\s*:", text, re.M):
-                scan.warnings.append(f"manuscript/{metadata}: no title")
+                scan.warnings.append(f"{display}/{metadata}: no title")
     totals = [0, 0]
     for name, path in paths:
-        scan_file(path, f"manuscript/{name}", scan, root / "manuscript")
+        scan_file(path, f"{display}/{name}", scan, folder)
         words, cjk = count_words(path.read_text(encoding="utf-8"))
         totals[0] += words
         totals[1] += cjk
@@ -377,16 +407,19 @@ def analyse(root: Path) -> dict:
             if key not in keys:
                 scan.problems.append(f"{where}: the citation key @{key} is not in references/bibliography.bib")
     listed = {Path(name).as_posix() for name in manifest["sections"]}
-    drafts = sorted(p.relative_to(root / "manuscript").as_posix() for p in (root / "manuscript").glob("**/*.md")
-                    if p.name not in NOT_SECTIONS and "assets" not in p.relative_to(root / "manuscript").parts
-                    and p.relative_to(root / "manuscript").as_posix() not in listed)
+    drafts = sorted(p.relative_to(folder).as_posix() for p in folder.glob("**/*.md")
+                    if p.name not in NOT_SECTIONS and "assets" not in p.relative_to(folder).parts
+                    and p.relative_to(folder).as_posix() not in listed)
     return {"paths": paths, "problems": problems + scan.problems, "warnings": scan.warnings, "open_items": scan.open_items,
             "drafts": drafts, "words": totals[0], "cjk": totals[1], "labels": len(scan.labels), "cited": cited,
             "keys_resolve": bool(cited) and keys is not None, "diagrams": scan.mermaid}
 
 
 def command_check(args, root: Path) -> int:
-    result = analyse(root)
+    folder = editing_folder(args, root)
+    result = analyse(root, folder)
+    if getattr(args, "revision_id", None):
+        print(f"Candidate: {folder.relative_to(root).as_posix()}/ (using the workspace bibliography).")
     size = f"{result['words']} words" + (f" and {result['cjk']} CJK characters" if result["cjk"] else "")
     print(f"Manuscript: {len(result['paths'])} section file(s), {size}, {result['labels']} label(s), {len(result['cited'])} cited key(s), "
           f"{result['diagrams']} diagram(s).")
@@ -780,7 +813,9 @@ def command_revision_start(args, root: Path) -> int:
         f"{record['created'][:10]} with checksums in `baseline.json`, so it can be recovered with or without Git. `plan.md` "
         "states the goal, scope, affected material, ordered work, and next action; `changes.md` maps old to new sections, "
         "claims, figures, and citations; `checks.md` records which inputs were checked with what result. A staged manuscript, "
-        "when one is used, is in `candidate/` and is never assembled until it is applied. `closed.json` appears when the "
+        "when one is used, is in `candidate/` and is never assembled until it is applied. Use `set-sections --revision-id "
+        f"{args.id}` and `check --revision-id {args.id}` to update and check only that candidate, using the workspace bibliography. "
+        "`closed.json` appears when the "
         "revision is completed or abandoned; until then the project status reports the revision as open."), OWNER)
     update_readme(baseline / "README.md", f"Baseline of {args.id}", (
         f"The starting version of revision `{args.id}`: the manuscript, the requirements, the bibliography, the research plan, "
@@ -985,8 +1020,10 @@ def main(argv: list | None = None) -> int:
     parser = argparse.ArgumentParser(description="Check, assemble, and revise the manuscript.")
     parser.add_argument("--root", type=Path, default=ROOT, help="workspace root (default: the parent of the scripts folder)")
     commands = parser.add_subparsers(dest="command", required=True)
-    commands.add_parser("check", help="check the manuscript against the workspace conventions")
+    check = commands.add_parser("check", help="check the manuscript against the workspace conventions")
+    check.add_argument("--revision-id", help="check this open revision's candidate instead of the active manuscript")
     sections = commands.add_parser("set-sections", help="set the ordered list of section files in the manifest")
+    sections.add_argument("--revision-id", help="set this open revision's candidate manifest instead of the active one")
     sections.add_argument("files", nargs="*")
     assemble = commands.add_parser("assemble", help="join the listed section files into one preview file")
     assemble.add_argument("--to")

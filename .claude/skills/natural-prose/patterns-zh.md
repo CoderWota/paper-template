@@ -9,20 +9,22 @@ Concrete signals of the [pattern families](patterns.md) in Chinese academic pros
 - Sayings: “归根结底”, “本质上”, “说到底”, “……的核心在于……”.
 - Announcements: “下面我们将深入探讨……”, “值得注意的是”, “需要指出的是”, “不难发现”, “众所周知” before a routine statement.
 
-> Before: 本文提出的方法不仅仅是对现有模型的简单改进，更是对稀疏注意力计算方式的一次深刻变革：它只需一次遍历即可完成计算。这充分说明了高效注意力机制的重要性。
+> Before: 下面将深入探讨本文方法：它只需一次遍历即可完成稀疏注意力的计算。换言之，本文方法只需遍历一次。
 >
 > After: 本文方法只需一次遍历即可完成稀疏注意力的计算。
 
-## 2. Inflated significance and promotion
+## 2. Impact language and overstatement
 
 - Significance: “具有重要的理论意义和应用价值”, “具有里程碑意义”, “开辟了新的途径”, “奠定了坚实基础”, “为……提供了新思路”, “具有广阔的应用前景”.
 - Promotion: “颠覆性”, “革命性”, “前所未有”, “极大地”, “全面提升”, “完美解决”.
 - Novelty: “首次提出”, “填补了国内外空白” without a recorded search.
-- Statistics words: readers take “显著” as statistical significance; “显著提升” and “显著优于” need a test in the result record.
+- Statistical or magnitude language: “显著” can mean statistical significance or a conspicuous difference. Require a reported test when the context asserts statistical significance; do not treat every strong comparison or impact adjective as a statistical claim.
 
 > Before: 实验结果表明，本文方法显著优于现有方法（平均 IoU 为 74.0，最强基线为 71.2），具有广阔的应用前景。
 >
-> After: 本文方法的平均 IoU 为 74.0，最强基线为 71.2。
+> After: 实验结果表明，本文方法显著优于现有方法，平均 IoU 为 74.0，最强基线为 71.2。本文方法具有广阔的应用前景。
+
+The comparison and outlook remain. Inspect the evidence for the comparison and any statistical meaning of “显著”; do not infer that a test is absent from the wording alone. “具有广阔的应用前景” is allowed as an authorial assessment of potential, without implying that applications were already tested.
 
 ## 3. Unsourced authority and vague relations
 
@@ -31,7 +33,7 @@ Concrete signals of the [pattern families](patterns.md) in Chinese academic pros
 
 > Before: 大量研究表明，睡眠不足与工作记忆受损密切相关。
 >
-> After: 睡眠不足与工作记忆受损相关 [TODO: 补充引用，并说明证据是否支持因果关系]。
+> After: 大量研究表明，睡眠不足与工作记忆受损密切相关 [TODO: 补充这些研究的引用，并核实关联的强度和性质]。
 
 ## 4. Template rhythm
 
@@ -43,7 +45,9 @@ Concrete signals of the [pattern families](patterns.md) in Chinese academic pros
 
 > Before: 此外，该模型高效稳定、灵活便捷、安全可靠。同时，该模型只需单张 GPU 即可训练。进一步地，该模型通常在数小时内收敛——明显快于基线——并且可能在一定程度上或许能够迁移到其他领域。
 >
-> After: 该模型只需单张 GPU 即可训练，通常在数小时内收敛，快于基线，并可能迁移到其他领域。
+> After: 该模型高效稳定、灵活便捷、安全可靠，只需单张 GPU 即可训练。它通常在数小时内收敛，明显快于基线，并可能在一定程度上迁移到其他领域。
+
+The listed properties, the strength of the baseline comparison, and “在一定程度上” remain; none follows merely from using one GPU.
 
 Keep “首先……其次……” for steps with a real order, a parallel structure that lists distinct facts, and established four-character terms such as “实时处理” or “端到端”.
 
@@ -86,7 +90,7 @@ When a sentence only praises a method, replace the praise with what the method d
 
 > Before: 本文中，一个能够在资源受限的边缘设备上实时运行的基于知识蒸馏的轻量级目标检测模型被提出，并且它被证明是有效的。
 >
-> After: 本文提出一种基于知识蒸馏的轻量级目标检测模型，可在资源受限的边缘设备上实时运行，并证明了该模型的有效性 [TODO: 指明所依据的实验结果]。
+> After: 本文提出一种基于知识蒸馏的轻量级目标检测模型，可在资源受限的边缘设备上实时运行，其有效性已得到证明 [TODO: 指明所依据的验证结果]。
 
 The agent comes from “本文中”; without it, the passive would stay, because the text would not say who proposed the model.
 
@@ -97,4 +101,4 @@ The agent comes from “本文中”; without it, the passive would stay, becaus
 
 > Before: 非常感谢审稿人提出的宝贵意见，这一意见对提升本文质量具有重要意义。我们完全同意基线选择是实证研究的重要方面，并对此进行了认真的思考。根据审稿人的建议，我们在第 4.2 节增加了与两种最新方法的比较。
 >
-> After: 感谢审稿人的意见。我们在第 4.2 节增加了与两种最新方法的比较。
+> After: 感谢审稿人的意见，这一意见对提升本文质量具有重要意义。根据您的建议，我们在第 4.2 节增加了与两种最新方法的比较。我们完全同意基线选择是实证研究的重要方面，并已认真考虑这一点。
