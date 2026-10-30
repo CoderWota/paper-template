@@ -1,49 +1,75 @@
 # General Review Form
 
-The form that `mock-review` uses when no venue is set, or when the venue publishes no reviewer form. The report must say that it used this form. When the venue has its own form, use that form instead, with its own fields, scales, and anchor wording.
+Use this form when no target venue is set or its form is unavailable. Identify it as the general form, not a venue's official form. Read the judgment rules below even when using a venue's unchanged fields and anchors.
+
+## Judgment before scoring
+
+Assess the contribution appropriate to the discipline, article type, audience, and stated scope. Do not assume a top-tier venue or demand a perfect study. Regional samples, cross-sectional designs, established methods, replications, and negative results are not themselves evidence of low value or unsoundness. Judge what the design establishes and which claims exceed it. Publication status is context, not proof of quality or a target score.
+
+For every finding that may change a recommendation, establish:
+
+1. **Certainty.** Confirmed from inspected evidence, an unresolved concern, or not assessed because material could not be checked. State the missing check. A plausible explanation is not a verified correction; an unanswered question is not a proven flaw.
+2. **Type.** Reporting, analysis, inference, or contribution. A mislabeled statistic and an invalid analysis are different findings.
+3. **Effect.** Name the affected claim: does the problem change a local interpretation, a main result, or the central contribution? Identify what remains supported.
+4. **Repair.** Clarification or local correction, reanalysis or synthesis using existing material, new evidence or substantial reconstruction, or no credible repair within the present work. Explain the repair rather than prescribing an unrelated study.
+
+Before calling statistics inconsistent, check original layout, notes, scale units and direction, sample and degrees-of-freedom notation, statistic type, standardization, conditioning variables, and relevant supplements. Correlations, covariances, loadings, and adjusted paths need not match. A p value or fit threshold alone does not decide methodological quality: examine assumptions, uncertainty, and effects on the actual claim. A zero-order association and a nonsignificant adjusted path can coexist; nonsignificance does not establish no meaningful association.
+
+An added causal, cultural, or policy explanation can be unsupported while an association or descriptive result remains useful. Narrow the affected claim before declaring the whole study invalid. Conversely, distinguish incompatible concepts, tasks, populations, and levels of analysis in a synthesis: accurate summaries and lists of gaps do not by themselves establish an analytical contribution. Anticipated roles or hypothetical outcomes must not be reported as observed practices or consequences.
+
+Separate a **documented omission** from **the reviewer's access limit**. Missing analysis settings can limit reproducibility; not obtaining data during this review does not prove irreproducibility. State whether materials are public, conditionally available, absent, or uninspected, and whether access conditions were checked. Limited access or literature coverage lowers confidence or leaves a criterion not assessed; it is not an automatic low quality score. If a visible evidential gap undermines a main claim, locate and explain it instead of merely saying data were unavailable.
+
+Before the overall recommendation, answer: **After the identified corrections, what credible and useful contribution remains?** Explain what survives and what remains unsupported. If a new central argument or evidence base is needed, say so; rejection does not require misconduct or a fatal calculation error. Do not count findings, average dimension scores, or let one low dimension decide the verdict. Reviewers repeating a concern do not establish its truth.
 
 ## Written fields
 
-1. **Summary.** What the paper claims to contribute, in the reviewer's own words, without judgment.
-2. **Strengths.** The reasons to publish, each with its evidence.
-3. **Weaknesses.** Numbered, most serious first. Each names its location, what is missing or overstated, whether it is a matter of presentation or of substance, and whether a revision can fix it.
-4. **Questions.** What the authors could answer to change a score, and which score it would change.
-5. **Limitations and ethics.** Whether the paper states its limits and possible harms adequately, and what is missing.
+1. **Summary.** Question, main claims, design or synthesis, and contribution, in the reviewer's words.
+2. **Strengths.** Concrete reasons the work matters, with evidence and intended users or scope.
+3. **Weaknesses.** Most consequential first, each with a location and the finding assessment above. Do not inflate the list with unpromised tasks or style preferences.
+4. **Questions.** Answers that would change a score or recommendation and the checks needed to resolve them.
+5. **Limitations and ethics.** Consequences for claims and uses; distinguish established issues from questions.
+6. **Contribution retained and use.** What remains credible after correction, what readers may use or cite, and what they should not yet rely on. State overall quality separately from treatment; use "not yet assessable" when needed.
 
 ## Criterion scores (1 to 4)
 
+Choose an anchor supported by evidence, not a preset high, middle, or low score. A provisional score needs its evidence and confidence limit. Use **not assessed** instead of a number when a decisive part cannot be judged. A low score must identify its specific shortcoming; at the highest score, explain what sustains it rather than inventing an improvement tier.
+
 | Score | Soundness | Clarity | Significance | Originality |
 | --- | --- | --- | --- | --- |
-| 4 | Every main claim rests on adequate evidence and correct methods. | An expert can follow every step and could repeat the work from the paper. | Others in the field are likely to use or build on the result. | A clear advance over the closest prior work, which the paper identifies. |
-| 3 | The main claims are supported; minor points lack detail. | Readable; some details must be inferred. | Useful to part of the field. | A real difference from prior work, though the difference is incremental. |
-| 2 | At least one main claim is not adequately supported, or the method has a problem. | Important parts are hard to follow or missing. | The gain is small or narrow. | The difference from prior work is unclear or small. |
-| 1 | The central claims are unsupported, or the method is flawed. | The paper cannot be followed. | No clear use for others. | Known results, or no comparison with the prior work. |
+| 4 | The main claims have adequate evidence and appropriate methods; remaining minor issues do not change them. | The main question, method, results, and reasoning are clear; local corrections do not obstruct understanding. | The work makes an important, well-explained contribution to its intended research or practice community. | Inspected comparisons establish a clear advance in knowledge, which may come from new evidence, replication, setting, method, or synthesis. |
+| 3 | The main findings have reasonable support; limitations or repairable issues do not overturn them. | The main argument and results can be followed; some definitions or procedural details need clarification. | The work has a concrete use for part of the field or its stated population. | Inspected comparisons support a meaningful extension, replication, or synthesis, even if incremental. |
+| 2 | An identified main conclusion lacks adequate support or is materially affected by a demonstrated methodological problem. | Identified missing or conflicting explanations obstruct understanding of an important part of the work. | The added knowledge or practical use is limited for reasons beyond merely having a narrow sample or scope. | Comparison with inspected close work shows limited added knowledge or an unresolved substantive distinction. |
+| 1 | Confirmed defects invalidate the core evidence or reasoning supporting the central contribution. | The core question, analysis, or argument cannot be understood from the supplied work. | No substantive contribution or defensible use is established for the intended audience. | Inspected comparisons establish no identifiable added knowledge or useful synthesis, including no meaningful replication contribution. |
 
-**Reproducibility (1 to 4).** 4: the paper and its materials allow a full repeat. 3: a repeat is possible with some effort or variation. 2: important settings or data are missing. 1: a repeat is not possible.
+**Reproducibility / ability to check the work (1 to 4).** Judge procedures and realistic access, not whether the reviewer personally reran the work. 4: the work and materials provide a sufficient route to reconstruct and check the analysis, with appropriate protected access where needed. 3: procedures are substantially reconstructable, with limited clarification or a specified access process; state any access not verified. 2: identified essential coding, selection, analysis rules, or necessary access arrangements are missing. 1: established omissions or inaccessible essential materials prevent reconstruction of the core analysis. Use not assessed when the evidence cannot establish which situation applies. Nonpublic data alone do not imply 1 or 2.
 
-## Overall recommendation (1 to 6)
+## Overall treatment recommendation (1 to 6)
 
-| Score | Meaning |
+These are simulated treatment categories, not probabilities or predictions. They are separate from overall quality and reference value. A useful reference can need major revision, and a careful, readable document can lack a publishable contribution. Explain the contribution, decisive evidence, and repair behind the anchor. If decisive uncertainty prevents a recommendation, say not assessed and give conditional outcomes instead of assuming validity or invalidity.
+
+| Score | Meaning and boundary |
 | --- | --- |
-| 6 | Strong accept: sound throughout, with an important contribution. |
-| 5 | Accept: sound, with a clear contribution to its area. |
-| 4 | Leaning to accept: the reasons to accept outweigh the weaknesses. |
-| 3 | Leaning to reject: the weaknesses, such as a limited evaluation, outweigh the reasons to accept. |
-| 2 | Reject: substantive problems that need new work. |
-| 1 | Strong reject: fundamental flaws, known results, or outside the scope. |
+| 6 | Accept: the main contribution and evidence stand; no substantive changes are needed. |
+| 5 | Minor revision: local explanation, presentation, or reporting corrections suffice without redoing the core analysis. |
+| 4 | Major revision: a recognizable contribution has a concrete repair path through existing-material reanalysis, fuller reporting, or narrower claims. |
+| 3 | Revise and resubmit: a plausible contribution requires new key material, validation, or substantial reconstruction before reassessment. |
+| 2 | Reject: the current evidence or analysis does not sustain the central contribution, or the work has not formed a sufficient contribution; repair goes beyond ordinary revision of this work. Explain why major revision or resubmission is insufficiently supported. |
+| 1 | Strong reject: confirmed fundamental defects invalidate the main evidence, or a serious integrity problem has been verified. |
 
-Use 4 and 3 only when the evidence is genuinely balanced.
+Clarification versus reanalysis separates 5 from 4. An identifiable repair of an established contribution versus new essential work separates 4 from 3. A concrete, plausible route to a contribution versus an inadequate core requiring a rebuilt study or argument separates 3 from 2. Reusing existing data or sources does not by itself justify 4: identify the contribution already present and distinguish repairing it from creating a missing contribution. A useful evidence map or conceptual synthesis can qualify, but name its analytical payoff beyond summarizing individual sources; do not require a new causal mechanism simply because the work is a review. The reviewer's ability to imagine a better article is not evidence that the present article has a repairable contribution. Do not infer 2 from a statistical question, lack of a public dataset, or a dimension score alone. No fixed number of strengths compensates for a decisive defect, and no fixed number of local flaws establishes one.
 
 ## Confidence (1 to 5)
 
+Confidence describes this review's evidence coverage, not the paper's quality. State criterion-specific limits where they differ, particularly for originality.
+
 | Score | Meaning |
 | --- | --- |
-| 5 | Every relevant detail was checked, and the related work is well known to the reviewer. |
-| 4 | The main points were checked; a missed detail is unlikely. |
-| 3 | The area is familiar, but details such as proofs or the experimental design were not checked. |
-| 2 | Central parts or related work may have been missed. |
-| 1 | The assessment is a guess. |
+| 5 | Decisive claims, relevant analysis materials, and close related work were checked; the recommendation is well grounded. |
+| 4 | Main points and decisive evidence were checked; remaining access limits are unlikely to change the recommendation. |
+| 3 | The argument and reported results were checked, but important analysis details or related-work comparisons remain unverified. |
+| 2 | Unchecked central material or limited related-work coverage could materially change the assessment. |
+| 1 | Too little evidence was inspected to justify a substantive judgment; use not assessed for affected quality criteria. |
 
 ## Recording a venue's form
 
-When a venue publishes its own form, add it to the `Review form` field of the venue note in `research/venues/` before scoring, with the reviewer guidelines listed under `Sources`: the date it was read, each written field, and each scale with every anchor in the venue's wording. A later mock review reuses the recorded form until the venue publishes a new one.
+When saving records is within scope, record an official form in the venue note's `Review form` field with source and access date, every written field, and the exact wording of each anchor. Reuse it until the venue changes it. For a read-only assessment, identify the form and source in the response without writing a note.
