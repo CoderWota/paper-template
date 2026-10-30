@@ -1,6 +1,6 @@
 # Project Onboarding
 
-The first task in a new workspace. The agent asks a few questions, one at a time, and records only the answers you confirm: the language you want to work in, what you want to achieve, the manuscript language, and how your documents may be processed. Anything you do not know yet can wait.
+Sets up a paper project when you ask to begin one. If you only want to understand the folders, ask for a tour first; no setup is needed. The agent asks a few questions, one at a time, and records only the answers you confirm: the language you want to work in, what you want to achieve, the manuscript language, and how your documents may be processed. Anything you do not know yet can wait.
 
 Ask, for example: "Help me initialize this research writing project. I do not have a programming background."
 
@@ -15,3 +15,5 @@ Ask, for example: "Help me initialize this research writing project. I do not ha
 - It never asks for a password or an API key in the conversation.
 
 The agent instructions are in [SKILL.md](SKILL.md). Related skills: `environment-management`, `privacy-configuration`, and `constraint-maintenance`.
+
+After a directory tour, the assistant reuses what you already told it and asks only for missing information needed for the first task. Processing choices, software setup, and the optional account privacy check are introduced when relevant, rather than required to understand the workspace.

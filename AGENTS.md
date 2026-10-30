@@ -5,7 +5,8 @@ This workspace develops one manuscript, including its revisions. The researcher 
 ## Load only the current task
 
 - Start with `state/current.md` and `requirements/project.md`. Onboard when asked to start a research project; a bounded task needs no guided workflow.
-- Select a skill by its description; read its instructions and only the references needed now. Do not preload skills, indexes, READMEs, sources, or history.
+- For first-time use, folder questions, or uncertainty about how to begin, use the beginner branch of [paper-hands-on](.agents/skills/paper-hands-on/SKILL.md); a tour does not authorize setup or file changes.
+- Select a skill by its description and open the exact discovered path. If no path is supplied for a project task, locate `.agents/skills/<name>/SKILL.md` inside this workspace; do not guess a home-directory skill path. Read only the needed references; do not preload skills, indexes, READMEs, sources, or history.
 - Before writing, read the current passage, applicable `requirements/writing.md` rules, and relevant outline and evidence. Read privacy requirements before external processing, and the output profile before formatting.
 - Make these reads explicitly in both clients; do not assume matching child-instruction loading. [Loading guidance](docs/context-loading.md) is for setup or loading problems, not ordinary writing.
 

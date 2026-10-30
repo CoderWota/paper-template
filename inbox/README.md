@@ -4,6 +4,8 @@ An optional landing area for material that has not been organized yet: existing 
 
 ## How to use it
 
+If you do not know where to put a file, ask the assistant. You can give its existing location instead of moving it here, and the assistant handles the classification and authorized import. It explains what it can access before asking for a supported way to provide an inaccessible file.
+
 Put files or folders here, then ask the agent, for example: "Organize what I put in the inbox." The agent inspects each item, proposes where it belongs, asks only about genuinely unclear roles, and routes it:
 
 - Reference documents go to [`references/`](../references/README.md).

@@ -9,21 +9,20 @@ Outcome: the few confirmed settings needed to begin, an accurate `state/current.
 
 ## Rules for this skill
 
-- Follow `AGENTS.md`, especially "Decisions and questions" and "Confirmed requirements only".
+- Follow the shared contract in `AGENTS.md`, especially researcher choices, continuity, and confirmed requirements.
 - Ask one question at a time, in the form that `AGENTS.md` sets, and keep the reason to one sentence. Wait for the answer.
 - Record an answer only when the researcher states or confirms it. Do not record a guess.
 - Never delete, move, or overwrite existing material. Keep any text the researcher wrote in the files you update.
 - After the interaction language is confirmed, write records in that language.
 - Skip a question when the request or the workspace already answers it. An explicit statement is an answer.
+- This skill records requested project setup, not a directory tour. When the researcher only wants to understand the workspace, use the beginner branch of `paper-hands-on` and change no records. Do not start setup merely because the project is uninitialized.
+- After a tour, reuse the researcher's actual answers and requested first task. Do not repeat the directory explanation or require a full setup checklist before a bounded task. Confirm only missing information needed now; leave unrelated choices open.
 
 ## Step 1: Inspect the workspace before you ask
 
-Read these without asking the researcher:
+Start with `state/current.md` and `requirements/project.md`, then inspect `manuscript/manifest.yaml` and directory names in `inbox/`, `references/originals/`, `ideas/`, `research/`, and `reviews/` to distinguish a fresh workspace from existing research. Template READMEs and empty indexes are not research material. Read relevant requirement entries to reuse confirmed answers; open an index or record only when needed to resolve the current paper or task. Do not read the full library or every requirements file by default.
 
-- `state/current.md` and the files in `requirements/`
-- `manuscript/manifest.yaml`, `references/index.md`, and `ideas/index.md`
-- the lists of files in `inbox/`, `references/originals/`, `research/`, and `reviews/`
-- the version history, with `python scripts/versions.py inspect`, which changes nothing. When it reports the template's own history, an external copy such as `origin`, or versions with research material that this folder does not show, mention it in the final report and offer `git-setup`; change nothing in the history during onboarding.
+Inspect version history with `python scripts/versions.py inspect` only when setup includes a history question or the current material leaves a history or recovery ambiguity. If it reveals a relevant inherited history, external copy, or missing research version, explain that issue and offer the matching version task without changing history. Do not make a history discussion a prerequisite for a beginner's first task.
 
 Research material means sources in the library, manuscript sections in the manifest, retained ideas, research records, or review rounds. Files in `inbox/` are intake material, not another paper.
 
@@ -33,7 +32,7 @@ Research material means sources in the library, manuscript sections in the manif
 | Interrupted onboarding | Some answers are recorded in `requirements/project.md` or `state/current.md` | Continue with the first open item. Do not ask confirmed items again. |
 | Workspace already holds work | `requirements/project.md` says the project is initialized, or confirmed project requirements or research material exist | Go to "A workspace that already holds work". A project whose onboarding is finished counts, even when it has no research material yet. |
 
-Start the conversation with two sentences: what onboarding does, and that it asks a few questions whose answers can wait when unknown.
+For a direct setup request, start with two short sentences explaining what will be recorded and that unknown choices can wait. After a tour, simply explain the next necessary choice; do not restart the introduction or ask for an answer already given.
 
 ## Step 2: Confirm the interaction language
 
@@ -47,7 +46,7 @@ Record the goal with the researcher's exact words in quotation marks, and never 
 
 ## Step 4: Ask for the manuscript language
 
-Recommend a language from what you know, such as the field, a target journal, or an existing draft. "Decide later" is a valid answer.
+Ask when the first task produces manuscript text or when the researcher wants to settle the manuscript language now. Recommend a language from the known field, venue, or draft; do not record the recommendation without confirmation. "Decide later" is valid. For an exploratory first task that needs no manuscript language yet, keep it open rather than blocking the task.
 
 ## Step 5: Ask how documents can be processed
 
@@ -67,19 +66,19 @@ If the choice needs a credential or an installation, use `environment-management
 
 Write each answer as soon as it is confirmed, so an interruption loses nothing. Write in the interaction language.
 
-- `requirements/project.md`: the status (initialized, with the date), the research goal in the researcher's words, the interaction language, the manuscript language, and any confirmed audience, article type, or target venue. List the items that are still open.
+- `requirements/project.md`: the setup status and date (incomplete until the agreed setup is finished), the research goal in the researcher's words, confirmed languages, and any confirmed audience, article type, or target venue. Keep unconfirmed or unneeded items open instead of filling them from a recommendation.
 - `requirements/privacy.md`: the confirmed processing choice (local or a named cloud service), the documents it covers, and any data-use requirement that the researcher confirmed. A declined or postponed offer or choice is not a requirement; do not write it here. If the researcher decides later, list the choice as open in `requirements/project.md` and `state/current.md`. A cloud service is recorded only after its scope is confirmed (see `privacy-configuration`).
 
 If the researcher states a writing rule, record it in `requirements/writing.md` through `constraint-maintenance`.
 
 ## Step 7: Offer the AI application privacy check
 
-Ask whether the researcher wants you to check if their AI application can use project content for model training. Recommend the check. If they agree, use `privacy-configuration`. Do not change an account setting without their explicit consent. If they decline or postpone, note it as deferred, in their words, only in `state/current.md`. Do not write it to `requirements/privacy.md`, and do not add a rule that they did not state.
+Offer the optional check when the researcher asks about privacy or the selected task makes the account's data-use settings relevant. Explain its scope and recommend it; do not make an account questionnaire or check a prerequisite for a directory tour or unrelated first task. If they agree, use `privacy-configuration`. Do not change a setting without consent for that change. If they explicitly decline or postpone, record that only in `state/current.md`, in their words. An offer not yet made is not a declined choice or requirement.
 
 ## Step 8: Finish
 
-1. Set the status in `requirements/project.md` to initialized, with the date. Rewrite `state/current.md` as a whole in the interaction language, including its heading: what is set up, what is deferred, and the next action. The researcher reads this record.
-2. Report in the interaction language: the recorded settings with links to the files, the deferred items, and exactly one recommended next action that you can carry out now with the available skills and your own tools. If that action involves documents, name `inbox/` as the place for them; `inbox/imports/` holds the agent's import records, not documents.
+1. Once the agreed setup is complete, mark the project initialized with the date and keep unneeded choices explicitly open. If setup stops before that point, retain its incomplete status and the confirmed answers. Rewrite `state/current.md` in the interaction language: what is set up, what is open, and the next action. No record is written merely to log a tour.
+2. Report the recorded settings with links, open items relevant to the task, and one feasible next action. Continue a first task already requested once its prerequisites are settled; do not stop solely to ask for the same authorization again. For documents, give the actual clickable location of optional `inbox/` or use their current location; the researcher need not sort or move files. `inbox/imports/` holds import records, not incoming files.
 
 ## A workspace that already holds work
 

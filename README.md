@@ -4,7 +4,13 @@ Develop one paper with an AI assistant in Codex or Claude Code. You direct the r
 
 ## Start with your situation
 
-Open this folder in your AI application and describe what you need. For a new project, ask:
+Open this folder in your AI application and start a conversation. If you do not know what to do, simply say:
+
+> I do not know how to use this project. Show me what each folder is for and how to begin.
+
+The assistant explains all top-level folders and the common subfolders, with links and examples. You do not need to read a manual, move files, or know a setup command first. A tour does not initialize the paper or process your material.
+
+When you want to set up a new paper, you can ask:
 
 > Help me set up this research writing project. I do not have a programming background.
 
@@ -29,7 +35,7 @@ The assistant selects the needed instructions and tools. You do not need to know
 
 ## Bring your material
 
-Put files in [`inbox/`](inbox/README.md), or point the assistant to their existing location. It identifies reference sources, manuscripts, feedback, reviewer letters, and format templates before organizing them. Original files stay unchanged.
+You can put files in [`inbox/`](inbox/README.md), or point the assistant to their existing location; this folder is optional. It identifies reference sources, manuscripts, feedback, reviewer letters, and format templates before organizing them. Original files stay unchanged.
 
 Before parsing documents, choose local processing or the named MinerU service and the material that choice covers. Cloud processing sends documents to that service; the assistant explains relevant limits before asking. Credentials are entered on a private local page, never in chat. Checking the AI application's data-use settings is a separate, optional task.
 
@@ -46,6 +52,8 @@ Before parsing documents, choose local processing or the named MinerU service an
 | [`revisions/`](revisions/README.md) | Recoverable baselines and change records for major revisions. |
 | [`outputs/`](outputs/README.md) | Rebuildable previews and preserved release packages. |
 | [`state/`](state/README.md) | A short handoff for the next session, maintained by the assistant. |
+
+Ask “Explain the project folders” for a guided tour of these and the supporting folders.
 
 The assistant maintains the supporting [`scripts/`](scripts/README.md) and agent configuration. Research code is created separately in `code/` only when a study needs computation.
 
