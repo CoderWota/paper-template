@@ -1,6 +1,6 @@
 ---
 name: environment-management
-description: Check computer readiness or repair missing tools and environments; guide private credential entry for a chosen service.
+description: Check computer readiness or set up missing tools and private credentials when a research task needs them. Use for setup requests and for setup handoffs from task-specific skills.
 ---
 
 # Environment management
@@ -49,7 +49,7 @@ Use the path notes from the report: spaces or non-ASCII characters, a long Windo
 
 ## Step 5: Credentials, only when needed
 
-For a supported service that the researcher chose, follow [private credential entry](credential-entry.md). A subscription does not imply a separate API key is needed. Do not read local secret values or request them in conversation.
+When a task-specific skill identifies a supported service that the researcher chose and its data/query scope is confirmed, follow [private credential entry](credential-entry.md) as part of that task. Do not wait for the researcher to request environment setup separately. A subscription does not imply a separate API key is needed. Do not read local secret values or request them in conversation. Credential entry does not authorize sending queries or documents to the service.
 
 ## Step 6: Verify and report
 

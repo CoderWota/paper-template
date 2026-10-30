@@ -1,6 +1,6 @@
 # Sciverse Operations
 
-Read only the operation needed for the current search: scope recording and search first; structured pagination, relations, experimental schema, or bounded text only when requested or needed. All external requests remain subject to the active scope.
+The workspace includes a direct Sciverse API adapter at `scripts/literature.py`; a host or MCP connector is not required. Read only the operation needed for the current search: scope recording and search first; structured pagination, relations, experimental schema, or bounded text only when requested or needed. All external requests remain subject to the active scope.
 
 If the researcher confirms a scope, record a faithful English rendering of their confirmation and the scope in an English Markdown note under `.tmp/`, then run:
 
@@ -8,13 +8,15 @@ If the researcher confirms a scope, record a faithful English rendering of their
 python scripts/literature.py authorize-sciverse --record .tmp/sciverse-confirmation.md
 ```
 
-The command records that choice in `requirements/privacy.md`. Do not run it for a wish, a suggestion, silence, or a default. The API key is optional. If the researcher chooses to use Sciverse and it is not set, first explain the account/key requirement, then direct them to the private entry flow:
+The command records that choice in `requirements/privacy.md`. Do not run it for a wish, a suggestion, silence, or a default. A key is required for this Sciverse API route. Once the researcher has confirmed a scope that covers the search, check the key without reading its value:
 
 ```text
-python scripts/credentials.py set SCIVERSE_API_KEY --label "Sciverse API key" --help-url "https://sciverse.opendatalab.org.cn/docs"
+python scripts/credentials.py status SCIVERSE_API_KEY
 ```
 
-Never ask for, repeat, print, or store the key in a project record, shell argument, or conversation. Before each request, compare its actual query with the confirmed scope. If the scope does not cover the query, use the authorized fallback or obtain a newly confirmed scope. Quote the exact scope sentence that covers the query as `--scope-basis`; the script checks that the excerpt occurs in the active scope and records it with the query. This excerpt check supports review but does not replace the agent's scope judgment. To search:
+If it is missing, proactively explain that Sciverse access may require an account and key, and that access or cost depends on the account. Do not create an account or incur a charge. Start the private entry page yourself, using [the credential-entry procedure](../environment-management/credential-entry.md) and page text in the researcher's language; do not merely tell them to run a command. Wait for the page to report `Saved` or `Replaced`, then check status again. Never ask for, repeat, print, or store the key in a project record, shell argument, or conversation. A missing key is a setup step, not an automatic reason to fall back to host search.
+
+Before each request, compare its actual query with the confirmed Sciverse scope. If the scope does not cover the query, ask for a newly confirmed scope before sending it. A fallback provider needs its own authorized query scope. Quote the exact Sciverse scope sentence that covers the query as `--scope-basis`; the script checks that the excerpt occurs in the active scope and records it with the query. This excerpt check supports review but does not replace the agent's scope judgment. To search:
 
 ```text
 python scripts/literature.py search-sciverse --query "..." --scope-basis "exact confirmed scope sentence" --top-k 10

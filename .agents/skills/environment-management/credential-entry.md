@@ -1,6 +1,6 @@
 # Private Credential Entry
 
-Read this procedure only when a supported, chosen service needs a credential. It is not part of every environment inspection.
+Read this procedure when a supported service chosen within a task workflow needs a credential; do not wait for a separate environment-setup request. It is not part of every environment inspection. The task workflow must first confirm the applicable query or document scope.
 
 ## Credential entry
 
@@ -12,7 +12,7 @@ The commands below use `python`. When it is not found, use `python3` (macOS and 
 
 1. Find the exact variable name and the official page where the researcher gets the value, from the integration's documentation.
 2. Explain what the credential allows and where it is stored: `.env.local`, which Git ignores but which is not encrypted.
-3. Start the private entry page in the background, so that it can wait for the researcher (up to 10 minutes by default). Write the page texts in the researcher's language:
+3. Start the private entry page in the background yourself, so that it can wait for the researcher (up to 10 minutes by default). Do not merely tell the researcher to run the command. Write the page texts in the researcher's language:
 
    ```text
    python scripts/credentials.py set NAME --title "..." --label "..." --note "..." --help-url "https://..." --button "..." --done-message "..." --invalid-message "..."

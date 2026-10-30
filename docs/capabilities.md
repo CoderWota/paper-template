@@ -9,10 +9,10 @@ Consult this guide when support, setup, or access is uncertain. It is not startu
 | Start or resume a project | `project-onboarding`, `paper-hands-on` | Records confirmed answers; a bounded request can go straight to its task. |
 | Computer setup | `environment-management` | Inspects first; installations, repairs, and system changes need consent. Ordinary Markdown needs no additional tools. |
 | Privacy and standing rules | `privacy-configuration`, `constraint-maintenance` | Checks current provider policies and actual controls; only confirmed rules and decisions are recorded. |
-| Import reference documents | `source-ingestion` | Confirmed local MinerU or mineru.net route; Markdown/text read directly. See [processing guide](mineru-integration.md). |
+| Import reference documents | `source-ingestion` | When conversion is needed and no route is set, guide route choice and setup during the import; local MinerU or mineru.net. Markdown/text read directly. See [processing guide](mineru-integration.md). |
 | Import an existing draft | `manuscript-import` | Local Pandoc for Word, OpenDocument, and LaTeX; PDF uses confirmed MinerU. Resolve tracked changes and comments before adoption. |
 | Import review correspondence | `review-ingestion` | Retains venue and round, comments and tracked changes separately; PDF annotation extraction has limits. |
-| Find literature | `literature-discovery` | Sciverse first when configured and within confirmed query scope; permitted host search fills stated gaps. Metadata and snippets are not inspected full text. |
+| Find literature | `literature-discovery` | Sciverse through the workspace API is first within confirmed query scope; guide private key setup when needed. Authorized host search fills stated gaps. Metadata and snippets are not inspected full text. |
 | Obtain public PDFs | `reference-download` | Public PDF responses from supported DOI or direct URLs. Publisher and institutional access are not established; unavailable items remain recorded. |
 | Compare source evidence | `literature-and-evidence`, `research-investigation` | Retrieve bounded local passages or authorized service context; check locators and conclusions against originals where needed. No claim of exhaustive coverage. |
 | Develop questions and contribution | `research-ideation`, `idea-deepening`, `impact-assessment` | Qualified comparisons, alternatives, feasibility, audiences, and value; no invented novelty or acceptance probability. |
@@ -32,7 +32,7 @@ Consult this guide when support, setup, or access is uncertain. It is not startu
 
 Workspace scripts use Python 3.9 or later and generally the standard library. Reuse compatible installed tools. Create environments only for a task that needs packages; keep heavy parser tools isolated in `.tools/`. Research analysis has its own environment.
 
-The private credential page (`scripts/credentials.py`) stores supported credentials in ignored `.env.local`; it refuses a trackable storage file. The local store is not encrypted. MinerU cloud uses `MINERU_API_TOKEN`; Sciverse uses `SCIVERSE_API_KEY`. Collect neither until the corresponding service and scope are chosen. No other service integration or credential workflow is implied.
+The private credential page (`scripts/credentials.py`) stores supported credentials in ignored `.env.local`; it refuses a trackable storage file. The local store is not encrypted. MinerU cloud uses `MINERU_API_TOKEN`; Sciverse uses `SCIVERSE_API_KEY`. When a task needs one of these services, its skill should guide the researcher through the service/scope choice and then the private key flow. Do not request keys during unrelated setup. No other service integration or credential workflow is implied.
 
 DOCX output uses Pandoc, pandoc-crossref, citeproc, and Mermaid rendering when needed. Installation pins remain in the tools. Previously observed versions include Pandoc 3.12.1, pandoc-crossref 0.3.26, and Word 16.114.2 on macOS; check installed versions before building. A real venue template and each manuscript's equations still require inspection.
 

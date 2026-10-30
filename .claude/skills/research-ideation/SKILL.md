@@ -1,6 +1,6 @@
 ---
 name: research-ideation
-description: Explore distinct research directions from interests, observations, readings, or data; save only ideas the researcher chooses.
+description: Explore or choose research topics from interests, observations, readings, or data. For requests about current frontiers, prior work, impact, or publication potential, gather relevant evidence before recommending; save only ideas the researcher chooses.
 ---
 
 # Research ideation
@@ -23,7 +23,7 @@ Outcome: three to five research directions that differ in kind, each grounded in
    - the main assumption it depends on;
    - feasibility with the resources the researcher named, and what is missing;
    - the first check that would show whether it is worth pursuing.
-6. Keep novelty, significance, feasibility, and support apart. Say what was compared: "not yet compared with prior work" when nothing was searched, or the search scope when something was. Never call a direction new or unprecedented, and never invent a literature gap, a finding, a dataset, or a source. A search that returns little does not show a gap.
+6. When the researcher asks for a current/frontier topic, novelty comparison, impact, or publication potential, do not stop at brainstorming: use `literature-discovery` to compare prior work and `impact-assessment` or `journal-selection` when those criteria are part of the request. Follow their evidence, query-scope, and service-setup steps; do not wait for the researcher to name or dispatch those skills. Keep novelty, significance, feasibility, and support apart. Say what was compared: "not yet compared with prior work" when nothing was searched, or the search scope when something was. Never call a direction new or unprecedented, and never invent a literature gap, a finding, a dataset, or a source. A search that returns little does not show a gap.
    Identify any ambiguity in the question and a competing explanation or counterexample when the inspected material supplies one. Explain the concrete overlap and difference from inspected work rather than assigning a novelty score or a novel/not-novel label. Frame an untested alternative as a hypothesis, not as the researcher's view or a finding.
 7. Recommend which direction to examine first, and why. Then ask which directions, if any, the researcher wants to keep or examine further.
 

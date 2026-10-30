@@ -6,19 +6,19 @@ Read the route-selection and preparation sections only when setting up or changi
 
 Read `requirements/privacy.md`. Markdown and plain text need no route: they are read directly.
 
-If no processing choice covers these documents, the researcher chooses the route. First inspect the computer with `environment-management`, and run `python scripts/setup_mineru.py check`. Then explain the two routes in plain words and recommend one, based on how sensitive the documents are and on this computer:
+If no processing choice covers these documents, guide the route choice as part of the requested import; do not wait for the researcher to ask for setup separately. First inspect the computer with `environment-management`, and run `python scripts/setup_mineru.py check`. Then explain the two routes in plain words, recommend one based on document sensitivity and this computer, and ask one choice question:
 
 - **This computer.** The documents stay here. MinerU needs about 1.4 GB in `.tools/mineru/` and Python 3.10 to 3.14. Its flash tier reads PDFs that contain a text layer, and Word files, without models; other office formats are converted too, but flagged until they are verified in this workspace. Scanned pages, formulas, and complex tables need the basic tier, whose models take about 0.9 GB. The standard tier adds a vision model of several gigabytes and needs at least 16 GB of memory.
 - **mineru.net, the official MinerU service.** The documents are uploaded to a service in mainland China. It needs a free account and a token. Limits: 200 MB and 200 pages a file, about 1000 pages a day at full priority, 50 files a minute. Its public terms do not say whether uploaded documents are used to train models or how long they are kept, and they give the operator a broad license to uploaded material; [privacy-configuration/sources.md](../privacy-configuration/sources.md) has the details. Unpublished or confidential material therefore deserves the local route.
 
-Record the confirmed choice in `requirements/privacy.md` with the documents that it covers, so that later imports reuse it without asking again. A local choice is recorded at once. A cloud choice is recorded through `privacy-configuration`, only after the researcher answers the scope question (which documents may be uploaded), and the record must name the service as mineru.net: the script refuses the cloud route until `requirements/privacy.md` names it. Before each cloud import, check that every document in the batch is inside the confirmed scope; the researcher's own draft and reviewer letters are outside a scope of "published papers". Ask when a document is outside or unclear.
+Record the confirmed choice in `requirements/privacy.md` with the documents that it covers, so that later imports reuse it without asking again. A local choice is recorded at once. A cloud choice is recorded through `privacy-configuration`, only after the researcher confirms which documents may be uploaded, and the record must name the service as mineru.net: the script refuses the cloud route until `requirements/privacy.md` names it. Before each cloud import, check that every document in the batch is inside the confirmed scope; the researcher's own draft and reviewer letters are outside a scope of "published papers". Ask when a document is outside or unclear. Choosing a cloud route or entering its token does not by itself authorize uploading documents.
 
 ## Step 3: Prepare the route
 
 **This computer:**
 
 1. `python scripts/setup_mineru.py check` reports the installation, the models, and the free disk space.
-2. If MinerU is missing, explain the size and ask for consent. Then run `python scripts/setup_mineru.py install`. If no Python 3.10 to 3.14 exists, use `environment-management` first.
+2. If MinerU is missing, explain the size and recommend the smallest setup that fits this batch. Ask for consent, then run `python scripts/setup_mineru.py install`. Do not wait for a separate setup request. If no Python 3.10 to 3.14 exists, use `environment-management` first.
 3. Choose the tier for the material, and recommend the smallest one that fits:
 
    | Material | Tier | Command options | Needs |
@@ -32,7 +32,7 @@ Record the confirmed choice in `requirements/privacy.md` with the documents that
 **mineru.net:**
 
 1. `python scripts/credentials.py status MINERU_API_TOKEN` shows whether the token is set.
-2. If it is not, follow `environment-management`, step 5, for the name `MINERU_API_TOKEN`. The researcher signs in at mineru.net and creates the token on the API management page, <https://mineru.net/apiManage/token>. Tokens can expire.
+2. If it is not, explain that the cloud route needs a mineru.net account and token, then start `environment-management`'s private credential-entry flow for `MINERU_API_TOKEN` in the researcher's language. Do not ask the researcher to invoke setup separately. The researcher signs in at mineru.net and creates the token on the API management page, <https://mineru.net/apiManage/token>. Tokens can expire. Token entry does not authorize an upload; the document scope must already be confirmed.
 
 ## Step 4: Run the import
 

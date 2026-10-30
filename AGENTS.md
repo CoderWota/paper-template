@@ -6,7 +6,7 @@ One workspace develops one manuscript. The researcher chooses the scientific que
 
 - Read `state/current.md` and `requirements/project.md` first. A bounded request needs no setup; initialize only on request to begin a paper.
 - Route named tasks straight to their specialist skill. For a tour, open [paper-hands-on](.agents/skills/paper-hands-on/SKILL.md) and its beginner branch; for “continue last time,” open its guided continuation reference. Explicit setup goes straight to `project-onboarding`. A tour changes no files.
-- Select a skill by description and open its discovered path; otherwise locate `.agents/skills/<name>/SKILL.md` here. Read references only when needed. Do not preload indexes, histories, or other skills.
+- Select a skill by its description and the requested outcome, not by whether its tools or services are already configured. Open its discovered path; otherwise locate `.agents/skills/<name>/SKILL.md` here. For combined tasks, follow the owning skill's handoffs into evidence and setup skills; users need not name or dispatch those skills. Read references only when needed. Do not preload indexes, histories, or other skills.
 - Before editing, read the current text and rules that apply to it. Read linked evidence or an output profile when the task needs them. Read explicitly in both clients; automatic loading differs.
 
 ## Research choices and records
