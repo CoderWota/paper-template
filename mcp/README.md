@@ -26,7 +26,7 @@ The launcher reads credentials through the existing private-store code. Sciverse
 
 Missing credentials do not block installation. Sciverse service calls need a token; MinerU can run its limited, token-free Flash cloud mode. Both MinerU modes send submitted files or URLs to mineru.net. Installing cloud MCP does not select cloud processing for a document or authorize any upload. Existing query-sharing and document-processing scope rules remain in force.
 
-MinerU results stay under `.local/mcp/output/`. These outputs are working files, not archived originals or verified extractions. Official tools do not run the project's scope checks or archival scripts automatically. Continue to use the literature and source-ingestion skills for research records, source identity, immutable originals, and checks against the original. Do not call the official tool as a way around those procedures.
+Research commands use these servers through the workspace scripts. `scripts/literature.py` and `scripts/ingest.py` call them through `scripts/mcp_bridge.py`, which starts only the configured servers and calls only the tool that the command names. Each script applies its own scope checks, archival, and records. The MinerU Markdown that the workspace imports is saved under `.local/mcp/imports/` with an upload receipt. The server's default output folder is `.local/mcp/output/`. These outputs are working files, not archived originals or verified extractions. Calling an official tool directly from a chat bypasses those checks, so do not do that for research material.
 
 ## Official references
 
@@ -35,4 +35,4 @@ MinerU results stay under `.local/mcp/output/`. These outputs are working files,
 - [Codex MCP configuration](https://learn.chatgpt.com/docs/extend/mcp?surface=cli)
 - [Claude Code project MCP configuration](https://code.claude.com/docs/en/mcp)
 
-Sciverse 1.0.0 and MinerU Open MCP 1.0.22 are the initial pinned versions. This cloud MCP package is distinct from the locally installed `mineru` document parser.
+Sciverse 1.0.0 and MinerU Open MCP 1.0.22 are the initial pinned versions. This cloud MCP package is distinct from the legacy local `mineru` document parser, which no route uses.

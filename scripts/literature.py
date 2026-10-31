@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Search literature, retrieve local passages, and acquire public PDF references.
 
-Uses only the Python standard library. Sciverse queries require a recorded researcher
-confirmation and the SCIVERSE_API_KEY credential. Document conversion remains in ingest.py.
+Uses only the Python standard library. Sciverse queries go through the installed official Sciverse MCP
+server, and require a recorded researcher confirmation and the SCIVERSE_API_KEY credential. Document
+conversion remains in ingest.py.
 """
 
 from __future__ import annotations

@@ -11,10 +11,8 @@ manuscript (Word, OpenDocument, LaTeX) is read with Pandoc on this computer (--r
 Nothing ever switches to another route or parser.
 
 Usage:
-  python scripts/ingest.py plan [--to DEST] [--route local|cloud] [--recursive] PATH...
-  python scripts/ingest.py run --route local --tier flash|basic|standard|advanced [--ocr-mode auto|txt|ocr]
-      [--to DEST] [--recursive] [--reconvert] [--overwrite-edited] PATH...
-  python scripts/ingest.py run --route cloud [--model-version vlm|pipeline] [--language CODE] [--ocr] [--to DEST] PATH...
+  python scripts/ingest.py plan [--to DEST] [--route cloud|pandoc] [--recursive] PATH...
+  python scripts/ingest.py run --route cloud [--language CODE] [--ocr] [--to DEST] [--recursive] [--reconvert] PATH...
   python scripts/ingest.py run --to manuscript --route pandoc [--track-changes all|accept|reject] PATH...
   python scripts/ingest.py run --import-id ID          continue an import: open, interrupted, and failed items
   python scripts/ingest.py status [--import-id ID]
@@ -24,8 +22,10 @@ Usage:
   python scripts/ingest.py note --import-id ID --role ROLE --reason TEXT PATH...
 DEST is "references" (the default), manuscript, reviews/<venue-id>/<round-id>, or research/feedback/<feedback-id>.
 Markdown and plain text need no route.
-The cloud route needs a confirmed choice that names mineru.net in requirements/privacy.md and the
-MINERU_API_TOKEN credential, entered with scripts/credentials.py.
+The cloud route sends the documents to mineru.net through the official MinerU MCP. It needs a confirmed
+choice that names mineru.net in requirements/privacy.md. MINERU_API_TOKEN enables precision mode; without it
+MinerU flash mode applies (Markdown only, 20 pages and 10 MB per file). The local route is refused, because the
+installed MCP is cloud-only.
 Exit status: 0 done, 1 some items failed, 2 stopped or still processing (continue later), 3 refused.
 Uses only the Python standard library.
 """
@@ -71,13 +71,8 @@ def cloud_route(root: Path, options: dict) -> CloudRoute:
         raise Refused("requirements/privacy.md has no confirmed processing choice that names mineru.net. "
                       "Record the researcher's confirmed cloud choice and the documents it covers first.")
     token = os.environ.get(TOKEN) or load_env_local(root).get(TOKEN)
-    if not token:
-        raise Refused(f"the {TOKEN} credential is not set. The researcher enters it privately with "
-                      f"python scripts/credentials.py set {TOKEN} (see the environment-management skill).")
-    return CloudRoute(token, model_version=options.get("model_version", "vlm"), language=options.get("language", "ch"),
-                      is_ocr=options.get("is_ocr", False),
-                      poll_interval=float(os.environ.get("INGEST_POLL_INTERVAL", "10")),
-                      poll_timeout=float(os.environ.get("INGEST_POLL_TIMEOUT", "3600")), redact=Redactor([token]))
+    return CloudRoute(token or "", root=root, language=options.get("language", "ch"), is_ocr=options.get("is_ocr", False),
+                      timeout=float(os.environ.get("INGEST_POLL_TIMEOUT", "3600")))
 
 
 def pandoc_route(root: Path, options: dict) -> PandocRoute:
@@ -90,12 +85,8 @@ def pandoc_route(root: Path, options: dict) -> PandocRoute:
 
 
 def local_route(root: Path, options: dict) -> LocalRoute:
-    command = json.loads(os.environ["INGEST_MINERU_KIT"]) if os.environ.get("INGEST_MINERU_KIT") else None
-    route = LocalRoute(root, options["tier"], options.get("ocr_mode", "auto"), command=command)
-    if not route.command:
-        raise Refused("MinerU is not installed for this workspace. Install it with the researcher's consent: "
-                      "python scripts/setup_mineru.py install (see the source-ingestion skill).")
-    return route
+    raise Refused("Local MinerU conversion is not available. The installed official MinerU MCP is cloud-only, and nothing is sent "
+                  "to the cloud instead. Add a local MCP integration, or choose the cloud route after the researcher confirms it.")
 
 
 def summary(record: ImportRecord) -> str:
@@ -177,7 +168,7 @@ def command_run(args, root: Path) -> int:
                 raise Refused("the pandoc route is only for the researcher's own manuscript (--to manuscript); "
                               "references and review documents are converted with MinerU")
             options = {"tier": args.tier, "ocr_mode": args.ocr_mode} if args.route == "local" else \
-                {"model_version": args.model_version, "language": args.language, "is_ocr": args.ocr} if args.route == "cloud" else \
+                {"language": args.language, "is_ocr": args.ocr} if args.route == "cloud" else \
                 {"track_changes": args.track_changes} if args.route == "pandoc" else {}
             if not args.route:
                 kinds = {kind_of(file) for value in args.paths
@@ -307,7 +298,6 @@ def main(argv: list | None = None) -> int:
                      help="pandoc route: keep Word comments and tracked changes as marks (all), or apply the researcher's choice")
     run.add_argument("--tier", choices=TIERS)
     run.add_argument("--ocr-mode", choices=OCR_MODES, default="auto")
-    run.add_argument("--model-version", choices=("vlm", "pipeline"), default="vlm")
     run.add_argument("--language", default="ch")
     run.add_argument("--ocr", action="store_true", help="cloud route: force OCR")
     run.add_argument("--recursive", action="store_true")

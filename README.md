@@ -41,7 +41,7 @@ The assistant selects the needed instructions and tools. You do not need to know
 
 You can put files in [`inbox/`](inbox/README.md), or point the assistant to their existing location; this folder is optional. It identifies reference sources, manuscripts, feedback, reviewer letters, and format templates before organizing them. Original files stay unchanged.
 
-Before parsing documents, choose local processing or the named MinerU service and the material that choice covers. Cloud processing sends documents to that service; the assistant explains relevant limits before asking. Credentials are entered on a private local page, never in chat. Checking the AI application's data-use settings is a separate, optional task.
+Before parsing documents, choose the named MinerU service and the material that choice covers. Local processing is not available yet. Cloud processing, through the official MinerU MCP server, sends documents to that service; the assistant explains relevant limits before asking. Credentials are entered on a private local page, never in chat. Checking the AI application's data-use settings is a separate, optional task.
 
 ## Where your work lives
 

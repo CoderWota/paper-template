@@ -8,6 +8,12 @@ Status: not initialized. The research goal, manuscript language, and interaction
 - Scope: This template's initialization workflow, in both clients.
 - Confirmed: 2026-10-30; "The repository initialization should include MCP installation." The researcher explicitly requested implementation of the plan for both official MCP servers and both clients.
 
+## Sciverse and MinerU calls through MCP
+
+- Rule: Skills and scripts in this workspace make Sciverse and MinerU service calls only through the installed official MCP servers. No direct API fallback is used. Credential, query-sharing, and document-upload scopes remain in force.
+- Scope: This template's skills, scripts, and documents, in both clients.
+- Confirmed: 2026-10-31; "Make sure every skill in the repository that involves Sciverse or MinerU calls the MCP." "Check all Agent calls in the repository."
+
 ## Clear communication in all languages
 
 - Rule: Questions and explanations to the researcher use short sentences, common words, one question at a time, and the conclusion first. Details are in `AGENTS.md` (Language). English also follows ASD-STE100.

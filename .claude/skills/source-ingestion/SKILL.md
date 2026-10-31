@@ -1,6 +1,6 @@
 ---
 name: source-ingestion
-description: Import or extract research reference PDFs and other documents. When needed, help choose and set up local MinerU or mineru.net; route drafts and review letters separately.
+description: Import or extract research reference PDFs and other documents. When needed, help choose and set up the official MinerU MCP cloud route (mineru.net); route drafts and review letters separately.
 ---
 
 # Source ingestion
@@ -21,7 +21,7 @@ Outcome: every requested document has a status. A converted source has its origi
 2. Run the plan, which changes nothing:
 
    ```text
-   python scripts/ingest.py plan [--route local|cloud] [--recursive] PATH...
+   python scripts/ingest.py plan [--route cloud] [--recursive] PATH...
    ```
 
    It lists each file as to convert, already imported, duplicate, not supported, or needing a processing route.
@@ -40,7 +40,7 @@ Outcome: every requested document has a status. A converted source has its origi
 
 ## Step 2: Confirm and prepare the route
 
-Read the applicable choice in `requirements/privacy.md`. Markdown and text are read directly. For other documents, read the route-selection section of [the import guide](import-guide.md) before choosing or preparing a parser. Reuse a choice that covers this batch; confirm only a missing or changed scope. If conversion is needed and no route covers the batch, proactively inspect readiness and guide the researcher through route selection and setup as part of this import. Do not stop at “not configured,” switch routes silently, or ask the researcher to invoke another skill; load environment or privacy guidance when this import needs it.
+Read the applicable choice in `requirements/privacy.md`. Markdown and text are read directly. For other documents, read the route-selection section of [the import guide](import-guide.md) before choosing a route or preparing the MCP. Reuse a choice that covers this batch; confirm only a missing or changed scope. If conversion is needed and no route covers the batch, check the MCP with `python scripts/setup_mcp.py check`, and guide the researcher through the cloud choice as part of this import. Do not stop at “not configured,” switch routes silently, or ask the researcher to invoke another skill; load environment or privacy guidance when this import needs it.
 
 ## Step 3: Import, review, and record metadata
 

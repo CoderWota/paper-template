@@ -31,7 +31,7 @@ State only what the current task needs:
 - Reading and writing Markdown: nothing.
 - Workspace scripts: Python 3.9 or later (the tested versions are 3.9 and 3.12).
 - Standard MCP tools: `python scripts/setup_mcp.py check` reports pinned packages, protocol discovery, client configurations, and credential presence. Setup needs Python 3.11+ and Node.js 18+ with npm; it does not need local MinerU models.
-- Document parsing, export, or research code: the requirements of that integration, from its current official documentation. For MinerU on this computer, `python scripts/setup_mineru.py check` reports the installation, the models, and the free disk space; `source-ingestion` describes the routes and tiers. Check the processor architecture: an x64 package can fail, or run slowly under emulation, on ARM64 Windows.
+- Document parsing, export, or research code: the requirements of that integration, from its current official documentation. MinerU runs through the official MinerU MCP cloud service, so no local MinerU models or parser are needed; `source-ingestion` describes the routes. The legacy local MinerU installer, `scripts/setup_mineru.py`, is not used by any route. Check the processor architecture for other parsers: an x64 package can fail, or run slowly under emulation, on ARM64 Windows.
 
 Use the path notes from the report: spaces or non-ASCII characters, a long Windows path, or a cloud-synced folder such as OneDrive, where `.venv/` and caches cause sync conflicts. Mention a risk only when it affects the task.
 

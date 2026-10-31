@@ -20,7 +20,7 @@ Outcome: `research/feedback/<feedback-id>/` with the received material, a readab
 2. Documents (Word, PDF, Markdown, or text): import them with
 
    ```text
-   python scripts/ingest.py run --to research/feedback/<feedback-id> [--route local|cloud ...] FILE...
+   python scripts/ingest.py run --to research/feedback/<feedback-id> [--route cloud ...] FILE...
    ```
 
    Settle the route as `source-ingestion` describes in its steps 2 and 3. Feedback can contain unpublished work: upload it to mineru.net only when the confirmed scope in `requirements/privacy.md` covers this material. Markdown and text need no route. Word comments, replies, tracked changes, and PDF annotations are listed at the end of each Markdown file with the author that the file names.

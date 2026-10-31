@@ -2,18 +2,17 @@
 
 from __future__ import annotations
 
+import base64
 import datetime as dt
 import hashlib
 import json
 import re
-import time
-import urllib.error
 import urllib.parse
-import urllib.request
 from pathlib import Path
 
 from ingestion.common import now, read_json, safe_http_url, slug, write_json_atomic, write_text_atomic
-from ingestion.library import extracted, provenance
+from ingestion.library import provenance
+from mcp_bridge import MCPError, call_tool, tool_data
 
 API_ROOT = "https://api.sciverse.space"
 API_KEY_NAME = "SCIVERSE_API_KEY"
@@ -25,13 +24,6 @@ MAX_QUERY_CHARS = 4096
 
 class LiteratureError(RuntimeError):
     """A safe-to-report literature-tool refusal or service problem."""
-
-
-class NoRedirect(urllib.request.HTTPRedirectHandler):
-    """Do not forward an API authorization header to a redirect target."""
-
-    def redirect_request(self, request, response, code, message, headers, new_url):
-        return None
 
 
 def _scrub(value):
@@ -48,55 +40,30 @@ def _scrub(value):
     return value
 
 
-def _service_error(error: urllib.error.HTTPError) -> dict:
-    body = b""
-    try:
-        body = error.read(65536)
-    except OSError:
-        pass
-    finally:
-        error.close()
-    try:
-        parsed = json.loads(body.decode("utf-8", "replace"))
-    except ValueError:
-        parsed = {}
-    code = parsed.get("code") if isinstance(parsed, dict) else None
-    if not code and isinstance(parsed, dict):
-        code = (parsed.get("error") or {}).get("code") if isinstance(parsed.get("error"), dict) else None
-    return {"http_status": error.code, "code": str(code)[:120] if code else None}
-
-
-def _request(url: str, token: str, body: dict | None = None, *, timeout: int = 45, attempts: int = 3) -> dict:
+def _request(url: str, token: str, body: dict | None = None, *, root: Path, timeout: int = 120) -> dict:
+    """Map a recorded REST-style operation onto its Sciverse MCP tool. The caller checks the credential; the MCP worker loads it."""
     if not url.startswith(API_ROOT + "/"):
-        raise LiteratureError("Refused an API address outside api.sciverse.space.")
-    headers = {"Authorization": f"Bearer {token}", "Accept": "application/json", "User-Agent": "paper-template-literature/1.0"}
-    data = None
-    if body is not None:
-        headers["Content-Type"] = "application/json"
-        data = json.dumps(body, ensure_ascii=False).encode("utf-8")
-    request = urllib.request.Request(url, data=data, headers=headers, method="POST" if data is not None else "GET")
-    opener = urllib.request.build_opener(NoRedirect)
-    last_error = None
-    for attempt in range(attempts):
-        try:
-            with opener.open(request, timeout=timeout) as response:
-                if response.geturl().split("/", 3)[:3] != API_ROOT.split("/", 3)[:3]:
-                    raise LiteratureError("Sciverse redirected outside its documented API address.")
-                payload = json.loads(response.read().decode("utf-8"))
-            if not isinstance(payload, dict):
-                raise LiteratureError("Sciverse returned an unexpected response format.")
-            return _scrub(payload)
-        except urllib.error.HTTPError as error:
-            last_error = _service_error(error)
-            status = error.code
-            if status not in (500, 502, 503, 504) or attempt == attempts - 1:
-                break
-        except (urllib.error.URLError, TimeoutError, OSError, ValueError) as error:
-            last_error = {"problem": type(error).__name__}
-            if attempt == attempts - 1:
-                break
-        time.sleep(1 + attempt)
-    raise LiteratureError("Sciverse request failed: " + json.dumps(last_error, ensure_ascii=False))
+        raise LiteratureError("Refused an address outside the configured Sciverse service.")
+    parts = urllib.parse.urlsplit(url)
+    operations = {"/agentic-search": "semantic_search", "/meta-search": "search_metadata",
+                  "/meta-catalog": "list_catalog", "/meta-paper-relations": "list_paper_relations",
+                  "/content": "read_content"}
+    tool = operations.get(parts.path)
+    if tool is None:
+        raise LiteratureError("This operation is not exposed by the installed Sciverse MCP; no direct API fallback is allowed.")
+    arguments = dict(body or {})
+    for key, value in urllib.parse.parse_qsl(parts.query):
+        arguments[key] = int(value) if key in ("offset", "limit") else value
+    if tool == "semantic_search":
+        if arguments.pop("sub_queries", 0):
+            raise LiteratureError("Explicit sub_queries counts are not exposed by this MCP; do not silently change retrieval settings.")
+    try:
+        payload = tool_data(call_tool(root, "sciverse", tool, arguments, timeout=timeout))
+    except MCPError as error:
+        raise LiteratureError(str(error)) from None
+    if not isinstance(payload, dict):
+        raise LiteratureError("Sciverse MCP returned an unexpected response format.")
+    return _scrub(payload)
 
 
 def _privacy_confirmed(root: Path) -> bool:
@@ -259,14 +226,14 @@ def sciverse_search(root: Path, token: str, query: str, *, scope_basis: str, top
         raise LiteratureError(f"The query must contain 1 to {MAX_QUERY_CHARS} characters.")
     if not 1 <= top_k <= 100 or not 0 <= sub_queries <= 4:
         raise LiteratureError("Sciverse top_k must be 1–100 and sub_queries 0–4.")
-    route = {"provider": "OpenDataLab Sciverse", "endpoint": "agentic-search", "status": "failed", "results": [],
+    route = {"provider": "OpenDataLab Sciverse", "endpoint": "agentic-search", "transport": "MCP", "status": "failed", "results": [],
              "scope_basis": scope_basis,
              "limitations": ["Sciverse returned only fields available to this account.",
                              "Returned chunks are search snippets until full text is separately inspected."]}
     search_id, data = _new_record(root, query, route)
     try:
         payload = _request(API_ROOT + "/agentic-search", token,
-                           {"query": query, "top_k": top_k, "sub_queries": sub_queries})
+                           {"query": query, "top_k": top_k, "sub_queries": sub_queries}, root=root)
         hits = payload.get("hits")
         if not isinstance(hits, list) or any(not isinstance(hit, dict) for hit in hits):
             raise LiteratureError("Sciverse returned an unexpected hit list.")
@@ -301,7 +268,7 @@ def metadata_search(root: Path, token: str, query: str, *, scope_basis: str, pag
         raise LiteratureError("Metadata search needs a title, DOI, or other query text.")
     if page < 1 or not 1 <= page_size <= 200 or page * page_size > 10000:
         raise LiteratureError("Metadata search supports page ≥ 1, page_size 1–200, and page × page_size ≤ 10000.")
-    route = {"provider": "OpenDataLab Sciverse", "endpoint": "meta-search", "status": "failed", "results": [],
+    route = {"provider": "OpenDataLab Sciverse", "endpoint": "meta-search", "transport": "MCP", "status": "failed", "results": [],
              "scope_basis": scope_basis,
              "requested_parameters": {"query": query, "filters": filters or [], "sort": sort or [], "page": page, "page_size": page_size, "cursor": cursor},
              "limitations": ["Metadata results are not evidence passages and do not establish full-text access.",
@@ -326,7 +293,7 @@ def metadata_search(root: Path, token: str, query: str, *, scope_basis: str, pag
         else:
             request["page"] = page
         if filters or sort:
-            catalog = catalog_snapshot if catalog_snapshot is not None else _request(API_ROOT + "/meta-catalog?collection=papers", token)
+            catalog = catalog_snapshot if catalog_snapshot is not None else _request(API_ROOT + "/meta-catalog?collection=papers", token, root=root)
             route["catalog_source"] = "saved-search-snapshot" if catalog_snapshot is not None else "live"
             fields = {field.get("name"): field for field in catalog.get("fields", []) if isinstance(field, dict)}
             normalized_filters = []
@@ -354,7 +321,7 @@ def metadata_search(root: Path, token: str, query: str, *, scope_basis: str, pag
             request.update(filters=normalized_filters, sort=normalized_sort)
             route["catalog"] = catalog
         route["request"] = request
-        payload = _request(API_ROOT + "/meta-search", token, request)
+        payload = _request(API_ROOT + "/meta-search", token, request, root=root)
         results = payload.get("results")
         if not isinstance(results, list) or any(not isinstance(result, dict) for result in results):
             raise LiteratureError("Sciverse returned an unexpected metadata result list.")
@@ -419,7 +386,7 @@ def add_relations(root: Path, token: str, search_id: str, unique_id: str, relati
     request = {"unique_id": unique_id, "relation": relation, "page": page, "page_size": page_size}
     entry = {"created_at": now(), "request": request, "inspection": "relationship-leads", "status": "complete"}
     try:
-        response = _request(API_ROOT + "/meta-paper-relations", token, request)
+        response = _request(API_ROOT + "/meta-paper-relations", token, request, root=root)
         if not isinstance(response.get("items"), list):
             raise LiteratureError("Sciverse returned an unexpected relationship result list.")
         entry["response"] = response
@@ -450,7 +417,7 @@ def schema_discovery(root: Path, token: str, search_id: str, unique_id: str) -> 
                 entry = {"created_at": now(), "unique_id": unique_id, "doi": doi, "scope_basis": route["scope_basis"],
                          "status": "complete", "inspection": "experimental-structured-discovery"}
                 try:
-                    response = _request(API_ROOT + "/paper-schema/search", token, {"filters": {"dois": [doi]}, "size": 5}, attempts=1)
+                    response = _request(API_ROOT + "/paper-schema/search", token, {"filters": {"dois": [doi]}, "size": 5}, root=root)
                     if not isinstance(response.get("items"), list):
                         raise LiteratureError("Unexpected Paper Schema discovery response.")
                     entry["response"] = response
@@ -480,7 +447,7 @@ def schema_materials(root: Path, token: str, search_id: str, schema_id: str, goa
     entry = {"created_at": now(), "schema_id": schema_id, "goal": goal, "status": "complete",
              "inspection": "experimental-structured-materials", "limitations": ["Structured extracts are leads; verify claims and locators against source text.", "Returned materials may be truncated."]}
     try:
-        response = _request(API_ROOT + "/paper-schema/materials", token, {"schema_ids": [schema_id], "goal": goal}, attempts=1)
+        response = _request(API_ROOT + "/paper-schema/materials", token, {"schema_ids": [schema_id], "goal": goal}, root=root)
         if not isinstance(response.get("items"), list):
             raise LiteratureError("Unexpected Paper Schema materials response.")
         entry["response"] = response
@@ -500,14 +467,13 @@ def fetch_resource(root: Path, token: str, search_id: str, doc_id: str, file_nam
         raise LiteratureError("The resource path is not present in a recorded context for this document.")
     entry = {"created_at": now(), "doc_id": doc_id, "file_name": file_name, "status": "unavailable",
              "inspection": "derived-service-resource", "limitations": ["A service resource is derived; verify it against the source where available."]}
-    url = API_ROOT + "/resource?" + urllib.parse.urlencode({"file_name": file_name})
-    request = urllib.request.Request(url, headers={"Authorization": f"Bearer {token}", "User-Agent": "paper-template-literature/1.0"})
     try:
-        with urllib.request.build_opener(NoRedirect).open(request, timeout=45) as response:
-            if response.geturl().split("/", 3)[:3] != API_ROOT.split("/", 3)[:3]:
-                raise LiteratureError("Sciverse redirected outside its documented API address.")
-            mime = response.headers.get_content_type().lower()
-            content = response.read(10 * 1024 * 1024 + 1)
+        result = call_tool(root, "sciverse", "get_resource", {"file_name": file_name})
+        block = next((item for item in result.get("content", []) if item.get("type") == "image"), None)
+        if block is None:
+            raise LiteratureError("Sciverse MCP returned no image resource.")
+        mime = block.get("mimeType", block.get("mime_type", "")).lower()
+        content = base64.b64decode(block.get("data", ""), validate=True)
         if len(content) > 10 * 1024 * 1024:
             raise LiteratureError("Resource exceeds the 10 MiB limit.")
         signatures = {"image/png": (b"\x89PNG\r\n\x1a\n", ".png"), "image/jpeg": (b"\xff\xd8\xff", ".jpg"), "application/pdf": (b"%PDF-", ".pdf")}
@@ -520,10 +486,8 @@ def fetch_resource(root: Path, token: str, search_id: str, doc_id: str, file_nam
         if not target.exists():
             target.write_bytes(content)
         entry.update(status="complete", content_type=mime, bytes=len(content), sha256=digest, file=target.name)
-    except urllib.error.HTTPError as error:
-        entry["error"] = _service_error(error)
-    except (urllib.error.URLError, TimeoutError, OSError, LiteratureError) as error:
-        entry["error"] = {"problem": type(error).__name__, "message": str(error) if isinstance(error, LiteratureError) else "Resource request failed."}
+    except (MCPError, TimeoutError, OSError, ValueError, LiteratureError) as error:
+        entry["error"] = {"problem": type(error).__name__, "message": str(error) if isinstance(error, (LiteratureError, MCPError)) else "MCP resource request failed."}
     data.setdefault("resources", []).append(entry)
     _save_search(root, search_id, data)
     return folder, entry
@@ -614,7 +578,7 @@ def add_context(root: Path, token: str, search_id: str, doc_id: str, offset: int
     folder, data, _ = context_request(root, search_id, doc_id, offset, limit)
     query = urllib.parse.urlencode({"doc_id": doc_id, "offset": offset, "limit": limit})
     try:
-        payload = _request(API_ROOT + "/content?" + query, token)
+        payload = _request(API_ROOT + "/content?" + query, token, root=root)
         context = {"provider": "OpenDataLab Sciverse", "doc_id": doc_id, "offset": offset, "created_at": now(),
                    "limit_requested": limit, "text": payload.get("content", payload.get("text", "")),
                    "next_offset": payload.get("next_offset"), "more": payload.get("more"),

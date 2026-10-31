@@ -8,14 +8,12 @@ open items continue when the import runs again. Nothing switches to another rout
 from __future__ import annotations
 
 import shutil
-import time
 from pathlib import Path
 
 from . import extraction, library, reviews
 from .common import Log, Redactor, is_ignored, now, relative, sha256_file, settings_key, today, write_json_atomic
 from .records import OPEN, ImportRecord, display_path, resolve_display
-from .routes import (CLOUD_BATCH, CLOUD_PACE, MAX_UPLOAD, VERIFIED, BatchStop, ConversionError, DirectRoute, handler_for,
-                     kind_of, unsupported_reason)
+from .routes import VERIFIED, BatchStop, ConversionError, DirectRoute, handler_for, kind_of, unsupported_reason
 
 STATUS_WORDS = {"complete": "complete", "needs-review": "needs review", "partial": "partial"}
 
@@ -129,11 +127,6 @@ class Pipeline:
                     item.update(status="unsupported", notes=[unsupported_reason(item["kind"], self.route or "direct")])
                     self.save()
                     continue
-                if handler == "cloud":
-                    self.prepare(item)
-                    if item["status"] in OPEN:
-                        queue.append(item)
-                    continue
                 self.convert_now(item, handler)
             if queue:
                 self.cloud_items(queue)
@@ -211,7 +204,9 @@ class Pipeline:
         work.mkdir(parents=True)
         started = now()
         try:
-            if handler == "local":
+            if handler == "cloud":
+                raw, notes = self.cloud.convert(archived, work, item["kind"])
+            elif handler == "local":
                 raw, notes = self.local.convert(archived, work, item["kind"]), []
             elif handler == "pandoc":
                 raw, notes = self.pandoc.convert(archived, work, item["kind"], resolve_display(item["input"], self.root).parent)
@@ -265,9 +260,8 @@ class Pipeline:
                                "method": "read directly" if settings["route"] == "direct" else "converted from the editable source with Pandoc"}
             result.warnings = [w for w in result.warnings if w["code"] not in ("formulas-unverified", "coverage-unknown")]
         for note in notes:
-            result.warn("not-utf8", note)
-        tier_or_model = settings.get("tier") or settings.get("model_version") or ""
-        if (settings["route"], kind, tier_or_model) not in VERIFIED:
+            result.warn("conversion-note", note)
+        if (settings["route"], kind, settings.get("tier") or "") not in VERIFIED:
             result.warn("unverified-format", f"converting {kind} files this way is documented by MinerU but not yet verified in this workspace; compare the result with the original")
         conversion = dict(settings, settings_key=settings_key(settings), started_at=started, finished_at=now(), import_id=self.record.id)
         if result.parser:
@@ -328,77 +322,5 @@ class Pipeline:
         self.log.write(f"{item['input']}: failed: {error}")
         self.save()
 
-    # The cloud route works in batches: upload, then collect the results.
-
     def cloud_items(self, items: list) -> None:
-        fresh = []
-        for item in items:
-            if item["status"] == "submitted":
-                continue
-            if (self.root / item["archived"]).stat().st_size > MAX_UPLOAD:
-                self.fail(item, ConversionError("the file is larger than the 200 MB limit of mineru.net", "too-large"))
-                continue
-            fresh.append(item)
-        for start in range(0, len(fresh), CLOUD_BATCH):
-            if start:
-                self.cloud.sleep(CLOUD_PACE)
-            chunk = fresh[start:start + CLOUD_BATCH]
-            # The service sees the source ID as the file name, not the researcher's file name.
-            files = [{"name": f"{item['target']}{Path(item['archived']).suffix.lower()}", "data_id": item["target"],
-                      "is_ocr": self.cloud.is_ocr} for item in chunk]
-            batch_id, urls = self.cloud.request_uploads(files)
-            for item, url, spec in zip(chunk, urls, files):
-                try:
-                    self.cloud.upload(url, self.root / item["archived"])
-                except ConversionError as error:
-                    self.fail(item, error)
-                    continue
-                item.update(status="submitted", attempts=item.get("attempts", 0) + 1,
-                            remote={"batch_id": batch_id, "data_id": spec["data_id"], "name": spec["name"], "submitted_at": now()})
-                item.pop("error", None)
-                self.save()
-        self.collect_cloud()
-
-    def collect_cloud(self) -> None:
-        deadline = time.monotonic() + self.cloud.poll_timeout
-        interval = self.cloud.poll_interval
-        while True:
-            waiting = [item for item in self.record.items if item["status"] == "submitted"]
-            for batch_id in sorted({item["remote"]["batch_id"] for item in waiting}):
-                for result in self.cloud.results(batch_id):
-                    item = next((i for i in waiting if i["status"] == "submitted" and i["remote"]["batch_id"] == batch_id
-                                 and (result.get("data_id") == i["remote"]["data_id"] or result.get("file_name") == i["remote"]["name"])), None)
-                    if item is None:
-                        continue
-                    state = result.get("state")
-                    if state == "done":
-                        item["remote"]["state"] = state
-                        self.cloud_done(item, result)
-                    elif state == "failed":
-                        self.fail(item, ConversionError(f"mineru.net could not convert the file: {result.get('err_msg') or 'no reason given'}"))
-                    elif item["remote"].get("state") != state:
-                        item["remote"]["state"] = state
-                        self.save()
-            if not any(item["status"] == "submitted" for item in self.record.items):
-                return
-            if time.monotonic() + interval > deadline:
-                self.emit("Some documents are still being processed at mineru.net. Continue this import later to collect them.")
-                return
-            self.cloud.sleep(interval)
-            interval = min(interval * 1.5, 60)
-
-    def cloud_done(self, item: dict, result: dict) -> None:
-        work = self.work / item["sha256"][:16]
-        shutil.rmtree(work, ignore_errors=True)
-        work.mkdir(parents=True)
-        try:
-            raw = self.cloud.download(str(result.get("full_zip_url") or ""), work)
-            self.finish(item, raw, work, self.root / item["archived"], item["remote"]["submitted_at"], [], self.cloud.settings(item["kind"]))
-        except ConversionError as error:
-            self.fail(item, error)
-        except library.EditedError as error:
-            self.fail(item, ConversionError(f"{error}; keep the hand edits in the source note, then convert again with --overwrite-edited", "edited"))
-        except OSError as error:
-            self.fail(item, ConversionError(f"the result could not be written: {error}", "write"))
-        finally:
-            shutil.rmtree(work, ignore_errors=True)
+        raise BatchStop("This import contains legacy direct-API jobs. Their identifiers are preserved, but the installed MCP cannot resume them; do not resubmit automatically.", "legacy-job-mcp-unavailable")

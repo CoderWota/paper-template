@@ -11,7 +11,7 @@ Outcome: `reviews/<venue-id>/<round-id>/` holds the received documents in `origi
 
 - Follow `AGENTS.md`. Review documents are confidential correspondence.
 - A Markdown or plain-text letter needs no converter: the script reads it directly on this computer. Install nothing and ask nothing about a route, a tier, or an upload for it.
-- For a letter in another format, use the route confirmed in `requirements/privacy.md`. Upload review documents to mineru.net only if the confirmed scope covers editorial and review correspondence; a scope of "published papers" does not. When in doubt, ask, and recommend this computer.
+- For a letter in another format, use the route confirmed in `requirements/privacy.md`. Upload review documents to mineru.net only if the confirmed scope covers editorial and review correspondence; a scope of "published papers" does not. When in doubt, ask. Conversion on this computer is not available yet.
 - Keep rounds apart. Importing the same files again must not create a second copy.
 - Do not draft, send, or plan a response, and do not edit the manuscript. Responding is a separate task, `review-response`, which starts from this extraction.
 
@@ -24,17 +24,17 @@ Outcome: `reviews/<venue-id>/<round-id>/` holds the received documents in `origi
 
 ## Step 2: Prepare the route
 
-If every supplied file is Markdown or plain text, skip this step: nothing is converted, so no route, tier, or MinerU installation is needed.
+If every supplied file is Markdown or plain text, skip this step: nothing is converted, so no route and no MinerU setup is needed.
 
-Otherwise settle and prepare the processing route as `source-ingestion` describes in its steps 2 and 3, with the scope check above. A Word letter needs only the flash tier on this computer. A scanned letter needs the basic tier or OCR.
+Otherwise settle the processing route as `source-ingestion` describes in its steps 2 and 3, with the scope check above, and check the MCP with `python scripts/setup_mcp.py check`. A letter that is converted goes to mineru.net through the official MinerU MCP, so it needs the cloud choice that covers review correspondence. A scanned letter needs OCR (`--ocr`).
 
 ## Step 3: Run the import
 
 ```text
-python scripts/ingest.py run --route local --tier flash --ocr-mode txt --to reviews/<venue-id>/<round-id> PATH...
+python scripts/ingest.py run --route cloud [--ocr] --to reviews/<venue-id>/<round-id> PATH...
 ```
 
-When every file is Markdown or plain text, leave out `--route`, `--tier`, and `--ocr-mode`; the same command then needs no parser:
+When every file is Markdown or plain text, leave out `--route` and `--ocr`; the same command then needs no parser:
 
 ```text
 python scripts/ingest.py run --to reviews/<venue-id>/<round-id> PATH...

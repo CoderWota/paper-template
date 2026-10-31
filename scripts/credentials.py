@@ -406,7 +406,7 @@ def main(argv: list[str] | None = None) -> int:
     commands = parser.add_subparsers(dest="action", required=True)
 
     store = commands.add_parser("set", help="enter a value privately and save it in .env.local")
-    store.add_argument("name", help="variable name, for example MINERU_API_KEY")
+    store.add_argument("name", help="variable name, for example MINERU_API_TOKEN")
     store.add_argument("--label", help="field label shown to the researcher")
     store.add_argument("--note", help="short explanation shown above the field")
     store.add_argument("--help-url", help="official page where the researcher can get the value")

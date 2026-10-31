@@ -1,4 +1,4 @@
-"""Conversion routes: local MinerU (mineru-kit), the mineru.net precision API, and direct reading.
+"""Conversion routes: legacy local MinerU, the official MinerU MCP, and direct reading.
 
 Each route turns one archived original into a folder of raw parser output (Markdown, images, and
 parser JSON). No route falls back to another: a failure is reported, never retried elsewhere.
@@ -6,30 +6,25 @@ parser JSON). No route falls back to another: a failure is reported, never retri
 
 from __future__ import annotations
 
-import http.client
+import contextlib
+import hashlib
 import json
 import os
 import re
 import shutil
 import subprocess
-import time
-import urllib.error
 import urllib.parse
-import urllib.request
 import zipfile
 from pathlib import Path
 
-from .common import Redactor
+from .common import Redactor, sha256_file, write_json_atomic
+from mcp_bridge import MCPError, call_tool, tool_data
 
 TESTED_MINERU = "4.0.12"
-OFFICIAL_API = "https://mineru.net"
 TIERS = ("flash", "basic", "standard", "advanced")
 OCR_MODES = ("auto", "txt", "ocr")
 MAX_OUTPUT = 4 << 30
 MAX_UPLOAD = 200 << 20
-# mineru.net accepts 50 submitted files a minute; 20 files every 30 seconds stays below that.
-CLOUD_BATCH = 20
-CLOUD_PACE = 30.0
 
 KINDS = {
     ".pdf": "pdf",
@@ -51,11 +46,10 @@ DIRECT_KINDS = frozenset({"markdown", "text"})
 PANDOC_KINDS = {"word": "docx+citations", "opendocument": "odt", "latex": "latex"}
 PANDOC_OUTPUT = "markdown-simple_tables-multiline_tables-grid_tables"
 ADOPT_FILTER = Path(__file__).resolve().parent / "adopt-conventions.lua"
-# Previously observed (route, kind, tier or cloud model) combinations; see
+# Previously observed (route, kind, tier) combinations; see
 # docs/capabilities.md. Other documented combinations remain flagged for review.
 VERIFIED = frozenset({
     ("local", "pdf", "flash"), ("local", "pdf", "basic"), ("local", "word", "flash"),
-    ("cloud", "pdf", "vlm"),
     ("direct", "markdown", ""), ("direct", "text", ""),
     ("pandoc", "word", ""), ("pandoc", "latex", ""), ("pandoc", "opendocument", ""),
 })
@@ -291,153 +285,89 @@ class PandocRoute:
         return raw, notes
 
 
-class _SameOriginRedirects(urllib.request.HTTPRedirectHandler):
-    """Never forward the token to another origin through a redirect."""
-
-    def redirect_request(self, req, fp, code, msg, headers, newurl):
-        if origin(newurl) != origin(req.full_url):
-            raise urllib.error.HTTPError(newurl, code, "redirect to another origin refused", headers, fp)
-        return super().redirect_request(req, fp, code, msg, headers, newurl)
-
-
-def origin(url: str) -> tuple:
-    parts = urllib.parse.urlsplit(url)
-    return parts.scheme, parts.hostname, parts.port or (443 if parts.scheme == "https" else 80)
-
-
-def check_transfer_url(url: str) -> None:
-    """Service uploads and downloads must use HTTPS."""
-    scheme = urllib.parse.urlsplit(url).scheme
-    if scheme != "https":
-        raise ConversionError("the service returned an address that is not HTTPS", "unsafe-url")
-
-
 class CloudRoute:
-    """The mineru.net precision API (v4): signed upload, batch parsing, and a result archive per file."""
+    """The official MinerU MCP (mineru.net). A receipt per file and setting prevents a second upload of the same file."""
 
     name = "cloud"
 
-    def __init__(self, token: str, model_version: str = "vlm", language: str = "ch", is_ocr: bool = False,
-                 enable_formula: bool = True, enable_table: bool = True,
-                 poll_interval: float = 10.0, poll_timeout: float = 3600.0, sleep=time.sleep,
-                 redact: Redactor | None = None):
-        if model_version not in ("pipeline", "vlm"):
-            raise ValueError(f"unknown model version {model_version!r}")
-        self.token = token
-        self.base = OFFICIAL_API
-        self.model_version, self.language, self.is_ocr = model_version, language, is_ocr
-        self.enable_formula, self.enable_table = enable_formula, enable_table
-        self.poll_interval, self.poll_timeout, self.sleep = poll_interval, poll_timeout, sleep
-        self.redact = redact or Redactor([token])
-        self.opener = urllib.request.build_opener(_SameOriginRedirects)
+    def __init__(self, token: str, language: str = "ch", is_ocr: bool = False, timeout: float = 3600.0, *, root: Path):
+        self.root, self.language, self.is_ocr, self.timeout = root, language, is_ocr, timeout
+        self.mode = "precision" if token else "flash"
+        self.redact = Redactor([token] if token else [])
 
     def settings(self, kind: str) -> dict:
-        return {"route": "cloud", "service": "mineru.net", "api": "precision v4", "model_version": self.model_version,
-                "language": self.language, "is_ocr": self.is_ocr, "enable_formula": self.enable_formula,
-                "enable_table": self.enable_table}
+        return {"route": "cloud", "service": "mineru.net", "transport": "mcp", "mcp_server": "mineru", "mode": self.mode,
+                "language": self.language, "is_ocr": self.is_ocr, "output_contract": "official-mcp-markdown"}
 
-    def _api(self, method: str, path: str, body: dict | None = None) -> dict:
-        data = json.dumps(body).encode("utf-8") if body is not None else None
-        headers = {"Authorization": f"Bearer {self.token}", "Accept": "application/json"}
-        if data is not None:
-            headers["Content-Type"] = "application/json"
-        delays = [5, 30, 120]
-        for attempt in range(len(delays) + 1):
-            request = urllib.request.Request(self.base + path, data=data, method=method, headers=headers)
+    def convert(self, original: Path, work: Path, kind: str) -> tuple[Path, list[str]]:
+        from .pdf import page_count
+        page_limit, size_limit = (200, MAX_UPLOAD) if self.mode == "precision" else (20, 10 << 20)
+        pages = page_count(original) if kind == "pdf" else None
+        if original.stat().st_size > size_limit or (pages or 0) > page_limit:
+            raise ConversionError(f"the file is above the {self.mode} mode limit of {page_limit} pages or {size_limit >> 20} MB, so it was not sent", "mcp-limit")
+        digest = sha256_file(original)
+        key = hashlib.sha256((digest + json.dumps(self.settings(kind), sort_keys=True)).encode()).hexdigest()
+        cache = self.root / ".local" / "mcp" / "imports" / key
+        receipt, cached = cache / "receipt.json", cache / "markdown.md"
+        state = json.loads(receipt.read_text(encoding="utf-8")) if receipt.is_file() else {}
+        if state.get("status") == "submitted":
+            raise ConversionError("an earlier upload has no recorded outcome; check its receipt in .local/mcp/imports before the file is sent again", "mcp-unresolved")
+        if state.get("status") == "complete" and not cached.is_file():
+            raise ConversionError("the Markdown saved for an earlier upload is missing; restore it or remove its receipt before converting again", "mcp-unresolved")
+        if state.get("status") != "complete":
+            cache.mkdir(parents=True, exist_ok=True)
+            attempts = state.get("attempts", 0) + 1
+            write_json_atomic(receipt, {"status": "submitted", "attempts": attempts, "sha256": digest, "settings": self.settings(kind)})
             try:
-                with self.opener.open(request, timeout=60) as response:
-                    payload = json.loads(response.read().decode("utf-8"))
-            except urllib.error.HTTPError as error:
-                error.close()
-                if error.code in (401, 403):
-                    raise BatchStop("mineru.net refused the token", "token-rejected") from None
-                if (error.code == 429 or error.code >= 500) and attempt < len(delays):
-                    self.sleep(delays[attempt])
-                    continue
-                raise BatchStop(f"mineru.net answered with HTTP status {error.code}", "service-error") from None
-            except (urllib.error.URLError, OSError, ValueError) as error:
-                if attempt < len(delays):
-                    self.sleep(delays[attempt])
-                    continue
-                raise BatchStop(f"mineru.net could not be reached: {self.redact(str(error))}", "network") from None
-            code = str(payload.get("code"))
-            message = self.redact(str(payload.get("msg", "")))
-            if code == "0":
-                return payload.get("data") or {}
-            if code == "A0211":
-                raise BatchStop("the mineru.net token has expired", "token-expired")
-            if code == "A0202":
-                raise BatchStop("mineru.net did not accept the token", "token-rejected")
-            if code in ("-60018", "-60019"):
-                raise BatchStop("the daily mineru.net parsing limit is reached; continue tomorrow", "quota")
-            if code in ("-60009", "-10001", "-60007", "-60001") and attempt < len(delays):
-                self.sleep(delays[attempt])
-                continue
-            raise BatchStop(f"mineru.net refused the request ({code}: {message})", "service-error")
-        raise BatchStop("mineru.net stayed busy; try again later", "service-busy")
-
-    def request_uploads(self, files: list[dict]) -> tuple[str, list[str]]:
-        body = {"files": files, "model_version": self.model_version, "language": self.language,
-                "enable_formula": self.enable_formula, "enable_table": self.enable_table}
-        data = self._api("POST", "/api/v4/file-urls/batch", body)
-        urls = data.get("file_urls") or []
-        if not data.get("batch_id") or len(urls) != len(files):
-            raise BatchStop("mineru.net returned an incomplete upload batch", "service-error")
-        return str(data["batch_id"]), [str(url) for url in urls]
-
-    def upload(self, url: str, path: Path) -> None:
-        """PUT the file to the signed address with no token and no content type, as the service requires."""
-        check_transfer_url(url)
-        parts = urllib.parse.urlsplit(url)
-        connection_class = http.client.HTTPSConnection if parts.scheme == "https" else http.client.HTTPConnection
-        proxy = urllib.request.getproxies().get(parts.scheme)
-        if proxy and parts.scheme == "https" and not urllib.request.proxy_bypass(parts.hostname or ""):
-            # Through an institutional proxy: open a tunnel to the storage host, as urllib would.
-            proxy_parts = urllib.parse.urlsplit(proxy if "://" in proxy else f"http://{proxy}")
-            connection = connection_class(proxy_parts.hostname, proxy_parts.port or 8080, timeout=600)
-            connection.set_tunnel(parts.hostname, parts.port or 443)
-        else:
-            connection = connection_class(parts.hostname, parts.port, timeout=600)
-        target = parts.path + (f"?{parts.query}" if parts.query else "")
-        try:
-            connection.putrequest("PUT", target, skip_accept_encoding=True)
-            connection.putheader("Content-Length", str(path.stat().st_size))
-            connection.endheaders()
-            with open(path, "rb") as stream:
-                for chunk in iter(lambda: stream.read(1 << 20), b""):
-                    connection.send(chunk)
-            response = connection.getresponse()
-            response.read()
-        except OSError as error:
-            raise ConversionError(f"the upload failed: {self.redact(str(error))}", "upload") from error
-        finally:
-            connection.close()
-        if response.status not in (200, 201, 204):
-            raise ConversionError(f"the upload was refused with HTTP status {response.status}", "upload")
-
-    def results(self, batch_id: str) -> list[dict]:
-        data = self._api("GET", f"/api/v4/extract-results/batch/{urllib.parse.quote(batch_id, safe='')}")
-        return list(data.get("extract_result") or [])
-
-    def download(self, url: str, work: Path) -> Path:
-        """Fetch the result archive (without the token) and unpack it."""
-        check_transfer_url(url)
-        archive = work / "result.zip"
-        work.mkdir(parents=True, exist_ok=True)
-        try:
-            with urllib.request.urlopen(urllib.request.Request(url, headers={"Accept": "*/*"}), timeout=600) as response, \
-                    open(archive, "wb") as out:
-                copied = 0
-                for chunk in iter(lambda: response.read(1 << 20), b""):
-                    copied += len(chunk)
-                    if copied > MAX_OUTPUT:
-                        raise ConversionError("the result archive is larger than expected")
-                    out.write(chunk)
-        except (urllib.error.URLError, OSError) as error:
-            raise ConversionError(f"the result could not be downloaded: {self.redact(str(error))}", "download") from error
+                text = self.parse(original, cache)
+            except ConversionError:
+                write_json_atomic(receipt, {"status": "failed", "attempts": attempts, "sha256": digest, "settings": self.settings(kind)})
+                raise
+            cached.write_text(text, encoding="utf-8")
+            write_json_atomic(receipt, {"status": "complete", "attempts": attempts, "sha256": digest, "settings": self.settings(kind)})
         raw = work / "raw"
-        safe_extract(archive, raw)
-        return raw
+        raw.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(cached, raw / "markdown.md")
+        notes = ["The official MinerU MCP returns Markdown only. Page records and images are not kept, so check coverage and figures against the original."]
+        if self.mode == "flash":
+            notes.append("No MINERU_API_TOKEN is set, so MinerU flash mode was used: Markdown only, at most 20 pages and 10 MB per file.")
+        return raw, notes
+
+    def call_mcp(self, arguments: dict):
+        try:
+            return tool_data(call_tool(self.root, "mineru", "parse_documents", arguments, timeout=self.timeout))
+        except MCPError as error:
+            raise BatchStop(self.redact(str(error)), "mcp-unresolved") from None
+
+    def parse(self, original: Path, cache: Path) -> str:
+        # The service sees a neutral file name, not the researcher's file name; the copy is removed after the call.
+        staged = cache / f"document{original.suffix.lower()}"
+        try:
+            shutil.copy2(original, staged)
+            arguments = {"file_sources": [str(staged.resolve())], "language": self.language, "output_dir": str(cache.resolve())}
+            if self.is_ocr:
+                arguments["enable_ocr"] = True
+            response = self.call_mcp(arguments)
+        except OSError as error:
+            raise ConversionError(f"the file could not be copied for upload: {error}", "write") from None
+        finally:
+            with contextlib.suppress(OSError):
+                staged.unlink()
+        results = response.get("results") if isinstance(response, dict) else None
+        entry = results[0] if isinstance(results, list) and len(results) == 1 and isinstance(results[0], dict) else {}
+        if entry.get("status") != "success":
+            raise ConversionError(f"MinerU could not convert the file: {self.redact(str(entry.get('error') or 'no result was returned'))}", "mcp-service")
+        if "content" in entry and not entry.get("truncated"):
+            text = entry["content"]
+        else:
+            # Long replies are cut short. The complete Markdown is the copy that the server saved in the job folder.
+            saved = Path(entry.get("extract_path") or "").resolve()
+            if cache.resolve() not in saved.parents or not saved.is_file():
+                raise ConversionError("MinerU returned only part of the Markdown and no complete copy; the document was not converted", "mcp-incomplete")
+            text = saved.read_text(encoding="utf-8")
+        if not isinstance(text, str) or not text.strip():
+            raise ConversionError("MinerU returned no Markdown", "no-markdown")
+        return text
 
 
 class DirectRoute:
