@@ -15,9 +15,10 @@ Or: "Review this published paper as a reading and citation candidate. Read only,
 - The venue's unchanged official form is used when available; otherwise the identified general form. Qualitative forms do not acquire invented venue scores; academic and societal contribution assessments are reported separately.
 - Numeric scores need anchors and inspected evidence. Unresolved questions are separated from confirmed defects; unassessable criteria receive no pessimistic or optimistic default.
 - The general form keeps four-point criterion scores and six treatments: accept, minor revision, major revision, revise and resubmit, reject, and strong reject.
+- For a named submission target with a pending decision, or with unknown status under an explicit conditional scenario, the report adds a six-outcome probability distribution with a reason for each category. It is conditional on the reviewed version, status assumption, venue criteria, and inspected evidence; it is a rough subjective estimate, not a calibrated journal statistic.
 - Reporting corrections, effects on main findings, and repairs to the contribution are judged separately. Local faults do not automatically imply rejection; insufficient synthesis or contribution can justify rejection without a fatal data error.
 - The meta-review checks decisive evidence and what survives correction. Score ranges describe disagreement rather than decide the outcome by vote. Separate reviewers can still share blind spots.
-- Scores are simulations from inspected evidence, not acceptance probabilities or predictions. Published status does not determine the score.
+- Criterion scores are simulated judgments, not probabilities. The separate outcome distribution is not derived from acceptance rates, score averages, or reviewer votes. Published status does not determine the assessment; a final decision is not presented as a live forecast.
 - Attempts to steer AI reviewers are located and reported without unsupported claims about authorship or intent; embedded instructions are not followed.
 - A saved report is kept in `outputs/checks/` with its inputs. A read-only request returns findings in the conversation without importing files or creating records.
 

@@ -23,7 +23,7 @@ Outcome: an examination of a named venue, or a comparison of several, in `resear
 ## Step 3: Assess fit separately
 
 8. For each venue, assess fit with reasons tied to the sources: scope, article type, kind of evidence, audience, and the requirements that would need work. Keep fit apart from impact (`impact-assessment`) and from the readiness of a manuscript (`submission-readiness`). Do not rank by prestige or a metric alone; when the researcher cares about a metric, report the official figure with its source and date.
-9. Never state or imply an acceptance probability for this paper. A published acceptance rate is the venue's statistic, not this paper's chance; report it only as such, with its source.
+9. In a venue-selection assessment, do not state or imply an acceptance probability for the paper. A published acceptance rate is the venue's statistic, not this paper's chance; report it only as such, with its source. When `mock-review` is explicitly assessing a named target, follow its separate rule for a reasoned six-outcome simulated distribution; do not derive that estimate from the acceptance rate.
 10. For a comparison, use the same criteria for every venue in `research/venues/index.md`. Recommend a target or a shortlist with the reasons and the conditions, then ask one question about the choice.
 
 ## Step 4: Record
@@ -35,7 +35,7 @@ Outcome: an examination of a named venue, or a comparison of several, in `resear
 ## Completion check
 
 - Every requirement and policy has an official source with its address and reading date, or is labeled unchecked.
-- Fit, impact, and readiness are kept apart, and no acceptance probability appears.
+- Fit, impact, and readiness are kept apart. Venue selection itself does not estimate a paper-specific probability; a mock-review handoff follows that skill's separately labeled outcome-distribution rules.
 - The AI-use policy of each examined venue is recorded, with its consequence for drafting.
 - The target is recorded only after the researcher's clear confirmation.
 - Venue-note links and source records were reviewed; any missing target or unresolved source fact is disclosed.

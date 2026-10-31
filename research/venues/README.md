@@ -32,7 +32,7 @@ The fields below are a suggested layout for venue notes. `python scripts/researc
 ## Rules
 
 - Every fact comes from a dated official source or an inspected publication. Knowledge that was not checked against a current source is labeled as unchecked.
-- No acceptance probability is estimated. A published acceptance rate is the venue's statistic, not this paper's chance.
+- A venue note or venue-selection comparison does not estimate paper-specific odds. A published acceptance rate is the venue's statistic, not this paper's chance. A separate, explicitly requested `mock-review` may provide its conditional six-outcome distribution under that skill's rules.
 - Choosing the target venue is your decision. Once you confirm it, the target goes in [`requirements/project.md`](../../requirements/project.md) with a decision record, and the formatting requirements become an output profile in [`requirements/profiles/`](../../requirements/profiles/README.md).
 
 ## Who edits what
