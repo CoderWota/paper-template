@@ -8,6 +8,12 @@ Status: not initialized. The research goal, manuscript language, and interaction
 - Scope: This template's initialization workflow, in both clients.
 - Confirmed: 2026-10-30; "The repository initialization should include MCP installation." The researcher explicitly requested implementation of the plan for both official MCP servers and both clients.
 
+## PDF text extraction during initialization
+
+- Rule: During project initialization, check for `pdftotext`; install Poppler if it is missing and verify the command. Reuse an existing working installation. This setup does not authorize processing or uploading documents.
+- Scope: This template's initialization workflow, in both clients.
+- Confirmed: 2026-10-31; "Include `pdftotext` in the scope of project initialization."
+
 ## Sciverse and MinerU calls through MCP
 
 - Rule: Skills and scripts in this workspace make Sciverse and MinerU service calls only through the installed official MCP servers. No direct API fallback is used. MinerU runs remotely only and may process reference materials only; see `requirements/privacy.md` for the confirmed document scope. Credential and search-query scopes remain in force.

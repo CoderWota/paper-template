@@ -21,17 +21,19 @@ Read `state/current.md` and `requirements/project.md`. Inspect `manuscript/manif
 
 For a setup request, say briefly what will be recorded and that unknown choices can wait. After a tour, go straight to the next missing choice.
 
-## Install the standard MCP tools
+## Install the standard initialization tools
+
+Project initialization includes checking for `pdftotext` and installing Poppler if it is missing, as recorded in [project requirements](../../../requirements/project.md). The researcher has authorized this scoped installation; do not ask for consent again. Use `environment-management` and the environment report to inspect first. Reuse a working installation. If missing, install Poppler using current official guidance for the operating system, then verify with `pdftotext -v`. Do not replace a working installation or install unrelated software. If installation cannot be completed without an unapproved system change or unrelated upgrade, record it as pending and continue independent setup work.
 
 A request to initialize this workspace includes installation of the two pinned official MCP packages. Explain that Sciverse provides literature tools and MinerU provides cloud parsing; installation itself sends no research queries or documents. Do not ask again whether to install these two components.
 
-Use `environment-management` to run `python scripts/inspect_environment.py`. The MCP setup entry needs Python 3.11 or later and Node.js 18 or later with npm. Reuse compatible runtimes; ask before installing or replacing a missing base runtime. Then run, with that Python:
+Use `environment-management` to run `python scripts/inspect_environment.py`; it reports whether `pdftotext` is available. The MCP setup entry needs Python 3.11 or later and Node.js 18 or later with npm. Reuse compatible runtimes; ask before installing or replacing a missing base runtime. Then run, with that Python:
 
 1. `python scripts/setup_mcp.py install`
 2. `python scripts/setup_mcp.py configure`
 3. `python scripts/setup_mcp.py check`
 
-Run these as part of initialization, not as instructions for the researcher to execute. Preserve completed steps and retry failures. Record separate installation, client configuration, protocol-discovery, and credential statuses; the local machine report is `.local/mcp/status.json`. Missing credentials mean installed with service calls pending, not a failed installation. If installation fails, record MCP setup as incomplete and continue independent work. Reopen the project when needed to load new client tools; do not claim client discovery solely from a valid configuration file.
+Run these as part of initialization, not as instructions for the researcher to execute. Preserve completed steps and retry failures. Record separate installation, client configuration, protocol-discovery, and credential statuses; the local machine report is `.local/mcp/status.json`. Missing credentials mean installed with service calls pending, not a failed installation. If MCP installation fails, record MCP setup as incomplete and continue independent work. Record the `pdftotext` result separately; if it remains missing, keep initialization incomplete and continue independent work. Reopen the project when needed to load new client tools; do not claim client discovery solely from a valid configuration file.
 
 Do not request keys during installation, select a document-processing route, authorize queries or uploads, or test a service by sending research material. Existing scope rules and archive procedures still apply. Read [MCP setup](../../../mcp/README.md) for configuration repair and output handling. Template maintenance must not mark a paper initialized or disconnect its remote.
 
@@ -51,6 +53,6 @@ Write each confirmed answer as soon as it arrives. Put status, goal, languages, 
 
 ## Finish
 
-After the agreed setup, MCP status report, and template-remote check, mark the project initialized with the date. If interrupted, retain incomplete status and recorded answers. Write `state/current.md` in English with what is set, open, and next. Report the settings with links and continue an already requested first task once its prerequisites are met. The optional `inbox/` is an intake place; the researcher can give an accessible existing file path instead.
+After the agreed setup, MCP status report, `pdftotext` check, and template-remote check, mark the project initialized with the date. If interrupted, retain incomplete status and recorded answers. Write `state/current.md` in English with what is set, open, and next. Report the settings with links and continue an already requested first task once its prerequisites are met. The optional `inbox/` is an intake place; the researcher can give an accessible existing file path instead.
 
 Check that every recorded item came from a clear instruction, nothing was inferred or overwritten, the state names the next action, and no template remote remains on an initialized paper. A mixed or shared remote remains open for the researcher's decision.

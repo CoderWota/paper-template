@@ -6,8 +6,8 @@ Consult this guide when support, setup, or access is uncertain. It is not startu
 
 | Research task | Skill entrypoints | Requirements and limits |
 | --- | --- | --- |
-| Start or resume a project | `project-onboarding`, `paper-hands-on` | Records confirmed answers; a bounded request can go straight to its task. |
-| Computer setup | `environment-management` | Inspects first; installations, repairs, and system changes need consent. Ordinary Markdown needs no additional tools. |
+| Start or resume a project | `project-onboarding`, `paper-hands-on` | Records confirmed answers; initialization checks and installs `pdftotext` (Poppler) and installs the pinned MCP tools; a bounded request can go straight to its task. |
+| Computer setup | `environment-management` | Inspects first; installations, repairs, and system changes need consent except for setup covered by a confirmed project requirement. Ordinary Markdown needs no additional tools. |
 | Privacy and standing rules | `privacy-configuration`, `constraint-maintenance` | Checks current provider policies and actual controls; only confirmed rules and decisions are recorded. |
 | Import reference documents | `source-ingestion` | MinerU conversion runs remotely through the official MCP and is limited to reference materials. Markdown/text read directly. See [processing guide](mineru-integration.md). |
 | Import an existing draft | `manuscript-import` | Local Pandoc for editable Word, OpenDocument, and LaTeX. Draft PDFs cannot use MinerU under the confirmed reference-only scope. Resolve tracked changes and comments before adoption. |
@@ -30,7 +30,7 @@ Consult this guide when support, setup, or access is uncertain. It is not startu
 
 ## Supporting tools
 
-Workspace scripts use Python 3.9 or later and generally the standard library. Reuse compatible installed tools. Create environments only for a task that needs packages; keep heavy parser tools isolated in `.tools/`. Research analysis has its own environment.
+Workspace scripts use Python 3.9 or later and generally the standard library. Reuse compatible installed tools. Project initialization checks for `pdftotext` from Poppler and installs it if missing. Create environments only for a task that needs packages; keep heavy parser tools isolated in `.tools/`. Research analysis has its own environment.
 
 The private credential page (`scripts/credentials.py`) stores supported credentials in ignored `.env.local`; it refuses a trackable storage file. The local store is not encrypted. MinerU cloud uses `MINERU_API_TOKEN` for precision mode; its flash mode needs none. Sciverse uses `SCIVERSE_API_KEY`. The official MCP servers receive these credentials through their environment, and no MCP installation needs a key. MinerU's confirmed scope allows reference materials only. When a task needs one of these services, its skill should use the recorded scope and guide private key setup if needed. Do not request keys during unrelated setup. No other service integration or credential workflow is implied.
 

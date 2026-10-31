@@ -23,8 +23,8 @@ Eleven distinct skill entrypoints mention one or both services. Their Codex and 
 | `research-feedback` | Reads Markdown/plain text directly; other formats cannot be uploaded to MinerU. |
 | `manuscript-import` | Uses Pandoc locally for editable manuscript formats; draft PDFs cannot be uploaded to MinerU. |
 | `reference-download` | Public retrieval does not authorize an upload; a downloaded reference may be processed under the reference-only scope. |
-| `project-onboarding` | Installs and checks MCP tools only; initialization sends no query or document. |
-| `environment-management` | Checks the MCP installation and credentials; MinerU local inference is not installed or supported. |
+| `project-onboarding` | Checks and installs `pdftotext` (Poppler) and MCP tools; initialization sends no research query or document. |
+| `environment-management` | Checks the MCP installation, credentials, and `pdftotext`; MinerU local inference is not installed or supported. |
 | `privacy-configuration` | Records processing choices; it does not itself query Sciverse or upload documents. |
 
 ## Service-call paths

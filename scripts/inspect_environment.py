@@ -26,7 +26,7 @@ from pathlib import Path
 from export.tools import find_in_tools
 
 ROOT = Path(__file__).resolve().parent.parent
-TOOLS = ("git", "uv", "pandoc", "quarto", "node", "winget")
+TOOLS = ("git", "uv", "pandoc", "quarto", "node", "winget", "pdftotext")
 CLOUD_SYNC_MARKERS = ("onedrive", "dropbox", "google drive", "icloud drive", "mobile documents", "box sync")
 WINDOWS_MACHINES = {0x014C: "x86", 0x8664: "x64", 0x01C4: "ARM", 0xAA64: "ARM64"}
 LONG_WINDOWS_PATH = 150  # Leaves room for nested project paths under the 260-character limit.
@@ -165,7 +165,8 @@ def tools() -> dict:
         path, location = workspace_tool(name), "workspace .tools"
         if not path:
             path, location = shutil.which(name), "PATH"
-        version = first_line([path, "--version"]) if path else None
+        version_args = ["-v"] if name == "pdftotext" else ["--version"]
+        version = first_line([path, *version_args]) if path else None
         report[name] = {"path": path, "location": location if path else None, "version": version}
     return report
 
