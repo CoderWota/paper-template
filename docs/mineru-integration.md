@@ -1,12 +1,12 @@
 # Document Processing with MinerU
 
-Use this guide for import setup or a conversion problem. Reference and review documents are converted through the official MinerU MCP server, `mineru-open-mcp` 1.0.22, which `scripts/setup_mcp.py` installs in `.tools/mcp/`. The server sends each document to mineru.net, as confirmed in `requirements/privacy.md`. The researcher's own editable Word, OpenDocument, or LaTeX manuscript uses local Pandoc instead. Markdown and plain text are read directly.
+Use this guide for import setup or a conversion problem. Reference materials are converted through the official MinerU MCP server, `mineru-open-mcp` 1.0.22, which `scripts/setup_mcp.py` installs in `.tools/mcp/`. The server sends each document to mineru.net. The confirmed scope in `requirements/privacy.md` allows reference materials only. Drafts, review correspondence, feedback, and other materials must not be sent to MinerU. The researcher's own editable Word, OpenDocument, or LaTeX manuscript uses local Pandoc instead. Markdown and plain text are read directly.
 
 ## Choose and prepare a route
 
-The installed MCP server is cloud-only, so local MinerU conversion is not available. `scripts/ingest.py --route local` refuses, and the legacy local installer `scripts/setup_mineru.py` is not used by any route. A local route needs a local MCP server or another reviewed design first.
+The installed MCP server is cloud-only, so local MinerU conversion is not available. The local installer, parser class, CLI choices, and model-download path have been removed. There is no local MinerU fallback.
 
-Cloud processing sends each document to mineru.net. Confirm the material scope before any upload, and inspect every batch against the human-readable scope: a scope for published papers does not cover an unpublished draft or reviewer letter. The script refuses cloud processing unless `requirements/privacy.md` names mineru.net.
+Cloud processing sends the full selected reference file to mineru.net. Before each upload, identify every item as a reference source. `scripts/ingest.py` requires the recorded `references-only` scope and `--to references`; it rejects all other destinations. The script cannot infer whether the file is genuinely a reference from its format alone.
 
 | Mode | Credential | Limits | Output |
 | --- | --- | --- | --- |
@@ -21,7 +21,7 @@ No failed route switches to another parser or destination. A changed processing 
 
 ## Import and resume
 
-Use `scripts/ingest.py plan` before an import, `run --route cloud` for the authorized route, `status` for progress, and `run --import-id ID` to continue open, interrupted, or failed items. Reuse completed items. Changing conversion settings requires `--reconvert`. A hand-edited extraction is protected unless `--overwrite-edited` is used after the correction is preserved in a source note.
+Use `scripts/ingest.py plan` before an import, `run --to references --route cloud` for reference materials, `status` for progress, and `run --import-id ID` to continue open, interrupted, or failed items. Reuse completed items. Changing conversion settings requires `--reconvert`. A hand-edited extraction is protected unless `--overwrite-edited` is used after the correction is preserved in a source note.
 
 The importer archives the original unchanged under a checksum-based source ID, verifies the copy, and stages derived output in `.tmp/` before publication. The extraction contains `document.md`, provenance, and a README. Import records under `inbox/imports/` retain each item's outcome so that the assistant can resume without starting over.
 

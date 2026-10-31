@@ -1,7 +1,7 @@
-"""Conversion routes: legacy local MinerU, the official MinerU MCP, and direct reading.
+"""Conversion routes: the official MinerU MCP, local Pandoc, and direct reading.
 
-Each route turns one archived original into a folder of raw parser output (Markdown, images, and
-parser JSON). No route falls back to another: a failure is reported, never retried elsewhere.
+Each route turns one archived original into a folder of raw output. MinerU runs remotely through
+the official MCP. No route falls back to another: a failure is reported, never retried elsewhere.
 """
 
 from __future__ import annotations
@@ -9,21 +9,15 @@ from __future__ import annotations
 import contextlib
 import hashlib
 import json
-import os
 import re
 import shutil
 import subprocess
 import urllib.parse
-import zipfile
 from pathlib import Path
 
 from .common import Redactor, sha256_file, write_json_atomic
 from mcp_bridge import MCPError, call_tool, tool_data
 
-TESTED_MINERU = "4.0.12"
-TIERS = ("flash", "basic", "standard", "advanced")
-OCR_MODES = ("auto", "txt", "ocr")
-MAX_OUTPUT = 4 << 30
 MAX_UPLOAD = 200 << 20
 
 KINDS = {
@@ -37,23 +31,16 @@ KINDS = {
     ".csv": "table", ".tsv": "table",
     ".md": "markdown", ".markdown": "markdown", ".txt": "text", ".tex": "latex",
 }
-# Local MinerU reads these as whole documents with its flash tier.
-LOCAL_WHOLE_DOCUMENT = frozenset({"word", "slides", "spreadsheet", "opendocument", "rtf", "epub", "html", "table"})
 CLOUD_KINDS = frozenset({"pdf", "image", "word", "slides", "spreadsheet", "legacy-office"})
 DIRECT_KINDS = frozenset({"markdown", "text"})
-# The researcher's own editable manuscript is read locally by Pandoc;
-# references and review documents keep the confirmed MinerU routes.
+# The researcher's own editable manuscript is read locally by Pandoc.
 PANDOC_KINDS = {"word": "docx+citations", "opendocument": "odt", "latex": "latex"}
 PANDOC_OUTPUT = "markdown-simple_tables-multiline_tables-grid_tables"
 ADOPT_FILTER = Path(__file__).resolve().parent / "adopt-conventions.lua"
-# Previously observed (route, kind, tier) combinations; see
-# docs/capabilities.md. Other documented combinations remain flagged for review.
 VERIFIED = frozenset({
-    ("local", "pdf", "flash"), ("local", "pdf", "basic"), ("local", "word", "flash"),
     ("direct", "markdown", ""), ("direct", "text", ""),
     ("pandoc", "word", ""), ("pandoc", "latex", ""), ("pandoc", "opendocument", ""),
 })
-MODELS_MISSING = re.compile(r"Model repo \S+ is not ready|quality_tier_unavailable", re.I)
 
 
 class ConversionError(Exception):
@@ -82,167 +69,26 @@ def handler_for(kind: str, route: str) -> str | None:
         return "direct"
     if route == "pandoc":
         return "pandoc" if kind in PANDOC_KINDS else None
-    if route == "local" and (kind in ("pdf", "image") or kind in LOCAL_WHOLE_DOCUMENT):
-        return "local"
     if route == "cloud" and kind in CLOUD_KINDS:
         return "cloud"
     return None
 
 
 def unsupported_reason(kind: str, route: str) -> str:
+    if route == "local":
+        return "this import record uses the removed local MinerU route; start a new import through the official cloud MCP only for reference material and with --to references"
     if route == "pandoc" and kind in ("pdf", "image"):
-        return "a PDF or scanned manuscript is converted with MinerU (the local or cloud route), not with Pandoc"
+        return "a PDF or image is not supported by Pandoc; MinerU cloud processing is limited to reference materials"
     if route == "pandoc" and kind == "legacy-office":
         return "Pandoc does not read old Word files (.doc); a copy saved as .docx can be imported"
-    if kind == "legacy-office" and route == "local":
-        return "the local parser does not read old Office formats (.doc, .ppt, .xls); a copy saved as .docx, .pptx, or .xlsx can be imported"
     if kind == "unknown":
         return "this file type is not supported"
     return f"this file type is not supported by the {route} route"
 
 
-def safe_extract(archive: Path, target: Path) -> None:
-    """Unpack a parser archive, refusing absolute paths, parent references, and oversized content."""
-    total = 0
-    try:
-        with zipfile.ZipFile(archive) as package:
-            for info in package.infolist():
-                name = info.filename.replace("\\", "/")
-                parts = [part for part in name.split("/") if part not in ("", ".")]
-                if name.startswith("/") or ".." in parts or (parts and re.match(r"^[A-Za-z]:$", parts[0])):
-                    raise ConversionError(f"the parser output contains an unsafe path: {info.filename}")
-                if not parts:
-                    continue
-                total += info.file_size
-                if total > MAX_OUTPUT:
-                    raise ConversionError("the parser output is larger than expected")
-                destination = target.joinpath(*parts)
-                if info.is_dir():
-                    destination.mkdir(parents=True, exist_ok=True)
-                    continue
-                destination.parent.mkdir(parents=True, exist_ok=True)
-                with package.open(info) as source, open(destination, "wb") as out:
-                    shutil.copyfileobj(source, out)
-    except zipfile.BadZipFile as error:
-        raise ConversionError(f"the parser output is not a valid archive: {error}") from error
-
-
 def tail(text: str, lines: int = 3) -> str:
     kept = [line.strip() for line in text.splitlines() if line.strip() and "it/s]" not in line and "s/it]" not in line]
     return " ".join(kept[-lines:])[-600:]
-
-
-class LocalRoute:
-    """MinerU installed on this computer, in .tools/mineru/ or on the PATH."""
-
-    name = "local"
-
-    def __init__(self, root: Path, tier: str, ocr_mode: str = "auto", command: list[str] | None = None,
-                 timeout: int = 7200, redact: Redactor | None = None):
-        if tier not in TIERS:
-            raise ValueError(f"unknown tier {tier!r}")
-        if ocr_mode not in OCR_MODES:
-            raise ValueError(f"unknown OCR mode {ocr_mode!r}")
-        self.root, self.tier, self.ocr_mode, self.timeout = root, tier, ocr_mode, timeout
-        self.command = command or self.locate(root)
-        self.redact = redact or Redactor()
-        self._version: str | None = None
-
-    @staticmethod
-    def locate(root: Path) -> list[str] | None:
-        tool = root / ".tools" / "mineru"
-        for candidate in (tool / "Scripts" / "mineru-kit.exe", tool / "bin" / "mineru-kit"):
-            if candidate.is_file():
-                return [str(candidate)]
-        found = shutil.which("mineru-kit")
-        return [found] if found else None
-
-    def env(self) -> dict:
-        cache = self.root / ".cache"
-        return dict(
-            os.environ,
-            MINERU_HOME=str(cache / "mineru"),
-            HF_HOME=str(cache / "huggingface"),
-            MODELSCOPE_CACHE=str(cache / "modelscope"),
-            # Missing models must fail, not start a large download that nobody agreed to.
-            MINERU_MODEL_SOURCE="local",
-            NO_COLOR="1",
-            COLUMNS="400",  # keeps the parser's messages, and the file paths in them, on one line
-            PYTHONIOENCODING="utf-8",
-            PYTHONUTF8="1",
-        )
-
-    def ensure_config(self) -> None:
-        """Keep MinerU's configuration and models inside the workspace's ignored .cache/ folder."""
-        home = self.root / ".cache" / "mineru"
-        config = home / "config.yaml"
-        base = (home / "models").as_posix()
-        home.mkdir(parents=True, exist_ok=True)
-        text = config.read_text(encoding="utf-8") if config.is_file() else ""
-        line = f"  base_dir: {base}"
-        if re.search(r"(?m)^  base_dir: .*$", text):
-            updated = re.sub(r"(?m)^  base_dir: .*$", lambda _: line, text)
-        elif re.search(r"(?m)^model:\s*$", text):
-            updated = re.sub(r"(?m)^model:\s*$", lambda _: "model:\n" + line, text, count=1)
-        else:
-            updated = text.rstrip("\n") + ("\n" if text else "") + "model:\n" + line + "\n"
-        if updated != text:
-            config.write_text(updated, encoding="utf-8")
-
-    def run(self, arguments: list[str], timeout: int) -> subprocess.CompletedProcess:
-        if not self.command:
-            raise BatchStop("MinerU is not installed on this computer", "parser-missing")
-        try:
-            return subprocess.run(self.command + arguments, capture_output=True, text=True, encoding="utf-8",
-                                  errors="replace", env=self.env(), timeout=timeout)
-        except FileNotFoundError as error:
-            raise BatchStop(f"MinerU could not be started: {error}", "parser-missing") from error
-
-    def version(self) -> str:
-        if self._version is None:
-            result = self.run(["version", "--json"], timeout=300)
-            try:
-                self._version = str(json.loads(result.stdout)["mineru_version"])
-            except (ValueError, KeyError, TypeError) as error:
-                raise BatchStop(f"the MinerU version could not be read: {tail(result.stderr or result.stdout)}", "parser-missing") from error
-            if not self._version.startswith("4."):
-                raise BatchStop(f"MinerU {self._version} is installed; this workspace needs MinerU 4", "parser-version")
-        return self._version
-
-    def settings(self, kind: str) -> dict:
-        settings = {"route": "local", "converter": "mineru", "entry_point": "mineru-kit parse", "version": self.version(),
-                    "tier": "flash" if kind in LOCAL_WHOLE_DOCUMENT else self.tier}
-        if kind in ("pdf", "image"):
-            settings["ocr_mode"] = self.ocr_mode
-        if kind == "pdf":
-            settings["pages"] = "all"
-        return settings
-
-    def convert(self, original: Path, work: Path, kind: str) -> Path:
-        self.ensure_config()
-        settings = self.settings(kind)
-        output = work / "parser-output"
-        output.mkdir(parents=True, exist_ok=True)
-        arguments = ["parse", str(original), "-o", str(output), "--format", "zip", "--tier", settings["tier"]]
-        if "ocr_mode" in settings:
-            arguments += ["--ocr-mode", settings["ocr_mode"]]
-        if kind == "pdf":
-            arguments += ["--pages", "all"]
-        try:
-            result = self.run(arguments, timeout=self.timeout)
-        except subprocess.TimeoutExpired as error:
-            raise ConversionError(f"the parser did not finish within {self.timeout} seconds", "timeout") from error
-        messages = self.redact(result.stdout + "\n" + result.stderr).replace(str(original), original.name)
-        if result.returncode != 0:
-            if MODELS_MISSING.search(messages):
-                raise BatchStop(f"the models for the {settings['tier']} tier are not installed", "models-missing")
-            raise ConversionError(f"the parser stopped with exit status {result.returncode}: {tail(messages)}")
-        archives = sorted(output.rglob("*.zip"))
-        if len(archives) != 1:
-            raise ConversionError(f"the parser wrote {len(archives)} result archives instead of one")
-        raw = work / "raw"
-        safe_extract(archives[0], raw)
-        return raw
 
 
 class PandocRoute:

@@ -2,9 +2,9 @@
 
 Formal review documents go to reviews/<venue-id>/<round-id>/; advice from co-researchers, collaborators,
 coauthors, supervisors, and other contributors goes to research/feedback/<feedback-id>/, with the same
-layout. MinerU converts the main text of a document. It does not convert Word comments, and it shows
-tracked changes as if they had been accepted, so those structures are read here from the original
-file's XML, with each author. PDF annotations are found with a simple scan of the file.
+layout. This module can extract Word comments, tracked changes, and PDF annotations from archived files.
+The current import skills send only reference materials to MinerU; review and feedback formats that need
+conversion remain unprocessed under the confirmed scope.
 """
 
 from __future__ import annotations

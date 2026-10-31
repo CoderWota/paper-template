@@ -24,7 +24,7 @@ python scripts/literature.py download 10.1234/example https://repository.example
 
 The command archives valid PDFs under `references/originals/<source-id>/`, identifies exact duplicates, and creates `references/downloads/<batch-id>/batch.json` and a human-readable README. It stores retrieval dates and URLs with query parameters removed. The fixed integration currently limits one download to 500 MiB, retrieves one item at a time, follows normal web redirects, and does not use institutional cookies or credentials.
 
-Every item remains distinct: downloaded, existing/duplicate, metadata-only, login/manual-access-needed, unavailable, rate-limited, or failed. HTML login/error pages are not saved as PDFs. A status of `downloaded` means the bytes passed the PDF-signature check; it does not verify the requested edition. Read available document metadata using an already confirmed local or cloud route, compare title/author/DOI/version with the requested record, then record the result:
+Every item remains distinct: downloaded, existing/duplicate, metadata-only, login/manual-access-needed, unavailable, rate-limited, or failed. HTML login/error pages are not saved as PDFs. A status of `downloaded` means the bytes passed the PDF-signature check; it does not verify the requested edition. A downloaded reference may be checked through the official remote MinerU MCP under the confirmed reference-only scope. Never upload a non-reference file or use a local MinerU parser. Compare title/author/DOI/version with the requested record, then record the result:
 
 ```text
 python scripts/literature.py verify-download BATCH_ID 1 --identity match --evidence "The title and DOI on page 1 match the requested record."

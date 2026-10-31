@@ -16,7 +16,7 @@ When you want to set up a new paper, you can ask:
 
 > Help me set up this research writing project. I do not have a programming background.
 
-Initialization includes local installation of the official Sciverse and MinerU cloud MCP tools, configuration for Codex and Claude Code, and a connection check. It sends no research queries or documents. API keys can be configured later, when an authorized task needs them. See [MCP setup](mcp/README.md).
+Initialization installs the official Sciverse and MinerU cloud MCP servers, exposes Sciverse in Codex and Claude Code, and checks both servers. MinerU remains available to the workspace importer and is limited to reference materials; see [the confirmed processing scope](requirements/privacy.md). Setup sends no research queries or documents. API keys can be configured later, when an authorized task needs them. See [MCP setup](mcp/README.md).
 
 You can bring an existing draft, a research question, collected papers, or reviewer comments. Unknown choices can wait. Each additional paper uses a separate fresh copy of this workspace.
 
@@ -41,7 +41,7 @@ The assistant selects the needed instructions and tools. You do not need to know
 
 You can put files in [`inbox/`](inbox/README.md), or point the assistant to their existing location; this folder is optional. It identifies reference sources, manuscripts, feedback, reviewer letters, and format templates before organizing them. Original files stay unchanged.
 
-Before parsing documents, choose the named MinerU service and the material that choice covers. Local processing is not available yet. Cloud processing, through the official MinerU MCP server, sends documents to that service; the assistant explains relevant limits before asking. Credentials are entered on a private local page, never in chat. Checking the AI application's data-use settings is a separate, optional task.
+MinerU parsing is available only through the official cloud MCP and only for reference materials. Drafts, review correspondence, feedback, and other materials cannot be uploaded under the confirmed scope. Credentials are entered on a private local page, never in chat. Checking the AI application's data-use settings is a separate, optional task.
 
 ## Where your work lives
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Import documents into the workspace with MinerU, or read Markdown and plain text directly.
+"""Import reference materials with the official MinerU MCP, or read Markdown and plain text directly.
 
 Archives each original unchanged, converts it with the processing route that the researcher
 confirmed, checks the result (page coverage, text left out of the Markdown, image links, and
@@ -7,7 +7,8 @@ formulas), publishes it in one step, and keeps a resumable record of the batch i
 inbox/imports/<import-id>/. References go to references/; review documents go to
 reviews/<venue-id>/<round-id>/; research feedback goes to research/feedback/<feedback-id>/. The researcher's own
 manuscript goes to its import record (--to manuscript) for adoption with scripts/manuscript.py adopt; an editable
-manuscript (Word, OpenDocument, LaTeX) is read with Pandoc on this computer (--route pandoc), a PDF with MinerU.
+manuscript (Word, OpenDocument, LaTeX) is read with Pandoc on this computer (--route pandoc). Other material
+must not use the MinerU route; the confirmed remote scope permits reference materials only.
 Nothing ever switches to another route or parser.
 
 Usage:
@@ -22,10 +23,9 @@ Usage:
   python scripts/ingest.py note --import-id ID --role ROLE --reason TEXT PATH...
 DEST is "references" (the default), manuscript, reviews/<venue-id>/<round-id>, or research/feedback/<feedback-id>.
 Markdown and plain text need no route.
-The cloud route sends the documents to mineru.net through the official MinerU MCP. It needs a confirmed
-choice that names mineru.net in requirements/privacy.md. MINERU_API_TOKEN enables precision mode; without it
-MinerU flash mode applies (Markdown only, 20 pages and 10 MB per file). The local route is refused, because the
-installed MCP is cloud-only.
+The cloud route sends reference materials to mineru.net through the official MinerU MCP. It requires the
+references-only scope in requirements/privacy.md and --to references. MINERU_API_TOKEN enables precision mode;
+without it MinerU flash mode applies (Markdown only, 20 pages and 10 MB per file). Local MinerU conversion is unavailable.
 Exit status: 0 done, 1 some items failed, 2 stopped or still processing (continue later), 3 refused.
 Uses only the Python standard library.
 """
@@ -46,7 +46,7 @@ from ingestion import extraction, library, reviews  # noqa: E402
 from ingestion.common import LockedError, Redactor, WorkspaceLock, sha256_file  # noqa: E402
 from ingestion.pipeline import Pipeline, list_files  # noqa: E402
 from ingestion.records import LABELS, ImportRecord, display_path  # noqa: E402
-from ingestion.routes import (DIRECT_KINDS, OCR_MODES, TIERS, CloudRoute, LocalRoute, PandocRoute, handler_for, kind_of,  # noqa: E402
+from ingestion.routes import (DIRECT_KINDS, CloudRoute, PandocRoute, handler_for, kind_of,  # noqa: E402
                               unsupported_reason)
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -67,12 +67,17 @@ def destination(value: str) -> str:
 
 def cloud_route(root: Path, options: dict) -> CloudRoute:
     privacy = root / "requirements" / "privacy.md"
-    if "mineru.net" not in (privacy.read_text(encoding="utf-8").lower() if privacy.is_file() else ""):
-        raise Refused("requirements/privacy.md has no confirmed processing choice that names mineru.net. "
-                      "Record the researcher's confirmed cloud choice and the documents it covers first.")
+    privacy_text = privacy.read_text(encoding="utf-8").lower() if privacy.is_file() else ""
+    if "<!-- mineru-scope: references-only -->" not in privacy_text:
+        raise Refused("requirements/privacy.md does not record the confirmed MinerU reference-only scope.")
     token = os.environ.get(TOKEN) or load_env_local(root).get(TOKEN)
     return CloudRoute(token or "", root=root, language=options.get("language", "ch"), is_ocr=options.get("is_ocr", False),
                       timeout=float(os.environ.get("INGEST_POLL_TIMEOUT", "3600")))
+
+
+def mineru_destination_allowed(route: str | None, target: str) -> bool:
+    """MinerU's confirmed remote scope permits uploads to the reference library only."""
+    return route != "cloud" or target == "references"
 
 
 def pandoc_route(root: Path, options: dict) -> PandocRoute:
@@ -82,11 +87,6 @@ def pandoc_route(root: Path, options: dict) -> PandocRoute:
         raise Refused("Pandoc is not installed for this workspace. Install it with the researcher's consent: "
                       "python scripts/export.py install --component pandoc (see the submission-assembly skill).")
     return PandocRoute(found, options.get("track_changes", "all"))
-
-
-def local_route(root: Path, options: dict) -> LocalRoute:
-    raise Refused("Local MinerU conversion is not available. The installed official MinerU MCP is cloud-only, and nothing is sent "
-                  "to the cloud instead. Add a local MCP integration, or choose the cloud route after the researcher confirms it.")
 
 
 def summary(record: ImportRecord) -> str:
@@ -129,8 +129,10 @@ def command_plan(args, root: Path) -> int:
                 row.update(status="duplicate", detail=f"same content as {seen[sha]}")
             elif args.to == "references" and library.lookup(root, sha) and library.provenance(root, library.lookup(root, sha)):
                 row.update(status="already imported", detail=library.lookup(root, sha))
+            elif not mineru_destination_allowed(args.route, args.to):
+                row.update(status="out of scope", detail="MinerU cloud processing is limited to reference materials (--to references)")
             elif handler is None and not args.route and kind not in DIRECT_KINDS:
-                row.update(status="needs a processing route", detail=f"a {kind} file is converted locally or with mineru.net")
+                row.update(status="needs a processing route", detail=f"a {kind} file needs a confirmed route; MinerU conversion currently uses mineru.net")
             elif handler is None:
                 row.update(status="not supported", detail=unsupported_reason(kind, args.route))
             else:
@@ -162,29 +164,28 @@ def command_run(args, root: Path) -> int:
             missing = [value for value in args.paths if not Path(value).expanduser().exists()]
             if missing:
                 raise Refused("not found: " + ", ".join(missing))
-            if args.route == "local" and not args.tier:
-                raise Refused("the local route needs --tier (flash, basic, standard, or advanced)")
             if args.route == "pandoc" and args.to != "manuscript":
-                raise Refused("the pandoc route is only for the researcher's own manuscript (--to manuscript); "
-                              "references and review documents are converted with MinerU")
-            options = {"tier": args.tier, "ocr_mode": args.ocr_mode} if args.route == "local" else \
-                {"language": args.language, "is_ocr": args.ocr} if args.route == "cloud" else \
+                raise Refused("the pandoc route is only for the researcher's own editable manuscript (--to manuscript); "
+                              "MinerU can process reference materials only, and review documents are outside its scope")
+            options = {"language": args.language, "is_ocr": args.ocr} if args.route == "cloud" else \
                 {"track_changes": args.track_changes} if args.route == "pandoc" else {}
             if not args.route:
                 kinds = {kind_of(file) for value in args.paths
                          for file in list_files(root, Path(value).expanduser().resolve(), args.recursive)[0]}
                 needing = sorted(kind for kind in kinds if kind not in DIRECT_KINDS)
                 if needing:
-                    raise Refused(f"these files need a processing route that the researcher confirmed (--route local or cloud): {', '.join(needing)}")
+                    raise Refused(f"these files need a confirmed processing route (--route cloud through the official MinerU MCP, or --route pandoc for an editable manuscript): {', '.join(needing)}")
         route = record.data.get("route") if args.import_id else args.route
-        local = local_route(root, options) if route == "local" else None
+        destination = record.data["destination"] if args.import_id else args.to
+        if not mineru_destination_allowed(route, destination):
+            raise Refused("MinerU uploads are limited to reference materials (--to references); drafts, reviews, feedback, and other destinations are outside the confirmed scope.")
         cloud = cloud_route(root, options) if route == "cloud" else None
         pandoc = pandoc_route(root, options) if route == "pandoc" else None
         if not args.import_id:
             inputs = [display_path(Path(value).expanduser().resolve(), root) for value in args.paths]
             record = ImportRecord.create(root, args.to, route, inputs, args.recursive)
             record.data["options"] = options
-        pipeline = Pipeline(root, record, local=local, cloud=cloud, pandoc=pandoc, redact=cloud.redact if cloud else Redactor(),
+        pipeline = Pipeline(root, record, cloud=cloud, pandoc=pandoc, redact=cloud.redact if cloud else Redactor(),
                             reconvert=args.reconvert, overwrite_edited=args.overwrite_edited)
         if not args.import_id:
             pipeline.add_inputs(record.data["inputs"], args.recursive)
@@ -278,14 +279,14 @@ def main(argv: list | None = None) -> int:
     for stream in (sys.stdout, sys.stderr):
         if hasattr(stream, "reconfigure"):
             stream.reconfigure(errors="backslashreplace")
-    parser = argparse.ArgumentParser(description="Import documents with MinerU and keep a resumable record.")
+    parser = argparse.ArgumentParser(description="Import materials with MinerU for reference sources only; keep a resumable record.")
     parser.add_argument("--root", type=Path, default=ROOT, help=argparse.SUPPRESS)
     commands = parser.add_subparsers(dest="command", required=True)
 
     plan = commands.add_parser("plan", help="list what an import would do, without changing anything")
     plan.add_argument("paths", nargs="+")
     plan.add_argument("--to", type=destination, default="references")
-    plan.add_argument("--route", choices=("local", "cloud", "pandoc"))
+    plan.add_argument("--route", choices=("cloud", "pandoc"))
     plan.add_argument("--recursive", action="store_true")
     plan.add_argument("--json", action="store_true")
 
@@ -293,11 +294,9 @@ def main(argv: list | None = None) -> int:
     run.add_argument("paths", nargs="*")
     run.add_argument("--import-id")
     run.add_argument("--to", type=destination, default="references")
-    run.add_argument("--route", choices=("local", "cloud", "pandoc"))
+    run.add_argument("--route", choices=("cloud", "pandoc"))
     run.add_argument("--track-changes", dest="track_changes", choices=("all", "accept", "reject"), default="all",
                      help="pandoc route: keep Word comments and tracked changes as marks (all), or apply the researcher's choice")
-    run.add_argument("--tier", choices=TIERS)
-    run.add_argument("--ocr-mode", choices=OCR_MODES, default="auto")
     run.add_argument("--language", default="ch")
     run.add_argument("--ocr", action="store_true", help="cloud route: force OCR")
     run.add_argument("--recursive", action="store_true")

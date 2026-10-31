@@ -11,7 +11,7 @@ Outcome: `reviews/<venue-id>/<round-id>/` holds the received documents in `origi
 
 - Follow `AGENTS.md`. Review documents are confidential correspondence.
 - A Markdown or plain-text letter needs no converter: the script reads it directly on this computer. Install nothing and ask nothing about a route, a tier, or an upload for it.
-- For a letter in another format, use the route confirmed in `requirements/privacy.md`. Upload review documents to mineru.net only if the confirmed scope covers editorial and review correspondence; a scope of "published papers" does not. When in doubt, ask. Conversion on this computer is not available yet.
+- The confirmed MinerU scope allows reference materials only. Never upload editor or reviewer correspondence, even when it is a PDF or office file. Markdown and plain text can be read directly; other formats remain unconverted under the current scope. Preserve the original and report the limitation.
 - Keep rounds apart. Importing the same files again must not create a second copy.
 - Do not draft, send, or plan a response, and do not edit the manuscript. Responding is a separate task, `review-response`, which starts from this extraction.
 
@@ -26,12 +26,12 @@ Outcome: `reviews/<venue-id>/<round-id>/` holds the received documents in `origi
 
 If every supplied file is Markdown or plain text, skip this step: nothing is converted, so no route and no MinerU setup is needed.
 
-Otherwise settle the processing route as `source-ingestion` describes in its steps 2 and 3, with the scope check above, and check the MCP with `python scripts/setup_mcp.py check`. A letter that is converted goes to mineru.net through the official MinerU MCP, so it needs the cloud choice that covers review correspondence. A scanned letter needs OCR (`--ocr`).
+Otherwise do not use MinerU or another cloud route. The confirmed scope excludes review correspondence, and no local MinerU route exists. Keep the files in their original location and report that only Markdown or plain-text letters can be read in this workflow.
 
 ## Step 3: Run the import
 
 ```text
-python scripts/ingest.py run --route cloud [--ocr] --to reviews/<venue-id>/<round-id> PATH...
+No conversion command is available for non-text review documents under the current processing scope. Do not call `scripts/ingest.py` with a cloud route for this material.
 ```
 
 When every file is Markdown or plain text, leave out `--route` and `--ocr`; the same command then needs no parser:

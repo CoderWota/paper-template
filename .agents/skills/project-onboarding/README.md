@@ -19,4 +19,4 @@ The agent instructions are in [SKILL.md](SKILL.md). Related skills: `environment
 
 After a directory tour, the assistant reuses what you already told it and asks only for missing information needed for the first task. Processing choices, software setup, and the optional account privacy check are introduced when relevant, rather than required to understand the workspace.
 
-Initialization also installs the official Sciverse and MinerU cloud MCP tools inside this workspace, configures Codex and Claude Code, and checks their tool lists. No research query or document is sent. Keys can wait until the first authorized service use. Installation failures remain recorded for retry.
+Initialization also installs the official Sciverse and MinerU cloud MCP tools inside this workspace. Codex and Claude Code receive Sciverse as a native tool; the workspace importer starts MinerU internally for reference materials only. The setup check sends no research query or document. Keys can wait until the first authorized service use. Installation failures remain recorded for retry.

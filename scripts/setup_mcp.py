@@ -28,6 +28,8 @@ from credentials import load_env_local
 
 ROOT = Path(__file__).resolve().parent.parent
 NAMES = ("sciverse", "mineru")
+# MinerU stays script-only so clients cannot bypass the workspace upload scope checks.
+CLIENT_EXPOSED_NAMES = ("sciverse",)
 VERSIONS = {"sciverse": "1.0.0", "mineru": "1.0.22"}
 EXPECTED = {"sciverse": {"semantic_search", "read_content", "get_resource", "list_catalog"},
             "mineru": {"parse_documents", "get_ocr_languages"}}
@@ -261,10 +263,13 @@ def configure(root: Path) -> None:
     document = tomlkit.parse(codex.read_text(encoding="utf-8")) if codex.exists() else tomlkit.document()
     if "mcp_servers" not in document:
         document["mcp_servers"] = tomlkit.table()
+    # MinerU is started only by the scoped workspace importer. Do not expose its raw upload tool to clients.
+    document["mcp_servers"].pop("mineru", None)
     claude = root / ".mcp.json"
     data = json.loads(claude.read_text(encoding="utf-8")) if claude.exists() else {}
     servers = data.setdefault("mcpServers", {})
-    for name in NAMES:
+    servers.pop("mineru", None)
+    for name in CLIENT_EXPOSED_NAMES:
         values = config_values(root, name)
         template = (root / "mcp/codex.toml.template").read_text()
         rendered = template.format(**{key: value if key == "name" else json.dumps(value) for key, value in values.items()})
@@ -299,7 +304,9 @@ def check(root: Path) -> int:
         try:
             data = tomllib.loads(path.read_text()) if name == "codex" else json.loads(path.read_text())
             servers = data["mcp_servers" if name == "codex" else "mcpServers"]
-            valid = all(servers[n]["command"] == str(python_path(root)) and servers[n]["args"] == [str(root / "scripts/setup_mcp.py"), "start", n] for n in NAMES)
+            valid = (all(servers[n]["command"] == str(python_path(root)) and
+                         servers[n]["args"] == [str(root / "scripts/setup_mcp.py"), "start", n]
+                         for n in CLIENT_EXPOSED_NAMES) and "mineru" not in servers)
             report["configs"][name] = "ready" if valid else "needs configure"
             good &= valid
         except (OSError, ValueError, KeyError, TypeError):

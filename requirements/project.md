@@ -10,9 +10,9 @@ Status: not initialized. The research goal, manuscript language, and interaction
 
 ## Sciverse and MinerU calls through MCP
 
-- Rule: Skills and scripts in this workspace make Sciverse and MinerU service calls only through the installed official MCP servers. No direct API fallback is used. Credential, query-sharing, and document-upload scopes remain in force.
+- Rule: Skills and scripts in this workspace make Sciverse and MinerU service calls only through the installed official MCP servers. No direct API fallback is used. MinerU runs remotely only and may process reference materials only; see `requirements/privacy.md` for the confirmed document scope. Credential and search-query scopes remain in force.
 - Scope: This template's skills, scripts, and documents, in both clients.
-- Confirmed: 2026-10-31; "Make sure every skill in the repository that involves Sciverse or MinerU calls the MCP." "Check all Agent calls in the repository."
+- Confirmed: 2026-10-31; "Make sure every skill in the repository that involves Sciverse or MinerU calls the MCP." "Check all Agent calls in the repository." "We will not run MinerU locally; send processing remotely." "Only reference materials may be uploaded."
 
 ## Clear communication in all languages
 

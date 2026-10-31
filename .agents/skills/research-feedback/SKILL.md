@@ -17,13 +17,13 @@ Outcome: `research/feedback/<feedback-id>/` with the received material, a readab
 ## Step 1: File the material
 
 1. Name the event `<YYYY-MM-DD>-<short-title>` in lowercase ASCII letters, digits, and hyphens, using the date of the meeting or the document.
-2. Documents (Word, PDF, Markdown, or text): import them with
+2. Markdown and plain-text documents: import them with
 
    ```text
-   python scripts/ingest.py run --to research/feedback/<feedback-id> [--route cloud ...] FILE...
+   python scripts/ingest.py run --to research/feedback/<feedback-id> FILE...
    ```
 
-   Settle the route as `source-ingestion` describes in its steps 2 and 3. Feedback can contain unpublished work: upload it to mineru.net only when the confirmed scope in `requirements/privacy.md` covers this material. Markdown and text need no route. Word comments, replies, tracked changes, and PDF annotations are listed at the end of each Markdown file with the author that the file names.
+   The confirmed MinerU scope permits reference materials only, so never upload feedback to MinerU. Markdown and text need no route. Other formats remain unconverted under the current scope; preserve them in their original location and report the limitation. Do not claim that Word comments, replies, tracked changes, or PDF annotations were captured.
    After import, write or update `inbox/imports/<import-id>/README.md` from its `import.json` facts and observed results.
 3. A meeting or a conversation: write the researcher's notes or account to a Markdown file in `.tmp/` exactly as given, then import that file the same way, so that it is kept unchanged in `originals/`.
 4. Write or update the event's `README.md` in English with who gave the feedback, when, which manuscript version, idea, or plan it concerns, and links to the archived material and `actions.md`. Use only details in the source or confirmed by the researcher; preserve other useful content.

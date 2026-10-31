@@ -9,7 +9,7 @@ Ask, for example: "Convert these reviewer comments to Markdown and file them und
 - Reviewer labels, item numbers, and page or line references stay as they are in the documents.
 - Word comments, tracked changes, and PDF annotations are listed separately, because a normal conversion does not show them. The agent tells you what it found and what it could not capture.
 - Rounds never mix, and importing the same files again creates no duplicates.
-- Review documents are confidential: they are uploaded to an online service only if you confirmed that service for this kind of material.
+- Review documents are confidential. The confirmed MinerU scope allows reference materials only, so correspondence is never uploaded to MinerU. Markdown and plain text can be read directly; other formats remain unconverted under this scope.
 - Nothing is sent to the journal, and no response is drafted.
 
 The agent instructions are in [SKILL.md](SKILL.md). The skill uses `scripts/ingest.py`. Related skills: `source-ingestion` and `privacy-configuration`.

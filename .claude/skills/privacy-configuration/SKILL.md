@@ -22,7 +22,7 @@ Find the facts in the environment first. Then ask one question at a time for wha
 
 - The AI application and how the researcher signs in, for example Claude Code with a Claude account, Codex with a ChatGPT account, or an API key.
 - The account type: personal, or managed by an organization (business, enterprise, or education). Ask for the type only, never for an identifier.
-- The document-processing route in `requirements/privacy.md`: local, a named MinerU cloud service, or not decided.
+- The recorded document-processing scope in `requirements/privacy.md`. MinerU is confirmed remote-only for reference materials. Do not ask to confirm this scope again; ask only if the researcher requests a change or another service.
 
 An organization's agreement and administrator settings govern a managed account. The researcher may be unable to change them.
 
@@ -67,7 +67,7 @@ Never classify a control as observed because you showed instructions or wrote a 
 - Write a short report in `.local/privacy-report.md` from [report-template.md](report-template.md), in English. `.local/` stays on this computer and outside version history. Do not include account identifiers, email addresses, credentials, screenshots, or research content.
 - Write to `requirements/privacy.md` only the choices that the researcher confirms as project requirements, for example "Use only services that do not train on my documents." Write project records in English; use the interaction language in conversation.
 - This file can contain separate scopes for document processing and external search queries. When recording a processing choice, preserve any confirmed query-sharing scope and its machine markers. Permission to search does not authorize document uploads, and a document-processing choice does not authorize sending queries to another service.
-- A wish to use a cloud service is not yet a confirmed choice. Before you record one, ask one question that gives your recommendation for its scope (which documents may leave this computer) and notes that the service's own terms are checked before the first upload. Record the choice, with that scope and the service's address (mineru.net for the official MinerU service), only after the researcher answers. Until then, note the wish as open in `state/current.md`.
+- A wish to use a new cloud service or expand the existing MinerU scope is not yet a confirmed choice. Before you record one, ask one question that gives your recommendation for its scope (which documents may leave this computer) and notes that the service's own terms are checked before the first upload. Record the choice, with its scope and service address, only after the researcher answers. Until then, note the wish as open in `state/current.md`.
 - Report each route with its control, state, and evidence type, the exceptions that remain, and one next step.
 
 ## When to run again

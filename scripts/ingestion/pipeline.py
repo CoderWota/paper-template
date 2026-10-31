@@ -1,7 +1,7 @@
 """Run an import: archive, convert, check, and publish each item, saving the record after every step.
 
 Items are independent. A failed document does not stop the others; a failure that would repeat
-for every document (a rejected token, an exhausted quota, missing models) stops the run, and the
+for every document (a rejected token or an exhausted quota) stops the run, and the
 open items continue when the import runs again. Nothing switches to another route.
 """
 
@@ -52,11 +52,11 @@ def coverage_words(coverage: dict) -> str:
 
 
 class Pipeline:
-    def __init__(self, root: Path, record: ImportRecord, *, local=None, cloud=None, pandoc=None, redact: Redactor | None = None,
+    def __init__(self, root: Path, record: ImportRecord, *, cloud=None, pandoc=None, redact: Redactor | None = None,
                  reconvert: bool = False, overwrite_edited: bool = False, emit=print):
         self.root, self.record = root, record
         self.route = record.data.get("route")
-        self.local, self.cloud, self.pandoc, self.direct = local, cloud, pandoc, DirectRoute()
+        self.cloud, self.pandoc, self.direct = cloud, pandoc, DirectRoute()
         self.redact = redact or Redactor()
         self.log = Log(root, record.id, self.redact)
         self.reconvert, self.overwrite_edited, self.emit = reconvert, overwrite_edited, emit
@@ -104,8 +104,6 @@ class Pipeline:
 
     def settings_for(self, item: dict) -> dict:
         handler = handler_for(item["kind"], self.route)
-        if handler == "local":
-            return self.local.settings(item["kind"])
         if handler == "cloud":
             return self.cloud.settings(item["kind"])
         if handler == "pandoc":
@@ -206,8 +204,6 @@ class Pipeline:
         try:
             if handler == "cloud":
                 raw, notes = self.cloud.convert(archived, work, item["kind"])
-            elif handler == "local":
-                raw, notes = self.local.convert(archived, work, item["kind"]), []
             elif handler == "pandoc":
                 raw, notes = self.pandoc.convert(archived, work, item["kind"], resolve_display(item["input"], self.root).parent)
             else:

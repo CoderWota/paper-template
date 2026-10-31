@@ -1,15 +1,15 @@
 ---
 name: source-ingestion
-description: Import or extract research reference PDFs and other documents. When needed, help choose and set up the official MinerU MCP cloud route (mineru.net); route drafts and review letters separately.
+description: Import research reference PDFs and other reference materials. Use the official remote MinerU MCP only for reference sources; route drafts and correspondence to their specialist skills.
 ---
 
 # Source ingestion
 
-Outcome: every requested document has a status. A converted source has its original in `references/originals/<source-id>/`, readable Markdown with working images in `references/extracted/<source-id>/`, a row in `references/index.md`, and citation metadata read from the document. The researcher gets a short report with counts and links. A finished conversion is not a claim that the text, tables, or formulas are correct.
+Outcome: every requested reference material has a status. A converted source has its original in `references/originals/<source-id>/`, readable Markdown with working images in `references/extracted/<source-id>/`, a row in `references/index.md`, and citation metadata read from the document. The researcher gets a short report with counts and links. A finished conversion is not a claim that the text, tables, or formulas are correct.
 
 ## Rules for this skill
 
-- Follow `AGENTS.md`. The processing route comes from `requirements/privacy.md` (step 2). When a route fails, report the failure: another route or another parser needs a new choice by the researcher.
+- Follow `AGENTS.md`. MinerU is remote-only and may process reference materials only, as recorded in `requirements/privacy.md`. When a route fails, report the failure: another route or parser needs a new choice by the researcher.
 - `scripts/ingest.py` does the archiving, conversion, checks, records, index, and bibliography. Never copy files into `references/` by hand, and never edit `index.md`, `bibliography.bib`, a `document.md`, or a `provenance.json` yourself.
 - Never change, move, rename, or delete the researcher's input files, in `inbox/` or anywhere else, and add no files to their folders.
 - Do not upload research material merely to check connectivity. Use a non-uploading check, or leave access unverified until the authorized import.
@@ -25,7 +25,7 @@ Outcome: every requested document has a status. A converted source has its origi
    ```
 
    It lists each file as to convert, already imported, duplicate, not supported, or needing a processing route.
-3. Mixed material, for example in `inbox/`: look at each file that is not obviously a reference source (its name and its first page) and decide its role. Ask only about a role that you cannot tell.
+3. Mixed material, for example in `inbox/`: look at each file and identify whether it is a reference source from its name and first page. Ask about unclear roles. Never upload drafts, review correspondence, feedback, or other non-reference material to MinerU.
 
    | Role | Where it goes |
    | --- | --- |
@@ -36,11 +36,11 @@ Outcome: every requested document has a status. A converted source has its origi
    | A journal template or its author guidelines | `submission-assembly`, which keeps them in the output profile |
    | Anything else that is not a reference source | Keep the file where it is and record it with `python scripts/ingest.py note --import-id ID --role other --reason "..." PATH`, so that it stays visible. Never add a draft to `manuscript/manifest.yaml`. |
 
-4. Tell the researcher in one short message how many files will be imported and with which processing route. Routine steps inside a confirmed scope need no further approval.
+4. Tell the researcher in one short message how many reference files will be imported and that MinerU will process them remotely. Do not include other materials in that upload batch.
 
 ## Step 2: Confirm and prepare the route
 
-Read the applicable choice in `requirements/privacy.md`. Markdown and text are read directly. For other documents, read the route-selection section of [the import guide](import-guide.md) before choosing a route or preparing the MCP. Reuse a choice that covers this batch; confirm only a missing or changed scope. If conversion is needed and no route covers the batch, check the MCP with `python scripts/setup_mcp.py check`, and guide the researcher through the cloud choice as part of this import. Do not stop at “not configured,” switch routes silently, or ask the researcher to invoke another skill; load environment or privacy guidance when this import needs it.
+Read the reference-only scope in `requirements/privacy.md`. Markdown and text are read directly. For other reference materials, follow [the import guide](import-guide.md) and use the official MinerU MCP. Check MCP availability with `python scripts/setup_mcp.py check` when conversion is needed. Do not upload non-reference documents, switch routes silently, or ask the researcher to invoke another skill; load environment guidance when this import needs it.
 
 ## Step 3: Import, review, and record metadata
 

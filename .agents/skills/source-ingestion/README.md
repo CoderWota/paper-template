@@ -1,12 +1,12 @@
 # Source Ingestion
 
-Imports your documents into the reference library: one file, a folder, or whatever you put in `inbox/`. The agent keeps each original unchanged, converts it into readable Markdown through the official MinerU MCP, checks what it can, and adds the source to the index and the bibliography. You do not need to know MinerU, sort your files, or name any output.
+Imports reference materials into the library: one source, a folder, or reference files from `inbox/`. The agent keeps each original unchanged, converts supported files into readable Markdown through the official remote MinerU MCP, checks what it can, and adds each source to the index and bibliography. Drafts, review correspondence, feedback, and other materials are never uploaded through this skill. You do not need to know MinerU, sort your files, or name any output.
 
 Ask, for example: "Import all PDFs in this folder, including the images." or "Continue the import, but only the files that failed."
 
 ## What to expect
 
-- Documents are converted only with the mineru.net service, and only for the documents you confirmed. Conversion on this computer is not available yet. A failure is reported; it never moves your documents to another service.
+- MinerU is remote-only and processes reference materials only. The script enforces the `references` destination; the agent checks the material's role before upload. A failure is reported; it never moves the file to another service.
 - Converted text comes back as Markdown without page records or figures, so every converted document is marked as needing a check against its original.
 - Every file gets a status: converted, already imported, needs a check, failed, or not supported. The agent tells you why and what it recommends.
 - A converted document can still contain errors, especially in formulas, tables, and scanned pages. The agent points out what to check, and the original stays the authority.

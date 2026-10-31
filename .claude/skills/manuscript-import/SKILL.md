@@ -20,7 +20,7 @@ Outcome: the researcher's existing draft adopted into `manuscript/` (or staged b
    | --- | --- |
    | Word `.docx`, OpenDocument `.odt`, LaTeX `.tex` | `python scripts/ingest.py run --to manuscript --route pandoc FILE` (Pandoc on this computer; nothing is uploaded) |
    | Markdown or text | `python scripts/ingest.py run --to manuscript FILE` (read directly) |
-   | PDF or a scan | `python scripts/ingest.py run --to manuscript --route cloud FILE`, through the official MinerU MCP, as `source-ingestion` describes in its steps 2 and 3. The manuscript goes to mineru.net only when the confirmed scope in `requirements/privacy.md` covers it; ask otherwise. Conversion on this computer is not available yet. |
+   | PDF or a scan | Do not upload it to MinerU: the confirmed scope allows reference materials only. No local MinerU conversion is available. Preserve the original and report that a readable editable copy or another authorized route is needed. |
    | Old Word `.doc` | Ask the researcher to save a copy as `.docx`. |
 
    When Pandoc is missing, explain it and install it only with consent: `python scripts/export.py install --component pandoc`.
