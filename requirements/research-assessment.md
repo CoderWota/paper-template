@@ -25,6 +25,18 @@ Confirmed 2026-10-30: "We do not pursue absolute originality. Do not end the dis
 - Scope: Submission-oriented `mock-review` assessments with a named target, in both clients and every discipline. Journal-selection notes and submission-readiness assessments do not produce this distribution.
 - Confirmed: 2026-10-31; "When reviewing a paper whose submission status may be uncertain, assess it against the planned journal's subject scope and acceptance criteria. In the final result, give probabilities for all six outcomes and explain the reasons for them."
 
+## Blind retrospective calibration of mock review
+
+- Rule: Keep a simulated editorial assessment blind to authorship where required, publication status, editorial decisions, journal metrics, and later citation counts until the reviewers' findings and recommendation are locked. Distinguish a planned submission, a submitted manuscript awaiting a decision, and a retrospective test of a decided or published paper. For a retrospective test, compare only with a verified decision for the matching manuscript version and decision round; a publication record alone establishes eventual acceptance, not the initial editorial recommendation. Use journal metrics and article citations only in the post-review comparison, with their source, year or version, and lookup date stated. Use them as reception context, not as manuscript quality scores or acceptance odds. Calibrate thresholds against evidence so the skill is neither overstrict nor overly lenient.
+- Scope: Mock-review assessments and retrospective calibration, in both clients and all disciplines.
+- Confirmed: 2026-11-04; "I am only calibrating the skill. The review should maintain blind review, but should not be too strict or too lenient." "The papers I show you have already been submitted; I want to see whether you can correctly reproduce the editorial review conclusion at the time."
+
+## Current-standard mock review default
+
+- Rule: Assess the exact supplied manuscript version against current official target-journal criteria and current relevant literature by default, regardless of whether it is planned, submitted, or published. For a paper with a final decision, label any treatment recommendation as a counterfactual for that version under current standards. Keep publication status, editorial history, journal metrics, and later citation counts hidden until findings are locked; use them only in a separate post-review comparison and never to change manuscript scores. Use historical criteria and decision-round matching only when the researcher explicitly requests a historical editorial backtest.
+- Scope: All `mock-review` assessments and skill-calibration reviews, in both clients and every discipline.
+- Confirmed: 2026-11-04; "本skill就按现在标准审稿" and "就按现在标准审稿".
+
 ## Humanities and social sciences mock review
 
 - Rule: Evaluate prior-work differences, theoretical or interpretive contribution, and societal contribution separately. Require a supported path from a concrete social problem and affected people to the paper's added understanding and a potential benefit, with conditions and limits. Actual policy adoption or intervention effects are not required. Identify this as the skill's assessment requirement, separate from a venue's official criteria.

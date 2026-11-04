@@ -10,6 +10,7 @@ Ask, for example: "Audit the results and discussion sections and tell me which c
 - A final check reports only blocking problems and says so plainly when there are none.
 - A reviewer's view lists strengths and weaknesses, marks each weakness as a matter of presentation or of substance and as fixable in a revision or structural, and suggests what to do. It gives no score and no chance of acceptance.
 - A citation that exists is not treated as proof that it supports the claim; both are checked separately.
+- When argument logic is in scope, the audit compares the paper-level and local reasoning with the internal Mermaid logic map. The map guides the check but is not evidence.
 - Emphatic contribution language and ambitious prospects are allowed. A finding about overstatement must name the factual assertion and the evidence it misrepresents; promotional tone alone is not a problem.
 - The text is not changed unless you ask. The report is kept in `outputs/checks/` with the inputs it examined, so a later change to those inputs marks it as out of date.
 

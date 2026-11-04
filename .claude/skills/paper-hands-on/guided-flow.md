@@ -6,7 +6,7 @@ For the cross-stage pattern, see the [researcher-led paper work loop](../../../d
 
 ## Step 1: Recognize where the project stands
 
-1. Read `state/current.md`, then run `python scripts/status.py` (read-only). It summarizes the library, ideas, plan, results, venues, outline, manuscript, checks, builds, releases, review rounds, revisions, feedback, and unsaved work. If both show an uninitialized paper with no research material, stop there and ask for the goal or material; do not scan indexes, READMEs, or the whole tree. Otherwise open only records linked to the current work or needed to resolve a specific gap.
+1. Read `state/current.md`, then run `python scripts/status.py` (read-only). It summarizes the library, ideas, plan, results, venues, outline, logic map, manuscript, checks, builds, releases, review rounds, revisions, feedback, and unsaved work. If both show an uninitialized paper with no research material, stop there and ask for the goal or material; do not scan indexes, READMEs, or the whole tree. Otherwise open only records linked to the current work or needed to resolve a specific gap.
 2. Establish the current goal, authorized scope, and what would count as a useful delivery from the request and confirmed records. Ask only when those leave a material ambiguity. Their account takes precedence over the signals; do not turn a request for a paragraph into a whole-paper workflow.
 
 ## Step 2: Choose the entry and the next step
@@ -29,7 +29,7 @@ For the cross-stage pattern, see the [researcher-led paper work loop](../../../d
 
 ## Step 3: Carry out the step and connect it
 
-6. Run the step with its skill. Its results land in the shared records: sources in `references/`, ideas in `ideas/`, the plan, results, decisions, venues, and feedback in `research/`, the outline and sections in `manuscript/`, profiles in `requirements/profiles/`, outputs in `outputs/`, reviews in `reviews/`. The next step reads them from there.
+6. Run the step with its skill. Its results land in the shared records: sources in `references/`, ideas in `ideas/`, the plan, results, decisions, venues, and feedback in `research/`, the outline, logic map, and sections in `manuscript/`, profiles in `requirements/profiles/`, outputs in `outputs/`, reviews in `reviews/`. The next step reads them from there.
 7. After the step, update `state/current.md` in English: the goal, the stage reached, what was done in this step, what is open (including any question waiting for the researcher), and the next step. Replace outdated lines; keep it short.
 
 - Before handing off, inspect the artifact and its checks; a file's existence or a successful command alone does not establish completion. Link the actual inputs, outputs, checks, and unresolved questions in the owning source note, plan, result, outline, audit, or revision record. Do not create a parallel task database.

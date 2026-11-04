@@ -2,7 +2,7 @@
 """Report facts about the research project from its records, without changing anything.
 
 Reads the project requirements, the reference library and searches, evidence notes, ideas, the research plan, result
-records, venue notes, the outline and manuscript, output profiles and builds, releases, review rounds, revisions,
+records, venue notes, the outline, logic map and manuscript, output profiles and builds, releases, review rounds, revisions,
 research feedback, and the version history. The paper-hands-on skill
 uses it to recognize the stage of a project in a fresh session; the researcher's own account and state/current.md
 take precedence over these signals.
@@ -103,6 +103,8 @@ def facts(root: Path) -> dict:
     data["feedback_open"] = open_items
     outline = root / "manuscript" / "outline.md"
     data["outline"] = outline.is_file() and "No outline yet" not in outline.read_text(encoding="utf-8")
+    logic_map = root / "manuscript" / "logic-map.md"
+    data["logic_map"] = logic_map.is_file() and "No manuscript logic map yet" not in logic_map.read_text(encoding="utf-8")
     try:
         analysis = manuscript.analyse(root)
         data["manuscript"] = {"sections": len(analysis["paths"]), "words": analysis["words"], "cjk": analysis["cjk"],
@@ -177,7 +179,8 @@ def main(argv: list | None = None) -> int:
         + (f" ({data['stale_results']} stale input or output)" if data["stale_results"] else "") + ".",
         f"Venues examined: {data['venues']}; decisions recorded: {data['decisions']}; feedback events: {data['feedback_events']}"
         + (f" ({data['feedback_open']} open suggestion(s))" if data["feedback_open"] else "") + ".",
-        f"Outline: {'yes' if data['outline'] else 'no'}; manuscript: {m['sections']} section file(s), {m['words']} words"
+        f"Outline: {'yes' if data['outline'] else 'no'}; logic map: {'yes' if data['logic_map'] else 'no'}; "
+        f"manuscript: {m['sections']} section file(s), {m['words']} words"
         + (f", {m['cjk']} CJK characters" if m["cjk"] else "") + f", {m['problems']} problem(s), {m['open_items']} open marker(s).",
         f"Checks recorded: {data['checks']['recorded']} ({data['checks']['stale']} stale); profiles: {', '.join(data['profiles']) or 'none'}; "
         f"builds: {', '.join(f'{k} {v}' for k, v in data['builds'].items()) or 'none'}; releases: {', '.join(data['releases']) or 'none'}.",

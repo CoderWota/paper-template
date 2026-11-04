@@ -1,5 +1,5 @@
 # Manuscript assembly manifest, maintained by the agent.
 # Lists the section files (paths relative to this directory) in reading order.
-# Only listed files are assembled; README.md, outline.md, notes, and drafts never are.
+# Only listed files are assembled; README.md, outline.md, logic-map.md, notes, and drafts never are.
 version: 1
 sections: []

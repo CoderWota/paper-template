@@ -46,7 +46,7 @@ from text_rules import (CJK, WORD, citation_keys, doubled_reference, halfwidth_p
                         open_marker, raw_latex, signature_problems)  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
-NOT_SECTIONS = {"README.md", "outline.md", "manifest.yaml"}
+NOT_SECTIONS = {"README.md", "outline.md", "logic-map.md", "manifest.yaml"}
 CROSSREF = ("fig", "tbl", "eq", "sec", "lst")
 FENCE = re.compile(r"^(\s{0,3})(`{3,}|~{3,})\s*([^\s`{]*)")
 HEADING = re.compile(r"^(#{1,6})\s+(.*?)\s*#*\s*$")
@@ -137,10 +137,11 @@ def command_set_sections(args, root: Path) -> int:
     header = [line for line in old.splitlines() if line.startswith("#")] or [
         "# Manuscript assembly manifest, maintained by the agent.",
         "# Lists the section files (paths relative to this directory) in reading order.",
-        "# Only listed files are assembled; README.md, outline.md, notes, and drafts never are."]
+        "# Only listed files are assembled; README.md, outline.md, logic-map.md, notes, and drafts never are."]
     data = read_manifest(root, folder) if path.is_file() else {"version": "1", "sections": []}
     for name in args.files:
-        if name in NOT_SECTIONS or not name.endswith(".md") or name.startswith(("/", "..")):
+        if (name in NOT_SECTIONS or Path(name).name in NOT_SECTIONS or not name.endswith(".md")
+                or name.startswith(("/", ".."))):
             raise Refused(f"{name} cannot be a manuscript section")
         target = (folder / name).resolve()
         if folder.resolve() not in target.parents:
@@ -624,7 +625,7 @@ def command_adopt(args, root: Path) -> int:
                 (folder / "references.bib").unlink(missing_ok=True)
     manifest_lines = ["# Manuscript assembly manifest, maintained by the agent.",
                       "# Lists the section files (paths relative to this directory) in reading order.",
-                      "# Only listed files are assembled; README.md, outline.md, notes, and drafts never are.", "version: 1"]
+                      "# Only listed files are assembled; README.md, outline.md, logic-map.md, notes, and drafts never are.", "version: 1"]
     if meta and not metadata_note:
         manifest_lines.append("metadata: metadata.yaml")
     manifest_lines += ["sections:"] + [f"  - {name}" for name in names]

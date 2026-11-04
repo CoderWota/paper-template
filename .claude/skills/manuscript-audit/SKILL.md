@@ -9,14 +9,14 @@ Outcome: a prioritized list of findings, each tied to an exact passage and to th
 
 ## Step 1: Set the scope
 
-1. Name what is audited: the whole manuscript or named sections, and which checks (by default all of step 2). Read `requirements/project.md`, `requirements/writing.md`, `manuscript/outline.md`, the manifest and the section files in scope, the bibliography, the evidence notes and result records the text relies on, and the venue note when a target is set. When the argument check is in scope, read [argument and impact guidance](../manuscript-writing/argument-and-impact.md).
+1. Name what is audited: the whole manuscript or named sections, and which checks (by default all of step 2). Read `requirements/project.md`, `requirements/writing.md`, `manuscript/outline.md`, the manifest and the section files in scope, the bibliography, the evidence notes and result records the text relies on, and the venue note when a target is set. When the argument check is in scope, also read `manuscript/logic-map.md` and [argument and impact guidance](../manuscript-writing/argument-and-impact.md). If the map is missing, report that workflow gap.
 2. Run `python scripts/manuscript.py checks`. A recorded check whose inputs changed is stale: do not reuse its result.
 3. A final check, requested for a text that has already been revised, reports only blocking problems: statements that contradict each other, a key term that changes without explanation, a sentence whose meaning is unclear or wrong, and numbers that disagree between passages. When there are none, say so plainly. Offer the minor findings separately instead of listing them, and record the scope as a final check.
 
 ## Step 2: Examine, one check at a time
 
 4. **Mechanics.** `python scripts/manuscript.py check` (labels, citation keys, images, math, LaTeX commands left in the prose, hand-numbered references, half-width punctuation after Chinese or Japanese text, open `[TODO: ...]` markers) and `python scripts/literature.py audit-bibliography` (keys linked to archived sources). A key that resolves is not support.
-5. **Argument.** Does the text make the main claim of the outline and explain why its contribution matters to the field and venue? Are reasoning steps missing, claims stronger or weaker than their support, alternatives ignored, or material limitations omitted? Apply [argument and impact guidance](../manuscript-writing/argument-and-impact.md). Tie each finding to a claim, inspected support, and consequence; do not demand unrelated work or treat a scope boundary as a defect. Check contradictions between sections, such as an abstract number that differs from the results or a conclusion that the methods cannot support.
+5. **Argument.** Does the text make the main claim of the outline and explain why its contribution matters to the field and venue? Compare the whole-paper path and local section reasoning against `manuscript/logic-map.md`: are there missing inferential steps, claims stronger or weaker than their support, alternatives ignored, material limitations omitted, or sections that do not advance the argument? The map is an aid, not evidence; check every substantive link against the cited passage or result record. Apply [argument and impact guidance](../manuscript-writing/argument-and-impact.md). Tie each finding to a claim, inspected support, and consequence; do not demand unrelated work or treat a scope boundary as a defect. Check contradictions between sections, such as an abstract number that differs from the results or a conclusion that the methods cannot support.
 6. **Support.** For each substantive claim: the cited source's passage, checked with `literature-and-evidence` (support, contradiction, qualification, or not checked), or the result record and its status. `python scripts/research.py check` reports stale results; a stale or unchecked result does not support a finding. When a result's method comes from code in an imported repository, also compare the method statements with that code at the recorded commit; if the code looks wrong, hand the change to a code session. Both are described in [repositories](../research-code-setup/repositories.md).
 7. **Terminology and rules.** Each active rule in `requirements/writing.md`, applied within its scope; the terminology table; consistency of terms across sections.
 8. **Language.** The manuscript language throughout, with the confirmed exceptions; unintended mixing; clarity.
@@ -30,7 +30,7 @@ Outcome: a prioritized list of findings, each tied to an exact passage and to th
 13. Write the report in English to `outputs/checks/<date>-audit-<scope>.md`, then record it:
 
     ```text
-    python scripts/manuscript.py record-check --name "Audit of <scope>" --kind audit --input <each audited section> --input references/bibliography.bib [--input <evidence notes and result records used>] --result passed|findings|failed --summary "..." --scope "<checks made>" --report outputs/checks/<file>.md
+    python scripts/manuscript.py record-check --name "Audit of <scope>" --kind audit --input <each audited section> --input references/bibliography.bib [--input manuscript/outline.md --input manuscript/logic-map.md --input <evidence notes and result records used>] --result passed|findings|failed --summary "..." --scope "<checks made>" --report outputs/checks/<file>.md
     ```
 
 14. Tell the researcher the most important findings first, with links. For an audit-only request, ask which to address. If correction and rechecking are already authorized, continue through `manuscript-writing`, `natural-prose` for formulaic wording, or `manuscript-revision` for structural ones within its confirmation requirements. Keep the researcher's current edits, and pause only the work dependent on a new scientific choice.
@@ -41,6 +41,7 @@ For a follow-up audit, identify each prior finding by its existing heading or lo
 
 - The scope and the checks made are stated, and stale earlier results were not reused.
 - Each finding points to an exact passage and to its evidence or rule; support and citation resolution were checked separately.
+- When argument logic was in scope, both paper-level and section-level reasoning were compared with the internal logic map, and that map was included as an audit input.
 - Nothing was invented to close a gap, and the text was not edited without a request.
 - The report exists and its check record names the inputs examined.
 - A reviewer's view gives no score, rating, or chance of acceptance.

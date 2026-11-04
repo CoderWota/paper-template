@@ -5,12 +5,12 @@ description: Adopt an existing draft into the workspace, preserving the original
 
 # Manuscript import
 
-Outcome: the researcher's existing draft adopted into `manuscript/` (or staged beside the current one for comparison), in the workspace conventions, with the original kept unchanged and conversion losses named. Import preserves the draft's language even when the target paper language differs; it does not translate, rewrite the science, or accept tracked changes on the researcher's behalf.
+Outcome: the researcher's existing draft adopted into `manuscript/` (or staged beside the current one for comparison), with an internal Mermaid logic map of the imported argument, in the workspace conventions, with the original kept unchanged and conversion losses named. Import preserves the draft's language even when the target paper language differs; it does not translate, rewrite the science, or accept tracked changes on the researcher's behalf.
 
 ## Step 1: Identify the material and the target
 
 1. Find the main manuscript file and what belongs to it: a figures folder, a `.bib` file for LaTeX, supplementary files. Prefer an editable source (Word, LaTeX, OpenDocument, Markdown) over a PDF of the same text.
-2. Run `python scripts/manuscript.py check` and read `manuscript/manifest.yaml`. When the manuscript already lists section files, the import is staged as a revision candidate for comparison (Step 4); it never goes over the current manuscript. Ask the researcher which version is the working one when that is unclear.
+2. Run `python scripts/manuscript.py check` and read `manuscript/manifest.yaml`. When the manuscript already lists section files, the import is staged as a revision candidate for comparison (Step 4); it never goes over the current manuscript. Read the current `manuscript/logic-map.md` when comparing an existing working manuscript. Ask the researcher which version is the working one when that is unclear.
 
 ## Step 2: Convert, keeping the original
 
@@ -48,14 +48,19 @@ Outcome: the researcher's existing draft adopted into `manuscript/` (or staged b
 10. **Conversion details.** A typed number inside a formula, such as `(1)`, is removed and replaced by a label paragraph when the formula is referred to; a hand-written "Figure 1" becomes an `@fig:` reference with a label on the figure; an image in Windows metafile format is often an equation from an old equation editor and needs transcription by the researcher or a checked conversion, never a guess; unconverted LaTeX lines and missing images are reported. These are format repairs: report each one, and change no wording or claim.
 11. Run `python scripts/manuscript.py check` and compare the important parts with the original file or its rendered pages: formulas, tables, figures, and the section order. The imported claims are the researcher's text, not verified findings. If the draft language differs from the target paper language, identify translation as remaining work; do not translate during import.
 
-## Step 6: Report
+## Step 6: Create the internal logic map
 
-12. Report in the interaction language: where the manuscript was adopted or staged, the sections, the open decisions (tracked changes, comments, unresolved citations), every loss or uncertain conversion, and the next useful step, such as `manuscript-audit`.
+12. After adoption and citation mapping, replace the scaffold or create `logic-map.md` in the adoption target: `manuscript/logic-map.md` for an empty manuscript, or `revisions/<revision-id>/candidate/logic-map.md` for a staged import. Remove the "No manuscript logic map yet" marker and unused placeholder nodes. Use a Mermaid flowchart to show the argument stated in the imported text, the local claim and evidence links within sections, and the whole-paper path to its conclusion. Mark unclear steps, unresolved evidence, and unchecked source support explicitly; a citation in the draft is not verified support. Do not infer or change the author's main claim, edit the imported text, or put the map in the manifest. Keep the current manuscript and its map unchanged when staging a candidate.
+
+## Step 7: Report
+
+13. Report in the interaction language: where the manuscript was adopted or staged, where its logic map was written, the sections, the open decisions (tracked changes, comments, unresolved citations), every loss or uncertain conversion, and the next useful step, such as `manuscript-audit`.
 
 ## Completion check
 
 - The original is unchanged in the import record, and the converter and settings are recorded.
 - No tracked change was accepted or rejected without the researcher's decision, and comments were not applied.
 - An existing manuscript was not replaced; a second version was staged for comparison.
+- The internal logic map represents the imported draft's argument without changing it, labels unchecked support and gaps, and is not in the manifest.
 - Every loss, unresolved citation, and uncertain formula or image is named in `mapping.md` and in the report; nothing was invented to fill a gap.
 - Review `python scripts/manuscript.py check`: resolve actual loss or meaning risks, and report other findings as open items when relevant. The command reports findings; a nonzero exit is not a writing judgment.

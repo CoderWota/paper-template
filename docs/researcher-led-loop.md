@@ -43,7 +43,7 @@ Record project findings in `research/results/` when they are research outputs, a
 
 ### 5. Build the paper from confirmed argument and evidence
 
-Use `manuscript/outline.md` to connect the confirmed question and argument to sections, claims, sources, and project results. Draft from those records, not from expected findings. Keep unsupported claims visible as gaps or TODOs. Link important statements to source locators or result records; a citation key resolving in the bibliography does not show that the source supports the claim.
+Use `manuscript/outline.md` to connect the confirmed question and argument to sections, claims, sources, and project results. Use `manuscript/logic-map.md` as the internal Mermaid view of the whole-paper argument and the local reasoning within sections. Draft from those records, not from expected findings. Keep unsupported claims visible as gaps or TODOs. Link important statements to source locators or result records; a citation key resolving in the bibliography does not show that the source supports the claim.
 
 The manuscript follows the researcher's chosen paper language. Working notes can remain in another language. Preserve the researcher's wording and edits, and do not insert an AI signature or claim authorship.
 
@@ -64,7 +64,7 @@ Use the records already owned by each part of the work:
 | Question to plan | `requirements/`, confirmed decisions, retained idea | The selected question, boundaries, open assumptions |
 | Plan to research | `research/plan.md` | The work item, needed inputs, method status, expected record and check |
 | Research to argument | Source notes and `research/results/` | Actual observations, locators, checks, alternatives, limitations, dependent claims |
-| Argument to writing | `manuscript/outline.md` and evidence records | Confirmed claim order, support, gaps, figure and table links |
+| Argument to writing | `manuscript/outline.md`, `manuscript/logic-map.md`, and evidence records | Confirmed claim order, support, gaps, local reasoning, figure and table links |
 | Audit to repair | Audit report and check record | Exact finding, basis, recommended repair, affected inputs |
 | Repair to recheck | Manuscript or revision records, refreshed results | Actual change and fresh evidence/check; unresolved reason |
 

@@ -5,11 +5,11 @@ description: Propose an evidence-linked manuscript structure from the confirmed 
 
 # Manuscript outline
 
-Outcome: `manuscript/outline.md`, a researcher-reviewable plan of the argument and the sections: the main claim, the supporting claims in order with the evidence each needs and its status, each section's purpose and content, planned figures and tables with their labels, the constraints that apply, and the gaps. The outline guides writing; it is never assembled into the manuscript.
+Outcome: `manuscript/outline.md` and `manuscript/logic-map.md`: a researcher-confirmed plan of the argument and sections, plus an internal Mermaid flowchart that makes the paper-level argument and local reasoning visible. Neither file is assembled into the manuscript.
 
 ## Step 1: Gather the inputs
 
-1. Read `requirements/project.md` (question, contribution, article type, languages, target venue), `requirements/writing.md`, [argument and impact guidance](../manuscript-writing/argument-and-impact.md), `research/plan.md`, `research/results/index.md` (with each result's status), the evidence notes and search records that the plan links, the selected idea note, the venue note in `research/venues/` when a target is set, adopted suggestions in `research/feedback/`, and the existing `manuscript/outline.md` and manifest.
+1. Read `requirements/project.md` (question, contribution, article type, languages, target venue), `requirements/writing.md`, [argument and impact guidance](../manuscript-writing/argument-and-impact.md), `research/plan.md`, `research/results/index.md` (with each result's status), the evidence notes and search records that the plan links, the selected idea note, the venue note in `research/venues/` when a target is set, adopted suggestions in `research/feedback/`, and the existing `manuscript/outline.md`, `manuscript/logic-map.md`, and manifest.
 2. If the research question or the main contribution is not settled, say so and offer `idea-deepening` or `research-planning`; never invent the claim the paper makes.
 
 ## Step 2: Build the argument
@@ -29,12 +29,13 @@ Outcome: `manuscript/outline.md`, a researcher-reviewable plan of the argument a
 ## Step 4: Confirm
 
 8. The overall argument and structure is a major decision. Present the proposed structure with your recommendation and, when they help, one or two alternatives with their trade-offs; ask one question and wait. A clear instruction with a structure ("use the structure my coauthor suggested") confirms it within its scope.
-9. After confirmation of the overall argument and structure, record that major decision with `constraint-maintenance`, then write the outline. Reuse a decision record that already confirms this structure and scope. When the structure came from a collaborator, record its adoption through `research-feedback`; the researcher's explicit instruction in step 8 is already confirmation and needs no second question.
+9. After confirmation of the overall argument and structure, record that major decision with `constraint-maintenance`, then write the outline and logic map. Reuse a decision record that already confirms this structure and scope. When the structure came from a collaborator, record its adoption through `research-feedback`; the researcher's explicit instruction in step 8 is already confirmation and needs no second question.
 
 ## Step 5: Write the outline
 
 10. Write `manuscript/outline.md` in English, with planned section titles in the manuscript language: the main claim and its support, the supporting claims with evidence status, the section map, the figure and table plan, the constraints with their sources, the gaps, and open questions. Keep text that the researcher wrote. Replace outdated parts; the outline states the current plan.
-11. The outline does not create or change section files. Drafting starts with `manuscript-writing`, which creates the files and lists them in the manifest.
+11. Replace the scaffold in `manuscript/logic-map.md` with the confirmed map in English, and remove the "No manuscript logic map yet" marker and unused placeholder nodes. Use a Mermaid `flowchart TD` to show how the question connects to the main claim, how local claims and checked or pending evidence lead through each inferential step, and how alternatives, contrary evidence, gaps, and limitations affect the conclusion. Group nodes by the manuscript's actual sections where useful. Label the real relationship on every edge; do not use an arrow that implies unsupported causality. Keep the whole-paper chain readable, and add a focused local flowchart in the same file only when one section's reasoning needs more detail. The map exposes gaps; it does not validate evidence.
+12. The outline and logic map do not create or change section files. Drafting starts with `manuscript-writing`, which creates the files and lists them in the manifest. Never list `logic-map.md` in the manifest.
 
 ## Completion check
 
@@ -43,3 +44,4 @@ Outcome: `manuscript/outline.md`, a researcher-reviewable plan of the argument a
 - The structure fits the discipline, article type, and venue limits, each with its source; no structure was forced.
 - The structure was confirmed by the researcher before the outline was written as the plan.
 - The outline holds no body text and is not listed in the manifest.
+- The logic map reflects the confirmed argument, shows both whole-paper and section-level reasoning, marks evidence gaps and limits, and is not listed in the manifest.

@@ -14,6 +14,12 @@ Status: not initialized. The research goal, manuscript language, and interaction
 - Scope: This template's initialization workflow, in both clients.
 - Confirmed: 2026-10-31; "Include `pdftotext` in the scope of project initialization."
 
+## Internal manuscript logic map
+
+- Rule: Maintain a Mermaid flowchart in `manuscript/logic-map.md` for each manuscript, whether it is written from scratch or imported. Show the paper-level argument and the local claim, evidence, and inference steps needed to check the logic of its sections. Make evidence gaps, alternatives or contrary evidence, and limits visible. Keep this as an internal reference; never list it in `manuscript/manifest.yaml` or include it in publication output. Update it when the argument or structure changes.
+- Scope: This template's manuscript workflow, for every manuscript project.
+- Confirmed: 2026-11-04; "We need to ensure the paper's reasoning is coherent. Use a Mermaid flowchart to lay out the paper's logical framework. Keep it out of the paper body as an internal reference, so authors can keep their reasoning coherent and check the logic of the whole paper and its parts when their thinking jumps. Both writing a paper from scratch and importing a paper require this outline."
+
 ## Sciverse and MinerU calls through MCP
 
 - Rule: Skills and scripts in this workspace make Sciverse and MinerU service calls only through the installed official MCP servers. No direct API fallback is used. MinerU runs remotely only and may process reference materials only; see `requirements/privacy.md` for the confirmed document scope. Credential and search-query scopes remain in force.
