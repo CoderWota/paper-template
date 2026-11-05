@@ -1,6 +1,12 @@
 # Project Requirements
 
-Status: not initialized. The research goal, manuscript language, and interaction language are unconfirmed.
+Status: not initialized. This workspace contains no imported manuscript yet. During manuscript import, populate the research goal and paper language from the draft as described below. Confirm the interaction language separately when initializing a project.
+
+## Project information from manuscript import
+
+- Rule: When importing an existing or partially written manuscript, extract its stated research goal and paper language and record both in this file before completing adoption. Read the abstract, introduction, and other relevant sections as needed. Record a concise, faithful statement of the goal and identify the language used for the paper. If the draft clearly identifies a different intended paper language from its current prose, record the intended language and note the source. If the goal or intended language is absent, conflicting, or unclear, record what the draft does establish and ask the researcher about the unresolved item; do not leave a blanket unconfirmed status without reporting the extraction.
+- Scope: Import of an existing or partially written manuscript, in both clients.
+- Confirmed: 2026-11-05; "The import skill should import the research goal and paper language from the half-written manuscript into the project records."
 
 ## Standard MCP installation during initialization
 

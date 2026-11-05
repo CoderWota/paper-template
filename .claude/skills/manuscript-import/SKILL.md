@@ -37,7 +37,13 @@ Done when the original, converted text, assets, and conversion provenance are pr
 
 Proceed only after tracked changes have a researcher-approved disposition. Preserve comments as advice; do not apply them during conversion.
 
-## Step 4: Adopt
+## Step 4: Import project information from the draft
+
+After tracked changes have a researcher-approved disposition, inspect the converted manuscript for its stated research goal and paper language. Read the abstract and introduction, and consult other sections when needed. Record both in `requirements/project.md` under a project-information section. State the goal faithfully and identify the paper language. If the draft clearly states an intended paper language that differs from its current prose, record the intended language and where the draft states it. If the manuscript does not establish one of these items, or contains conflicting signals, record what it does establish and ask the researcher about that specific gap. Do not silently leave the project records' blanket status as unconfirmed, and do not invent a goal or choose between conflicting statements.
+
+Done when the project records contain the goal and paper language extracted from the draft, or clearly name the unresolved item and ask the researcher to resolve it.
+
+## Step 5: Adopt
 
 7. Adopt into an empty manuscript:
 
@@ -50,7 +56,7 @@ Proceed only after tracked changes have a researcher-approved disposition. Prese
 
 Done when the manuscript is adopted into the empty target or staged beside the protected current version, with `mapping.md` in the import record.
 
-## Step 5: Resolve what the mapping names
+## Step 6: Resolve what the mapping names
 
 9. **Citations.** Map the citation keys to `references/bibliography.bib`. LaTeX keys usually match the supplied `.bib` file: add its entries, linking each to its library source ID when the source is in the library. Keys from Word citation fields are the reference manager's identifiers: the import keeps the document's own citation metadata in `references.bib` in the import record; add those entries, or match them to existing entries and change the keys in the text. Never invent a match, and never claim that a cited work's full text is in the library because its entry exists; keys that stay unresolved remain visible in the check.
 10. **Conversion details.** A typed number inside a formula, such as `(1)`, is removed and replaced by a label paragraph when the formula is referred to; a hand-written "Figure 1" becomes an `@fig:` reference with a label on the figure; an image in Windows metafile format is often an equation from an old equation editor and needs transcription by the researcher or a checked conversion, never a guess; unconverted LaTeX lines and missing images are reported. These are format repairs: report each one, and change no wording or claim.
@@ -58,13 +64,13 @@ Done when the manuscript is adopted into the empty target or staged beside the p
 
 Done when every conversion loss and unresolved citation is recorded; do not invent citation matches or treat the imported claims as verified.
 
-## Step 6: Create the internal logic map
+## Step 7: Create the internal logic map
 
 12. After adoption and citation mapping, replace the scaffold or create `logic-map.md` in the adoption target: `manuscript/logic-map.md` for an empty manuscript, or `revisions/<revision-id>/candidate/logic-map.md` for a staged import. Remove the "No manuscript logic map yet" marker and unused placeholder nodes. Follow the [logic map guide](../../../docs/logic-map-guide.md). Map the author's stated premises, assumptions, deductions, analyses, interpretations, judgments, criteria, and conclusions in the graph and reasoning register. Represent the actual draft, including unclear or flawed steps; distinguish premise basis from reasoning review and author status. A citation in the draft is not verified support. Do not infer or change the author's main claim, edit the imported text, or put the map in the manifest. Keep the current manuscript and its map unchanged when staging a candidate. After semantically comparing the map with the adopted text, run `logic-record [--revision-id ID] --input <each shared dependency>` and verify `logic-status` is current. Follow the guide's synchronization loop for later writing without a separate researcher request.
 
 Done when the map matches the imported text, traces its main claim through the argument sections or marks unclear links, shows the premises and reasoning behind its judgments, identifies open support or inference issues, has current synchronization, and is not in the target manifest.
 
-## Step 7: Report
+## Step 8: Report
 
 13. Report in the interaction language: where the manuscript was adopted or staged, where its logic map was written, the sections, the open decisions (tracked changes, comments, unresolved citations), every loss or uncertain conversion, and the next useful step, such as `manuscript-audit`.
 
