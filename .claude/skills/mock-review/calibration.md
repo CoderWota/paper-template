@@ -1,48 +1,41 @@
-# Blind retrospective calibration
+# Blind outcome comparison and calibration
 
-Use this procedure only when the researcher wants to check whether mock review can reproduce a historical editorial outcome. The goal is to test the skill's judgment, not to make it lenient or severe because of a known result. Keep manuscript assessment, editorial-outcome evaluation, journal context, and later reception as separate evidence.
+Read only when comparing forecasts with decisions, investigating reception, or explicitly replaying a historical review. The default assessment date remains current. The objective is reliable judgment, not favorable scores for known successful papers.
 
-## 1. Select the right target
+## Match the question to the evidence
 
-Classify the case before reviewing:
+| Exercise | Standard and permitted comparison |
+| --- | --- |
+| Prospective review | Assess the supplied version and stage now; lock forecasts before the outcome, then compare the identified next decision and eventual route separately. |
+| Current-standard review of an old/published paper | Assess as a new submission now. Historical publication and citations are post-review context, not observed outcomes of this present-day counterfactual. |
+| Explicit historical backtest | Use the exact submitted version, journal, round, and dated criteria from the decision period. Give reviewers an anonymized assessment cutoff; do not silently substitute current criteria. |
 
-- **Planned submission:** an unsubmitted manuscript and intended journal. Give a conditional presubmission estimate; there is no actual decision to score.
-- **Submitted, decision pending:** estimate the outcome for the identified version and decision round. Do not describe it as a calibrated forecast.
-- **Historical backtest:** a past submission with an identifiable target journal and actual editorial outcome. Use the manuscript version submitted at that time and the venue's criteria that applied then. The review packet must include an anonymized assessment cutoff (at least the decision year; exact date when the applicable criteria changed within that year) and the relevant journal-criteria snapshot. Do not silently substitute today's criteria or ask reviewers to assess the paper as if it were submitted now.
-- **Published-paper assessment without historical records:** assess the supplied version's academic value, but do not claim to reproduce an editorial decision.
+Historical criteria that cannot be verified limit the historical comparison; they do not block a separately labeled current assessment. A version of record may differ from the submitted version. Publication verifies eventual acceptance, not the original next-round decision or the quality of an earlier version. Forecasting itself does not require an editor's letter; verifying a particular round does.
 
-A version of record may differ from the submitted version. If the submitted version, decision round, or target journal cannot be matched, mark the comparison partial or unusable. A publisher page that shows an acceptance date verifies eventual acceptance; it does not reveal the first-round recommendation, later revision requests, or how many rounds occurred. Do not infer those details.
+## Lock, reveal, and compare
 
-## 2. Run and lock the blind assessment
+Prepare the packet and independent reviews under SKILL.md. Withhold outcomes, publication status, later versions, journal metrics, and target-paper citations until the manuscript findings and forecasts are locked. Avoid identity/history searches; disclose recognition or exposure without claiming a clean blind test. In a read-only exercise, put the locked judgment in the conversation before revealing outcome evidence.
 
-Prepare a review packet with the exact manuscript version, target journal, anonymized assessment cutoff, and dated official criteria that applied at that cutoff. Preserve the journal's applicable anonymity rules. Keep authorship details masked when the process requires it. Do not give reviewers the publication status, decision letter, editorial outcome, citations, later versions, or journal metrics. Avoid title- or DOI-based searches that reveal the paper's history; search for relevant work by topic and references instead. If historical criteria cannot be verified, disclose that gap; do not replace them with current criteria while labeling the result historical. If the identity or outcome becomes apparent, report that exposure and do not call the exercise a clean blind backtest.
+Retain the case identifier, exact inputs/version, venue, assessment date and criteria, stage and forecast event, eventual-acceptance estimate and assumptions, full six-way next-decision distribution, confidence/exposure, and later outcome sources. Use existing review records; no extra calibration database is required. Read-only work creates no files.
 
-Complete the normal independent reviews and meta-review without access to the hidden outcome. Record and lock the findings, criterion scores, treatment recommendation, probability distribution if required, and confidence. For a historical backtest, assess the reviewer's recommendation against the supplied manuscript version and criteria at the anonymized cutoff; do not produce a present-day six-outcome estimate unless the researcher separately requests that counterfactual. If the exact submitted version or decision round is unavailable, mark historical recommendation matching as partial or unusable instead of guessing. Do not revise these judgments after unblinding. If a read-only task cannot retain a separate record, place the locked assessment before the unblinding step in the conversation.
+After locking, verify decisions with an editor's letter, journal-hosted review history, or another direct dated source. Match versions, rounds, and the forecasted route. Keep reviewer recommendations distinct from editor decisions.
 
-## 3. Reveal and compare the actual decision
+- **Matched:** inputs, venue, event/round, standard, and observed outcome match.
+- **Partial:** only a broader outcome or some matching elements are verified.
+- **Unusable:** the needed version or outcome cannot be verified, or a current counterfactual is compared numerically with a historical decision.
 
-After judgments are locked, check the outcome from an editor's decision letter, a journal-hosted open-review record, or another direct, dated source. Match the decision to its round and manuscript version. Report the source and distinguish an editor's decision from a reviewer recommendation.
+Compare eventual acceptance only with the observed final outcome of the matching route. Compare the next-decision distribution only with that decision; a later publication date cannot score it. If a journal records only rejection, combine the simulated reject and strong-reject probabilities for that comparison; never invent the distinction in its decision letter. Pending, withdrawn, and unknown cases are not rejections.
 
-Use these comparison labels:
+Do not revise locked estimates after revealing results. Diagnose a mismatch by rechecking contribution, venue expectations, claim scope, numerical interpretation, repair burden, and missed strengths or weaknesses.
 
-- **Matched:** the manuscript version, venue, decision round, and actual decision are verified.
-- **Partial:** some elements match, but the record establishes only a broader outcome, such as eventual acceptance.
-- **Unusable:** the reviewed version, venue, or actual editorial outcome cannot be verified.
+## Journal influence and later reception
 
-Compare a broad eventual-acceptance assessment only with verified eventual acceptance. Do not score a simulated first-round recommendation against a paper's later publication date. Do not treat a publication, citation, or journal metric as proof that the simulated review was wrong; use a mismatch to ask which claim, contribution, venue criterion, or evidence threshold the review may have misread.
+Use journal metrics and target-paper citations only after locking. Record provider, metric year or database/version, matched DOI, and lookup date. Distinguish journal aggregates from article reception and current metrics from those available at a historical decision.
 
-## 4. Keep journal influence and article reception separate
+Do not combine citation counts from different indexes or treat them as correctness or positive impact. Account for age, article type, field, and self-citation where a defensible comparison is available. If substantive impact matters, inspect citing uses, replications, criticism, or policy uptake rather than rely only on counts. Missing coverage is not zero influence. Reception may reveal an overlooked contribution; it does not retroactively change the blind rating.
 
-Use journal-level metrics only after the blind assessment is locked. For each metric, identify its provider, metric year, subject category, and lookup date. Distinguish values available at the historical decision date from current values. Compare like categories and years; never use a journal metric as a manuscript quality score or as paper-specific acceptance odds.
+## Improve without fitting the examples
 
-Use article-level citation counts only after the blind assessment is locked. Identify the database, DOI or version matched, and lookup date; do not combine counts from different databases as if they were one measure. Normalize by publication age, article type, and field when a defensible comparison is available. Counts indicate indexed citation activity, not correctness, quality, positive treatment, or causal influence. If impact matters to the question, inspect citing works to distinguish substantive use, replication, policy use, criticism, and self-citation where material. Report missing coverage instead of treating a zero or unavailable count as no impact.
+Use a few cases as qualitative stress tests of misreadings, unsupported downgrades, or missed contribution. Include accepted and rejected cases, not just famous successes. Published final versions alone cannot validate forecasts from original submissions.
 
-Journal metrics describe an aggregate venue. A paper's citation count describes one aspect of its later reception. Neither changes the evidence-supported quality or treatment judgment made in the blind phase.
-
-## 5. Report what the cases can establish
-
-For each case, retain the review date, exact version, article type, venue and historical criteria, blind score or full six-outcome distribution, verified decision and round, source, match label, confidence, and any later citation evidence with provider and lookup date. Include all available cases, not only published or highly cited examples. Keep accepted, rejected, pending, withdrawn, and unknown cases distinct.
-
-Use a few cases as qualitative stress tests: identify repeated kinds of overstatement, underweighting, or unsupported downgrades, and revise only the rule that those findings support. A small or selected retrospective sample cannot establish calibration or justify fitting new probabilities. If full probability vectors and verified outcomes are available for a sufficiently large, varied set of matched cases, report a proper scoring rule such as the multiclass Brier score, its sample size, and uncertainty. Do not call the estimates calibrated from a handful of papers, and do not tune them on the same cases used to claim success.
-
-When editorial records or comparable versions are missing, say exactly what could be checked. The absence of a decision letter is an evidence limit, not a simulated-review success or failure.
+Validate revised rules on independent cases; do not tune and claim success on the same set. With sufficient varied matched outcomes, assess eventual acceptance and next-decision forecasts separately, using a proper scoring rule for locked point probabilities and uncertainty/sample size. Do not turn subjective intervals into point probabilities after seeing results. A small selected sample cannot establish calibration. Current-standard forecasts evaluated prospectively against later decisions provide a more direct test than present-day rereviews of old papers.

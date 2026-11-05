@@ -6,6 +6,7 @@ Read only the guide needed for the current task. These documents explain use and
 - [Agent-call audit](agent-call-audit.md): skill invocations, Sciverse and MinerU service paths, and remaining legacy utilities.
 - [Capabilities and limits](capabilities.md): available tasks, tool requirements, and what still needs checking in the current environment.
 - [Researcher-led paper work loop](researcher-led-loop.md): connect questions, evidence, research support, writing, review, and revision through existing records and researcher decisions.
+- [Internal logic map](logic-map-guide.md): map a paper's argument and local reasoning in Mermaid without treating the diagram as manuscript text or evidence.
 - [Markdown and output conventions](markdown-and-export-conventions.md): citations, formulas, diagrams, cross-references, and editable Word equations.
 - [Document processing](mineru-integration.md): choosing and operating a confirmed MinerU route, preserving originals, and checking extractions.
 - [Literature search](sciverse-integration.md): query authorization, Sciverse records, source retrieval, and account limitations.

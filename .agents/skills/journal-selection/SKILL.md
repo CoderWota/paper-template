@@ -23,7 +23,7 @@ Outcome: an examination of a named venue, or a comparison of several, in `resear
 ## Step 3: Assess fit separately
 
 8. For each venue, assess fit with reasons tied to the sources: scope, article type, kind of evidence, audience, and the requirements that would need work. Keep fit apart from impact (`impact-assessment`) and from the readiness of a manuscript (`submission-readiness`). Do not rank by prestige or a metric alone; when the researcher cares about a metric, report the official figure with its source and date.
-9. In a venue-selection assessment, do not state or imply an acceptance probability for the paper. A published acceptance rate is the venue's statistic, not this paper's chance; report it only as such, with its source. When `mock-review` is explicitly assessing a named target, follow its separate rule for a reasoned six-outcome simulated distribution; do not derive that estimate from the acceptance rate.
+9. In a venue-selection assessment, do not state or imply an acceptance probability for the paper. A published acceptance rate is the venue's statistic, not this paper's chance; report it only as such, with its source. When `mock-review` is explicitly assessing a named target, follow its separate rules for eventual-acceptance prospects and the next-decision distribution; do not derive that estimate from the acceptance rate.
 10. For a comparison, use the same criteria for every venue in `research/venues/index.md`. Recommend a target or a shortlist with the reasons and the conditions, then ask one question about the choice.
 
 ## Step 4: Record

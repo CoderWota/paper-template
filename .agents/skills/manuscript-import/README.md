@@ -10,6 +10,7 @@ Ask, for example: "Organize this Word manuscript into the workspace, keep its te
 - Tracked changes and comments are never accepted silently: the agent shows them and asks what to do. Comments from colleagues can be kept as research feedback.
 - An existing manuscript is never replaced; the imported version is staged beside it for comparison.
 - The adopted or staged draft gets an internal Mermaid logic map of its existing argument. It stays out of manuscript assembly and does not verify the cited sources.
+- The [logic map guide](../../../docs/logic-map-guide.md) explains how the map represents unchecked support and unclear inferences.
 - A list of everything that needs a check (unresolved citations, formulas that were images, numbers typed by hand) comes with the result. Your wording and claims are not changed.
 
 The agent instructions are in [SKILL.md](SKILL.md). The skill uses `scripts/ingest.py` and `scripts/manuscript.py`. Related skills: `manuscript-audit`, `manuscript-revision`, `research-feedback`, `source-ingestion`.

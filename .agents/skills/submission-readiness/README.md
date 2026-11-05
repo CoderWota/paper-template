@@ -8,6 +8,7 @@ Ask, for example: "What remains before I can submit this to the journal, and wha
 
 - Strengths, likely reviewer concerns, and remaining tasks, each tied to evidence, with who needs to do each task.
 - Only current checks are reused; anything changed since its last check is checked again or marked as not checked.
+- The internal logic map helps check whole-paper and local reasoning; its links are verified against sources and results.
 - No acceptance probability is given, and nothing is submitted or sent.
 
 The agent instructions are in [SKILL.md](SKILL.md). Related skills: `submission-assembly`, `manuscript-audit`, `journal-selection`.

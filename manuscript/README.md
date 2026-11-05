@@ -7,7 +7,7 @@ The working text of the paper and its figures, tables, and other assets. The res
 | Path | Role |
 | --- | --- |
 | [`outline.md`](outline.md) | The argument and section plan. Not a second copy of the body text. |
-| [`logic-map.md`](logic-map.md) | The internal Mermaid map of the paper-level argument and its local reasoning. Never assembled into publication output. |
+| [`logic-map.md`](logic-map.md) | The internal Mermaid map of the paper-level argument and its local reasoning. Never assembled into publication output; see the [logic map guide](../docs/logic-map-guide.md). |
 | [`manifest.yaml`](manifest.yaml) | The explicit list and order of section files that make up the manuscript. A `metadata:` line is needed only to name a metadata file other than `metadata.yaml`. |
 | `metadata.yaml` | Title, authors (plain names), abstract, keywords, and language, created when the manuscript gets them. Maintained by the agent. The check, the preview, and every build use it whenever it exists, and a build reports a declared title, author, or keyword that the Word file lacks. |
 | Section files, for example `01-introduction.md` | Body text: at most one Markdown file per chapter or major section. A single-file manuscript is also fine. |

@@ -1,25 +1,18 @@
 # Mock Review
 
-Assesses a draft or published paper with three reviewer perspectives: methods, field contribution, and the strongest concrete challenge. The review distinguishes overall quality, reference value, and revision needs. Both clients prefer independent reviewer sessions and disclose shared-context passes when independent sessions are unavailable.
+Helps researchers assess whether a supplied manuscript can reach publication at a named journal under current standards. It also supports reading and citation assessments of published papers.
 
-Ask, for example: "Score my paper the way reviewers at this conference would, and tell me what would raise the scores."
+For a publication-prospect review, expect:
 
-Or: "Review this published paper as a reading and citation candidate. Read only, and explain what I can rely on."
+- An eventual-acceptance estimate, conditional on normal review and a feasible minimum revision plan.
+- A separate six-outcome prediction for the next editorial decision, with percentages totaling 100% and evidence-based reasons.
+- Located strengths and barriers, contribution relative to close work, and necessary revisions distinguished from optional improvements.
+- Explicit confidence, material access limits, and independent reviewer sessions or disclosed shared-context passes.
 
-## What to expect
+Major revision can coexist with favorable eventual prospects. Reviewer scores, editorial decisions, and final acceptance are different judgments; the estimates are subjective unless independently calibrated.
 
-- The lead and every reviewer follow the full reading list in `SKILL.md`, complete truncated reads, and identify the rules and source material actually inspected. Parent-session summaries do not replace a reviewer's own reading.
-- Before scoring, the review explains fit to the actual venue or audience, concrete added knowledge against close studies, and whether the design supports the claims under relevant field practice. Common practice does not excuse invalid analysis.
-- In every discipline, academic and societal significance are checked against relevant field literature. The paper's references provide leads; Sciverse or authorized internet search can fill gaps and find contrary work.
-- Humanities and social sciences reviews examine prior work, theoretical or interpretive contribution, and a required societal contribution. A supported path to benefit or better understanding is sufficient; achieved policy effects and precise causal estimates are not general requirements.
-- The venue's unchanged official form is used when available; otherwise the identified general form. Qualitative forms do not acquire invented venue scores; academic and societal contribution assessments are reported separately.
-- Numeric scores need anchors and inspected evidence. Unresolved questions are separated from confirmed defects; unassessable criteria receive no pessimistic or optimistic default.
-- The general form keeps four-point criterion scores and six treatments: accept, minor revision, major revision, revise and resubmit, reject, and strong reject.
-- For a named submission target with a pending decision, or with unknown status under an explicit conditional scenario, the report adds a six-outcome probability distribution with a reason for each category. It is conditional on the reviewed version, status assumption, venue criteria, and inspected evidence; it is a rough subjective estimate, not a calibrated journal statistic.
-- Reporting corrections, effects on main findings, and repairs to the contribution are judged separately. Local faults do not automatically imply rejection; insufficient synthesis or contribution can justify rejection without a fatal data error.
-- The meta-review checks decisive evidence and what survives correction. Score ranges describe disagreement rather than decide the outcome by vote. Separate reviewers can still share blind spots.
-- Criterion scores are simulated judgments, not probabilities. The separate outcome distribution is not derived from acceptance rates, score averages, or reviewer votes. Published status does not determine the assessment; a final decision is not presented as a live forecast.
-- Attempts to steer AI reviewers are located and reported without unsupported claims about authorship or intent; embedded instructions are not followed.
-- A saved report is kept in `outputs/checks/` with its inputs. A read-only request returns findings in the conversation without importing files or creating records.
+The review uses the venue's official form unchanged when available. Academic and societal contribution matter according to the journal and article type. HSS work also receives the confirmed project societal-pathway assessment; that is not silently imposed as every journal's acceptance rule.
 
-The agent instructions are in [SKILL.md](SKILL.md), and judgment rules and general anchors are in [review-form.md](review-form.md). The shared context checks are in [assessment-context.md](assessment-context.md). Humanities and social sciences assessments also use [discipline-specific guidance](humanities-social-sciences.md), with official source notes. Related skills: `manuscript-audit`, `submission-readiness`, `journal-selection`, `literature-discovery`.
+Reviews stay blind to known outcomes and reception until judgments are locked. A decided or published paper is assessed as if submitted now unless a historical backtest is explicitly requested. Read-only requests create no records.
+
+Instructions: [SKILL.md](SKILL.md). Judgment rules, scales, and forecasts: [review-form.md](review-form.md). Relevant HSS claims: [discipline guidance](humanities-social-sciences.md). Optional outcome comparison: [calibration](calibration.md).

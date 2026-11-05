@@ -43,7 +43,7 @@ Record project findings in `research/results/` when they are research outputs, a
 
 ### 5. Build the paper from confirmed argument and evidence
 
-Use `manuscript/outline.md` to connect the confirmed question and argument to sections, claims, sources, and project results. Use `manuscript/logic-map.md` as the internal Mermaid view of the whole-paper argument and the local reasoning within sections. Draft from those records, not from expected findings. Keep unsupported claims visible as gaps or TODOs. Link important statements to source locators or result records; a citation key resolving in the bibliography does not show that the source supports the claim.
+Use `manuscript/outline.md` to connect the confirmed question and argument to sections, claims, sources, and project results. Use `manuscript/logic-map.md` as the internal Mermaid view of the whole-paper argument and the local reasoning within sections; follow the [logic map guide](logic-map-guide.md) when building or checking it. Draft from those records, not from expected findings. Keep unsupported claims visible as gaps or TODOs. Link important statements to source locators or result records; a citation key resolving in the bibliography does not show that the source supports the claim.
 
 The manuscript follows the researcher's chosen paper language. Working notes can remain in another language. Preserve the researcher's wording and edits, and do not insert an AI signature or claim authorship.
 
