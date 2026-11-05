@@ -35,7 +35,7 @@ Skip this step for a check.
 ## Step 4: Check the edit
 
 13. Before writing a revised file, copy the original to `.tmp/edits/`; for a long text from the conversation, save both versions there.
-14. Apply manuscript text as `manuscript-writing` applies an edit: within the requested scope, keeping the researcher's own edits, then `python scripts/manuscript.py check`. After a response in a review round, run `python scripts/review.py check --round <round folder>`. Return text from the conversation in the reply.
+14. Apply manuscript text through `manuscript-writing`: preserve author edits, perform its automatic argument-map synchronization even when the graph needs no semantic change, then run `python scripts/manuscript.py check`. A check-only prose task does not modify the map. After a response in a review round, run `python scripts/review.py check --round <round folder>`. Return text from the conversation in the reply.
 15. Run `python scripts/check_edit.py <original> <revised>` and account for every difference it reports: restore what was lost, or tell the researcher why a difference is intended. Its warnings about hedges and negations need a reading, not an automatic fix.
 
 ## Step 5: Report

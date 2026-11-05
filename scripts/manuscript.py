@@ -13,6 +13,8 @@ closing record (closed.json) when the revision is completed, in place or after t
 
 Usage:
   python scripts/manuscript.py check [--revision-id ID]
+  python scripts/manuscript.py logic-status [--revision-id ID] [--json]
+  python scripts/manuscript.py logic-record [--revision-id ID] [--input SHARED_FILE ...] [--replace-inputs]
   python scripts/manuscript.py set-sections [--revision-id ID] FILE ...
   python scripts/manuscript.py assemble [--to PATH]
   python scripts/manuscript.py record-check --name NAME --kind audit|evidence|format|readiness|other --input PATH ...
@@ -24,8 +26,9 @@ Usage:
   python scripts/manuscript.py revision-apply --id ID [--reconciled PATH ...] [--resume]
   python scripts/manuscript.py revision-complete --id ID [--note TEXT]
   python scripts/manuscript.py revision-restore --id ID
-All commands take --root WORKSPACE. Exit status: 0 done; 1 problems found or an application stopped; 2 the
-records are valid but some are stale; 3 refused. Uses only the Python standard library.
+All commands take --root WORKSPACE. Exit status: 0 done; 1 source problems or an application stopped; 2 check
+inputs are stale or logic-map synchronization is pending; 3 refused. `check` retains its source-convention exit
+status and reports map synchronization separately. Uses only the Python standard library.
 """
 
 from __future__ import annotations
@@ -42,6 +45,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from ingestion.common import checksum, sha256_file, slug, write_json_atomic, write_text_atomic  # noqa: E402
+import logic_map  # noqa: E402
 from text_rules import (CJK, WORD, citation_keys, doubled_reference, halfwidth_punctuation, hand_numbered, normalize_reference,
                         open_marker, raw_latex, signature_problems)  # noqa: E402
 
@@ -360,6 +364,53 @@ def section_paths(root: Path, manifest: dict, folder: Path | None = None) -> tup
     return paths, problems
 
 
+def logic_map_inputs(root: Path, folder: Path) -> list[str]:
+    manifest = read_manifest(root, folder)
+    paths, problems = section_paths(root, manifest, folder)
+    if problems:
+        raise Refused("; ".join(problems))
+    names = ["manifest.yaml"] + [name for name, _ in paths]
+    if (folder / "outline.md").is_file():
+        names.append("outline.md")
+    metadata = metadata_name(root, manifest, folder)
+    if metadata:
+        path = (folder / metadata).resolve()
+        if folder.resolve() not in path.parents or not path.is_file():
+            raise Refused("the manuscript metadata is missing or outside its target")
+        names.append(metadata)
+    return names
+
+
+def logic_map_state(root: Path, folder: Path | None = None) -> dict:
+    folder = folder if folder is not None else root / "manuscript"
+    try:
+        return logic_map.status(root, folder, logic_map_inputs(root, folder))
+    except (Refused, OSError, ValueError) as error:
+        return {"state": "invalid", "detail": str(error), "changed": [], "recorded_at": None, "dependencies": []}
+
+
+def command_logic_status(args, root: Path) -> int:
+    state = logic_map_state(root, editing_folder(args, root))
+    if args.json:
+        print(json.dumps(state, ensure_ascii=False, indent=2))
+    else:
+        print(f"Logic map synchronization: {state['state']}; {state['detail']}.")
+        for changed in state["changed"]:
+            print(f"  - {changed}")
+    return 0 if state["state"] == "current" else 2
+
+
+def command_logic_record(args, root: Path) -> int:
+    folder = editing_folder(args, root)
+    try:
+        state = logic_map.record(root, folder, logic_map_inputs(root, folder), args.input or [], args.replace_inputs)
+    except (OSError, ValueError) as error:
+        raise Refused(str(error)) from error
+    print(f"Logic map synchronization: {state['state']}; recorded the inputs compared with the map.")
+    print("The record tracks saved versions; it does not certify argument validity.")
+    return 0 if state["state"] == "current" else 2
+
+
 def analyse(root: Path, folder: Path | None = None) -> dict:
     """Everything the check reports: problems, warnings, open items, unlisted drafts, and counts."""
     folder = folder if folder is not None else root / "manuscript"
@@ -432,6 +483,10 @@ def command_check(args, root: Path) -> int:
         print("Not assembled (not in the manifest): " + ", ".join(result["drafts"]))
     if result["keys_resolve"]:
         print("Citation keys resolve; whether each source supports its claim is a separate check (literature-and-evidence).")
+    logic = logic_map_state(root, folder)
+    print(f"Logic map synchronization: {logic['state']}; {logic['detail']}.")
+    for changed in logic["changed"]:
+        print(f"  - {changed}")
     return 1 if result["problems"] else 0
 
 
@@ -991,6 +1046,13 @@ def main(argv: list | None = None) -> int:
     commands = parser.add_subparsers(dest="command", required=True)
     check = commands.add_parser("check", help="check the manuscript against the workspace conventions")
     check.add_argument("--revision-id", help="check this open revision's candidate instead of the active manuscript")
+    logic_status = commands.add_parser("logic-status", help="report whether the argument map matches its recorded inputs")
+    logic_status.add_argument("--revision-id", help="inspect this open revision's candidate")
+    logic_status.add_argument("--json", action="store_true")
+    logic_record = commands.add_parser("logic-record", help="record input versions after semantically synchronizing the argument map")
+    logic_record.add_argument("--revision-id", help="record this open revision's candidate inputs")
+    logic_record.add_argument("--input", action="append", help="a shared project dependency to add to the recorded list")
+    logic_record.add_argument("--replace-inputs", action="store_true", help="replace the dependency list after reviewing which inputs still apply")
     sections = commands.add_parser("set-sections", help="set the ordered list of section files in the manifest")
     sections.add_argument("--revision-id", help="set this open revision's candidate manifest instead of the active one")
     sections.add_argument("files", nargs="*")
@@ -1027,7 +1089,8 @@ def main(argv: list | None = None) -> int:
     args = parser.parse_args(argv)
     root = args.root.resolve()
     handlers = {"check": command_check, "set-sections": command_set_sections, "assemble": command_assemble, "adopt": command_adopt,
-                "record-check": command_record_check, "checks": command_checks, "revision-start": command_revision_start,
+                "record-check": command_record_check, "checks": command_checks, "logic-status": command_logic_status,
+                "logic-record": command_logic_record, "revision-start": command_revision_start,
                 "revision-status": command_revision_status, "revision-apply": command_revision_apply,
                 "revision-complete": command_revision_complete, "revision-restore": command_revision_restore}
     try:

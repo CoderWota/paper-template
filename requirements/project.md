@@ -16,9 +16,10 @@ Status: not initialized. The research goal, manuscript language, and interaction
 
 ## Internal manuscript logic map
 
-- Rule: Maintain a Mermaid flowchart in `manuscript/logic-map.md` for each manuscript, whether it is written from scratch or imported. Show the paper-level argument and the local claim, evidence, and inference steps needed to check the logic of its sections. Make evidence gaps, alternatives or contrary evidence, and limits visible. Keep this as an internal reference; never list it in `manuscript/manifest.yaml` or include it in publication output. Update it when the argument or structure changes.
+- Rule: Maintain an internal Mermaid argument framework in `manuscript/logic-map.md` for each manuscript, whether written from scratch or imported. Include the author's material deductions, inferences, analyses, interpretations, and judgments, with their premises, assumptions, criteria, inferential steps, conditions, and conclusions, as well as evidence, alternatives, objections, and limits. Original reasoning can support a derived claim; distinguish the basis of its premises from the adequacy of its inference. Automatically synchronize the framework as part of each writing or revision task, inspect direct author edits at the next check or session, and track the input version so a stale map is visible. Keep the map and its synchronization record outside manuscript assembly and publication output.
 - Scope: This template's manuscript workflow, for every manuscript project.
 - Confirmed: 2026-11-04; "We need to ensure the paper's reasoning is coherent. Use a Mermaid flowchart to lay out the paper's logical framework. Keep it out of the paper body as an internal reference, so authors can keep their reasoning coherent and check the logic of the whole paper and its parts when their thinking jumps. Both writing a paper from scratch and importing a paper require this outline."
+- Refined: 2026-11-05; "Should the author's deductions, inferences, analyses, judgments, and other reasoning also be included in the framework when the logic is reasonable? The logic map should update automatically as writing proceeds. Please rethink and redesign it."
 
 ## Sciverse and MinerU calls through MCP
 

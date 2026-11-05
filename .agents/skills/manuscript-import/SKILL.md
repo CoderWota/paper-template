@@ -60,9 +60,9 @@ Done when every conversion loss and unresolved citation is recorded; do not inve
 
 ## Step 6: Create the internal logic map
 
-12. After adoption and citation mapping, replace the scaffold or create `logic-map.md` in the adoption target: `manuscript/logic-map.md` for an empty manuscript, or `revisions/<revision-id>/candidate/logic-map.md` for a staged import. Remove the "No manuscript logic map yet" marker and unused placeholder nodes. Follow the [internal logic map guide](../../../docs/logic-map-guide.md). Represent what the imported text states; mark unclear inferences and unchecked or missing support. A citation in the draft is not verified support. Do not infer or change the author's main claim, edit the imported text, or put the map in the manifest. Keep the current manuscript and its map unchanged when staging a candidate.
+12. After adoption and citation mapping, replace the scaffold or create `logic-map.md` in the adoption target: `manuscript/logic-map.md` for an empty manuscript, or `revisions/<revision-id>/candidate/logic-map.md` for a staged import. Remove the "No manuscript logic map yet" marker and unused placeholder nodes. Follow the [logic map guide](../../../docs/logic-map-guide.md). Map the author's stated premises, assumptions, deductions, analyses, interpretations, judgments, criteria, and conclusions in the graph and reasoning register. Represent the actual draft, including unclear or flawed steps; distinguish premise basis from reasoning review and author status. A citation in the draft is not verified support. Do not infer or change the author's main claim, edit the imported text, or put the map in the manifest. Keep the current manuscript and its map unchanged when staging a candidate. After semantically comparing the map with the adopted text, run `logic-record [--revision-id ID] --input <each shared dependency>` and verify `logic-status` is current. Follow the guide's synchronization loop for later writing without a separate researcher request.
 
-Done when the map matches the imported text, traces its main claim through the argument sections or marks unclear links, identifies unchecked/missing support, and is not in the target manifest.
+Done when the map matches the imported text, traces its main claim through the argument sections or marks unclear links, shows the premises and reasoning behind its judgments, identifies open support or inference issues, has current synchronization, and is not in the target manifest.
 
 ## Step 7: Report
 
@@ -74,6 +74,6 @@ Done when the map matches the imported text, traces its main claim through the a
 - No tracked change was accepted or rejected without the researcher's decision, and comments were not applied.
 - An existing manuscript was not replaced; a second version was staged for comparison.
 - The internal logic map represents the imported draft's argument without changing it, labels unchecked support and gaps, and is not in the manifest.
-- The logic map passes the traceability check in the shared guide.
+- The graph and reasoning register faithfully represent the imported argument, including its unresolved steps; `logic-status` is current. This records synchronization rather than validating the imported argument.
 - Every loss, unresolved citation, and uncertain formula or image is named in `mapping.md` and in the report; nothing was invented to fill a gap.
 - Review `python scripts/manuscript.py check`: resolve actual loss or meaning risks, and report other findings as open items when relevant. The command reports findings; a nonzero exit is not a writing judgment.

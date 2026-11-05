@@ -103,8 +103,8 @@ def facts(root: Path) -> dict:
     data["feedback_open"] = open_items
     outline = root / "manuscript" / "outline.md"
     data["outline"] = outline.is_file() and "No outline yet" not in outline.read_text(encoding="utf-8")
-    logic_map = root / "manuscript" / "logic-map.md"
-    data["logic_map"] = logic_map.is_file() and "No manuscript logic map yet" not in logic_map.read_text(encoding="utf-8")
+    data["logic_map_sync"] = manuscript.logic_map_state(root)
+    data["logic_map"] = data["logic_map_sync"]["state"] not in ("missing", "scaffold", "invalid")
     try:
         analysis = manuscript.analyse(root)
         data["manuscript"] = {"sections": len(analysis["paths"]), "words": analysis["words"], "cjk": analysis["cjk"],
@@ -179,7 +179,7 @@ def main(argv: list | None = None) -> int:
         + (f" ({data['stale_results']} stale input or output)" if data["stale_results"] else "") + ".",
         f"Venues examined: {data['venues']}; decisions recorded: {data['decisions']}; feedback events: {data['feedback_events']}"
         + (f" ({data['feedback_open']} open suggestion(s))" if data["feedback_open"] else "") + ".",
-        f"Outline: {'yes' if data['outline'] else 'no'}; logic map: {'yes' if data['logic_map'] else 'no'}; "
+        f"Outline: {'yes' if data['outline'] else 'no'}; logic map: {data['logic_map_sync']['state']}; "
         f"manuscript: {m['sections']} section file(s), {m['words']} words"
         + (f", {m['cjk']} CJK characters" if m["cjk"] else "") + f", {m['problems']} problem(s), {m['open_items']} open marker(s).",
         f"Checks recorded: {data['checks']['recorded']} ({data['checks']['stale']} stale); profiles: {', '.join(data['profiles']) or 'none'}; "

@@ -10,6 +10,7 @@ Read this reference when a task assesses or changes the paper's contribution, cl
 
 ## Keep claims accurate
 
+- Represent original deductions, analyses, interpretations, and judgments through their stated premises, operations, criteria, and conditions. A derived claim can be supported by a sound argument; evaluate empirical premise support separately from inferential adequacy.
 - Distinguish observed findings, interpretations, hypotheses, and possible future effects. Keep empirical, causal, novelty, generalization, and validation claims within what the inspected sources and project results support.
 - Present potential impact as potential. Never imply that an untested use, unperformed comparison, unverified result, or future benefit has already been demonstrated. Do not invent evidence or conceal material negative findings.
 - When a stronger claim needs more support, state the specific gap and how it affects the claim. Suggest a useful comparison, analysis, source, or clearer argument. The researcher decides changes to the main question or claim.

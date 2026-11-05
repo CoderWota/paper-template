@@ -7,6 +7,8 @@ For the cross-stage pattern, see the [researcher-led paper work loop](../../../d
 ## Step 1: Recognize where the project stands
 
 1. Read `state/current.md`, then run `python scripts/status.py` (read-only). It summarizes the library, ideas, plan, results, venues, outline, logic map, manuscript, checks, builds, releases, review rounds, revisions, feedback, and unsaved work. If both show an uninitialized paper with no research material, stop there and ask for the goal or material; do not scan indexes, READMEs, or the whole tree. Otherwise open only records linked to the current work or needed to resolve a specific gap.
+For an existing manuscript, project status also reports argument-map synchronization. Before a writing task, inspect changed inputs with `manuscript.py logic-status`; `manuscript-writing` includes the semantic refresh automatically. A status inquiry or read-only review reports staleness without modifying the framework.
+
 2. Establish the current goal, authorized scope, and what would count as a useful delivery from the request and confirmed records. Ask only when those leave a material ambiguity. Their account takes precedence over the signals; do not turn a request for a paragraph into a whole-paper workflow.
 
 ## Step 2: Choose the entry and the next step

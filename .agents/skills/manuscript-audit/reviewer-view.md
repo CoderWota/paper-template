@@ -6,16 +6,16 @@ A critical reading of the manuscript from a reviewer's position, for the researc
 
 - The manuscript files that `manuscript/manifest.yaml` lists, and the title and abstract in `manuscript/metadata.yaml`.
 - The venue note in `research/venues/` when a target is set: scope, article types, length, required sections, and the AI policy.
-- The outline, and the result records and evidence notes that the text relies on. Do not use a stale record as support.
+- The outline, argument graph and reasoning register, and the source, result, or derivation records that the text relies on. Do not use a stale record as support.
 
 ## Checks
 
 Make these checks separately from the audit's checks, and report the result of each one.
 
-1. **Claims and evidence.** Each contribution that the abstract and introduction claim has a result record or a checked source behind it. List every claim that has neither.
-2. **Baselines.** Each comparison uses the same data, settings, and versions as far as the record shows. Name any baseline that differs.
-3. **Design choices.** The ablations and sensitivity checks cover the key design decisions that the methods section describes.
-4. **Consistency.** The numbers agree across the abstract, the results, and the conclusion. The conclusion reaches no further than the data.
+1. **Claims and reasoning.** Trace each contribution in the abstract and introduction to its support route. Empirical premises need checked sources/results; an analytical or evaluative contribution needs explicit premises, analysis or inference, conditions, and criteria. Report missing premises, weak inferences, and unsupported observations separately; do not demand a separate citation for an original derived step.
+2. **Baselines, where applicable.** Each empirical comparison uses the same data, settings, and versions as far as the record shows. Name any baseline that differs.
+3. **Analytical and design choices.** Examine definitions, assumptions, analytical operations, evaluative criteria, and relevant counterexamples or alternatives. For empirical methods, assess whether applicable ablations or sensitivity checks address key design choices; do not impose them on a purely deductive or interpretive argument.
+4. **Consistency.** The numbers agree across the abstract, the results, and the conclusion. The conclusion reaches no further than the evidence and reasoning within their stated conditions.
 5. **Reader check (optional).** Give only the section text to a reader who has no project context. Use a fresh session or a subagent when one is available. Ask the reader to state, in their own words, the main claim, the method in one paragraph, the main result with its conditions, what they would cite this paper for, and any points that are unclear (up to three; none is a valid answer). Compare the answers with the outline, and make each gap a finding. The reader's answers test clarity. They are not evidence.
 
 ## Report

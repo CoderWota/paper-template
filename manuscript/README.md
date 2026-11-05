@@ -7,7 +7,8 @@ The working text of the paper and its figures, tables, and other assets. The res
 | Path | Role |
 | --- | --- |
 | [`outline.md`](outline.md) | The argument and section plan. Not a second copy of the body text. |
-| [`logic-map.md`](logic-map.md) | The internal Mermaid map of the paper-level argument and its local reasoning. Never assembled into publication output; see the [logic map guide](../docs/logic-map-guide.md). |
+| [`logic-map.md`](logic-map.md) | The internal argument graph and reasoning register: premises, author analysis and inference, intermediate judgments, criteria, and conclusions; see the [logic map guide](../docs/logic-map-guide.md). |
+| `logic-map.sync.json` | Saved input fingerprints after the agent compares the graph with the selected draft. Created during actual work; reports synchronization, not argument validity. |
 | [`manifest.yaml`](manifest.yaml) | The explicit list and order of section files that make up the manuscript. A `metadata:` line is needed only to name a metadata file other than `metadata.yaml`. |
 | `metadata.yaml` | Title, authors (plain names), abstract, keywords, and language, created when the manuscript gets them. Maintained by the agent. The check, the preview, and every build use it whenever it exists, and a build reports a declared title, author, or keyword that the Word file lacks. |
 | Section files, for example `01-introduction.md` | Body text: at most one Markdown file per chapter or major section. A single-file manuscript is also fine. |
@@ -26,7 +27,7 @@ The agent checks these conventions with `python scripts/manuscript.py check`. De
 
 ## Who edits what
 
-You can write and revise prose directly at any time. The agent drafts and revises on request using your confirmed requirements and the actual evidence, maintains the manifest, outline, logic map, and references, and preserves your direct edits.
+You can write and revise prose directly at any time. The agent drafts and revises on request using your confirmed requirements, evidence, and reasoned arguments. Each writing task includes comparing the change with the graph and reasoning register, refreshing affected steps, and recording the input version. Project status and manuscript checks expose a stale map after direct edits; the next writing task refreshes it. A read-only audit reports gaps without editing the framework. Internal map files are never assembled into publication output.
 
 Example requests: "Revise this section using my confirmed writing requirements and identify claims that need evidence." "Organize this Word manuscript into the workspace conventions."
 
