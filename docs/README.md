@@ -8,6 +8,7 @@ Read only the guide needed for the current task. These documents explain use and
 - [Researcher-led paper work loop](researcher-led-loop.md): connect questions, evidence, research support, writing, review, and revision through existing records and researcher decisions.
 - [Internal argument framework](logic-map-guide.md): represent author premises, analysis, inference, judgments, and evidence, with automatic synchronization during writing and saved-version detection.
 - [Markdown and output conventions](markdown-and-export-conventions.md): citations, formulas, diagrams, cross-references, and editable Word equations.
+- [Export reliability](export-reliability.md): format examples, fragile tables, renderer recovery, and truthful delivery of the current manuscript.
 - [Document processing](mineru-integration.md): choosing and operating a confirmed MinerU route, preserving originals, and checking extractions.
 - [Literature search](sciverse-integration.md): query authorization, Sciverse records, source retrieval, and account limitations.
 

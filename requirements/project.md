@@ -8,6 +8,18 @@ Status: not initialized. This workspace contains no imported manuscript yet. Dur
 - Scope: Import of an existing or partially written manuscript, in both clients.
 - Confirmed: 2026-11-05; "The import skill should import the research goal and paper language from the half-written manuscript into the project records."
 
+## Complete and unchanged manuscript content during export
+
+- Rule: Preserve the complete content of the selected manuscript version during formatting and export. Do not make unauthorized additions, omissions, rewrites, or changes to wording, values, formulas, objects, notes, citations, or references. Compare the delivered content with the pre-export baseline and distinguish checked representation changes from content changes. Unexplained differences or unchecked content prevent a claim that the export is complete and unchanged.
+- Scope: Manuscript formatting and export in this template's submission-assembly workflow, in both clients.
+- Confirmed: 2026-11-06; "We also need to ensure that the content is complete and has not been modified."
+
+## Font and table-style restoration during export
+
+- Rule: When exporting a manuscript in the format of a supplied original or template, restore its fonts and table styles as well as its content and structure. Check the restored typography and table appearance against that format source. Report unmet restoration requirements instead of treating a structurally valid file as a faithful result.
+- Scope: Source-format restoration in this template's submission-assembly workflow, in both clients.
+- Confirmed: 2026-11-05; "We also need to restore fonts and table styles."
+
 ## Standard MCP installation during initialization
 
 - Rule: Workspace initialization includes installing the pinned official Sciverse and MinerU cloud MCP packages inside the repository, configuring Codex and Claude Code, and checking MCP protocol and tool discovery. Provide installation, checking, and launch scripts. Missing credentials do not block installation; installation does not authorize research queries or document uploads.

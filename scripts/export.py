@@ -18,13 +18,13 @@ Usage:
   python scripts/export.py reference-doc --profile ID [--page A4|letter] [--margins-cm N] [--font NAME] [--east-asian-font NAME]
       [--size-pt N] [--line-spacing single|1.5|double] [--space-after-pt N] [--table-line-spacing single|1.5|double]
       [--heading-font NAME] [--heading-color black|theme] [--line-numbers yes|no]
-  python scripts/export.py build --profile ID [--render]
+  python scripts/export.py build --profile ID [--render] [--renderer auto|word|libreoffice]
 Profile keys: output, reference_doc, csl, number_sections, figure_prefix[_plural], table_prefix[_plural],
   equation_prefix[_plural], section_prefix[_plural], figure_title, table_title, table_equations, anonymize,
   mermaid_scale, doc_* (reference-document settings), and expect_page, expect_margins_cm, expect_font, expect_size_pt,
   expect_line_spacing, expect_line_numbers, expect_max_words, expect_anonymized.
   python scripts/export.py verify --profile ID
-  python scripts/export.py render --docx PATH
+  python scripts/export.py render --docx PATH [--renderer auto|word|libreoffice]
   python scripts/export.py release --profile ID --id RELEASE_ID --readme PATH [--allow-open-items]
 All commands take --root WORKSPACE. Exit status: 0 done and blocking checks passed; notes may remain; 1 a blocking check or application failed; 3 refused.
 Uses only the Python standard library; Pandoc, pandoc-crossref, and mermaid-cli are external tools.
@@ -257,12 +257,18 @@ def build_inputs(root: Path, folder: Path, profile: dict, sections: list) -> lis
         for image in manuscript.IMAGE.finditer((root / "manuscript" / name).read_text(encoding="utf-8")):
             if (root / "manuscript" / image.group(2)).is_file():
                 paths.append(f"manuscript/{image.group(2)}")
+    # Changing the exporter or a filter invalidates prior checks as surely as changing a style.
+    paths += ["scripts/export.py"] + [p.relative_to(root).as_posix() for p in
+              sorted((root / "scripts" / "export").glob("*")) if p.suffix in (".py", ".lua")]
     return [{"path": p, "sha256": sha256_file(root / p)} for p in dict.fromkeys(paths) if (root / p).is_file()]
 
 
 def verify(root: Path, profile: dict, output: Path, facts: dict, warnings: list, sections: list) -> list:
     """Checks of a built DOCX: (name, passed, detail)."""
     checks = []
+    raw = facts.get("raw_content", {})
+    checks.append(("raw content", not raw, "; ".join(f"{count} unconverted {kind}" for kind, count in raw.items())
+                   if raw else "no unconverted raw content for another output format"))
     signatures = [problem for part, paragraph in docx.paragraph_texts(output)
                   for problem in signature_problems(paragraph, part)]
     signatures.extend(f"file properties: AI author in {key}" for key, value in docx.core_properties(output).items()
@@ -282,7 +288,10 @@ def verify(root: Path, profile: dict, output: Path, facts: dict, warnings: list,
     unresolved = sorted(set(re.findall(r"¿([^?]+)\?", text))) + [w for w in warnings if "Undefined cross-reference" in w]
     checks.append(("cross-references", not unresolved, "all resolved" if not unresolved else "unresolved: " + ", ".join(unresolved[:8])))
     missing = [w for w in warnings if "Citeproc" in w and "not found" in w]
-    checks.append(("citations", not missing, "all keys found" if not missing else "; ".join(missing[:8])))
+    cited = facts.get("cited_keys", [])
+    citation_detail = (f"{len(cited)} key(s) resolved; source identity and claim support not checked" if cited else
+                       "no keyed citations in the selected manuscript; plain-text references were not checked")
+    checks.append(("citations", not missing, citation_detail if not missing else "; ".join(missing[:8])))
     declared = facts.get("front_matter") or {}
     lost, found = docx.compare_front_matter(declared, output)
     checks.append(("front matter", not lost, "; ".join(lost) if lost else
@@ -342,8 +351,12 @@ def command_build(args, root: Path) -> int:
         print(f"Pandoc failed: {built.stderr.strip()[:600]}")
         return 1
     tree = subprocess.run(command + ["-t", "json"], cwd=root, capture_output=True, text=True, encoding="utf-8")
+    if tree.returncode != 0:
+        print(f"Pandoc inspection failed: {tree.stderr.strip()[:600]}")
+        return 1
     ast = json.loads(tree.stdout)
     facts = docx.ast_facts(ast)
+    facts["cited_keys"] = analysis["cited"]
     facts["front_matter"] = docx.front_matter(ast)
     facts["images"] = len(re.findall(r'"t":\s*"Image"', tree.stdout))
     warnings = [line.strip() for line in built.stderr.splitlines() if line.strip()]
@@ -351,7 +364,7 @@ def command_build(args, root: Path) -> int:
     for problem in diagram_problems:
         checks.append(("diagrams", False, problem))
     blocking_checks = {"AI signatures", "native equations", "figures", "cross-references", "citations",
-                       "front matter", "resources", "anonymization", "diagrams"}
+                       "front matter", "resources", "anonymization", "diagrams", "raw content"}
     passed = all(ok for name, ok, _ in checks if name in blocking_checks)
     record = {"schema": "paper-template.build/1", "profile": args.profile, "built": datetime.now().isoformat(timespec="seconds"),
               "status": "passed" if passed else "failed", "inputs": build_inputs(root, folder, profile, sections),
@@ -369,7 +382,8 @@ def command_build(args, root: Path) -> int:
     for note in analysis["warnings"]:
         print(f"  [note] {note}")
     if args.render and passed:
-        render(root, output)
+        if not render(root, output, args.renderer):
+            return 1
     return 0 if passed else 1
 
 
@@ -396,40 +410,76 @@ def command_verify(args, root: Path) -> int:
 
 # Rendering
 
-def render(root: Path, output: Path) -> Path | None:
+def render(root: Path, output: Path, renderer: str = "auto") -> Path | None:
+    output = output.resolve()
     pdf = output.with_suffix(".pdf")
-    if tools.system() == "darwin" and tools.word_available():
-        container = Path.home() / "Library" / "Containers" / "com.microsoft.Word" / "Data" / "Documents" / "paper-template-export"
-        container.mkdir(parents=True, exist_ok=True)
-        staged, staged_pdf = container / output.name, container / pdf.name
-        shutil.copy2(output, staged)
-        script = ['with timeout of 180 seconds', 'tell application "Microsoft Word"', f'open file name "{staged}"',
-                  f'save as active document file name "{staged_pdf}" file format format PDF', "close active document saving no",
-                  "end tell", "end timeout"]
-        completed = subprocess.run(["osascript"] + sum((["-e", line] for line in script), []), capture_output=True, text=True, timeout=240)
-        if completed.returncode == 0 and staged_pdf.is_file():
-            shutil.move(str(staged_pdf), pdf)
-            staged.unlink(missing_ok=True)
-            print(f"Rendered {pdf.relative_to(root).as_posix()} with Microsoft Word.")
-            return pdf
-        print("Microsoft Word did not render the file; it may be showing a dialog that needs the researcher. " + completed.stderr.strip()[:200])
-        return None
-    if tools.system() == "windows" and tools.word_available():
-        script = (f"$w = New-Object -ComObject Word.Application; $w.Visible = $false; "
-                  f"$d = $w.Documents.Open('{output}', $false, $true); $d.SaveAs([ref]'{pdf}', [ref]17); $d.Close($false); $w.Quit()")
-        completed = subprocess.run(["powershell", "-NoProfile", "-Command", script], capture_output=True, text=True, timeout=240)
-        if completed.returncode == 0 and pdf.is_file():
-            print(f"Rendered {pdf.relative_to(root).as_posix()} with Microsoft Word.")
-            return pdf
+    receipt = output.with_suffix(".render.json")
+    source_hash = sha256_file(output)
     info = tools.find(root)
-    if info["libreoffice"]:
-        subprocess.run([info["libreoffice"], "--headless", "--convert-to", "pdf", "--outdir", str(output.parent), str(output)],
-                       capture_output=True, timeout=240)
-        if pdf.is_file():
-            print(f"Rendered {pdf.relative_to(root).as_posix()} with LibreOffice (its layout can differ from Word's).")
-            return pdf
-    print("No application that renders Word files is available, so the layout could not be inspected.")
-    return None
+    selected = ("word" if info["word"] else "libreoffice") if renderer == "auto" else renderer
+    record = {"schema": "paper-template.render/1", "status": "failed", "renderer": selected,
+              "docx_sha256": source_hash, "created": datetime.now().isoformat(timespec="seconds")}
+    # Record failure first. An older PDF must not count as a successful new render.
+    write_json_atomic(receipt, record)
+    if (selected == "word" and not info["word"]) or (selected == "libreoffice" and not info["libreoffice"]):
+        print(f"The selected renderer ({selected}) is not available; no PDF was verified.")
+        return None
+    try:
+        parent = output.parent
+        if selected == "word" and tools.system() == "darwin":
+            parent = Path.home() / "Library" / "Containers" / "com.microsoft.Word" / "Data" / "Documents" / "paper-template-export"
+            parent.mkdir(parents=True, exist_ok=True)
+        with tempfile.TemporaryDirectory(prefix="render-", dir=parent) as temporary:
+            work = Path(temporary)
+            staged, staged_pdf = work / output.name, work / pdf.name
+            if selected == "word":
+                # A distinct path avoids collisions with a file still open from an earlier attempt.
+                shutil.copy2(output, staged)
+                if tools.system() == "darwin":
+                    quote = lambda p: str(p).replace("\\", "\\\\").replace('"', '\\"')
+                    script = ['with timeout of 45 seconds', 'tell application "Microsoft Word"',
+                              f'open file name "{quote(staged)}"',
+                              f'save as active document file name "{quote(staged_pdf)}" file format format PDF',
+                              "close active document saving no", "end tell", "end timeout"]
+                    command = ["osascript"] + sum((["-e", line] for line in script), [])
+                else:
+                    source, target = str(staged).replace("'", "''"), str(staged_pdf).replace("'", "''")
+                    script = ("$ErrorActionPreference = 'Stop'; $w = New-Object -ComObject Word.Application; "
+                              "$w.Visible = $false; "
+                              f"$d = $w.Documents.Open('{source}', $false, $true); "
+                              f"$d.SaveAs([ref]'{target}', [ref]17); $d.Close($false); $w.Quit()")
+                    command = ["powershell", "-NoProfile", "-Command", script]
+            else:
+                # A private profile avoids routing the command into an existing GUI session.
+                command = [info["libreoffice"], f"-env:UserInstallation={(work / 'lo-profile').as_uri()}",
+                           "--headless", "--convert-to", "pdf", "--outdir", str(work), str(output)]
+            completed = subprocess.run(command, capture_output=True, text=True, timeout=55)
+            if completed.returncode != 0 or not staged_pdf.is_file() or staged_pdf.stat().st_size == 0:
+                print(f"{selected} did not produce a new PDF: {(completed.stderr or completed.stdout).strip()[:200]}")
+                return None
+            if sha256_file(output) != source_hash:
+                print("The DOCX changed during rendering; render the current file again.")
+                return None
+            shutil.move(str(staged_pdf), pdf)
+    except (OSError, subprocess.TimeoutExpired) as error:
+        print(f"{selected} rendering failed: {str(error)[:200]}")
+        if selected == "word":
+            print("Check Word for a dialog. To inspect with LibreOffice, explicitly select --renderer libreoffice; its layout can differ.")
+        return None
+    record.update(status="passed", pdf_sha256=sha256_file(pdf))
+    write_json_atomic(receipt, record)
+    print(f"Rendered {pdf} with {selected}." +
+          (" LibreOffice layout can differ from Word's." if selected == "libreoffice" else ""))
+    return pdf
+
+
+def current_render(output: Path) -> bool:
+    try:
+        record = json.loads(output.with_suffix(".render.json").read_text(encoding="utf-8"))
+        return (record.get("status") == "passed" and record.get("docx_sha256") == sha256_file(output)
+                and record.get("pdf_sha256") == sha256_file(output.with_suffix(".pdf")))
+    except (OSError, ValueError):
+        return False
 
 
 def command_render(args, root: Path) -> int:
@@ -437,7 +487,7 @@ def command_render(args, root: Path) -> int:
     output = output if output.is_absolute() else root / output
     if not output.is_file():
         raise Refused(f"{args.docx} does not exist")
-    return 0 if render(root, output) else 1
+    return 0 if render(root, output, args.renderer) else 1
 
 
 # Releases
@@ -473,7 +523,9 @@ def command_release(args, root: Path) -> int:
     staging = root / "outputs" / "releases" / f".{args.id}.part"
     shutil.rmtree(staging, ignore_errors=True)
     staging.mkdir(parents=True)
-    files = [output] + [p for p in (output.with_suffix(".pdf"),) if p.is_file() and p.stat().st_mtime >= output.stat().st_mtime]
+    files = [output] + ([output.with_suffix(".pdf"), output.with_suffix(".render.json")] if current_render(output) else [])
+    if output.with_suffix(".pdf").is_file() and len(files) == 1:
+        print("The PDF has no current successful render receipt and is not included in the release.")
     for file in files:
         shutil.copy2(file, staging / file.name)
     shutil.copy2(readme, staging / "README.md")
@@ -487,7 +539,8 @@ def command_release(args, root: Path) -> int:
     for file in target.rglob("*"):
         if file.is_file():
             os.chmod(file, stat.S_IREAD | stat.S_IRGRP | stat.S_IROTH)
-    print(f"Released outputs/releases/{args.id}/ with a README and {len(files)} manuscript file(s). It will not be overwritten.")
+    manuscripts = sum(file.suffix in (".docx", ".pdf") for file in files)
+    print(f"Released outputs/releases/{args.id}/ with a README and {manuscripts} manuscript file(s). It will not be overwritten.")
     return 0
 
 
@@ -541,10 +594,12 @@ def main(argv: list | None = None) -> int:
     build = commands.add_parser("build", help="build and check the DOCX preview with a profile")
     build.add_argument("--profile", required=True)
     build.add_argument("--render", action="store_true", help="also render a PDF with Word or LibreOffice for inspection")
+    build.add_argument("--renderer", choices=("auto", "word", "libreoffice"), default="auto")
     verify_command = commands.add_parser("verify", help="show the checks of the latest build and whether it is still current")
     verify_command.add_argument("--profile", required=True)
     render_command = commands.add_parser("render", help="render a DOCX to PDF with Word or LibreOffice")
     render_command.add_argument("--docx", required=True)
+    render_command.add_argument("--renderer", choices=("auto", "word", "libreoffice"), default="auto")
     release = commands.add_parser("release", help="freeze the latest passing, current build into outputs/releases/")
     release.add_argument("--profile", required=True)
     release.add_argument("--id", required=True)

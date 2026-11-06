@@ -15,7 +15,11 @@ One subdirectory per intended output, such as a journal submission or a thesis f
 
 The agent writes a README for the profile and each created resource folder. `python scripts/export.py profile-init` creates the profile's `templates/` folder, `profile.yaml`, and the default Word reference document. A project without a target venue can use a neutral profile.
 
+For source-format restoration, record typography by text role and table appearance by table or shared design as separate requirements. Include effective fonts, sizes and emphasis, borders, shading, alignment, widths, and spacing as applicable. Follow [font and table restoration](../../docs/export-reliability.md#restore-fonts-and-table-appearance). A matching default font, table count, or table style name is not a complete fidelity check.
+
 ## Layout of requirements.md
+
+Each export also needs separate content-completeness and unchanged-content results, linked to the pre-export baseline and the exact delivered files. Follow [content preservation](../../docs/export-reliability.md#preserve-complete-content-without-rewriting). A passing layout or build check does not substitute for source-to-output reconciliation.
 
 One section per adopted rule, in English. The labels stay as shown.
 

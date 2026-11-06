@@ -200,7 +200,7 @@ def expected_structures(tex: str) -> set:
 
 def ast_facts(ast: dict) -> dict:
     """Formulas (body, then notes), figures, Mermaid blocks left as code, and open markers in a Pandoc JSON AST."""
-    facts = {"body": [], "notes": [], "figures": 0, "mermaid_code": 0, "todo": 0}
+    facts = {"body": [], "notes": [], "figures": 0, "mermaid_code": 0, "todo": 0, "raw_content": {}}
 
     def walk(node, target):
         if isinstance(node, dict):
@@ -216,6 +216,14 @@ def ast_facts(ast: dict) -> dict:
                 facts["mermaid_code"] += 1
             elif kind == "Str" and "TODO" in node.get("c", ""):
                 facts["todo"] += 1
+            elif kind in ("RawBlock", "RawInline"):
+                fmt, text = node["c"]
+                # DOCX only passes through OpenXML. Other raw formats can disappear without
+                # a writer error, including HTML table tags surrounding ordinary cell text.
+                if fmt != "openxml" and text.strip() and not (
+                        fmt == "html" and not re.sub(r"<!--.*?-->", "", text, flags=re.S).strip()):
+                    key = f"{fmt} {kind}"
+                    facts["raw_content"][key] = facts["raw_content"].get(key, 0) + 1
             for value in node.values():
                 walk(value, target)
         elif isinstance(node, list):
